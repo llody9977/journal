@@ -1,0 +1,84 @@
+# Sidebar navigation, in display order.
+# Top-level entries with `children` render as a collapsible section.
+# A `children` entry can itself be a group (has its own nested `children`)
+# to any depth — nesting is fully recursive (see _includes/nav-list.html).
+# A group with no `children` and no `url` renders as a "Soon" placeholder.
+#
+# Ordering rule: each list is sorted alphabetically by default. Where a list
+# has a genuine reading-order dependency (a later topic assumes an earlier
+# one), items are numbered ("1. ", "2. ", ...) instead so the intended order
+# stays obvious even if the list is ever re-sorted. Lists with no numbers can
+# be read in any order.
+#
+# "Security" is the first main group; more may be added as siblings later
+# (hence the "1." prefix on it) for topics outside security entirely.
+
+- title: Overview
+  url: /
+
+- title: 1. Security
+  children:
+    - title: 1. Security Fundamentals
+      url: /topics/security-fundamentals/
+    - title: 2. Cryptography
+      children:
+        - title: 1. Overview
+          url: /topics/cryptography-overview/
+        - title: 2. Foundations
+          children:
+            - title: 1. Symmetric Cryptography
+              url: /topics/symmetric-cryptography/
+            - title: "2. Symmetric Mode Attacks: ECB/CBC/CTR"
+              url: /topics/symmetric-mode-attacks/
+            - title: 3. Asymmetric Cryptography
+              url: /topics/asymmetric-cryptography/
+            - title: 4. Symmetric vs Asymmetric Cryptography
+              url: /topics/symmetric-vs-asymmetric/
+            - title: 5. Hash Functions & MACs
+              url: /topics/hash-functions-macs/
+            - title: 6. Hash Collisions & Length Extension
+              url: /topics/hash-collisions-length-extension/
+            - title: 7. Key Exchange & Key Derivation
+              url: /topics/key-exchange-derivation/
+            - title: 8. Digital Signatures
+              url: /topics/digital-signatures/
+        - title: 3. Recommended Algorithms & Regional Standards
+          url: /topics/recommended-algorithms/
+        - title: 4. Public Key Infrastructure
+          children:
+            - title: 1. Certificate Authorities & Certificates
+              url: /topics/certificates/
+            - title: 2. TLS/SSL Handshake
+              url: /topics/tls-ssl-handshake/
+            - title: 3. Certificate Transparency
+              url: /topics/certificate-transparency/
+        - title: 5. Applied Cryptography
+          children:
+            - title: 1. Password Storage
+              url: /topics/password-storage/
+            - title: 2. Full-Disk & File Encryption
+              url: /topics/full-disk-file-encryption/
+            - title: 3. Blockchain Cryptography
+              url: /topics/blockchain-cryptography/
+    - title: 3. Key Management
+      children:
+        - title: HSM & KMS
+          url: /topics/hsm-kms/
+        - title: Security Certifications
+          url: /topics/security-certifications/
+    - title: 4. Authentication & Authorization
+      children:
+        - title: 1. SSH
+          url: /topics/ssh/
+        - title: 2. OAuth & OpenID Connect
+          url: /topics/oauth-oidc/
+        - title: 3. API Security
+          url: /topics/api-security/
+    - title: 5. Network Security
+      children:
+        - title: DNS Security
+          url: /topics/dns-security/
+    - title: 6. Emerging Topics
+      children:
+        - title: AI & LLM Security
+          url: /topics/ai-llm-security/

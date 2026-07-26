@@ -1,0 +1,23 @@
+title: Field Journal
+description: >-
+  An educational, ever-growing security engineering reference — cryptography
+  foundations, PKI, key management, authentication/authorization, network
+  security, and applied topics, organized by category.
+baseurl: "/journal"
+url: "https://llody9977.github.io"
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

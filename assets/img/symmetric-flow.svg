@@ -1,0 +1,90 @@
+<svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="760" height="260" fill="#ffffff" />
+
+  <defs>
+    <g id="person">
+      <circle cx="0" cy="-9" r="11" />
+      <path d="M-17 26 C-17 6 17 6 17 26 Z" />
+    </g>
+    <g id="key-icon">
+      <circle cx="0" cy="0" r="12" fill="none" stroke-width="6" />
+      <rect x="10" y="-4" width="30" height="8" />
+      <rect x="30" y="4" width="6" height="8" />
+      <rect x="40" y="4" width="6" height="11" />
+    </g>
+    <g id="doc">
+      <rect x="0" y="0" width="42" height="54" rx="4" />
+      <line x1="8" y1="14" x2="34" y2="14" stroke="#ffffff" stroke-width="4" />
+      <line x1="8" y1="26" x2="34" y2="26" stroke="#ffffff" stroke-width="4" />
+      <line x1="8" y1="38" x2="24" y2="38" stroke="#ffffff" stroke-width="4" />
+    </g>
+  </defs>
+
+  <!-- Sender -->
+  <g fill="#193e9f">
+    <use href="#person" transform="translate(50,80)" />
+  </g>
+  <text x="50" y="122" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Sender</text>
+
+  <g fill="#2457d6">
+    <use href="#doc" transform="translate(95,58)" />
+  </g>
+  <text x="116" y="140" font-size="11" fill="#475569" text-anchor="middle">plaintext</text>
+
+  <!-- arrow to encrypt box -->
+  <path d="M155 85 L200 85" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#arrow1)" />
+
+  <!-- Encrypt box -->
+  <rect x="205" y="45" width="130" height="80" rx="12" fill="#193e9f" />
+  <text x="270" y="75" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Encrypt</text>
+  <text x="270" y="93" font-size="11" fill="#c9d7fb" text-anchor="middle">e.g. AES-256-GCM</text>
+  <g fill="#fdf1e0" stroke="#fdf1e0">
+    <use href="#key-icon" transform="translate(255,108) scale(0.7)" />
+  </g>
+  <text x="270" y="135" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">key K</text>
+
+  <!-- arrow to ciphertext -->
+  <path d="M340 85 L385 85" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#arrow1)" />
+
+  <!-- ciphertext blob -->
+  <g fill="#9f1239">
+    <rect x="390" y="60" width="60" height="50" rx="6" />
+  </g>
+  <text x="420" y="90" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">?%&amp;</text>
+  <text x="420" y="130" font-size="11" fill="#475569" text-anchor="middle">ciphertext</text>
+  <text x="420" y="144" font-size="10" fill="#9f1239" text-anchor="middle">safe over the network</text>
+
+  <!-- arrow to decrypt box -->
+  <path d="M455 85 L500 85" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#arrow1)" />
+
+  <!-- Decrypt box -->
+  <rect x="505" y="45" width="130" height="80" rx="12" fill="#193e9f" />
+  <text x="570" y="75" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Decrypt</text>
+  <text x="570" y="93" font-size="11" fill="#c9d7fb" text-anchor="middle">same algorithm</text>
+  <g fill="#fdf1e0" stroke="#fdf1e0">
+    <use href="#key-icon" transform="translate(555,108) scale(0.7)" />
+  </g>
+  <text x="570" y="135" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">same key K</text>
+
+  <!-- arrow to plaintext -->
+  <path d="M640 85 L680 85" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#arrow1)" />
+
+  <g fill="#2457d6">
+    <use href="#doc" transform="translate(685,58)" />
+  </g>
+  <text x="706" y="140" font-size="11" fill="#475569" text-anchor="middle">plaintext</text>
+
+  <g fill="#193e9f">
+    <use href="#person" transform="translate(705,80)" />
+  </g>
+  <text x="705" y="122" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Receiver</text>
+
+  <defs>
+    <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    </marker>
+  </defs>
+
+  <text x="380" y="200" font-size="13" fill="#111827" text-anchor="middle" font-weight="600">The same key K locks and unlocks — whoever has it can do both.</text>
+  <text x="380" y="222" font-size="12" fill="#475569" text-anchor="middle">Fast, but K has to reach the receiver safely before any of this works.</text>
+</svg>

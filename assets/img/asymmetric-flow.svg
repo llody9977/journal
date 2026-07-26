@@ -1,0 +1,69 @@
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="760" height="320" fill="#ffffff" />
+
+  <defs>
+    <g id="person">
+      <circle cx="0" cy="-9" r="11" />
+      <path d="M-17 26 C-17 6 17 6 17 26 Z" />
+    </g>
+    <g id="key-open">
+      <circle cx="0" cy="0" r="12" fill="none" stroke-width="6" />
+      <rect x="10" y="-4" width="30" height="8" />
+      <rect x="30" y="4" width="6" height="8" />
+      <rect x="40" y="4" width="6" height="11" />
+    </g>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    </marker>
+  </defs>
+
+  <!-- Row 1: encryption direction -->
+  <text x="20" y="30" font-size="13" font-weight="700" fill="#111827">1. Encryption — anyone can lock, only the owner can unlock</text>
+
+  <g fill="#193e9f"><use href="#person" transform="translate(50,80)" /></g>
+  <text x="50" y="122" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">Anyone</text>
+
+  <path d="M85 80 L150 80" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <g fill="#0f766e" stroke="#0f766e"><use href="#key-open" transform="translate(165,80) scale(0.9)" /></g>
+  <text x="180" y="105" font-size="11" font-weight="700" fill="#0f766e" text-anchor="middle">public key</text>
+  <text x="180" y="118" font-size="10" fill="#475569" text-anchor="middle">(shared openly)</text>
+
+  <path d="M215 80 L280 80" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <rect x="285" y="55" width="90" height="50" rx="8" fill="#9f1239" />
+  <text x="330" y="85" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">?%&amp;</text>
+
+  <path d="M380 80 L445 80" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <g fill="#a14c00" stroke="#a14c00"><use href="#key-open" transform="translate(460,80) scale(0.9)" /></g>
+  <text x="475" y="105" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">private key</text>
+  <text x="475" y="118" font-size="10" fill="#475569" text-anchor="middle">(kept secret)</text>
+
+  <path d="M510 80 L575 80" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <g fill="#193e9f"><use href="#person" transform="translate(610,80)" /></g>
+  <text x="610" y="122" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">Owner only</text>
+
+  <line x1="0" y1="155" x2="760" y2="155" stroke="#d7dee7" stroke-width="1.5" />
+
+  <!-- Row 2: signing direction -->
+  <text x="20" y="185" font-size="13" font-weight="700" fill="#111827">2. Signing — only the owner can sign, anyone can verify</text>
+
+  <g fill="#193e9f"><use href="#person" transform="translate(50,235)" /></g>
+  <text x="50" y="277" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">Owner only</text>
+
+  <path d="M85 235 L150 235" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <g fill="#a14c00" stroke="#a14c00"><use href="#key-open" transform="translate(165,235) scale(0.9)" /></g>
+  <text x="180" y="260" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">private key</text>
+  <text x="180" y="273" font-size="10" fill="#475569" text-anchor="middle">signs</text>
+
+  <path d="M215 235 L280 235" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <rect x="285" y="210" width="90" height="50" rx="8" fill="#2457d6" />
+  <text x="330" y="240" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">signed</text>
+
+  <path d="M380 235 L445 235" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <g fill="#0f766e" stroke="#0f766e"><use href="#key-open" transform="translate(460,235) scale(0.9)" /></g>
+  <text x="475" y="260" font-size="11" font-weight="700" fill="#0f766e" text-anchor="middle">public key</text>
+  <text x="475" y="273" font-size="10" fill="#475569" text-anchor="middle">verifies</text>
+
+  <path d="M510 235 L575 235" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+  <g fill="#193e9f"><use href="#person" transform="translate(610,235)" /></g>
+  <text x="610" y="277" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">Anyone</text>
+</svg>

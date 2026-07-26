@@ -1,0 +1,61 @@
+<svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="900" height="520" fill="#ffffff" />
+
+  <defs>
+    <marker id="aho" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#193e9f" />
+    </marker>
+  </defs>
+
+  <!-- lifelines -->
+  <text x="90" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">User</text>
+  <text x="330" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Client App</text>
+  <text x="600" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Authorization Server</text>
+  <text x="830" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Resource Server</text>
+
+  <line x1="90" y1="35" x2="90" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
+  <line x1="330" y1="35" x2="330" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
+  <line x1="600" y1="35" x2="600" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
+  <line x1="830" y1="35" x2="830" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
+
+  <!-- 1 -->
+  <path d="M90 60 L325 60" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <text x="210" y="52" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">① "Log in with Google"</text>
+
+  <!-- 1b: client generates PKCE verifier -->
+  <text x="330" y="85" font-size="10.5" fill="#a14c00" text-anchor="start">client generates code_verifier, derives code_challenge</text>
+
+  <!-- 2: redirect to auth server -->
+  <path d="M330 100 L595 100" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <text x="460" y="112" font-size="10.5" fill="#475569" text-anchor="middle">redirect: ?client_id, redirect_uri, code_challenge, state</text>
+
+  <!-- 3: auth server prompts user -->
+  <path d="M600 125 L95 125" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <text x="345" y="140" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">② user logs in + approves scopes, directly with the Authorization Server</text>
+
+  <!-- 4: auth code back to client via user redirect -->
+  <path d="M90 175 L595 175" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <text x="345" y="167" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">③ browser redirected back with a one-time authorization code</text>
+
+  <!-- 5: client exchanges code -->
+  <rect x="640" y="195" width="220" height="60" rx="8" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
+  <text x="750" y="215" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">④ server-to-server exchange</text>
+  <text x="750" y="230" font-size="10.5" fill="#a14c00" text-anchor="middle">code + code_verifier + client_secret</text>
+  <text x="750" y="244" font-size="10.5" fill="#a14c00" text-anchor="middle">→ access token (+ refresh token)</text>
+
+  <path d="M330 200 L635 215" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <path d="M635 235 L330 250" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+
+  <text x="460" y="270" font-size="10.5" fill="#475569" text-anchor="middle">code_verifier must match the earlier code_challenge — proves this is the same client that started the flow</text>
+
+  <!-- 6: client calls resource server -->
+  <path d="M330 310 L825 310" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <text x="580" y="302" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">⑤ API call with "Authorization: Bearer &lt;access token&gt;"</text>
+
+  <path d="M825 335 L335 335" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
+  <text x="580" y="352" font-size="11.5" fill="#0f766e" text-anchor="middle">⑥ resource server validates the token, returns the data</text>
+
+  <text x="450" y="410" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">The client never sees the user's password — only a scoped, revocable token</text>
+  <text x="450" y="432" font-size="12" fill="#475569" text-anchor="middle">PKCE (steps with code_verifier/code_challenge) is mandatory in OAuth 2.1,</text>
+  <text x="450" y="452" font-size="12" fill="#475569" text-anchor="middle">even for apps that also hold a client_secret</text>
+</svg>

@@ -1,0 +1,42 @@
+<svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="720" height="260" fill="#ffffff" />
+
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    </marker>
+  </defs>
+
+  <!-- Row 1 -->
+  <rect x="10" y="35" width="230" height="40" rx="8" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
+  <text x="125" y="60" font-size="13" fill="#193e9f" text-anchor="middle" font-family="ui-monospace,monospace">"The quick brown fox"</text>
+
+  <path d="M245 55 L285 55" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+
+  <rect x="290" y="35" width="90" height="40" rx="8" fill="#193e9f" />
+  <text x="335" y="60" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">SHA-256</text>
+
+  <path d="M385 55 L425 55" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+
+  <rect x="430" y="35" width="280" height="40" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
+  <text x="570" y="53" font-size="10.5" fill="#0f766e" text-anchor="middle" font-family="ui-monospace,monospace">5cac4f980fedc3d3f1f99b4be3472c9b</text>
+  <text x="570" y="67" font-size="10.5" fill="#0f766e" text-anchor="middle" font-family="ui-monospace,monospace">30d56523e632d151237ec9309048bda9</text>
+
+  <!-- Row 2 -->
+  <rect x="10" y="140" width="230" height="40" rx="8" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
+  <text x="118" y="165" font-size="13" fill="#a14c00" text-anchor="middle" font-family="ui-monospace,monospace">"The quick brown fox<tspan font-weight="700" fill="#9f1239">.</tspan>"</text>
+
+  <path d="M245 160 L285 160" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+
+  <rect x="290" y="140" width="90" height="40" rx="8" fill="#193e9f" />
+  <text x="335" y="165" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">SHA-256</text>
+
+  <path d="M385 160 L425 160" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+
+  <rect x="430" y="140" width="280" height="40" rx="8" fill="#fde8ea" stroke="#9f1239" stroke-width="1.5" />
+  <text x="570" y="158" font-size="10.5" fill="#9f1239" text-anchor="middle" font-family="ui-monospace,monospace">42e25dd386eb55b56db34af535fab523</text>
+  <text x="570" y="172" font-size="10.5" fill="#9f1239" text-anchor="middle" font-family="ui-monospace,monospace">1db8cf1b588af95bc9c32ef849507fc5</text>
+
+  <text x="360" y="225" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">One extra character changes the entire output — unpredictably</text>
+  <text x="360" y="245" font-size="11.5" fill="#475569" text-anchor="middle">real SHA-256 output shown above — try it yourself: echo -n "..." | shasum -a 256</text>
+</svg>

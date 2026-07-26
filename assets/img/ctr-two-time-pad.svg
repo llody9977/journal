@@ -1,0 +1,46 @@
+<svg viewBox="0 0 740 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="740" height="340" fill="#ffffff" />
+
+  <defs>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    </marker>
+  </defs>
+
+  <text x="20" y="25" font-size="13" font-weight="700" fill="#111827">Same key + same nonce used twice → same keystream, both times</text>
+
+  <rect x="20" y="40" width="180" height="36" rx="6" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
+  <text x="110" y="62" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">P1: "Transfer $100..."</text>
+
+  <rect x="20" y="150" width="180" height="36" rx="6" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
+  <text x="110" y="172" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">P2: "Meet me at 9pm..."</text>
+
+  <path d="M200 58 L250 95" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
+  <path d="M200 168 L250 105" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
+
+  <rect x="255" y="85" width="150" height="36" rx="6" fill="#193e9f" />
+  <text x="330" y="107" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">XOR same keystream</text>
+
+  <path d="M405 95 L460 60" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
+  <path d="M405 110 L460 150" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
+
+  <rect x="465" y="40" width="180" height="36" rx="6" fill="#9f1239" />
+  <text x="555" y="62" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">C1 (sent over network)</text>
+
+  <rect x="465" y="150" width="180" height="36" rx="6" fill="#9f1239" />
+  <text x="555" y="172" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">C2 (sent over network)</text>
+
+  <text x="555" y="105" font-size="11" fill="#8491a3" text-anchor="middle">attacker sees only C1 and C2</text>
+
+  <path d="M555 76 L555 220" stroke="#8491a3" stroke-width="1.5" stroke-dasharray="3 3" />
+  <path d="M555 186 L555 220" stroke="#8491a3" stroke-width="1.5" stroke-dasharray="3 3" />
+
+  <rect x="255" y="220" width="230" height="46" rx="8" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
+  <text x="370" y="240" font-size="12" font-weight="700" fill="#a14c00" text-anchor="middle">attacker computes C1 XOR C2</text>
+  <text x="370" y="257" font-size="10.5" fill="#a14c00" text-anchor="middle">the keystream cancels out completely</text>
+
+  <path d="M370 266 L370 295" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
+
+  <rect x="220" y="300" width="300" height="34" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
+  <text x="370" y="322" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">= P1 XOR P2 — no key needed at all</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="900" height="380" fill="#ffffff" />
+
+  <text x="230" y="30" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">Parameterized SQL query</text>
+  <text x="670" y="30" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">LLM context window</text>
+
+  <!-- SQL side -->
+  <rect x="60" y="50" width="340" height="60" rx="8" fill="#193e9f" />
+  <text x="230" y="75" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Query template (trusted, fixed by developer)</text>
+  <text x="230" y="93" font-size="11" fill="#c9d7fb" text-anchor="middle" font-family="ui-monospace,monospace">SELECT * FROM users WHERE id = ?</text>
+
+  <rect x="60" y="130" width="340" height="50" rx="8" fill="#0f766e" />
+  <text x="230" y="152" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">User-supplied parameter (data only)</text>
+  <text x="230" y="169" font-size="10.5" fill="#d3ece7" text-anchor="middle" font-family="ui-monospace,monospace">"1; DROP TABLE users;"</text>
+
+  <path d="M230 180 L230 210" stroke="#8491a3" stroke-width="2" fill="none" />
+  <rect x="60" y="215" width="340" height="60" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
+  <text x="230" y="240" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">Bound as a literal value, never parsed as SQL</text>
+  <text x="230" y="258" font-size="11" fill="#0f766e" text-anchor="middle">the database engine enforces this separation</text>
+
+  <text x="230" y="310" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Structural separation — data can never become code</text>
+
+  <!-- divider -->
+  <line x1="450" y1="40" x2="450" y2="340" stroke="#d7dee7" stroke-width="1.5" />
+
+  <!-- LLM side -->
+  <rect x="500" y="50" width="340" height="45" rx="8" fill="#193e9f" />
+  <text x="670" y="77" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">System prompt (developer's instructions)</text>
+
+  <rect x="500" y="105" width="340" height="45" rx="8" fill="#2457d6" />
+  <text x="670" y="132" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">User message</text>
+
+  <rect x="500" y="160" width="340" height="55" rx="8" fill="#9f1239" />
+  <text x="670" y="182" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Retrieved webpage / document / tool output</text>
+  <text x="670" y="198" font-size="10" fill="#fbd9df" text-anchor="middle">— may contain hidden attacker instructions</text>
+
+  <path d="M670 215 L670 240" stroke="#8491a3" stroke-width="2" fill="none" />
+  <rect x="500" y="245" width="340" height="60" rx="8" fill="#fde8ea" stroke="#9f1239" stroke-width="1.5" />
+  <text x="670" y="268" font-size="12" font-weight="700" fill="#9f1239" text-anchor="middle">All flow into ONE undifferentiated context</text>
+  <text x="670" y="286" font-size="11" fill="#9f1239" text-anchor="middle">the model has no reliable way to tell them apart</text>
+
+  <text x="670" y="330" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">No structural separation — "data" can be followed as instructions</text>
+</svg>

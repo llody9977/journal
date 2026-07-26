@@ -1,0 +1,72 @@
+<svg viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="760" height="480" fill="#ffffff" />
+
+  <defs>
+    <g id="person">
+      <circle cx="0" cy="-8" r="10" />
+      <path d="M-16 24 C-16 6 16 6 16 24 Z" />
+    </g>
+    <g id="coin">
+      <circle cx="0" cy="0" r="12" fill="#fdf1e0" stroke="#a14c00" stroke-width="2.5" />
+      <text x="0" y="4" font-size="12" font-weight="700" fill="#a14c00" text-anchor="middle">$</text>
+    </g>
+    <g id="key">
+      <circle cx="0" cy="0" r="13" fill="none" stroke-width="7" />
+      <rect x="11" y="-4" width="34" height="8" fill="#a14c00" />
+      <rect x="34" y="4" width="7" height="9" fill="#a14c00" />
+      <rect x="45" y="4" width="7" height="12" fill="#a14c00" />
+    </g>
+  </defs>
+
+  <!-- ===== TOP ZONE: depositing ===== -->
+  <g fill="#2457d6">
+    <use href="#person" transform="translate(230,60)" />
+    <use href="#person" transform="translate(380,55)" />
+    <use href="#person" transform="translate(530,60)" />
+  </g>
+  <g>
+    <use href="#coin" transform="translate(230,20)" />
+    <use href="#coin" transform="translate(380,15)" />
+    <use href="#coin" transform="translate(530,20)" />
+  </g>
+  <g stroke="#8491a3" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+    <path d="M230 95 L280 150" />
+    <path d="M380 90 L380 150" />
+    <path d="M530 95 L480 150" />
+  </g>
+
+  <text x="380" y="122" font-size="17" font-weight="700" fill="#111827" text-anchor="middle">Any staff can drop cash in</text>
+  <text x="380" y="141" font-size="13" fill="#475569" text-anchor="middle">no key needed — the slot is open to everyone</text>
+
+  <!-- ===== MIDDLE: the safe ===== -->
+  <rect x="260" y="150" width="240" height="180" rx="14" fill="#193e9f" />
+  <!-- slot on top -->
+  <rect x="330" y="150" width="100" height="14" rx="7" fill="#0f1f4d" />
+  <!-- keyhole on front -->
+  <circle cx="380" cy="255" r="14" fill="#0f1f4d" />
+  <path d="M373 265 L387 265 L382 285 L378 285 Z" fill="#0f1f4d" />
+  <text x="380" y="315" font-size="13" fill="#c9d7fb" text-anchor="middle">drop safe</text>
+
+  <!-- one-way notice, attached to the safe -->
+  <line x1="500" y1="255" x2="574" y2="255" stroke="#8491a3" stroke-width="2" stroke-dasharray="4 4" />
+  <g transform="translate(600,255)">
+    <circle r="26" fill="#fdf1e0" stroke="#a14c00" stroke-width="2" />
+    <text x="0" y="-2" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">ONE</text>
+    <text x="0" y="12" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">WAY</text>
+  </g>
+  <text x="600" y="300" font-size="12" fill="#475569" text-anchor="middle">not even the depositor</text>
+  <text x="600" y="315" font-size="12" fill="#475569" text-anchor="middle">can reach back in</text>
+
+  <!-- ===== BOTTOM ZONE: withdrawing ===== -->
+  <g stroke="#8491a3" stroke-width="3" fill="none">
+    <path d="M380 330 L380 372" />
+  </g>
+  <g fill="#193e9f">
+    <use href="#person" transform="translate(345,400)" />
+  </g>
+  <g stroke="#a14c00" stroke-width="7" stroke-linecap="round">
+    <use href="#key" transform="translate(410,398)" />
+  </g>
+  <text x="380" y="440" font-size="17" font-weight="700" fill="#111827" text-anchor="middle">Only the owner's key opens the back door</text>
+  <text x="380" y="459" font-size="13" fill="#475569" text-anchor="middle">one key, one person, kept in one pocket</text>
+</svg>

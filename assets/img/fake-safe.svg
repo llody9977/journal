@@ -1,0 +1,39 @@
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="760" height="380" fill="#ffffff" />
+
+  <defs>
+    <g id="safe-icon">
+      <rect x="0" y="20" width="180" height="130" rx="14" fill="#193e9f" />
+      <rect x="60" y="20" width="60" height="10" rx="5" fill="#0f1f4d" />
+      <circle cx="90" cy="90" r="11" fill="#0f1f4d" />
+      <path d="M84 98 L96 98 L92 116 L88 116 Z" fill="#0f1f4d" />
+    </g>
+  </defs>
+
+  <!-- left: the real safe -->
+  <g transform="translate(80,60)">
+    <use href="#safe-icon" />
+    <circle cx="165" cy="15" r="22" fill="#0f766e" />
+    <path d="M154 15 l8 8 l14 -16" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <text x="170" y="245" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">The owner's real safe</text>
+  <text x="170" y="265" font-size="12.5" fill="#475569" text-anchor="middle">installed and checked by the shop itself</text>
+
+  <!-- right: the lookalike -->
+  <g transform="translate(500,60)">
+    <use href="#safe-icon" />
+    <circle cx="165" cy="15" r="22" fill="#9f1239" />
+    <text x="165" y="22" font-size="24" font-weight="700" fill="#ffffff" text-anchor="middle">?</text>
+  </g>
+  <text x="590" y="245" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">A lookalike</text>
+  <text x="590" y="265" font-size="12.5" fill="#475569" text-anchor="middle">installed by... who knows?</text>
+
+  <!-- connecting comparison -->
+  <g stroke="#8491a3" stroke-width="2" stroke-dasharray="5 5">
+    <line x1="270" y1="125" x2="490" y2="125" />
+  </g>
+  <text x="380" y="118" font-size="13" fill="#64748b" text-anchor="middle">same shape, same slot</text>
+
+  <text x="380" y="320" font-size="17" font-weight="700" fill="#111827" text-anchor="middle">Just by looking, how would you tell them apart?</text>
+  <text x="380" y="342" font-size="13" fill="#475569" text-anchor="middle">this is the exact gap Certificate Authorities exist to close</text>
+</svg>

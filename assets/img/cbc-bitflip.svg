@@ -1,0 +1,41 @@
+<svg viewBox="0 0 740 400" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="740" height="400" fill="#ffffff" />
+
+  <defs>
+    <marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    </marker>
+  </defs>
+
+  <text x="20" y="25" font-size="13" font-weight="700" fill="#111827">Ciphertext as sent (attacker can see and modify this)</text>
+  <rect x="20" y="35" width="330" height="40" rx="6" fill="#193e9f" />
+  <text x="185" y="60" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Ciphertext block 1 (C1)</text>
+  <rect x="370" y="35" width="330" height="40" rx="6" fill="#193e9f" />
+  <text x="535" y="60" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Ciphertext block 2 (C2)</text>
+
+  <rect x="255" y="35" width="20" height="40" fill="#9f1239" />
+  <text x="265" y="95" font-size="11" font-weight="700" fill="#9f1239" text-anchor="middle">attacker flips</text>
+  <text x="265" y="109" font-size="11" font-weight="700" fill="#9f1239" text-anchor="middle">this 1 byte</text>
+
+  <path d="M265 75 L265 130" stroke="#9f1239" stroke-width="2" fill="none" marker-end="url(#ahb)" />
+
+  <text x="20" y="168" font-size="13" font-weight="700" fill="#111827">Decryption (server side — attacker never sees this happen)</text>
+
+  <path d="M185 75 L120 205" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahb)" />
+  <path d="M535 75 L470 205" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahb)" />
+  <path d="M265 140 L265 185 L470 185 L470 205" stroke="#9f1239" stroke-width="2" fill="none" marker-end="url(#ahb)" stroke-dasharray="4 3" />
+  <text x="470" y="196" font-size="10" fill="#9f1239" text-anchor="end">CBC chaining: C1 feeds into block 2's decryption too</text>
+
+  <rect x="20" y="210" width="330" height="60" rx="6" fill="#fde8ea" stroke="#9f1239" stroke-width="1.5" />
+  <text x="185" y="235" font-size="12" font-weight="700" fill="#9f1239" text-anchor="middle">Block 1 plaintext: complete garbage</text>
+  <text x="185" y="252" font-size="10.5" fill="#9f1239" text-anchor="middle">(AES diffusion scrambles the whole block)</text>
+
+  <rect x="370" y="210" width="330" height="60" rx="6" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
+  <text x="535" y="233" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">Block 2 plaintext: exactly 1 byte changed</text>
+  <text x="535" y="250" font-size="11" font-weight="700" fill="#0f766e" text-anchor="middle">"isadmin=0" → "isadmin=1"</text>
+  <text x="535" y="264" font-size="10" fill="#0f766e" text-anchor="middle">everything else unchanged</text>
+
+  <text x="370" y="300" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">No key needed — CBC alone gives no integrity check</text>
+  <text x="370" y="322" font-size="12" fill="#475569" text-anchor="middle">this is exactly why CBC must always be paired with a separate MAC</text>
+  <text x="370" y="342" font-size="12" fill="#475569" text-anchor="middle">(or replaced with an AEAD mode like GCM, which detects this instantly)</text>
+</svg>

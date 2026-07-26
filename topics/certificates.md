@@ -1,0 +1,450 @@
+---
+title: Certificate Authorities & Certificates
+description: CA hierarchy, chain of trust, validation levels, certificate types by use, formats, and revocation.
+permalink: /topics/certificates/
+---
+
+<span class="eyebrow">Cryptography / Public Key Infrastructure / Deep Dive</span>
+
+# Certificate Authorities & Certificates
+
+<p class="lede">The core problem of digital trust, from the <a href="{{ '/topics/cryptography-overview/' | relative_url }}">Cryptography Overview</a>: anyone can generate a key pair, but nothing about the key itself says whose it is. A certificate is the fix — a cryptographically signed identity binding issued by a trusted Certificate Authority: CA types (Root, Intermediate, Leaf), key and signature algorithms, the chain of trust, validation levels, certificate types by use, common formats, a hands-on demo with <code>step-ca</code>, and the revocation lifecycle.</p>
+
+## Quick primer: symmetric vs asymmetric keys
+
+The short version, since everything past this point leans on it: symmetric uses one shared key for both directions, asymmetric uses a mathematically linked key pair — a private half and a public half. Dedicated deep dives on both live under [Foundations]({{ '/topics/symmetric-cryptography/' | relative_url }}) in the sidebar.
+
+- **Symmetric** — one key, shared by both sides, does both locking and unlocking (AES is the common example). Fast, but only works once both sides already have the same key — which is its own unsolved problem.
+- **Asymmetric** — a key *pair*: a public key anyone can use to encrypt or verify, and a private key, held by one party, that decrypts or signs (RSA and ECDSA are the common examples). Slower than symmetric, so in practice it's mostly used to safely establish symmetric session keys or create digital signatures.
+
+Certificates are fundamentally about the second kind — binding a public key to an identity so asymmetric crypto can be trusted at scale.
+
+## Why certificates exist
+
+Asymmetric cryptography solves *sending secrets without a pre-shared password*, but it opens up a fundamental trust problem: if anyone can generate a key pair, how do you know a given public key genuinely belongs to `example.com`, and not to an attacker sitting on the network pretending to be `example.com`?
+
+A certificate answers that by having a trusted third party — a **Certificate Authority (CA)** — cryptographically sign a statement of the form: *"I have verified that this public key belongs to this identity."* Anyone holding the CA's own public key can verify that signature, without ever contacting the CA directly.
+
+This is the core of **X.509**, the standard format used for TLS, code signing, email, and most other certificate types in use today.
+
+## What is Public Key Infrastructure (PKI)?
+
+**Public Key Infrastructure (PKI)** is the overarching system of hardware, software, security policies, data standards, and procedures required to create, manage, distribute, store, and revoke digital certificates.
+
+While a **Certificate Authority (CA)** is the specific component that signs certificates, **PKI** encompasses the entire framework that makes digital identity and encryption trustworthy across global networks.
+
+### The 6 Core Components of PKI
+
+| Component | Function & Responsibilities |
+|---|---|
+| **Certificate Authority (CA)** | The trusted engine that verifies identity claims and cryptographically signs digital certificates using its private key. |
+| **Registration Authority (RA)** | The front-end validation layer that vets identity credentials (domain ownership, corporate documentation) before instructing the CA to issue a certificate. |
+| **Certificate Store / Trust Store** | Local repositories pre-installed in operating systems (Windows, macOS, Linux) and web browsers containing trusted Root CA certificates. |
+| **Certificate Database & CT Logs** | Databases storing issued certificates, serial numbers, audit trails, and publicly verifiable append-only Certificate Transparency (CT) logs. |
+| **Revocation Infrastructure** | The network services (CRL distribution points, OCSP responders, and OCSP Stapling) that broadcast invalidated certificates. |
+| **Key Management & Security Policies** | Formal guidelines (CP/CPS) governing key pair generation, Hardware Security Module (HSM) key storage, lifecycle rotation, and disaster recovery. |
+
+### How PKI enforces the 4 Security Pillars
+
+- **Authenticity (Identity Verification):** The CA's cryptographic signature guarantees that a public key genuine belongs to a verified entity (e.g., `bank.com`).
+- **Integrity (Tamper Prevention):** Certificates are mathematically bound by the CA's signature. Any alteration of names, dates, or public keys breaks the signature check instantly.
+- **Confidentiality (Secrecy):** By assuring clients of the server's legitimate public key, PKI enables secure symmetric key exchanges without risk of Man-in-the-Middle eavesdropping.
+- **Non-Repudiation (Proof of Origin):** Signatures generated by private keys issued under PKI (e.g., code signing or S/MIME email) legally and mathematically bind the signer to their actions.
+
+## Anatomy of an X.509 certificate
+
+| Field | Purpose |
+|---|---|
+| Version | X.509 version (almost always v3 today — needed for extensions) |
+| Serial Number | Unique ID assigned by the issuing CA, used for revocation lookups |
+| Signature Algorithm | Algorithm the CA used to sign the certificate (e.g. `sha256WithRSAEncryption`, `ecdsa-with-SHA384`) |
+| Issuer | The CA (or intermediate) that signed this certificate |
+| Validity | `Not Before` / `Not After` dates |
+| Subject | The identity the certificate is issued to |
+| Subject Public Key Info | The public key being certified, plus its algorithm |
+| Subject Alternative Name (SAN) | Additional identities covered — extra domains, IPs, or emails (modern browsers require SAN for hostname checks, not the Subject CN) |
+| Key Usage | What the key may cryptographically be used for (e.g. digital signature, key encipherment) |
+| Extended Key Usage (EKU) | What role the certificate plays (e.g. `serverAuth`, `clientAuth`, `codeSigning`, `emailProtection`) |
+| Basic Constraints | Whether this certificate can act as a CA (`CA:TRUE`) and, if so, its path length |
+| Authority Key Identifier | Points back to the issuing CA's key, used to build the chain |
+| CA's Signature | The CA's signature over all of the above |
+
+## What algorithms actually sign these certificates
+
+Both the certificate's own key and the CA's signature over it rely on an underlying algorithm — and not all of them are still considered safe. Two separate things are being chosen here:
+
+1. **The key algorithm** — what kind of key pair the certificate's Subject Public Key actually is.
+2. **The signature algorithm** — what the *issuing CA* used to sign it (visible as `sha256WithRSAEncryption`, `ecdsa-with-SHA384`, etc. in the table above), which itself combines a signing algorithm with a hash function.
+
+| Algorithm | Status | Notes |
+|---|---|---|
+| MD5 | **Broken** — never use | Collisions are practical; the Flame malware (2012) forged a Microsoft code-signing certificate by exploiting this |
+| SHA-1 (signatures) | **Broken / deprecated** | Practical collisions demonstrated in 2017; disallowed for digital signature generation by NIST since 2013 |
+| RSA, key < 2048 bits | **Deprecated** | No longer issued by public CAs; too cheap to factor with modern compute |
+| RSA-2048 | Acceptable, sunsetting | ~112-bit security strength; NIST's 128-bit minimum takes effect for new use by 2030 |
+| RSA-3072 / RSA-4096 | Recommended (RSA family) | ~128-bit / ~150-bit security strength; larger and slower than equivalent ECC |
+| ECDSA P-256 | Widely used, acceptable | ~128-bit security strength; smaller and faster than RSA at equivalent strength |
+| ECDSA P-384 / Ed25519 | Recommended for new deployments | ~192-bit strength (P-384) or ~128-bit with better performance and misuse-resistance (Ed25519) |
+
+<div class="callout">
+  <span class="callout-title">Reference</span>
+  <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final">NIST SP 800-57 Part 1 Rev. 5</a></strong> ("Recommendation for Key Management") sets the general target of at least a 128-bit security strength for any new key usage from 2030 onward — which is why RSA-2048 and P-256 ECDSA, both fine today, are already flagged for eventual retirement rather than active use in new long-lived systems. <strong><a href="https://csrc.nist.gov/pubs/sp/800/131/a/r2/final">NIST SP 800-131A Rev. 2</a></strong> covers the transition/deprecation timeline for older algorithms specifically (SHA-1, MD5, short RSA keys). <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the current Digital Signature Standard defining approved signature algorithms (RSA, ECDSA, EdDSA).</p>
+</div>
+
+This applies the same way whether it's a public CA signing your TLS certificate, or you spinning up a private CA with something like step-ca — the tool will happily let you pick MD5 or a 512-bit RSA key if you ask it to; nothing stops you except knowing better.
+
+## Certificate Authority (CA) types
+
+There's a hierarchy at play here — nobody signs certificates one level at a time forever, it bottoms out. And it's worth being clear on one point up front: a single intermediate CA doesn't belong to any one company — it signs certificates for whichever unrelated customers show up asking, which is exactly what's illustrated below:
+
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/ca-hierarchy.svg' | relative_url }}" alt="Diagram showing a Root CA at the top, signing one Intermediate CA below it, which in turn signs leaf certificates for three completely unrelated businesses: a.com, example.com, and shop.net.">
+  <p class="diagram-caption">One root, one intermediate, many unrelated customers underneath</p>
+</div>
+
+That last part trips people up: `a.com` and `example.com` in the diagram aren't related companies, and they don't need to be — they just both happened to buy a certificate from the same intermediate CA. Compare that to a real root, like "DigiCert Global Root G2" or "ISRG Root X1" (Let's Encrypt's root) — the root's name tells you nothing about which sites it ultimately vouches for; it could be almost anything on the web.
+
+### Root CA
+
+The trust anchor. Root CAs are self-signed and their public certificates are shipped in advance inside operating systems and browsers (a "trust store"). Because compromising a root is catastrophic — it would let an attacker impersonate *any* site — root CA private keys are usually kept offline, in [hardware security modules]({{ '/topics/hsm-kms/' | relative_url }}), and used only to sign intermediate CAs.
+
+### Intermediate (Subordinate) CA
+
+A CA whose certificate is signed by a root (or by another intermediate), used to actually issue end-entity certificates day to day. This indirection is deliberate:
+
+- If an intermediate is ever compromised, it can be revoked without invalidating the root or every other intermediate under it.
+- The root stays offline almost permanently, minimizing its exposure.
+
+Most certificates you encounter in the wild are issued by an intermediate, not directly by a root.
+
+### Leaf (end-entity) certificate
+
+This is the one I left out earlier when I first mapped out CA types — worth calling out properly, because it's the certificate everyone actually deals with day to day.
+
+A leaf certificate (also called an **end-entity certificate**) is what's issued *to* something — a website, a person, a device — rather than issued to another CA. It sits at the bottom of the chain, signed by an intermediate (or occasionally a root directly), but it cannot itself sign other certificates. That distinction is enforced in the certificate itself, via the **Basic Constraints** extension (`CA:FALSE`): if a leaf certificate somehow had `CA:TRUE`, any browser trusting it could be tricked into trusting certificates it forged itself — which is exactly why CAs are audited so heavily on this point.
+
+So when someone says "example.com's certificate," they mean its leaf certificate — the one containing example.com's actual public key. Root and Intermediate CAs exist purely to vouch for it.
+
+### Public CA
+
+A CA whose root is trusted by default in major operating systems and browsers (DigiCert, Let's Encrypt, Sectigo, Google Trust Services, etc.). Getting a root into these trust stores requires passing independent audits (WebTrust / ETSI) and following the CA/Browser Forum's Baseline Requirements. This is what makes a certificate from a public CA trusted "out of the box" anywhere.
+
+### Private (Internal) CA
+
+A CA an organization runs for itself — for internal services, VPNs, device fleets, or service-to-service mTLS. Its root is not trusted by default anywhere; it has to be manually distributed and installed into the trust stores of every client that needs to trust it. Common tooling: an internal `step-ca` or HashiCorp Vault PKI instance, or on-prem Microsoft AD CS.
+
+- Pro: full control, no per-certificate cost, can issue very short-lived certs freely.
+- Con: only trusted where you've explicitly deployed the root — never suitable for public-facing services.
+
+### Public vs private CA, side by side
+
+The two get conflated, but the decision of which to use is really just "who else needs to trust this certificate?":
+
+| | Public CA | Private CA |
+|---|---|---|
+| Trusted by default? | Yes — root ships in OS/browser trust stores | No — the root must be manually installed on every trusting client |
+| Typical use case | Public websites, anything a customer's browser or a stranger's device connects to | Internal services, VPNs, service-to-service mTLS, device fleets you control |
+| Cost | Free (Let's Encrypt, ZeroSSL) to paid, per-cert or per-year | Free to run (step-ca, Vault PKI) or licensed (Microsoft AD CS), no per-cert fee |
+| Validation required | Domain/organization checks enforced by CA/Browser Forum rules | Whatever policy you set — can be none |
+| Governance | Audited annually (WebTrust/ETSI), bound to Baseline Requirements | Entirely your own responsibility — no external audit forces good hygiene |
+| Certificate lifetime | Capped and shrinking industry-wide (see [Revocation](#revocation-crl-and-ocsp)) | Whatever you configure — teams often issue hours- or days-long certs |
+| Example tooling | DigiCert, Let's Encrypt, Sectigo, Google Trust Services | step-ca, HashiCorp Vault PKI, Microsoft AD CS, AWS Private CA |
+
+The short version: if a stranger's device needs to trust it without any setup on their end, it has to be public. If you control every device that needs to trust it, private is cheaper, more flexible, and arguably safer since certs can be scoped and rotated far more aggressively.
+
+### Self-signed certificates
+
+A certificate signed by its own private key rather than by any CA — the subject and issuer are the same entity. It's not really "CA-issued" at all; there's no third party vouching for anything. Useful for local development or as the root certificate of your own private CA, but browsers will always warn on a self-signed cert presented as a website identity, because nothing establishes trust in it.
+
+### Cross-signed CAs
+
+A CA can hold multiple valid certificates for the same key — for example, a new root cross-signed by an older, more widely-trusted root during a transition period. This lets clients that haven't yet added the new root still build a trusted chain via the old one. Let's Encrypt's transition away from its original cross-sign with IdenTrust is a well-known real-world example.
+
+## Try it yourself: building a mini CA with step-ca
+
+All of the above stops being abstract pretty fast once you actually build one. [step-ca](https://smallstep.com/docs/step-ca/) (from Smallstep) is an open-source private CA, paired with the `step` CLI — good for exactly this: standing up a Root → Intermediate → Leaf chain on your own laptop in a few minutes.
+
+<div class="callout">
+  <span class="callout-title">Note</span>
+  <p>Commands below are accurate to the <code>step</code> CLI's documented usage. Exact terminal output (prompts, wording) varies slightly by version — the output blocks are illustrative of the shape of the output, not a byte-for-byte transcript.</p>
+</div>
+
+### 1. Default algorithms & certificate types created
+
+By default, `step` uses secure modern defaults unless flags are passed:
+- **Default Algorithm:** **ECDSA P-256** (NIST curve `prime256v1`) key pair with **`ecdsa-with-SHA256`** signature algorithm.
+- **Certificate Types (Profiles):**
+  - `--profile root-ca`: Creates a **Self-Signed Root CA Certificate** (`Basic Constraints: CA:TRUE`, Key Usage: `Certificate Sign, CRL Sign`).
+  - `--profile intermediate-ca`: Creates a **Subordinate/Intermediate CA Certificate** (`Basic Constraints: CA:TRUE, pathlen:0`, Key Usage: `Certificate Sign, CRL Sign`).
+  - `--profile leaf`: Creates an **End-Entity / Leaf TLS Server Certificate** (`Basic Constraints: CA:FALSE`, Extended Key Usage: `TLS Web Server Authentication, TLS Web Client Authentication`).
+
+---
+
+### 2. Step-by-step certificate creation
+
+**Step 1: Create the Root CA (Self-Signed Root CA Certificate)**
+```bash
+step certificate create --profile root-ca "Example Root CA" root_ca.crt root_ca.key
+```
+
+**Step 2: Create the Intermediate CA (Intermediate CA Certificate signed by Root)**
+```bash
+step certificate create "Example Intermediate CA1" \
+    intermediate_ca.crt intermediate_ca.key \
+    --profile intermediate-ca --ca root_ca.crt --ca-key root_ca.key
+```
+
+**Step 3: Create the Leaf Certificate (End-Entity TLS Certificate signed by Intermediate)**
+```bash
+step certificate create example.com example.com.crt example.com.key \
+    --profile leaf --not-after=2160h \
+    --ca intermediate_ca.crt --ca-key intermediate_ca.key --bundle
+```
+`--bundle` writes the leaf concatenated with the intermediate into `example.com.crt` so the server can serve the full chain. `--not-after=2160h` sets a 90-day validity.
+
+**Step 4: Confirm the chain validates with OpenSSL**
+```bash
+openssl verify -CAfile root_ca.crt -untrusted intermediate_ca.crt example.com.crt
+# Output: example.com.crt: OK
+```
+
+---
+
+### 3. How to inspect and verify the algorithm & certificate type
+
+To verify what algorithm, key size, signature algorithm, or certificate type (CA vs Leaf) was created, inspect the certificate details:
+
+#### Option A: Using `step certificate inspect`
+```bash
+step certificate inspect example.com.crt
+```
+Look for these key fields in the output:
+- **Signature Algorithm:** `ECDSA-SHA256` or `SHA256-RSA`
+- **Public Key Algorithm:** `ECDSA` / `P-256` or `RSA` / `3072`
+- **X509v3 Basic Constraints:** `CA:FALSE` (for leaf) or `CA:TRUE` (for CA)
+- **X509v3 Extended Key Usage:** `TLS Web Server Authentication`
+
+#### Option B: Using `openssl x509`
+```bash
+openssl x509 -in example.com.crt -text -noout
+```
+Look for:
+- `Signature Algorithm: ecdsa-with-SHA256`
+- `Public Key Algorithm: id-ecPublicKey` (ASN.1 OID for EC keys)
+- `ASN1 OID: prime256v1` (NIST P-256 curve)
+- `X509v3 Basic Constraints: CA:FALSE`
+
+---
+
+### 4. How to change the key algorithm or certificate type
+
+You can override defaults using key type (`--kty`), curve (`--curve`), key size (`--size`), and profile (`--profile`) flags:
+
+#### A. Change Key Algorithm
+
+- **Use RSA-3072 instead of default ECDSA P-256:**
+  ```bash
+  step certificate create example.com example.com.crt example.com.key \
+      --profile leaf --kty RSA --size 3072 \
+      --ca intermediate_ca.crt --ca-key intermediate_ca.key
+  ```
+
+- **Use ECDSA P-384 for higher security:**
+  ```bash
+  step certificate create example.com example.com.crt example.com.key \
+      --profile leaf --kty EC --curve P-384 \
+      --ca intermediate_ca.crt --ca-key intermediate_ca.key
+  ```
+
+- **Use Ed25519 (Edwards-curve Digital Signature Algorithm):**
+  ```bash
+  step certificate create example.com example.com.crt example.com.key \
+      --profile leaf --kty OKP --curve Ed25519 \
+      --ca intermediate_ca.crt --ca-key intermediate_ca.key
+  ```
+
+#### B. Change Certificate Type (Profile)
+
+Pass a different `--profile` flag to specify the role of the certificate:
+- `--profile leaf` $\rightarrow$ End-entity server/client TLS certificate (`CA:FALSE`).
+- `--profile root-ca` $\rightarrow$ Self-signed root CA certificate (`CA:TRUE`).
+- `--profile intermediate-ca` $\rightarrow$ Subordinate CA certificate (`CA:TRUE`).
+- `--profile code-signing` $\rightarrow$ Code signing certificate (`EKU: codeSigning`).
+- `--profile smime` $\rightarrow$ S/MIME email certificate (`EKU: emailProtection`).
+
+<div class="callout">
+  <span class="callout-title">Faster path</span>
+  <p>The steps above create standalone certificate files. If you want an actual running CA server that issues certificates on demand over ACME (like a mini Let's Encrypt), <code>step ca init</code> sets up root + intermediate + a running server interactively in one go — worth knowing about even if the manual version above is clearer for understanding what's actually happening underneath.</p>
+</div>
+
+## Chain of trust
+
+A server doesn't just present its own certificate — it presents a **chain**: its own (leaf/end-entity) certificate, plus every intermediate up to (but usually not including) the root, since roots are already in the client's trust store. A client then walks that chain upward, verifying one signature at a time, until it either lands on something it already trusts, or gives up:
+
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/chain-validation.svg' | relative_url }}" alt="Diagram showing chain of trust validation: the root CA's signature verifies the intermediate CA, the intermediate's signature verifies the leaf certificate, and since the root is already in the browser's trust store, the whole chain is verified and the connection is trusted.">
+  <p class="diagram-caption">Two signature checks, plus one root that was already trusted going in</p>
+</div>
+
+Written out as the full ordered checklist a client actually runs:
+
+1. Is the leaf certificate's `Not Before` / `Not After` currently valid?
+2. Does the requested hostname match a SAN entry on the leaf?
+3. Is the leaf's signature valid under the intermediate's public key?
+4. Is the intermediate's signature valid under the root's public key?
+5. Is that root actually present in the client's trust store?
+6. Has anything in the chain been revoked (see [Revocation](#revocation-crl-and-ocsp))?
+
+If any step fails, the connection is untrusted — this is the "your connection is not private" browser warning.
+
+<div class="callout warn">
+  <span class="callout-title">Common misconfiguration</span>
+  <p>Serving only the leaf certificate without the intermediate is one of the most common TLS setup mistakes. Most browsers cache intermediates and may still connect, but many non-browser clients (curl, mobile apps, API clients) will fail outright. Always serve the full chain minus the root.</p>
+</div>
+
+## Validation levels
+
+These describe *how much the CA verified* before issuing — they do not change the strength of the encryption.
+
+| Level | What's verified | Typical use | Visual cue |
+|---|---|---|---|
+| **DV** — Domain Validated | Control over the domain only (DNS record, HTTP file, or email challenge) | Most websites; issued automatically, often free (e.g. Let's Encrypt) | None beyond the padlock |
+| **OV** — Organization Validated | Domain control + the requesting organization's legal existence | Corporate/business sites wanting an identifiable entity behind the cert | Organization name visible in certificate details |
+| **EV** — Extended Validation | Domain control + rigorous legal, physical, and operational vetting of the organization, per strict CA/Browser Forum criteria | Banking, finance — historically | Organization name in certificate details (browsers stopped giving EV special UI treatment around 2019 after research showed users didn't notice/understand it) |
+
+## Certificate types by use
+
+### TLS/SSL server certificates
+
+- **Single-domain** — covers exactly one hostname.
+- **Wildcard** (`*.example.com`) — covers all direct subdomains of one domain. Does *not* cover the bare domain or multi-level subdomains (`a.b.example.com`) unless separately listed.
+- **Multi-domain / SAN / UCC** — one certificate covering several unrelated hostnames via multiple SAN entries; common for shared hosting and Microsoft Exchange/Office 365 setups (UCC).
+
+### Client certificates (mTLS)
+
+Used for **mutual TLS**, where the client also authenticates to the server with a certificate — common in service-to-service auth, VPNs, and zero-trust architectures. EKU: `clientAuth`.
+
+### Code signing certificates
+
+Sign executables, installers, drivers, or scripts so the OS can verify the publisher and detect tampering (Authenticode on Windows, notarization-adjacent signing on macOS). EKU: `codeSigning`. Private keys for these are high-value targets and are increasingly required to live in hardware tokens/HSMs by CA policy.
+
+### Email / S/MIME certificates
+
+Sign and/or encrypt email (S/MIME), proving sender identity and optionally encrypting the message body end-to-end. EKU: `emailProtection`.
+
+### Document signing certificates
+
+Used to digitally sign PDFs and similar documents (e.g. Adobe-trusted certificates) to prove authorship and detect post-signing edits.
+
+### Device / IoT certificates
+
+Short-lived or high-volume certificates issued to individual devices for authentication, often from a private CA, since public CAs generally aren't practical at that scale or trust model.
+
+## Formats and encodings
+
+The same certificate data can be stored in several container formats — this trips people up constantly:
+
+| Format | Encoding | Typical extension | Notes |
+|---|---|---|---|
+| PEM | Base64 text, `-----BEGIN CERTIFICATE-----` | `.pem`, `.crt`, `.cer` | Most common on Linux/Apache/nginx; can hold cert, key, and chain in one file, concatenated |
+| DER | Raw binary | `.der`, `.cer` | Common on Windows/Java; PEM is just DER, base64-encoded with headers |
+| PKCS#7 | Binary or Base64, certs/chain only (no private key) | `.p7b`, `.p7c` | Used by Windows and Java for distributing chains |
+| PKCS#12 | Binary, encrypted container | `.pfx`, `.p12` | Bundles a private key *with* its certificate (and chain), password-protected — used for importing identities into browsers, Windows, or mobile devices |
+
+<div class="callout">
+  <span class="callout-title">Quick conversion reference</span>
+  <p><code>openssl x509 -in cert.der -inform DER -out cert.pem -outform PEM</code> converts DER→PEM. <code>openssl pkcs12 -in identity.pfx -out identity.pem -nodes</code> extracts a PEM key+cert from a PFX.</p>
+</div>
+
+## Certificate lifecycle
+
+A certificate isn't a one-time thing you get and forget — it's a loop, with one emergency exit:
+
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/certificate-lifecycle.svg' | relative_url }}" alt="Circular diagram of the certificate lifecycle: key generation, CSR, validation, issuance, deployment, and renewal, which loops back to CSR before expiry. Revocation branches off from deployment as an emergency exit that can happen anytime if the certificate is compromised or mis-issued.">
+  <p class="diagram-caption">Renewal loops the cycle; revocation is the only way out early</p>
+</div>
+
+1. **Key generation** — the subject generates a key pair; the private key never leaves their system.
+2. **CSR (Certificate Signing Request)** — the subject sends the CA their public key plus identity details, self-signed with their own private key to prove possession.
+3. **Validation** — the CA verifies the request per the intended validation level (DV/OV/EV).
+4. **Issuance** — the CA signs and returns the certificate.
+5. **Deployment** — installed on the server/device alongside the full chain.
+6. **Renewal** — before the certificate expires, steps 2–4 repeat. How often this happens is shrinking fast — see below.
+7. **Revocation** — the emergency exit. If a key is compromised or a certificate was mis-issued, the CA revokes it before its natural expiry, at any point in the cycle.
+
+### CSR (Certificate Signing Request) & Proof of Possession
+
+A **CSR** is an encoded PKCS#10 structure submitted to a CA to request a signed certificate. It includes:
+- **Public Key:** The public key generated by the applicant (e.g. RSA-3072 or ECDSA P-256).
+- **Subject Identity & SANs:** Subject Distinguished Name (DN) and Subject Alternative Names (`DNS:example.com`, `DNS:www.example.com`).
+- **Proof of Possession (POP):** A digital signature created with the applicant's private key over the CSR data. The CA verifies this signature before issuing to guarantee that the applicant actually owns the matching private key.
+
+#### Generating a CSR with OpenSSL
+
+**ECDSA P-256 (Recommended):**
+```bash
+openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 \
+  -nodes -keyout example.com.key -out example.com.csr \
+  -subj "/CN=example.com/O=My Enterprise" \
+  -addext "subjectAltName=DNS:example.com,DNS:www.example.com"
+```
+
+**RSA-3072:**
+```bash
+openssl req -new -newkey rsa:3072 \
+  -nodes -keyout example.com.key -out example.com.csr \
+  -subj "/CN=example.com/O=My Enterprise" \
+  -addext "subjectAltName=DNS:example.com,DNS:www.example.com"
+```
+
+**Inspect a CSR:**
+```bash
+openssl req -in example.com.csr -noout -text
+```
+
+### Revocation: CRL and OCSP
+
+- **CRL (Certificate Revocation List)** — a signed, periodically-updated list of revoked serial numbers, published by the CA. Clients download and check against it. Simple, but lists grow large and updates lag.
+- **OCSP (Online Certificate Status Protocol)** — a client queries the CA in real time for the status of one specific certificate. Faster and lighter than CRLs, but leaks the client's browsing pattern to the CA and adds a live dependency (and latency) to every connection.
+- **OCSP stapling** — the server itself periodically fetches a signed OCSP response and "staples" it to the TLS handshake, so the client doesn't have to contact the CA at all. Solves both the privacy leak and the latency/availability problem — the direction most of the ecosystem has moved.
+
+### The industry trend: shrinking lifetimes instead of relying on revocation
+
+Here's the uncomfortable truth behind both mechanisms above: revocation checking is widely unreliable in practice. Browsers routinely "soft-fail" — if an OCSP responder times out, most browsers connect anyway rather than block the user, since blocking is worse for reliability than the risk of missing one revoked cert. That makes revocation a weaker safety net than it looks on paper.
+
+The industry's answer hasn't been to fix revocation — it's been to shrink the window where an unrevoked-but-compromised certificate can do damage, by shortening how long any certificate is valid for in the first place:
+
+| When | Max validity | Driven by |
+|---|---|---|
+| Before 2020 | Up to 825 days | — |
+| Since Sept 2020 | 398 days | Apple's root program change, later adopted industry-wide |
+| From Mar 15, 2026 | 200 days | CA/Browser Forum Ballot SC-081v3 |
+| From Mar 15, 2027 | 100 days | CA/Browser Forum Ballot SC-081v3 |
+| From Mar 15, 2029 | 47 days | CA/Browser Forum Ballot SC-081v3 |
+
+Ballot [SC-081v3, "Introduce Schedule of Reducing Validity and Data Reuse Periods"](https://cabforum.org/2025/04/11/ballot-sc081v3-introduce-schedule-of-reducing-validity-and-data-reuse-periods/), proposed by Apple and approved by the CA/Browser Forum on April 11, 2025, sets this schedule for all publicly-trusted TLS certificates. By 2029, a certificate that would previously renew roughly once a year will need to renew about eight times a year — which only becomes practical because of automation (ACME/Let's Encrypt-style issuance), not because anyone wants to run CSRs by hand more often.
+
+<div class="callout">
+  <span class="callout-title">Why this actually helps</span>
+  <p>A shorter-lived certificate means a stolen key, or a mis-issued certificate that slips through validation, is only useful to an attacker for weeks instead of over a year — even if revocation never happens at all. It's a blast-radius fix, not a revocation fix.</p>
+</div>
+
+### Certificate Transparency (CT)
+
+**Certificate Transparency (CT)** ([RFC 6962](https://www.rfc-editor.org/rfc/rfc6962) / [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)) is an open audit framework designed to monitor and audit all TLS certificates issued on the public web.
+
+Whenever a public CA issues a certificate, it must submit the certificate to multiple independent, publicly auditable, append-only **Merkle Tree logs** operated by independent organizations (Google, Cloudflare, DigiCert).
+
+- The log returns a **Signed Certificate Timestamp (SCT)** proving the certificate was publicly recorded.
+- Modern web browsers (Chrome, Safari) **refuse connection** to any public TLS certificate that lacks valid SCTs.
+- **Why CT matters:** CT prevents CAs from issuing "shadow" or unauthorized certificates in secret. Domain owners can monitor CT logs (via services like `crt.sh`) to be alerted instantly if any CA anywhere issues a certificate for their domain.
+
+## Best practices, briefly
+
+- Prefer ECDSA (P-256 or better) over RSA for new deployments — smaller, faster, and see the [algorithms table](#what-algorithms-actually-sign-these-certificates) above for what NIST currently recommends.
+- Automate issuance and renewal (ACME/Let's Encrypt, or internal ACME-compatible private CAs) — manual renewal is already the single most common cause of expiry outages, and it only gets worse as the industry shortens lifetimes.
+- Always deploy OCSP stapling where supported.
+- Don't over-scope wildcards — a compromised wildcard key exposes every subdomain; scope certificates as narrowly as the use case allows.
+- Monitor Certificate Transparency (CT) logs for your domains to catch mis-issued or unexpected certificates.
+

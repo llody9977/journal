@@ -1,0 +1,46 @@
+<svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="900" height="400" fill="#ffffff" />
+
+  <defs>
+    <g id="icon-key">
+      <rect x="15" y="15" width="70" height="70" rx="8" fill="#ffffff" fill-opacity="0.22" />
+      <circle cx="38" cy="50" r="14" fill="none" stroke="#ffffff" stroke-width="6" />
+      <rect x="50" y="46" width="28" height="8" fill="#ffffff" />
+      <rect x="68" y="54" width="6" height="10" fill="#ffffff" />
+    </g>
+  </defs>
+
+  <!-- connectors -->
+  <g stroke="#8491a3" stroke-width="2.5" fill="none">
+    <line x1="450" y1="90" x2="450" y2="150" />
+    <line x1="450" y1="220" x2="450" y2="280" />
+  </g>
+  <text x="470" y="120" font-size="11" fill="#475569">signs a DS record for .gov</text>
+  <text x="470" y="250" font-size="11" fill="#475569">.gov signs a DS record for nist.gov</text>
+
+  <!-- Root zone -->
+  <rect x="290" y="20" width="320" height="70" rx="12" fill="#193e9f" />
+  <use href="#icon-key" transform="translate(305,32) scale(0.4)" />
+  <g fill="#ffffff" text-anchor="start">
+    <text x="355" y="52" font-size="17" font-weight="700">Root zone (.)</text>
+    <text x="355" y="72" font-size="11.5" fill="#c9d7fb">DNSKEY trust anchor, built into every resolver</text>
+  </g>
+
+  <!-- .gov TLD -->
+  <rect x="290" y="150" width="320" height="70" rx="12" fill="#2457d6" />
+  <use href="#icon-key" transform="translate(305,162) scale(0.4)" />
+  <g fill="#ffffff" text-anchor="start">
+    <text x="355" y="182" font-size="17" font-weight="700">.gov TLD</text>
+    <text x="355" y="202" font-size="11.5" fill="#dbe7ff">DS record verified against root's signature</text>
+  </g>
+
+  <!-- nist.gov -->
+  <rect x="290" y="280" width="320" height="70" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5" />
+  <use href="#icon-key" transform="translate(305,292) scale(0.4)" fill="#0f766e" />
+  <g fill="#111827" text-anchor="start">
+    <text x="355" y="312" font-size="17" font-weight="700" fill="#0f766e">nist.gov</text>
+    <text x="355" y="332" font-size="11.5" fill="#475569">RRSIG signs the actual A records you queried for</text>
+  </g>
+
+  <text x="450" y="385" font-size="12" fill="#8491a3" text-anchor="middle">Same tree shape as the CA hierarchy — a signature chain rooted in something already trusted</text>
+</svg>
