@@ -1,12 +1,19 @@
 # Field Journal
 
-Personal, ever-growing technical journal — currently focused on security
+[![Deploy Journal to Pages](https://github.com/llody9977/journal/actions/workflows/deploy.yml/badge.svg)](https://github.com/llody9977/journal/actions/workflows/deploy.yml)
+
+**Live site:** https://llody9977.github.io/journal/
+
+## About
+
+A personal, ever-growing technical journal — currently focused on security
 (cryptography foundations, PKI, key management, authentication/authorization,
 network security, and applied/emerging topics), with room for other subjects
-as new main groups later. Built as new entries get written up, one at a time.
+as new main groups later. Built as new entries get written up, one at a time,
+researched and verified rather than written from memory alone.
 
-Published via GitHub Pages (Jekyll, built in automatically by GitHub — no
-build step to run manually).
+Published via GitHub Pages, built and deployed by the GitHub Actions workflow
+above on every push to `main` — no manual build or deploy step required.
 
 ## Structure
 
