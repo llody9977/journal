@@ -1,14 +1,14 @@
 ---
-title: API Security
-description: API keys, OAuth client credentials, mutual TLS, and HMAC request signing — authenticating machine-to-machine calls.
+title: Machine-to-Machine API Authentication
+description: My notes on API keys, OAuth client credentials, mTLS, proof-of-possession, and signed requests.
 permalink: /topics/api-security/
 ---
 
 <span class="eyebrow">Authentication & Authorization / Deep Dive</span>
 
-# API Security
+# Machine-to-Machine API Authentication
 
-<p class="lede"><a href="{{ '/topics/oauth-oidc/' | relative_url }}">OAuth & OpenID Connect</a> handles access delegated by a human, through a browser. The other common case — no human in the loop at all, just service-to-service calls, scheduled jobs, CLI tools, and integrations — needs a different set of tools entirely.</p>
+<p class="lede">I am keeping this page narrowly scoped to authenticating service-to-service calls, scheduled jobs, CLI tools, and webhooks. “API security” is much broader and also includes object/function authorisation, input validation, rate limits, inventory, business-logic abuse, and safe consumption of third-party APIs; I use the <a href="https://owasp.org/API-Security/">OWASP API Security Top 10</a> for that wider checklist.</p>
 
 ## API keys: the simplest, and weakest, option
 
@@ -19,7 +19,7 @@ An API key is a static secret string sent with every request (a header or query 
 - **Coarse-grained** — frequently all-or-nothing access rather than scoped permissions.
 - **Hard to rotate safely** — rotating a key that's hardcoded in a dozen places tends to mean an outage unless the system supports two valid keys simultaneously during rollover.
 
-Done properly: store keys **hashed**, exactly the same way [Password Storage]({{ '/topics/password-storage/' | relative_url }}) recommends for passwords (a leaked database shouldn't hand out usable keys), scope each key as narrowly as the integration allows, and always support at least two active keys per client so rotation doesn't require simultaneous cutover.
+High-entropy API keys do not need a deliberately slow password hash. A common design is to give the key a non-secret identifier/prefix for lookup, then store a fast cryptographic hash or, preferably, an HMAC under a server-side secret and compare in constant time. Slow Argon2/bcrypt mainly adds denial-of-service cost here because a properly generated API key is already outside a human password dictionary. I should still scope keys narrowly, avoid logging them, and support overlapping keys during rotation.
 
 ## OAuth's Client Credentials grant: machine-to-machine OAuth
 
@@ -36,9 +36,14 @@ The [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) only auth
 
 This is the backbone of most **service mesh** and **zero-trust** architectures — every service gets its own short-lived certificate, usually issued by an internal [private CA]({{ '/topics/certificates/' | relative_url }}#public-vs-private-ca-side-by-side) (exactly the `step-ca` pattern demonstrated on the Certificates page), so that every internal call is authenticated without any shared secret at all.
 
-## HMAC request signing
+## Signed requests and webhooks: similar goal, different schemes
 
-This pattern — sign the *entire request*, not just a token — is exactly what [**AWS's SigV4**](https://docs.aws.amazon.com/IAM/latest/UserGuide/create-signed-request.html) does on every single authenticated call to any AWS API, [**Stripe**](https://docs.stripe.com/webhooks) does on every webhook it sends, and [**Shopify**](https://shopify.dev/docs/apps/build/webhooks/verify-deliveries) and [PayPal](https://developer.paypal.com/api/rest/webhooks/) do on theirs. It's the same [HMAC]({{ '/topics/hash-functions-macs/' | relative_url }}#macs-adding-a-key-to-prove-who-sent-it) construction covered under Hash Functions & MACs, applied to a canonical string built from the request itself rather than to an arbitrary message.
+These products all authenticate messages, but I should not describe them as one identical “HMAC over the entire request” construction:
+
+- **[AWS Signature Version 4](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html)** derives a scoped signing key and HMACs a string containing a canonical request hash, credential scope, and timestamp.
+- **[Stripe webhooks](https://docs.stripe.com/webhooks/signature)** HMAC the timestamp and raw request payload using the endpoint secret. The receiver checks the signature and timestamp tolerance.
+- **[Shopify webhooks](https://shopify.dev/docs/apps/build/webhooks/subscribe/https#step-5-verify-the-webhook)** HMAC the raw request body with the app client secret. Shopify documents `X-Shopify-Event-Id` for duplicate detection; the HMAC itself is not a generic canonical-request timestamp scheme.
+- **[PayPal webhooks](https://developer.paypal.com/api/rest/webhooks/rest/)** use an asymmetric signature and certificate. Verification incorporates transmission ID, timestamp, webhook ID, and the body CRC32; it is not HMAC.
 
 AWS's actual scheme is worth walking through once, because "sign with the secret key" undersells it — SigV4 never uses the raw secret access key directly. It derives a one-time-per-day, per-region, per-service **signing key** first, through a chain of nested HMACs, so the long-term secret never has to be reused for the final signature at all:
 
@@ -70,7 +75,7 @@ SigningKey:            bd0362926643f0268045315543c2cfc7142516ffad906eefb3ea258be
 
 That `SigningKey` — not the original secret access key — is what actually HMACs the request's canonical form (method, URI, headers, and a hash of the body, joined into one string per [AWS's own specification](https://docs.aws.amazon.com/IAM/latest/UserGuide/create-signed-request.html)) to produce the signature that lands in the request's `Authorization` header. Because the signing key is scoped to one day/region/service, a signing key derived for `20260725/us-east-1/s3` is worthless for signing a request to a different service or a different day — narrowing exactly what a single leaked derived key (as opposed to the actual long-term secret) is good for.
 
-Stripe, Shopify, and PayPal's webhook signatures work on the same underlying idea with a flatter derivation (HMAC-SHA256 straight over the payload with a per-endpoint secret, timestamped to block replay) — the AWS version above is simply the most elaborate real-world instance of "HMAC over a canonical request," not a different idea. Changing any signed field after the fact — the transfer amount, the request path, the timestamp — breaks the signature exactly like the [CBC bit-flipping]({{ '/topics/symmetric-mode-attacks/' | relative_url }}) and [JWT tampering]({{ '/topics/oauth-oidc/' | relative_url }}#jwts-are-signed-not-encrypted--a-real-demo) demos above, and a timestamp check (present in all four schemes above) catches a valid signed request being replayed later, which neither a bare API key nor a bare OAuth bearer token protects against on its own.
+Changing signed bytes makes verification fail under the corresponding scheme. This is the **opposite** of the unauthenticated CBC bit-flipping demo, where the modification succeeds precisely because there is no tag. Replay controls are scheme-specific: timestamps narrow a window; event IDs/nonces plus durable deduplication prevent repeated processing; a signature alone does not make a message unique.
 
 ## Closing the impersonation gap in machine-to-machine auth
 
@@ -79,7 +84,7 @@ A stolen `client_id`/`client_secret` pair — or a stolen bare API key, or a sto
 Three real mechanisms close this gap by removing the shared secret from the picture entirely, rather than trying to bolt on a "step-up" with no human to prompt:
 
 - **mTLS-bound access tokens** ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705)) — the client authenticates with its own TLS client certificate (the [mTLS pattern above](#mutual-tls-mtls-both-sides-prove-who-they-are)) instead of a `client_secret`, and the issued access token is cryptographically bound to that certificate. A stolen bearer token alone is now useless — the resource server checks the token against the TLS certificate actually presented on the connection, not just the token string, so replaying it from anywhere else fails.
-- **`private_key_jwt` client authentication** ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523); adopted for OAuth/OIDC clients in OpenID Connect Core §9) — the client signs a short-lived JWT assertion with its own private key and sends that instead of a `client_secret`. Nothing secret ever crosses the wire — the Authorization Server only needs the client's public key, registered in advance. A full network capture of the request reveals nothing an attacker could reuse later.
+- **`private_key_jwt` client authentication** ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523); adopted for OAuth/OIDC clients in OpenID Connect Core §9) — the client signs a short-lived JWT assertion with its private key instead of sending a shared client secret. The private key does not cross the wire, but the assertion itself can be replayed within its validity window unless the server validates issuer, subject, audience and expiry and enforces one-time `jti` use where required.
 - **DPoP (Demonstrating Proof-of-Possession)** ([RFC 9449](https://www.rfc-editor.org/rfc/rfc9449)) — binds the *access token itself*, not just the initial client authentication step, to a key pair the client holds, via a signed proof header attached to every API call. A token copied from a log or intercepted in transit can't be replayed by anyone who doesn't also hold the private key it was bound to.
 
 Where none of these are in reach, the fallback is limiting what a leaked secret is actually worth: short-lived, frequently-rotated secrets stored in a vault or KMS rather than a config file or repo (see [HSM & KMS]({{ '/topics/hsm-kms/' | relative_url }})), the narrowest scope the integration can function with, and monitoring for anomalous use of a given `client_id` — an unexpected source IP range, an unusual call volume, activity outside normal hours — as the closest available substitute for a human-facing risk check.
@@ -89,15 +94,15 @@ Where none of these are in reach, the fallback is limiting what a leaked secret 
 | Method | Mutual auth? | Replay protection? | Best fit |
 |---|---|---|---|
 | API key | No (identifies, doesn't always authenticate) | No | Low-stakes, easy integration; public/free-tier APIs |
-| OAuth Client Credentials | One-directional (client authenticates to server) | Via short token expiry | Service-to-service calls through a central identity provider |
-| mTLS | Yes, both directions | N/A (per-connection) | Internal service mesh, zero-trust networks |
-| HMAC request signing | One-directional, but tamper-evident per request | Yes, with timestamp/nonce | Webhooks, signed API requests crossing untrusted infrastructure |
+| OAuth Client Credentials | Client authenticates to authorization server | Bearer token remains replayable until expiry unless sender-constrained | Service-to-service calls through a central identity provider |
+| mTLS | Yes, both directions | TLS protects records on a connection; the application must still make operations idempotent where needed | Internal service mesh, zero-trust networks |
+| HMAC request signing | One-directional, but tamper-evident per request | Only when the scheme signs freshness data and the receiver enforces timestamp/nonce/event-ID checks | Webhooks, signed API requests crossing untrusted infrastructure |
 
-## Real-world case: T-Mobile's unauthenticated API (2023)
+## Real-world case: T-Mobile's API exposure (2023)
 
-In January 2023, T-Mobile disclosed that an attacker had pulled personal data — names, billing addresses, emails, phone numbers, dates of birth, account numbers — for roughly 37 million customer accounts, by hitting a single API endpoint continuously for about six weeks starting in late November 2022. T-Mobile detected and shut down the access within a day of noticing it, but by then the extraction had been running, undetected, for the better part of two months. The endpoint didn't require authentication at all to return account data for a given identifier — this wasn't a leaked API key or a forged token; there was no credential check in place to defeat in the first place.
+In January 2023, T-Mobile disclosed that a bad actor had obtained names, billing addresses, emails, phone numbers, dates of birth, account numbers, and other limited account data for roughly 37 million customer accounts through a single API. T-Mobile said the actor first retrieved data around 25 November 2022, that it identified the activity on 5 January 2023, and that it traced and stopped the activity within a day.
 
-Every mechanism compared in the table above — even the weakest one, a bare API key — would have stopped this specific attack, because all of them require *something* the attacker didn't have. [Coverage at the time](https://www.bleepingcomputer.com/news/security/t-mobile-hacked-to-steal-data-of-37-million-accounts-in-api-data-breach/) noted this was one of several T-Mobile breaches disclosed in recent years, which is its own lesson: API authentication isn't a one-time architecture decision made when an endpoint ships — it's a control that has to still be true on every endpoint, checked continuously, not assumed.
+The company's [Form 8-K](https://www.sec.gov/Archives/edgar/data/1283699/000119312523010949/d641142d8k.htm) says the data was obtained “without authorization”, but does not say whether that meant missing authentication, a stolen credential, an authorisation flaw, or another control failure. I therefore cannot claim that every authentication method in this table would have stopped the actor. The defensible lesson is narrower: every endpoint needs tested authentication **and authorisation**, least privilege, enumeration resistance, rate limits, anomaly detection, and data-minimisation controls.
 
 ## Common pitfalls
 
@@ -108,9 +113,9 @@ Every mechanism compared in the table above — even the weakest one, a bare API
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc6749#section-4.4">RFC 6749 Section 4.4</a></strong> defines the OAuth Client Credentials grant. <strong><a href="https://www.rfc-editor.org/rfc/rfc8705">RFC 8705</a></strong> defines mTLS-bound client authentication and access tokens. <strong><a href="https://www.rfc-editor.org/rfc/rfc7523">RFC 7523</a></strong> defines the JWT client-authentication assertion used by <code>private_key_jwt</code>. <strong><a href="https://www.rfc-editor.org/rfc/rfc9449">RFC 9449</a></strong> defines DPoP. <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/create-signed-request.html">AWS's own SigV4 documentation</a> details the canonical-request and key-derivation steps demonstrated above. The <a href="https://owasp.org/www-project-api-security/">OWASP API Security Top 10</a> is the standard practical checklist for this whole page's scope. <strong><a href="https://csrc.nist.gov/pubs/sp/800/63/b/final">NIST SP 800-63B</a></strong> covers authenticator/secret management generally.</p>
+  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc6749#section-4.4">RFC 6749 §4.4</a></strong> defines Client Credentials; <strong><a href="https://www.rfc-editor.org/rfc/rfc8705">RFC 8705</a></strong> defines OAuth mTLS; <strong><a href="https://www.rfc-editor.org/rfc/rfc7523">RFC 7523</a></strong> defines JWT assertions; and <strong><a href="https://www.rfc-editor.org/rfc/rfc9449">RFC 9449</a></strong> defines DPoP. The examples above cite the official <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html">AWS</a>, <a href="https://docs.stripe.com/webhooks/signature">Stripe</a>, <a href="https://shopify.dev/docs/apps/build/webhooks/subscribe/https#step-5-verify-the-webhook">Shopify</a>, and <a href="https://developer.paypal.com/api/rest/webhooks/rest/">PayPal</a> verification documentation. The <a href="https://owasp.org/API-Security/">OWASP API Security Top 10</a> covers the wider API-security scope outside authentication.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 Every mechanism here is a recombination of the same primitives: mTLS is [certificates]({{ '/topics/certificates/' | relative_url }}) and the [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) applied in both directions, HMAC signing is [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}) applied to HTTP requests instead of generic messages, and OAuth Client Credentials is [OAuth & OpenID Connect]({{ '/topics/oauth-oidc/' | relative_url }}) without the human step. Securing an API is mostly about picking the right existing tool for who — or what — is actually on the other end of the connection.

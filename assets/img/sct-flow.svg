@@ -43,10 +43,10 @@
   <path d="M200 248 L500 248" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah9)" />
 
   <rect x="505" y="225" width="215" height="80" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
-  <text x="612" y="248" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">Browser checks:</text>
-  <text x="612" y="266" font-size="10.5" fill="#0f766e" text-anchor="middle">≥ 2 valid SCTs, from logs it</text>
-  <text x="612" y="280" font-size="10.5" fill="#0f766e" text-anchor="middle">recognizes — else the cert is</text>
-  <text x="612" y="296" font-size="10.5" fill="#0f766e" text-anchor="middle">untrusted, no matter who signed it</text>
+  <text x="612" y="248" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">Browser applies its CT policy:</text>
+  <text x="612" y="266" font-size="10.5" fill="#0f766e" text-anchor="middle">required SCT count, log operators,</text>
+  <text x="612" y="280" font-size="10.5" fill="#0f766e" text-anchor="middle">and accepted delivery methods depend</text>
+  <text x="612" y="296" font-size="10.5" fill="#0f766e" text-anchor="middle">on browser policy and cert lifetime</text>
 
-  <text x="370" y="325" font-size="11" fill="#8491a3" text-anchor="middle">A CA that skips logging, or logs get colluded with, still can't hide from public, independent, append-only logs</text>
+  <text x="370" y="325" font-size="11" fill="#8491a3" text-anchor="middle">An SCT is a promise of inclusion; monitors and consistency checks are still needed to detect omissions or split views</text>
 </svg>

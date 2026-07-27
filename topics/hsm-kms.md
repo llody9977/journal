@@ -2,25 +2,26 @@
 title: HSM & KMS
 description: What actually protects a private key — hardware security modules, cloud KMS, and envelope encryption.
 permalink: /topics/hsm-kms/
+last_verified: 2026-07-26
 ---
 
 <span class="eyebrow">Key Management / Deep Dive</span>
 
 # HSM & KMS
 
-<p class="lede">"The private key is kept in an HSM" gets said a lot without explaining what that actually means — for <a href="{{ '/topics/certificates/' | relative_url }}#root-ca">Root CA keys</a>, <a href="{{ '/topics/full-disk-file-encryption/' | relative_url }}#the-real-problem-where-the-key-actually-comes-from">disk encryption keys</a>, and any production system that takes key custody seriously. An HSM is the actual mechanism behind that claim, and cloud KMS services expose that same protection as an API.</p>
+<p class="lede">When I write “the key is in an HSM or KMS”, I need to be precise about the protection level, whether the key is extractable, who may request operations, and what rotation actually changes. The product name alone does not answer these.</p>
 
 ## What an HSM actually is
 
-A **Hardware Security Module (HSM)** is a dedicated, tamper-resistant device that generates, stores, and *uses* cryptographic keys — without ever letting the raw key material leave the device. Instead of exporting a private key to sign something, you send the data *to* the HSM, and it returns only the signature. The key itself never exists anywhere else, in memory or on disk, outside the module.
+A **Hardware Security Module (HSM)** is a dedicated device for generating, storing, and using cryptographic keys inside a controlled boundary. Keys are commonly marked sensitive and non-extractable, but this is an object attribute and policy choice rather than a universal definition: some HSM keys can be exported in wrapped form for backup or migration, and some products permit plaintext export for specifically authorised objects.
 
-This single property — **non-extractability** — is what separates an HSM from "a key stored in an encrypted file." An attacker who fully compromises a server storing keys in files can copy them and walk away; an attacker who compromises a server that only ever *calls* an HSM gets the ability to request operations, for as long as they maintain that access, and nothing they can take with them.
+For a correctly configured non-extractable key, a compromised caller may be able to request signing or decryption operations without being able to copy the raw key. That is a useful containment property, but it does not make compromised credentials or unlimited HSM access harmless.
 
 HSMs are also physically tamper-resistant and often tamper-*responsive* — physical intrusion (drilling, probing, extreme temperature/voltage) can trigger automatic key zeroization, destroying the keys rather than letting them be extracted. This is the same principle behind the [Root CA's offline HSM storage]({{ '/topics/certificates/' | relative_url }}#root-ca) mentioned on the certificates page.
 
 ## Is an HSM mandatory?
 
-No — and the "if KMS already works, why HSM" question usually has a simpler answer than it first appears: **a standard cloud KMS call is already HSM-backed**. AWS KMS, Google Cloud KMS, and Azure Key Vault all perform their key operations inside FIPS-validated HSMs internally — the KMS API is exactly the "protection as an API" this page describes, not a lesser substitute for one. For the overwhelming majority of applications, calling KMS *is* using an HSM; there's no separate box to add.
+No. I first need to check the provider and protection level. AWS KMS documents HSM-backed protection for KMS keys. Google Cloud KMS offers `SOFTWARE`, `HSM`, and external protection levels. Azure Key Vault supports both software-protected and HSM-protected keys, while Managed HSM supports HSM-protected keys only. A generic “KMS” label therefore does not mean the selected key is HSM-backed. See [Google Cloud protection levels](https://docs.cloud.google.com/kms/docs/protection-levels) and [Azure Key Vault key types](https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys).
 
 What you'd reach for a **dedicated** HSM (AWS CloudHSM, Azure Dedicated HSM, an on-prem Thales/Utimaco/Entrust appliance) instead of the shared KMS service for is a narrower set of real reasons:
 
@@ -33,7 +34,7 @@ Outside of those specific triggers, reaching for a dedicated HSM when KMS alread
 
 ## Seeing non-extractability enforced: SoftHSM + PKCS#11
 
-[SoftHSM2](https://www.opendnssec.org/softhsm/) is an open-source software HSM implementing **PKCS#11**, the standard API most real HSMs speak. It's useful here precisely because it enforces the same access rules as physical hardware — a good way to see "the key can't leave" as an actual enforced property, not just a claim.
+[SoftHSM2](https://www.opendnssec.org/en/latest/softhsm/) is a software implementation of a PKCS#11 token. It is useful for learning the API and object attributes, but it cannot demonstrate the physical security of an HSM.
 
 ```
 $ softhsm2-util --init-token --free --label "demo-hsm" --pin 1234 --so-pin 5678
@@ -66,7 +67,7 @@ $ pkcs11-tool --module /opt/homebrew/lib/softhsm/libsofthsm2.so --slot-index 0 \
 sorry, reading private keys not (yet) supported
 ```
 
-Refused outright — the API doesn't offer a way to do it, by design. And the signature produced is a completely ordinary, standards-compliant ECDSA signature — verifiable with plain OpenSSL once the public key is exported (public keys, unlike private ones, are meant to be extractable):
+This particular error comes from `pkcs11-tool`: that client does not implement reading private-key objects. It does **not**, by itself, prove that SoftHSM enforced `CKA_EXTRACTABLE=false`. The earlier object listing is still useful evidence that the generated key carries `sensitive`, `always sensitive`, and `never extractable` attributes. A stronger test would inspect those attributes through PKCS#11 and attempt a supported wrap/export operation, expecting the token to reject it.
 
 ```
 $ openssl dgst -sha256 -verify pubkey.pem -signature firmware_der.sig firmware.bin
@@ -101,7 +102,7 @@ FIPS 140 is the most common certification to check for a cryptographic module sp
 
 ## Cloud KMS: the same protection, as an API
 
-Running physical HSMs is expensive and operationally heavy, which is why **cloud KMS** services (AWS KMS, Google Cloud KMS, Azure Key Vault) exist — they're backed by HSMs (often literally, or available as a dedicated HSM tier) but expose key management as a simple API call instead of physical hardware you manage yourself.
+Running physical HSMs is operationally heavy, which is why **cloud KMS** services expose key management through APIs. Depending on the product and tier, the key may be software-protected, protected by a shared HSM service, stored in a managed single-tenant HSM, or handled by an external key manager.
 
 Almost every cloud KMS is built around **envelope encryption** — exactly the DEK/KEK pattern from Full-Disk & File Encryption, generalized beyond disks to any application data:
 
@@ -128,30 +129,28 @@ Whether a CMEK can be asymmetric depends on which provider's terminology is mean
 - **Symmetric** is the default choice for the actual envelope-encryption use case this page describes — wrapping a DEK to protect data at rest. It's faster, and it's what the DEK/KEK pattern above assumes throughout.
 - **Asymmetric** earns its place for one specific, different job: letting a party who can't (or shouldn't) call the KMS API at all still participate. AWS KMS documents this directly — an external partner can download just the public key and encrypt data with it entirely outside AWS, with only the KMS-custodied private key able to decrypt it back inside the account that owns it. The same asymmetric key can also let a client verify a signature offline, with no network call to the KMS required at all. Neither of those is possible with a symmetric CMEK, since there's no "public half" to hand out in the first place.
 
-## Key rotation: what actually happens, and why it doesn't touch the data
+## Key rotation: distinguish version rotation from data migration
 
-"Rotate the key" sounds like it should mean re-encrypting everything that key ever touched — for a KEK protecting terabytes of data, that would be prohibitively expensive, and it's not what actually happens.
+“Rotate the key” is overloaded. I need to identify which of these operations the product actually performs:
 
-A KEK never directly touches the bulk data at all — it only ever wraps (encrypts) the much smaller DEK, which is what actually encrypts the data (see the envelope-encryption diagram above). Rotating the KEK means:
+1. **Create a new key version for future writes.** Existing ciphertext and wrapped DEKs remain associated with old versions, which the service retains for decryption.
+2. **Rewrap existing DEKs.** The application or managed service unwraps each DEK with the old KEK version and wraps it with the new version.
+3. **Re-encrypt the underlying data.** This is a separate and potentially expensive migration, usually required if the DEK itself changes.
 
-1. A new KEK version is generated.
-2. Each existing wrapped DEK is unwrapped with the *old* KEK version, then re-wrapped with the *new* one.
-3. The underlying data — still encrypted under the same, unchanged DEK — is never touched, read, or re-encrypted at all.
-
-Only the small wrapped-DEK blob changes, not the potentially enormous ciphertext it protects. That's the entire reason KEK rotation is a cheap, fast, routine operation regardless of how much data sits underneath it — the amount of actual data protected by a given KEK has no bearing on how long rotation takes, since rotation never touches it. This is exactly why there's rarely a good excuse not to rotate on a schedule (see [Common pitfalls](#common-pitfalls) below) — the operational cost that makes rotation feel risky simply doesn't apply here.
+AWS KMS automatic/on-demand rotation is the first case: AWS states that it does not rotate data keys or re-encrypt existing data, and older key material remains available for decryption. Rewrapping existing DEKs is a valid application-managed migration, but it is not automatic or free; its cost scales with the number of wrapped keys and service behaviour. See the [AWS KMS rotation documentation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) and [Google Cloud CMEK rotation guidance](https://docs.cloud.google.com/kms/docs/cmek-rotation).
 
 ## Common pitfalls
 
 - **Treating KMS/HSM access credentials as less sensitive than the keys they protect** — if the IAM role or API credential that can *call* the KMS leaks, the attacker doesn't need the key material; they can just ask the KMS to decrypt things for them. **[Code Spaces](https://thehackernews.com/2014/06/cyber-attack-on-code-spaces-puts.html)**, a source-control hosting company, was destroyed within hours in a real 2014 incident that illustrates exactly this: attackers who compromised its AWS console credentials didn't need to break any encryption at all — they simply used the legitimate, authenticated console access to delete the company's EC2 resources, S3 buckets, and every backup, including the offsite ones stored in the same AWS account. No key was ever "broken"; the credential controlling access to everything was the entire attack surface, and it was enough on its own to end the company.
 - **Encrypting bulk data directly through the KMS API** instead of using envelope encryption — most KMS `Encrypt` APIs cap the payload size (AWS KMS: 4 KB) specifically to push callers toward the DEK/KEK pattern.
 - **Equating "encrypted at rest" with "HSM-protected"** — ask specifically what protects the key doing the encrypting, not just whether the data happens to be encrypted somewhere.
-- **No key rotation policy** — HSMs and KMS both support rotating the KEK without re-encrypting all underlying data (only the wrapped DEKs need re-wrapping), so there's rarely a good excuse not to.
+- **Copying a generic rotation policy** — rotation frequency should follow the threat model, cryptoperiod, provider semantics, compliance requirements, operational cost, and recovery plan. A new KMS version may protect only future writes unless I arrange rewrap or re-encryption separately.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> (successor to FIPS 140-2) is the current cryptographic module validation standard. <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">NIST's CMVP validated modules search</a></strong> is the authoritative place to verify any specific FIPS claim. <strong><a href="https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final">NIST SP 800-57 Part 1 Rev. 5</a></strong> covers key management practices generally, including rotation. <strong><a href="https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html">PKCS#11</a></strong> (OASIS) is the standard HSM/token API demonstrated above. <a href="https://docs.cloud.google.com/kms/docs/cmek">Google Cloud's CMEK documentation</a> and <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-concepts.html">AWS KMS's symmetric/asymmetric key documentation</a> cover the provider-specific terminology and the asymmetric-key use case described above.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> is the current cryptographic-module standard, and the <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">CMVP search</a></strong> verifies module claims. <strong><a href="https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html">PKCS#11 v3.1</a></strong> defines the token API and attributes demonstrated above. Provider behaviour is documented separately by <a href="https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html">AWS KMS rotation</a>, <a href="https://docs.cloud.google.com/kms/docs/protection-levels">Google Cloud protection levels</a>, and <a href="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys">Azure Key Vault key types</a>.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 This is the "where do the keys actually live" answer underneath [Certificate Authorities]({{ '/topics/certificates/' | relative_url }}) (root keys), [Full-Disk & File Encryption]({{ '/topics/full-disk-file-encryption/' | relative_url }}) (the KEK), and any production system doing its own [symmetric]({{ '/topics/symmetric-cryptography/' | relative_url }}) or [asymmetric]({{ '/topics/asymmetric-cryptography/' | relative_url }}) cryptography at scale — the primitives are the same everywhere; HSM/KMS is about the custody of the keys those primitives depend on. [Security Certifications]({{ '/topics/security-certifications/' | relative_url }}) covers the broader landscape of assurance standards a module or product might be evaluated against beyond FIPS 140 alone.

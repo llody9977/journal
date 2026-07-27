@@ -2,13 +2,14 @@
 title: TLS/SSL Handshake
 description: How TLS 1.3 combines certificates, key exchange, and symmetric encryption into a single 1-round-trip handshake.
 permalink: /topics/tls-ssl-handshake/
+last_verified: 2026-07-26
 ---
 
 <span class="eyebrow">Cryptography / Public Key Infrastructure / Deep Dive</span>
 
 # TLS / SSL Handshake
 
-<p class="lede">The overview's "how real-world protocols combine all four" idea, made concrete: every `https://` connection runs through this exact sequence, and it's the one place certificates, key exchange, symmetric encryption, and MACs all show up together, doing their individual jobs in the same few milliseconds.</p>
+<p class="lede">This is where my separate notes on certificates, key agreement, HKDF, signatures, and AEAD finally meet. I am using a normal certificate-authenticated TLS 1.3 handshake as the main path; resumption and PSK-only handshakes have different properties.</p>
 
 ## SSL, TLS — and which versions are actually safe
 
@@ -24,26 +25,26 @@ permalink: /topics/tls-ssl-handshake/
 ## The TLS 1.3 handshake, step by step
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/tls-handshake.svg' | relative_url }}" alt="Sequence diagram of a TLS 1.3 handshake: the client sends a ClientHello with a key share, the server responds with its own key share plus its certificate and a Finished message, both sides derive a shared secret via ECDH and traffic keys via HKDF, the client sends its own Finished message, and encrypted application data flows in both directions afterward — all within one round trip." >
+  <img src="{{ '/assets/img/tls-handshake.svg' | relative_url }}" alt="Sequence diagram of a certificate-authenticated TLS 1.3 handshake. ClientHello and ServerHello exchange ECDHE key shares; both sides then derive handshake keys. The server sends encrypted extensions, certificate, CertificateVerify, and Finished. The client returns Finished before application data flows." >
   <p class="diagram-caption">Every primitive covered so far, in one handshake</p>
 </div>
 
 1. **ClientHello** — the client proposes TLS versions, cipher suites it supports, and — critically, this is what makes 1-RTT possible — it speculatively sends an [ECDHE]({{ '/topics/key-exchange-derivation/' | relative_url }}) key share immediately, guessing which key-exchange group the server will accept.
 2. **ServerHello + key share** — the server picks a cipher suite and responds with its own key share. From this point on, the rest of the handshake is already encrypted under handshake-specific keys — even the certificate exchange isn't sent in the clear in TLS 1.3.
-3. **Certificate + CertificateVerify + Finished** — the server sends its [certificate chain]({{ '/topics/certificates/' | relative_url }}#chain-of-trust) and a signature proving it holds the matching private key. The client validates the full chain up to a trusted root.
-4. **Key derivation** — both sides now independently compute the same shared secret via ECDH, and run it through [HKDF]({{ '/topics/key-exchange-derivation/' | relative_url }}#from-shared-secret-to-usable-keys-kdfs) to derive separate traffic keys for each direction.
-5. **Finished** — each side sends a MAC over the entire handshake transcript so far. If an attacker tampered with *any* earlier message — including trying to force a downgrade to a weaker cipher suite — this check fails and the connection is aborted.
-6. **Application data** — the actual HTTP traffic, encrypted with an [AEAD cipher]({{ '/topics/symmetric-cryptography/' | relative_url }}#authenticated-encryption-aead) (AES-GCM or ChaCha20-Poly1305) using the derived traffic keys.
+3. **Handshake-key derivation** — immediately after `ServerHello`, both sides compute the ECDHE shared secret and use [HKDF]({{ '/topics/key-exchange-derivation/' | relative_url }}#from-shared-secret-to-usable-keys-kdfs) to derive handshake traffic keys.
+4. **EncryptedExtensions + Certificate + CertificateVerify + Finished** — these server messages are already encrypted. The certificate chain binds a key to the server name under a trust policy; `CertificateVerify` proves possession of the matching private key and signs the transcript.
+5. **Client Finished** — the client verifies the server flight and returns its Finished MAC over the transcript. Finished detects tampering in the handshake, while TLS also has explicit downgrade protections.
+6. **Application data** — the peers derive application traffic secrets and protect TLS records with an [AEAD cipher]({{ '/topics/symmetric-cryptography/' | relative_url }}#authenticated-encryption-aead), normally AES-GCM or ChaCha20-Poly1305.
 
 ## Why TLS 1.3 is faster: 1-RTT instead of 2-RTT
 
-TLS 1.2 negotiated the key exchange group only *after* the ClientHello/ServerHello exchange, requiring a second round trip before any application data could be sent. TLS 1.3's client just guesses the group upfront in its first message — right almost all the time in practice — collapsing the handshake to one round trip. There's also an optional **0-RTT** resumption mode for repeat connections, which skips the round trip entirely by reusing a previous session's derived secret — at the cost of being replayable, so it's only used for requests that are safe to potentially receive twice (never for things like a "transfer funds" request).
+A full TLS 1.2 handshake normally needed two round trips before the client could receive the server's Finished message and safely continue with application data. TLS 1.3 reorganised the handshake and places a key share in `ClientHello`, allowing a normal full handshake in one round trip when the server accepts the offered group. If it does not, `HelloRetryRequest` adds another round trip. Optional **0-RTT** resumption lets a client send early data before completing a new handshake, but that early data is replayable and must be restricted to replay-safe operations.
 
 ## What TLS 1.3 removed, and why
 
 TLS 1.3 didn't just recommend against weak options — it deleted them from the protocol entirely:
 
-- **Static RSA key exchange** — no forward secrecy (see [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}#forward-secrecy-why-ephemeral-matters)); (EC)DHE is now mandatory.
+- **Static RSA and static DH key exchange** — removed from certificate-authenticated handshakes. Normal full handshakes use ephemeral (EC)DHE; TLS 1.3 separately permits PSK-only `psk_ke`, which does not provide forward secrecy.
 - **Compression** — enabled the CRIME attack, which could recover secrets by observing compressed response sizes.
 - **Renegotiation** — a source of several serious vulnerabilities in earlier TLS versions.
 - **RC4, DES, 3DES, and any non-AEAD cipher mode** — only authenticated encryption is allowed now; see the [modes-of-operation discussion]({{ '/topics/symmetric-cryptography/' | relative_url }}#modes-of-operation-why-aes-alone-isnt-enough) for why that matters.
@@ -52,9 +53,10 @@ TLS 1.3 didn't just recommend against weak options — it deleted them from the 
 ## Practical demo: inspecting a real handshake
 
 ```
-$ openssl s_client -connect example.com:443 -tls1_3 -brief </dev/null
+$ /opt/homebrew/bin/openssl s_client -connect example.com:443 \
+    -servername example.com -tls1_3 -brief </dev/null
 
-Connecting to 104.20.23.154
+Connecting to 172.66.147.243
 CONNECTION ESTABLISHED
 Protocol version: TLSv1.3
 Ciphersuite: TLS_AES_256_GCM_SHA384
@@ -65,6 +67,8 @@ Verification: OK
 Negotiated TLS1.3 group: X25519MLKEM768
 DONE
 ```
+
+Captured on **26 July 2026** with Homebrew OpenSSL **3.6.3**. The IP address, certificate chain, cipher, signature type, and negotiated group are live server choices and will change. macOS's bundled `/usr/bin/openssl` is LibreSSL and does not support this exact `-brief` output.
 
 That last line is worth pausing on — `X25519MLKEM768` is a **hybrid** key-exchange group, combining classical X25519 ECDH with **ML-KEM** (a post-quantum key encapsulation mechanism, standardized as **[FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)**). Real production traffic is already using this hybrid approach, so that even if a future quantum computer eventually breaks X25519, the ML-KEM half alone still protects the session — a live example of the industry hedging against a future algorithm break, the same instinct behind SHA-3 existing alongside SHA-2.
 
@@ -90,7 +94,7 @@ Heartbleed is also a clean illustration of why [forward secrecy]({{ '/topics/key
 
 - **Disabling certificate validation to silence an error** — by far the most common way TLS gets defeated in practice; it removes the entire protection TLS is supposed to provide and should never be a "quick fix."
 - **Supporting legacy TLS versions or cipher suites unnecessarily** — every enabled option is attack surface, even if never negotiated by legitimate clients.
-- **Not deploying OCSP stapling** — covered under [Certificates]({{ '/topics/certificates/' | relative_url }}#revocation-crl-and-ocsp); leaves revocation checks slower and less private than they need to be.
+- **Having no revocation strategy** — OCSP stapling can improve privacy and latency where clients use OCSP, but browser behaviour differs and some ecosystems also use CRLSets, CRLite, or vendor-maintained revocation lists. I should follow the policy for the actual client population.
 - **Not enforcing HTTPS everywhere (HSTS)** — without it, a user's first request can still go out in plaintext before ever reaching an HTTPS redirect.
 
 <div class="callout">
@@ -98,6 +102,6 @@ Heartbleed is also a clean illustration of why [forward secrecy]({{ '/topics/key
   <p><strong><a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a></strong> is the TLS 1.3 specification. <strong><a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a></strong> gives government/enterprise guidance on TLS server configuration. <strong><a href="https://csrc.nist.gov/pubs/fips/203/final">FIPS 203</a></strong> defines ML-KEM, the post-quantum algorithm shown hybridized above.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 The payoff for everything else in Foundations and PKI: [Certificates]({{ '/topics/certificates/' | relative_url }}) establish who you're talking to, [Key Exchange]({{ '/topics/key-exchange-derivation/' | relative_url }}) establishes a secret without ever transmitting it, and [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) does the actual bulk encryption — all running automatically, in about one network round trip, every time a browser opens a padlocked address.

@@ -22,26 +22,26 @@
   <path d="M600 130 L120 130" stroke="#193e9f" stroke-width="2.5" fill="none" marker-end="url(#ah6)" />
   <text x="360" y="120" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">ServerHello + key_share</text>
 
-  <text x="360" y="150" font-size="10.5" fill="#8491a3" text-anchor="middle">— everything below is now encrypted under handshake keys —</text>
+  <!-- key derivation happens immediately after ServerHello -->
+  <rect x="230" y="145" width="260" height="46" rx="8" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
+  <text x="360" y="165" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">both sides: ECDHE shared secret</text>
+  <text x="360" y="181" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">→ HKDF handshake traffic keys</text>
+
+  <text x="360" y="207" font-size="10.5" fill="#8491a3" text-anchor="middle">— the remaining handshake messages are encrypted —</text>
 
   <!-- Message 3 -->
-  <path d="M600 185 L120 185" stroke="#193e9f" stroke-width="2.5" fill="none" marker-end="url(#ah6)" />
-  <text x="360" y="175" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Certificate + CertificateVerify + Finished</text>
-  <text x="360" y="201" font-size="11" fill="#475569" text-anchor="middle">CA-signed cert (chain of trust) + proof the server holds its private key</text>
+  <path d="M600 235 L120 235" stroke="#193e9f" stroke-width="2.5" fill="none" marker-end="url(#ah6)" />
+  <text x="360" y="225" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">EncryptedExtensions + Certificate + CertificateVerify + Finished</text>
+  <text x="360" y="251" font-size="11" fill="#475569" text-anchor="middle">certificate chain + signature proving possession of the server private key</text>
 
   <!-- bracket for 1-RTT -->
-  <path d="M660 70 L675 70 L675 185 L660 185" stroke="#0f766e" stroke-width="2" fill="none" />
-  <text x="683" y="132" font-size="11" font-weight="700" fill="#0f766e" text-anchor="start" transform="rotate(90 683 132)">1 round trip</text>
-
-  <!-- key derivation box -->
-  <rect x="230" y="220" width="260" height="46" rx="8" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
-  <text x="360" y="240" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">both sides: derive shared secret (ECDH)</text>
-  <text x="360" y="256" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">→ traffic keys (HKDF)</text>
+  <path d="M660 70 L675 70 L675 235 L660 235" stroke="#0f766e" stroke-width="2" fill="none" />
+  <text x="683" y="152" font-size="11" font-weight="700" fill="#0f766e" text-anchor="start" transform="rotate(90 683 152)">server flight returns within 1 RTT</text>
 
   <!-- Message 4 -->
   <path d="M110 300 L600 300" stroke="#193e9f" stroke-width="2.5" fill="none" marker-end="url(#ah6)" />
   <text x="360" y="290" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Finished</text>
-  <text x="360" y="316" font-size="11" fill="#475569" text-anchor="middle">MAC over the full handshake transcript — proves nothing was tampered or downgraded</text>
+  <text x="360" y="316" font-size="11" fill="#475569" text-anchor="middle">MAC authenticating the handshake transcript and negotiated parameters</text>
 
   <!-- Application data -->
   <path d="M130 370 L590 370" stroke="#9f1239" stroke-width="2.5" fill="none" marker-end="url(#ah6)" />
@@ -49,5 +49,5 @@
   <text x="360" y="360" font-size="12.5" font-weight="700" fill="#9f1239" text-anchor="middle">Application data, both directions</text>
   <text x="360" y="405" font-size="11" fill="#475569" text-anchor="middle">encrypted with AES-GCM or ChaCha20-Poly1305 (AEAD)</text>
 
-  <text x="360" y="435" font-size="11" fill="#8491a3" text-anchor="middle">TLS 1.2 needed a second round trip here before any application data could flow — TLS 1.3 removed it</text>
+  <text x="360" y="435" font-size="11" fill="#8491a3" text-anchor="middle">TLS 1.3 lets the client send application data after its Finished message; a full TLS 1.2 handshake needed another flight</text>
 </svg>

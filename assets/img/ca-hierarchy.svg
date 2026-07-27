@@ -31,15 +31,15 @@
   <use href="#icon-cert" transform="translate(305,32) scale(0.4)" />
   <g fill="#ffffff" text-anchor="start">
     <text x="355" y="52" font-size="17" font-weight="700">Example Root CA</text>
-    <text x="355" y="72" font-size="11.5" fill="#c9d7fb">self-signed, kept offline, in every trust store</text>
+    <text x="355" y="72" font-size="11.5" fill="#c9d7fb">self-signed; anchored by selected trust stores</text>
   </g>
 
   <!-- Intermediate CA -->
   <rect x="290" y="150" width="320" height="70" rx="12" fill="#2457d6" />
   <use href="#icon-cert" transform="translate(305,162) scale(0.4)" />
   <g fill="#ffffff" text-anchor="start">
-    <text x="355" y="182" font-size="17" font-weight="700">Example TLS Intermediate CA1</text>
-    <text x="355" y="202" font-size="11.5" fill="#dbe7ff">signed by root — serves many unrelated customers</text>
+    <text x="355" y="182" font-size="17" font-weight="700">Example TLS Intermediate</text>
+    <text x="355" y="202" font-size="11.5" fill="#dbe7ff">signed by root; serves many customers</text>
   </g>
 
   <!-- Leaf certificates: unrelated domains, showing one intermediate serves many customers -->

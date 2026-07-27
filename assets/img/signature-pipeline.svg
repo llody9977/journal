@@ -1,5 +1,5 @@
-<svg viewBox="0 0 740 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
-  <rect x="0" y="0" width="740" height="320" fill="#ffffff" />
+<svg viewBox="0 0 740 350" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="740" height="350" fill="#ffffff" />
 
   <defs>
     <marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -8,7 +8,7 @@
   </defs>
 
   <!-- Signing row -->
-  <text x="20" y="25" font-size="13" font-weight="700" fill="#111827">Signing (once, by the owner)</text>
+  <text x="20" y="25" font-size="13" font-weight="700" fill="#111827">Signing (by the private-key holder)</text>
 
   <rect x="20" y="40" width="120" height="36" rx="6" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
   <text x="80" y="63" font-size="12" fill="#193e9f" text-anchor="middle">message</text>
@@ -46,10 +46,7 @@
 
   <path d="M290 183 L325 183" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah5)" />
   <rect x="330" y="165" width="90" height="36" rx="6" fill="#0f766e" />
-  <text x="375" y="188" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">digest A</text>
-
-  <rect x="465" y="230" width="130" height="36" rx="6" fill="#0f766e" opacity="0.85" />
-  <text x="530" y="253" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">digest B</text>
+  <text x="375" y="188" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">digest</text>
 
   <rect x="640" y="230" width="90" height="36" rx="6" fill="#9f1239" />
   <text x="685" y="253" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">signature</text>
@@ -58,10 +55,10 @@
   <rect x="465" y="165" width="130" height="36" rx="6" fill="#a14c00" />
   <text x="530" y="183" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">verify with</text>
   <text x="530" y="196" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">public key</text>
-  <path d="M530 201 L530 226" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah5)" />
+  <path d="M420 183 L460 183" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah5)" />
 
-  <path d="M375 201 L375 240 L460 248" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah5)" />
-
-  <rect x="290" y="270" width="160" height="36" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
-  <text x="370" y="293" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">A = B? ✓ valid signature</text>
+  <rect x="450" y="270" width="160" height="36" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
+  <text x="530" y="293" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">result: valid or invalid</text>
+  <path d="M530 201 L530 265" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah5)" />
+  <text x="370" y="332" font-size="10.5" fill="#475569" text-anchor="middle">verification checks the scheme's equation; it does not “recover a digest”</text>
 </svg>

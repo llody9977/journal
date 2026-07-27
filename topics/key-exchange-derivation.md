@@ -8,7 +8,7 @@ permalink: /topics/key-exchange-derivation/
 
 # Key Exchange & Key Derivation
 
-<p class="lede">Two distinct problems get bundled together constantly: how two parties who've never met agree on a shared secret over a network that an attacker can watch every byte of (<strong>key exchange</strong>), and how that shared secret becomes actual, usable encryption keys (<strong>key derivation</strong>).</p>
+<p class="lede">I keep two steps separate in my head: first establish a shared secret over an observed network, then derive the actual protocol keys from that secret. Mixing these steps is where explanations become too hand-wavy.</p>
 
 ## Key exchange: Diffie-Hellman
 
@@ -30,9 +30,9 @@ The classical version (as pictured) relies on modular exponentiation: both parti
 | Key pair used | Same long-term key pair, every session | Fresh, temporary key pair, generated per session |
 | If the long-term private key leaks later | Every past session using it can be decrypted retroactively | Past sessions stay safe — the ephemeral keys that protected them are already gone |
 | Cost | Cheaper — no fresh key generation per connection | Slightly more compute per handshake |
-| Used by | Mostly historical / legacy configurations | TLS 1.3 (mandatory), SSH, Signal |
+| Used by | Mostly historical / legacy configurations | Certificate-based TLS 1.3 handshakes, SSH, Signal |
 
-That "past sessions stay safe" property is called **forward secrecy**, and it's exactly why TLS 1.3 removed static RSA/DH key exchange entirely and requires an ephemeral exchange for every single connection. An attacker who silently records encrypted traffic today and later steals the server's private key gains nothing from that recording — the actual session keys were never derived from, or recoverable from, that long-term key in the first place.
+That “past sessions stay safe after a later long-term-key compromise” property is **forward secrecy**. TLS 1.3 removed static RSA and static DH key exchange. A normal certificate-authenticated handshake uses ephemeral (EC)DHE. One exception matters: TLS 1.3 also permits PSK-only `psk_ke`, which does not provide forward secrecy for the resumption secret. [RFC 8446 §2.2](https://www.rfc-editor.org/rfc/rfc8446.html#section-2.2) explicitly distinguishes PSK-only from PSK with (EC)DHE.
 
 ## From shared secret to usable keys: KDFs
 
@@ -40,12 +40,12 @@ The raw output of a DH or ECDH exchange isn't something you should plug directly
 
 **HKDF (HMAC-based Key Derivation Function)**, defined in **[RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)**, solves this in two steps:
 
-1. **Extract** — condense the (possibly imperfect) shared secret into a short, uniformly-random pseudorandom key.
+1. **Extract** — condense the (possibly imperfect) shared secret into a pseudorandom key under HKDF's assumptions. This is not a claim of true uniform randomness for arbitrary low-entropy input.
 2. **Expand** — stretch that into as many independent, purpose-labeled keys as the protocol needs (e.g. "client write key", "server write key", "client MAC key" all derived from one exchange, each cryptographically independent of the others).
 
 <div class="callout warn" id="a-different-problem-password-based-kdfs">
   <span class="callout-title">A different problem: password-based KDFs</span>
-  <p>HKDF assumes the input already has plenty of entropy (like a DH output). A human-chosen password does not — it might only have 20–30 bits of real entropy despite being 12 characters long. Turning a password into a key needs a deliberately <em>slow</em>, memory-hard function instead — PBKDF2, scrypt, or Argon2. That's a different problem with different tools, covered in full under <a href="{{ '/topics/password-storage/' | relative_url }}">Password Storage</a>.</p>
+  <p>HKDF assumes the input already has sufficient entropy, such as an approved DH output. Human-chosen password entropy is difficult to estimate and is normally low enough for offline guessing to matter. Turning a password into a key needs a deliberately expensive password KDF such as PBKDF2, scrypt, or Argon2. That's a different problem, covered under <a href="{{ '/topics/password-storage/' | relative_url }}">Password Storage</a>.</p>
 </div>
 
 ## Practical demo: ECDH with OpenSSL (X25519)
@@ -73,7 +73,7 @@ Alice derived her copy using only *her* private key and *Bob's public* key; Bob 
 
 **Logjam** ([CVE-2015-4000](https://nvd.nist.gov/vuln/detail/CVE-2015-4000), disclosed May 2015) exploited a leftover from 1990s US export restrictions on cryptography: many TLS servers still supported a legacy "export-grade" Diffie-Hellman mode capped at a 512-bit prime, kept around for compatibility long after the restrictions themselves were lifted. Because the TLS handshake at the time didn't cryptographically bind the negotiated cipher suite as tightly as it should have, an active man-in-the-middle attacker could intercept the handshake and trick both browser and server into "downgrading" to the weak export-grade group — even when neither side actually wanted it — then break that specific 512-bit exchange (using precomputation, on academic-scale compute available at the time, according to the [researchers who disclosed it](https://weakdh.org/)) and read or modify everything that followed.
 
-This is the downgrade-attack failure mode the [forward-secrecy comparison above](#forward-secrecy-why-ephemeral-matters) is really warning about: the weakness wasn't in Diffie-Hellman itself, or even specifically in ephemeral vs. static key exchange — it was in leaving a deliberately weakened legacy option reachable at all, and trusting the handshake to negotiate it away safely on its own. The fix was blunt and effective: drop support for export-grade ciphers and any DH group under 2048 bits entirely — precisely the same philosophy behind [TLS 1.3 deleting]({{ '/topics/tls-ssl-handshake/' | relative_url }}#what-tls-13-removed-and-why), rather than merely discouraging, its own list of legacy options.
+Logjam is mainly a lesson about weak shared DH groups and downgrade resistance, not a failure of forward secrecy itself. The practical fix was to remove export-grade suites, use appropriately sized or standardised groups, and cryptographically bind negotiation. TLS 1.3 follows the same general approach by removing legacy negotiation choices rather than keeping them available.
 
 ## Common pitfalls
 
@@ -87,6 +87,6 @@ This is the downgrade-attack failure mode the [forward-secrecy comparison above]
   <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers DH/ECDH key-establishment schemes. <strong><a href="https://www.rfc-editor.org/rfc/rfc7748">RFC 7748</a></strong> specifies the X25519 and X448 curves used above. <strong><a href="https://www.rfc-editor.org/rfc/rfc5869">RFC 5869</a></strong> defines HKDF.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 This is the machinery running underneath every [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) — (EC)DHE establishes the shared secret, HKDF turns it into the actual traffic keys, and those keys hand off to the [symmetric cipher]({{ '/topics/symmetric-cryptography/' | relative_url }}) doing the real encryption work for the rest of the connection.

@@ -36,6 +36,9 @@
       {{ content }}
 
       <footer class="page-footer">
+        {% if page.last_verified %}
+        <p>Claims and live output on this page were last checked on <strong>{{ page.last_verified | date: "%-d %B %Y" }}</strong>.</p>
+        {% endif %}
         <p>Personal technical notes, written for learning — not a substitute for formal standards (NIST, RFCs, ISO) when implementing anything security-critical.</p>
       </footer>
     </main>

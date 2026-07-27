@@ -23,7 +23,7 @@
   <use href="#icon-key" transform="translate(305,32) scale(0.4)" />
   <g fill="#ffffff" text-anchor="start">
     <text x="355" y="52" font-size="17" font-weight="700">Root zone (.)</text>
-    <text x="355" y="72" font-size="11.5" fill="#c9d7fb">DNSKEY trust anchor, built into every resolver</text>
+    <text x="355" y="72" font-size="11.5" fill="#c9d7fb">DNSKEY trust anchor in the resolver</text>
   </g>
 
   <!-- .gov TLD -->
@@ -31,7 +31,7 @@
   <use href="#icon-key" transform="translate(305,162) scale(0.4)" />
   <g fill="#ffffff" text-anchor="start">
     <text x="355" y="182" font-size="17" font-weight="700">.gov TLD</text>
-    <text x="355" y="202" font-size="11.5" fill="#dbe7ff">DS record verified against root's signature</text>
+    <text x="355" y="202" font-size="11.5" fill="#dbe7ff">DS record verified from the root</text>
   </g>
 
   <!-- nist.gov -->
@@ -39,7 +39,7 @@
   <use href="#icon-key" transform="translate(305,292) scale(0.4)" fill="#0f766e" />
   <g fill="#111827" text-anchor="start">
     <text x="355" y="312" font-size="17" font-weight="700" fill="#0f766e">nist.gov</text>
-    <text x="355" y="332" font-size="11.5" fill="#475569">RRSIG signs the actual A records you queried for</text>
+    <text x="355" y="332" font-size="11.5" fill="#475569">RRSIG covers the queried record set</text>
   </g>
 
   <text x="450" y="385" font-size="12" fill="#8491a3" text-anchor="middle">Same tree shape as the CA hierarchy — a signature chain rooted in something already trusted</text>

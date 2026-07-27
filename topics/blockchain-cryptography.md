@@ -8,11 +8,11 @@ permalink: /topics/blockchain-cryptography/
 
 # Blockchain Cryptography
 
-<p class="lede">Strip away the terminology, and a blockchain is a specific combination of three primitives — <a href="{{ '/topics/hash-functions-macs/' | relative_url }}">hash functions</a>, <a href="{{ '/topics/digital-signatures/' | relative_url }}">digital signatures</a>, and Merkle trees (a structure built entirely out of hashing) — arranged to let mutually distrusting parties agree on a shared, tamper-evident history without a central authority.</p>
+<p class="lede">For my notes, hashes, signatures, and Merkle trees explain how a blockchain commits to data and authorises transactions. They do not make mutually distrusting nodes agree by themselves. Consensus rules, network assumptions, incentives, and the fork-choice mechanism are essential to deciding which history is accepted.</p>
 
 ## The chain part: linking blocks by hash
 
-Each block contains the hash of the *previous* block's header, alongside its own data. That single link has a big consequence: changing anything in block 100 changes block 100's hash — via the [avalanche effect]({{ '/topics/hash-functions-macs/' | relative_url }}#what-a-cryptographic-hash-function-guarantees) covered under Hash Functions — which changes the "previous hash" field stored in block 101, which changes block 101's hash, and so on through every block since. Altering old history isn't mathematically impossible, but it means recomputing every single block after the tampered one, which (combined with proof-of-work or proof-of-stake, outside the scope here) is what makes it economically impractical rather than cryptographically impossible.
+Each block contains the hash of the *previous* block's header, alongside its own data. That single link has a big consequence: changing anything in block 100 changes block 100's hash — via the [avalanche effect]({{ '/topics/hash-functions-macs/' | relative_url }}#what-a-cryptographic-hash-function-is-designed-to-provide) covered under Hash Functions — which changes the "previous hash" field stored in block 101, which changes block 101's hash, and so on through every block since. Altering old history isn't mathematically impossible, but it means recomputing every single block after the tampered one, which (combined with proof-of-work or proof-of-stake, outside the scope here) is what makes it economically impractical rather than cryptographically impossible.
 
 ## The transactions part: Merkle trees
 
@@ -29,11 +29,11 @@ This gives two useful properties: the block header only needs to store one small
 
 A transaction that says "send funds from address A to address B" is only valid if it's signed by the private key controlling address A — exactly the [digital signature]({{ '/topics/digital-signatures/' | relative_url }}) pattern, with one specific detail: in most blockchains (Bitcoin, Ethereum), an **address is derived directly from a public key** (typically via a hash of it), rather than being assigned by any registrar. There's no certificate authority in this picture at all — anyone can generate a key pair offline and that key pair's derived address instantly "exists" as a valid destination, with no registration step.
 
-**ECDSA** (Bitcoin, and Ethereum historically) and increasingly **Ed25519/Schnorr-based schemes** (newer chains, and Bitcoin's Taproot upgrade) are the signature algorithms in use — which means the [nonce-reuse trap]({{ '/topics/digital-signatures/' | relative_url }}#where-real-signature-schemes-go-wrong-the-nonce-trap) covered under Digital Signatures is not theoretical here: poor random number generation in several early Android Bitcoin wallets led to real, direct theft of funds through exactly that mechanism.
+Bitcoin's legacy transaction signatures and Ethereum accounts use **ECDSA over secp256k1** today; Bitcoin Taproot adds Schnorr signatures over the same curve. Other chains use Ed25519 and other schemes. This makes the [nonce-reuse trap]({{ '/topics/digital-signatures/' | relative_url }}#where-real-signature-schemes-go-wrong-the-nonce-trap) operationally relevant: bad signing randomness has caused real cryptocurrency key recovery and theft.
 
 ## What's deliberately left out here
 
-Consensus mechanisms (proof-of-work, proof-of-stake), tokenomics, smart contract execution semantics, and the broader "Web3" ecosystem are a different, much larger subject from the cryptography itself — the scope here stays on the actual cryptographic primitives, a small, well-understood slice of what people usually mean by "blockchain."
+Consensus mechanisms, network/finality assumptions, token economics, and smart-contract execution are outside this page's scope, but not optional parts of a blockchain. This page covers only the cryptographic building blocks.
 
 ## Common pitfalls
 
@@ -44,9 +44,9 @@ Consensus mechanisms (proof-of-work, proof-of-stake), tokenomics, smart contract
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p>The original <a href="https://bitcoin.org/bitcoin.pdf"><strong>Bitcoin whitepaper</strong></a> (Nakamoto, 2008) describes the hash-chain and Merkle tree structure directly. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> covers ECDSA, the signature scheme Bitcoin and early Ethereum both use.</p>
+  <p>The original <a href="https://bitcoin.org/bitcoin.pdf"><strong>Bitcoin whitepaper</strong></a> describes the hash chain, Merkle tree, proof-of-work, and network consensus. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> specifies ECDSA, but Bitcoin and Ethereum use the <code>secp256k1</code> curve from <a href="https://www.secg.org/sec2-v2.pdf">SEC 2</a>, not a NIST-recommended curve in SP 800-186.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 Nothing here is a new cryptographic primitive — it's [hash functions]({{ '/topics/hash-functions-macs/' | relative_url }}), [digital signatures]({{ '/topics/digital-signatures/' | relative_url }}), and [asymmetric key pairs]({{ '/topics/asymmetric-cryptography/' | relative_url }}) arranged into a specific structure. Understanding those three pages is most of the way to understanding what's actually happening underneath any blockchain, independent of whatever it's being used for.

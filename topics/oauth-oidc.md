@@ -2,13 +2,14 @@
 title: OAuth & OpenID Connect
 description: Authentication vs authorization, the OAuth 2.0 authorization code flow with PKCE, and what OpenID Connect and JWTs actually prove.
 permalink: /topics/oauth-oidc/
+last_verified: 2026-07-26
 ---
 
 <span class="eyebrow">Authentication & Authorization / Deep Dive</span>
 
 # OAuth & OpenID Connect
 
-<p class="lede">"Authentication" and "authorization" get used almost interchangeably in casual conversation, but they're answering two completely different questions — and OAuth 2.0 and OpenID Connect are, respectively, the industry-standard answer to each one.</p>
+<p class="lede">My first check is always whether I am solving authentication or delegated authorisation. OAuth 2.0 gives a client limited access to a resource; OpenID Connect adds an identity layer for the client. Using an access token as a generic “login token” is where the concepts get mixed up.</p>
 
 ## Authentication vs. authorization, precisely
 
@@ -36,7 +37,7 @@ OAuth replaces the password with a **token**: narrowly scoped (e.g. "read calend
 This is the flow that matters — nearly everything else in OAuth 2.0 is either a variant of this or a deprecated shortcut (see below):
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/oauth-auth-code-flow.svg' | relative_url }}" alt="Sequence diagram of the OAuth 2.0 Authorization Code flow with PKCE: the user asks to log in, the client generates a code verifier and challenge, the user authenticates directly with the Authorization Server and approves scopes, a one-time authorization code is returned via redirect, the client exchanges that code plus the verifier and client secret for an access token in a server-to-server call, and finally uses the access token as a bearer token to call the Resource Server API." >
+  <img src="{{ '/assets/img/oauth-auth-code-flow.svg' | relative_url }}" alt="Sequence diagram of the OAuth Authorization Code flow with PKCE. The client exchanges the code and verifier for tokens; a confidential client also authenticates, while a public client has no client secret." >
   <p class="diagram-caption">The client never sees the password — only a scoped, revocable token</p>
 </div>
 
@@ -46,7 +47,7 @@ This is the flow that matters — nearly everything else in OAuth 2.0 is either 
 
 ## Flows worth knowing about — because they're deprecated
 
-- **Implicit flow** — returned the access token directly in the URL fragment after login, with no server-side exchange step. That token ends up in browser history, referrer headers, and server logs. Removed entirely in OAuth 2.1.
+- **Implicit flow** — returned the access token directly in the URL fragment after login, with no code exchange. URL fragments are not sent in HTTP requests and therefore do not normally appear in server logs or Referer headers. The real exposure includes browser history, scripts running in the page, token leakage through front-channel processing, and the inability to apply modern code-flow protections. OAuth 2.1 removes this grant.
 - **Resource Owner Password Credentials (ROPC)** — the client collects the user's actual username and password and trades them directly for a token. This is precisely the anti-pattern OAuth was invented to eliminate, and it's deprecated for exactly that reason — it only ever made sense as a legacy migration path, never a target design.
 
 ## OAuth 1.0, 1.0a, 2.0, 2.1 — the version landscape
@@ -54,9 +55,9 @@ This is the flow that matters — nearly everything else in OAuth 2.0 is either 
 - **OAuth 1.0** (2007) required every single request to be individually signed (HMAC-SHA1 or RSA-SHA1) using a shared secret and a precise "signature base string" assembled from the HTTP method, URL, and parameters, normalized and sorted in an exact way. It didn't mandate TLS either. A session-fixation flaw in the original request-token step was found in 2009.
 - **OAuth 1.0a** ([RFC 5849](https://www.rfc-editor.org/rfc/rfc5849), 2010) fixed that specific flaw with a callback-confirmation step. Both 1.0 and 1.0a are legacy today — not because the underlying cryptography broke, but because per-request signing was fragile to implement correctly. A single stray character in how a client normalized and sorted parameters before signing silently broke the signature, and chasing down why a signature didn't match was a routine source of real integration pain.
 - **OAuth 2.0** ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), 2012) dropped mandatory per-request signing for **bearer tokens over mandatory TLS** — far simpler to implement, no signature base string to get wrong, at the cost of a different trust assumption: whoever holds the bearer token, however they got it, can use it, so the whole model now leans on TLS actually being in place and the token itself never leaking. This is the version essentially every current API and identity provider runs.
-- **OAuth 2.1** (an active IETF draft, [draft-ietf-oauth-v2-1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1), not yet a published RFC) isn't a new protocol — it's OAuth 2.0 plus the security best practices that accumulated as separate RFCs over the following decade, folded back into one document: PKCE mandatory for every client type rather than just public ones, Implicit and ROPC removed outright instead of merely discouraged, redirect URIs required to match exactly rather than by pattern. Everything OAuth 2.1 mandates — PKCE, no Implicit, no ROPC, exact redirect matching — is already the recommended practice above; 2.1 mainly turns optional-but-recommended into non-optional.
+- **OAuth 2.1** remains an active IETF draft, not a published RFC. As of **2 March 2026**, the current version was [draft-ietf-oauth-v2-1-15](https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/). It consolidates OAuth 2.0 and later security practice, including PKCE, exact redirect matching, and removal of Implicit and ROPC.
 
-1.0a hasn't fully disappeared: X (formerly Twitter) still requires it specifically for media-upload endpoints, even though the rest of its API moved to 2.0 — [X's own developer forum confirms this](https://devcommunity.x.com/t/will-oauth-1-0a-user-context-continue-to-be-supported-for-api-v2/245571) is simply because that one endpoint was never migrated. Old versions rarely disappear cleanly; they persist exactly where nobody's gotten around to replacing them.
+1.0a hasn't fully disappeared. X still documents [OAuth 1.0a User Context](https://docs.x.com/fundamentals/authentication/oauth-1-0a/overview) alongside OAuth 2.0, and some endpoint guides label 1.0a as legacy support. The exact requirement is endpoint-specific and changes over time — for example, X's [current v2 media-upload documentation](https://docs.x.com/x-api/media/upload-media) shows an OAuth 2.0 bearer token — so I should check the current integration guide instead of carrying an old platform-wide rule in my head.
 
 There's no version field to inspect, so telling 1.0a from 2.0/2.1 in practice comes down to the shape of the request itself:
 
@@ -72,12 +73,12 @@ There's no version field to inspect, so telling 1.0a from 2.0/2.1 in practice co
 
 An OAuth access token only proves *an app has some permission* — it says nothing about the user's identity, and resource servers often can't even parse it (many are opaque strings, deliberately meaningless outside the authorization server). **OpenID Connect** adds a second, distinct token to solve this:
 
-- **ID Token** — a [JWT]({{ '/topics/digital-signatures/' | relative_url }}#where-signatures-show-up-in-practice), signed by the Authorization Server (called an **OpenID Provider** in OIDC terms), containing identity claims: `sub` (subject/user ID), `email`, `name`, `iat`/`exp` (issued/expiry times). The client verifies this signature exactly the way [Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}) describes, using the provider's published public key.
+- **ID Token** — normally a signed JWT issued by the OpenID Provider. Core required claims include `iss`, `sub`, `aud`, `exp`, and `iat`; `email` and `name` are optional profile claims and are not guaranteed to be present. The client validates the signature and protocol claims using the provider metadata and keys.
 - **UserInfo endpoint** — an API the client can call with the access token to fetch additional profile details not embedded in the ID token itself.
 
-## JWTs are signed, not encrypted — a real demo
+## A signed JWT is readable unless it is also encrypted
 
-A JWT is three base64url segments — `header.payload.signature` — and only the signature actually requires a secret to produce. The header and payload are just encoded, not encrypted, and anyone can read them without any key at all:
+A JWT is a container format. It can be a signed/MACed JWS, an encrypted JWE, or an unsecured JWT where the algorithm is `none`. The common three-segment `header.payload.signature` form below is JWS: its header and payload are base64url-encoded, not encrypted, so anyone can read them.
 
 ```
 $ python3 -c "
@@ -92,7 +93,7 @@ header:  {'alg': 'HS256', 'typ': 'JWT'}
 payload: {'sub': '1234567890', 'name': 'Alice', 'email': 'alice@example.com', 'iat': 1753000000, 'exp': 1753003600}
 ```
 
-No key, no secret, no signature verification — full claims, in plain sight. This is exactly why a JWT should never carry anything actually sensitive (passwords, SSNs, raw secrets) in its payload. What the signature *does* guarantee is that nobody tampered with those claims after signing — a real forgery attempt, run end to end:
+No key and no signature verification are needed to read these claims. Even where JWE is available, I should minimise sensitive token contents because tokens are copied through logs, clients, proxies, and debugging tools. A valid JWS signature/MAC makes unauthorised modification detectable; it does not hide the claims.
 
 ```
 $ python3 -c "
@@ -129,7 +130,7 @@ original token valid: True
 tampered token valid: False
 ```
 
-Changing one field breaks verification instantly — the same [avalanche-effect]({{ '/topics/hash-functions-macs/' | relative_url }}#what-a-cryptographic-hash-function-guarantees) property from Hash Functions & MACs, since `HS256` is HMAC-SHA256 under the hood. Note the algorithm matters here too: `HS256` is a symmetric MAC (same secret signs and verifies — fine when the signer and verifier are the same server), while `RS256`/`ES256` are true asymmetric signatures (verify with a public key, no shared secret needed). [AWS Cognito's user pools sign with RS256 by default](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-id-token.html), and [Auth0's own guidance](https://support.auth0.com/center/s/article/What-s-the-difference-between-RS256-and-HS256-JWT-signing-algorithms) is explicit about why: `RS256` is close to mandatory the moment a third party — anyone other than the server that issued the token — needs to verify it, since verifying only ever needs the public key, never the secret that created it.
+Changing one field breaks verification because the attacker cannot compute a valid HMAC for the changed signing input without the key. This is an unforgeability property, not merely the hash avalanche effect. `HS256` is a symmetric MAC; `RS256` and `ES256` are asymmetric signatures. A verifier must pin/allow the intended algorithm and key source rather than trusting the token header to choose them.
 
 ## Real-world case: the Booking.com OAuth flaw (2022–2023)
 
@@ -140,9 +141,9 @@ Nothing about OAuth's cryptography failed here — the tokens involved were sign
 ## Common pitfalls
 
 - **Confusing the ID token with the access token** — the ID token proves identity to the *client*; it was never meant to be sent to a resource server as an API credential. Using it that way is a frequent real-world mistake.
-- **Storing tokens in `localStorage`** — accessible to any script on the page, making tokens a direct target for XSS. An `httpOnly` cookie (inaccessible to JavaScript) is the safer default for browser-based apps.
+- **Choosing token storage without the browser threat model** — `localStorage` exposes tokens to successful XSS. An `HttpOnly`, `Secure`, appropriately `SameSite` cookie keeps the token away from JavaScript but requires CSRF and cookie-scope controls. A backend-for-frontend design can keep OAuth tokens off the browser entirely.
 - **Skipping `state` parameter validation** — `state` is OAuth's CSRF protection for the redirect step; omitting it lets an attacker bind their own authorization code to a victim's session.
-- **Not validating token signature and expiry on every request** — a resource server that only checks a token's presence, not its validity, isn't actually checking anything.
+- **Doing only signature and expiry checks** — validation also needs the expected issuer, audience, allowed algorithm, key, token type/use, and relevant time/nonce claims. An API must still authorise the requested action after validating the token.
 - **Using the deprecated Implicit or ROPC flows** in new code, often copied from outdated tutorials.
 
 <div class="callout">
@@ -150,6 +151,6 @@ Nothing about OAuth's cryptography failed here — the tokens involved were sign
   <p><strong><a href="https://www.rfc-editor.org/rfc/rfc5849">RFC 5849</a></strong> defines OAuth 1.0a. <strong><a href="https://www.rfc-editor.org/rfc/rfc6749">RFC 6749</a></strong> defines OAuth 2.0. <strong><a href="https://www.rfc-editor.org/rfc/rfc6750">RFC 6750</a></strong> defines Bearer Token usage. <strong><a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1">draft-ietf-oauth-v2-1</a></strong> is the in-progress OAuth 2.1 consolidation. <strong><a href="https://www.rfc-editor.org/rfc/rfc7636">RFC 7636</a></strong> defines PKCE. <strong><a href="https://www.rfc-editor.org/rfc/rfc7519">RFC 7519</a></strong> defines JWT. The <a href="https://openid.net/specs/openid-connect-core-1_0.html">OpenID Connect Core 1.0</a> specification defines OIDC itself.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 The ID token's signature is exactly the [Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}) pipeline (hash, then sign; verify with the issuer's public key), and `HS256` tokens rely on the same [HMAC]({{ '/topics/hash-functions-macs/' | relative_url }}) construction covered under Hash Functions & MACs. The access tokens issued here are also exactly what [API Security]({{ '/topics/api-security/' | relative_url }}) covers using as bearer credentials for machine-to-machine calls.

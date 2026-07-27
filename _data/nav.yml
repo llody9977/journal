@@ -72,7 +72,7 @@
           url: /topics/ssh/
         - title: 2. OAuth & OpenID Connect
           url: /topics/oauth-oidc/
-        - title: 3. API Security
+        - title: 3. Machine-to-Machine API Authentication
           url: /topics/api-security/
     - title: 5. Network Security
       children:

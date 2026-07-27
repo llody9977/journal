@@ -8,18 +8,18 @@ permalink: /topics/digital-signatures/
 
 # Digital Signatures
 
-<p class="lede">The <a href="{{ '/topics/asymmetric-cryptography/' | relative_url }}">asymmetric cryptography</a> page covered the core mechanism — private key signs, public key verifies. What happens in between: why you sign a hash instead of the message itself, where real signature schemes go wrong in practice, and what "non-repudiation" does and doesn't actually guarantee.</p>
+<p class="lede">My short version is “private key signs, public key verifies”, but that sentence hides the message encoding, hashing rules, nonce handling, and key-custody assumptions where real failures happen.</p>
 
-## The full pipeline: hash, then sign
+## The common pipeline: hash and sign
 
-Signature algorithms operate on fixed-size input, and running RSA or ECDSA math directly over a multi-gigabyte file would be both impossibly slow and mathematically awkward. So in practice, nobody signs the message itself — they sign its [hash]({{ '/topics/hash-functions-macs/' | relative_url }}):
+RSA and ECDSA APIs normally hash the message and apply a scheme-specific encoding or equation to that digest. Ed25519 accepts the message and performs its hashing internally, while prehash variants such as Ed25519ph have separate rules. For large files and protocols, the implementation may stream the message into the required hash rather than load it all at once.
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/signature-pipeline.svg' | relative_url }}" alt="Diagram showing the signing pipeline: message is hashed to a digest, then signed with a private key to produce a signature. The verifying pipeline: the message is hashed again to digest A, the signature is verified with the public key to recover digest B, and if A equals B the signature is valid." >
-  <p class="diagram-caption">Sign the digest, not the message — verification just checks the two digests match</p>
+  <img src="{{ '/assets/img/signature-pipeline.svg' | relative_url }}" alt="Conceptual signature diagram: a message is hashed and signed with a private key. Verification recomputes the digest and checks the signature using the public key, returning valid or invalid. The verifier does not recover a second digest from ECDSA or EdDSA signatures." >
+  <p class="diagram-caption">Conceptual prehash model—the exact encoding and verification equation depend on the signature scheme</p>
 </div>
 
-This has a useful side effect: signature size stays constant no matter how large the original message is, and verification only ever needs to re-hash the message and compare — it never needs to "undo" the signature to read anything, because there was nothing encrypted in the first place. A signature proves authorship and integrity; it does not provide confidentiality.
+Signature size is fixed for a selected scheme regardless of message size. Verification checks the scheme's mathematical relation; ECDSA and EdDSA do not “decrypt the signature” or recover a digest. A valid signature supports message integrity and possession of the signing key. It does not by itself prove human authorship or provide confidentiality.
 
 ## Where real signature schemes go wrong: the nonce trap
 
@@ -69,13 +69,13 @@ $ openssl dgst -sha256 -verify ec_public.pem -signature message.sig message.txt
 Verification failure
 ```
 
-One digit added to the amount, and verification fails outright — this is the same avalanche-effect property from [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}) doing its job: the digest of the tampered message no longer matches what the signature actually covers.
+One digit added to the amount and verification fails because the signed message representation no longer matches the changed input. The hash's avalanche behaviour makes the new digest unrelated, but the security result comes from the signature scheme rejecting a message that was not signed.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the Digital Signature Standard, approving RSA (PKCS#1/PSS), ECDSA, and EdDSA. <strong><a href="https://www.rfc-editor.org/rfc/rfc8032">RFC 8032</a></strong> specifies EdDSA/Ed25519 in detail, including the deterministic nonce derivation described above.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 Digital signatures are the mechanism; [Certificate Authorities]({{ '/topics/certificates/' | relative_url }}) are one specific, enormously important *application* of that mechanism — a CA's signature over a certificate is exactly the pipeline described above, at internet scale.

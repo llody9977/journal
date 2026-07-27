@@ -1,6 +1,6 @@
 ---
 title: Symmetric vs Asymmetric Cryptography
-description: Why only asymmetric crypto can offer non-repudiation, why asymmetric key handling is inherently safer than a shared secret, and why real systems use both at once — PGP as the enduring example.
+description: My comparison of shared-key and public-key cryptography, including the limits of attribution and why hybrid encryption is normal.
 permalink: /topics/symmetric-vs-asymmetric/
 ---
 
@@ -8,32 +8,32 @@ permalink: /topics/symmetric-vs-asymmetric/
 
 # Symmetric vs Asymmetric Cryptography
 
-<p class="lede">[Symmetric]({{ '/topics/symmetric-cryptography/' | relative_url }}) and [asymmetric]({{ '/topics/asymmetric-cryptography/' | relative_url }}) cryptography solve overlapping problems with very different guarantees — one structural difference (one key vs. two) cascades into who can repudiate what, how much a compromised channel actually costs, and why almost every real system quietly uses both at once.</p>
+<p class="lede">I should not treat symmetric and asymmetric cryptography as competing choices. They have different jobs: symmetric primitives handle data efficiently, while public-key primitives help with key establishment, signatures, and identity binding.</p>
 
-## Non-repudiation: the one guarantee only asymmetric crypto can offer
+## Attribution: what asymmetric signatures make possible
 
-With symmetric crypto, both parties hold the *identical* key. Given a valid ciphertext or MAC, there is no way to prove which of the two parties actually produced it — either one could have, using the same shared secret. Non-repudiation isn't just hard to achieve with symmetric crypto; it's structurally impossible, regardless of implementation quality. A bank can't use a symmetric MAC to prove in court that *you* authorized a transfer rather than the bank itself — the same key that verifies the MAC could have created it.
+With symmetric crypto, both parties hold the same key. A valid MAC proves that someone with that key created it, but it cannot distinguish one key holder from another. A bank therefore cannot use a two-party MAC alone to prove that the customer, rather than the bank, authorised a transfer.
 
-Asymmetric crypto changes this because the private key is (in principle) held by exactly one party. A valid signature proves *someone holding that private key* produced it — and if only one person ever held it, that's non-repudiation. But this guarantee is conditional, not automatic:
+Asymmetric signatures make stronger attribution possible because the private key can be held by one party while everyone else receives only the public key. The result is still conditional:
 
 - It depends entirely on private-key custody — a stolen key, a compromised signing server, or a coerced signature all produce a cryptographically perfect, valid signature that proves nothing about who *actually* chose to sign.
 - Key escrow, shared signing infrastructure, or a poorly-secured HSM all quietly undermine the same guarantee the algorithm itself provides.
 
-[Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}#non-repudiation-what-it-actually-promises) covers this dependency in full — the short version is that asymmetric crypto makes non-repudiation *possible*, but the actual guarantee lives in how the private key is protected, not in the math alone.
+[Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}#non-repudiation-what-it-actually-promises) covers this dependency in full. My short version: the signature binds a message to a key; the surrounding system must bind that key and signing event to a person, organisation, and intent.
 
 ## The security tradeoff: a shared secret vs. a secret that never travels
 
 A symmetric key is, functionally, a passphrase both sides must already possess before anything works. That has a real consequence: the key has to get from one party to the other over *some* channel, and whatever that channel is becomes the entire security of the system. Compromise either copy of the key and the whole scheme is broken — there's no distinction between "the sender's copy leaked" and "the receiver's copy leaked."
 
-Asymmetric crypto's public/private split removes that exposure entirely on one side: the public key can travel over the most hostile network imaginable, get posted publicly, sit in a phonebook — none of it matters, because possessing the public key alone lets you do nothing except encrypt *to* the owner or verify a signature *from* them. The private key never has to be transmitted, ever, to anyone, for the system to work. That's a meaningfully higher security posture than symmetric crypto can offer by itself, precisely because there's no "the secret leaked in transit" failure mode to begin with.
+Asymmetric crypto removes the need to transmit the private key. The public key can be disclosed freely, but its **identity binding must be authenticated**; otherwise an attacker can substitute a different public key. This is why certificates, fingerprints, trusted directories, or another authenticated channel are still required.
 
-The cost is speed: asymmetric operations run roughly 100–1000× slower than symmetric ones for equivalent data sizes, which is exactly why almost nothing encrypts bulk data directly with RSA or ECC.
+The cost is speed and payload constraints. The actual performance ratio depends on the operation, algorithm, implementation, hardware, and data size, so I should benchmark rather than repeat one generic multiplier.
 
 ## The real answer is both: hybrid encryption, and PGP as the enduring example
 
 Nearly every real system that needs both properties — the security posture of asymmetric crypto, and the speed of symmetric crypto — combines them in the same pattern: use asymmetric crypto for the *one small thing* that must never be transmitted in the clear (a symmetric key), and let that symmetric key handle the actual bulk of the data, fast.
 
-**PGP / OpenPGP** ([RFC 4880](https://www.rfc-editor.org/rfc/rfc4880)) is the clearest, longest-running example of this pattern in practice, and it's still in active use today (GnuPG remains actively maintained, and PGP-encrypted email and file encryption are still standard in security-conscious organizations):
+**OpenPGP**, currently specified by **[RFC 9580](https://www.rfc-editor.org/rfc/rfc9580)**, is a long-running example of this pattern. It remains available in tools such as GnuPG, although usage varies by organisation and it is not safe to call encrypted email a general industry standard.
 
 1. A random **session key** is generated for this message only.
 2. The actual message is encrypted with that session key using a fast symmetric cipher (AES, in modern OpenPGP implementations).
@@ -48,23 +48,23 @@ This is exactly the same shape as the [TLS handshake]({{ '/topics/tls-ssl-handsh
 | | Symmetric | Asymmetric |
 |---|---|---|
 | Keys involved | One shared secret | A public/private pair |
-| Speed | Fast — the default for bulk data | 100–1000× slower |
-| Key distribution | Both sides need the identical secret beforehand — a chicken-and-egg problem | Public half needs no protection in transit at all |
-| Non-repudiation | Not possible, structurally — either party could have produced a given tag | Possible — but only as strong as private-key custody |
+| Speed | Fast — the normal choice for bulk data | More expensive; measure the chosen operation and implementation |
+| Key distribution | Both sides need the same secret | Public key can be disclosed, but its identity binding must be authenticated |
+| Attribution | A MAC cannot distinguish between parties sharing the key | A signature can support attribution if identity, custody, and process are sound |
 | Typical role today | Encrypting the actual bulk data | Protecting/exchanging the symmetric key, signing, identity |
 
 ## Common pitfalls
 
 - **Assuming a symmetric MAC proves who sent something** — it only proves *someone holding the shared key* did; that could be either party.
 - **Treating a valid signature as proof of intent** — it proves private-key possession at signing time, nothing about whether the legitimate owner chose to sign, if the key was compromised or coerced.
-- **Encrypting bulk data directly with RSA/ECC** — technically possible, practically never done, given the 100–1000× performance gap versus hybrid encryption.
+- **Encrypting bulk data directly with RSA** — payload limits and performance make a standard hybrid construction the safer design. ECDH itself is key agreement, not bulk encryption.
 - **Building a custom hybrid scheme instead of using an established one** — PGP, TLS, and age (a modern file-encryption tool) have all had this exact pattern reviewed for years; a homemade version hasn't.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc4880">RFC 4880</a></strong> defines the OpenPGP message format, including the hybrid encryption pattern described above. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> covers the signature schemes (RSA, ECDSA, EdDSA) underlying the non-repudiation guarantee discussed here.</p>
+  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc9580">RFC 9580</a></strong> defines the current OpenPGP message format and obsoletes RFC 4880. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> covers approved RSA, ECDSA, and EdDSA signature schemes.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 This is the direct comparison [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) and [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }}) each gesture toward but don't fully resolve on their own — both pages now focus on their own mechanics; this is where the tradeoffs between them, and why real systems use both together, actually get worked out.

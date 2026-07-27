@@ -8,7 +8,7 @@ permalink: /topics/symmetric-mode-attacks/
 
 # Symmetric Mode Attacks: ECB, CBC & CTR
 
-<p class="lede"><a href="{{ '/topics/symmetric-cryptography/' | relative_url }}">Symmetric Cryptography</a> explained why ECB leaks patterns, why CBC needs a separate MAC, and why CTR nonce reuse is catastrophic. All three, proven directly below with real AES ciphertext and actual OpenSSL commands, not just the claim.</p>
+<p class="lede">I wanted runnable proof for the three mode failures I keep seeing in explanations: ECB pattern leakage, CBC malleability without authentication, and CTR nonce reuse. These fixed-value commands are for learning only; the keys and IVs are deliberately public so I can reproduce the same output.</p>
 
 <div class="callout">
   <span class="callout-title">About the keys below</span>
@@ -87,9 +87,9 @@ block 1 (garbled): b'\xc3\xef<?\xef\xe1\xc4\x84\xf28\xe5\x11G\xdd\x8c\$'
 block 2 (target):   b'user;isadmin=1;;'
 ```
 
-`isadmin=0` became `isadmin=1`, byte-exact, with block 1 turned to unrecoverable noise — a cost the attacker doesn't care about if block 1 is, say, a username field they don't need intact. This is a real class of vulnerability that broke production systems using encrypted-but-unauthenticated cookies and view-state tokens (Microsoft's ASP.NET padding-oracle vulnerability, MS10-070, is the best-known real-world case) — CBC alone provides zero integrity checking, so nothing about the decryption process signals that anything was tampered with.
+`isadmin=0` became `isadmin=1`, byte-exact, with block 1 turned to unrecoverable noise. This demonstrates CBC malleability when there is no authentication. Microsoft’s [MS10-070](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2010/ms10-070) was a related but distinct CBC failure: a padding oracle in ASP.NET that leaked information through decryption errors. I should not describe that incident as this exact direct bit-flipping attack.
 
-## 3. CTR: reusing a nonce breaks confidentiality completely
+## 3. CTR: nonce reuse exposes the plaintext relationship
 
 Encrypt two *different* messages of the same length, using the same key **and the same nonce** — the one thing CTR mode absolutely cannot tolerate:
 
@@ -129,7 +129,7 @@ XOR(P1, P2) = b'\x19\x17\x04\x1aS\x0b\x00RAP\x11\t@MT\x1cH#\x1d\x12\x00\x00\x00'
 equal: True
 ```
 
-The identical keystream generated both times cancels out completely, leaving exactly `P1 XOR P2` — a direct relationship between the two secret messages, recovered with no key at all. And this isn't just an abstract relationship — if the attacker can guess or already knows *any part* of one message (a "crib"), the same XOR trick recovers that same stretch of the other message outright:
+The identical keystream cancels out, leaving `P1 XOR P2`—a direct relationship between the secret messages, recovered with no key. This does not automatically reveal both complete plaintexts. If the attacker knows or can guess part of one message, however, the corresponding part of the other message can be recovered:
 
 ```
 $ python3 -c "
@@ -143,7 +143,7 @@ guessed part of P1:   b'Transfer $100 to'
 recovered part of P2: b'Meet me at 9pm s'
 ```
 
-Guessing 17 bytes of one message recovered the corresponding 17 bytes of the *other* message, entirely from public ciphertext. This exact flaw (formally, a "two-time pad") is what broke WEP Wi-Fi encryption in the early 2000s, and it's the reason [nonce reuse]({{ '/topics/symmetric-cryptography/' | relative_url }}#modes-of-operation-why-aes-alone-isnt-enough) is treated as an absolute, non-negotiable rule for any counter-based mode.
+Guessing 17 bytes of one message recovered the corresponding 17 bytes of the other from public ciphertext. WEP suffered from repeated/weak IVs and RC4 keystream reuse, but its failure also involved RC4 key-scheduling weaknesses, a small IV space, and a weak CRC-based integrity check. The narrower lesson for CTR is still clear: [nonce reuse]({{ '/topics/symmetric-cryptography/' | relative_url }}#modes-of-operation-why-aes-alone-isnt-enough) creates a two-time-pad problem.
 
 <div class="callout warn">
   <span class="callout-title">Switching to GCM does not fix nonce reuse</span>
@@ -161,6 +161,6 @@ Guessing 17 bytes of one message recovered the corresponding 17 bytes of the *ot
   <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/38/a/final">NIST SP 800-38A</a></strong> defines ECB, CBC, and CTR. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/d/final">NIST SP 800-38D</a></strong> defines GCM. Vaudenay's 2002 paper <em>"Security Flaws Induced by CBC Padding"</em> formalized the padding-oracle attack class that CBC's lack of integrity checking enables.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 The hands-on companion to [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) — the same relationship [Hash Collisions & Length-Extension Attacks]({{ '/topics/hash-collisions-length-extension/' | relative_url }}) has to Hash Functions & MACs: real, runnable proof of what the diagrams and prose there only asserted.

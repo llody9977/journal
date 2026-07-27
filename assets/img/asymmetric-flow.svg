@@ -30,7 +30,7 @@
 
   <path d="M215 80 L280 80" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
   <rect x="285" y="55" width="90" height="50" rx="8" fill="#9f1239" />
-  <text x="330" y="85" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">?%&amp;</text>
+  <text x="330" y="85" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">ciphertext</text>
 
   <path d="M380 80 L445 80" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
   <g fill="#a14c00" stroke="#a14c00"><use href="#key-open" transform="translate(460,80) scale(0.9)" /></g>

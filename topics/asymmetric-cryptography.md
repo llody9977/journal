@@ -8,7 +8,7 @@ permalink: /topics/asymmetric-cryptography/
 
 # Asymmetric Cryptography
 
-<p class="lede">Symmetric cryptography (see the <a href="{{ '/topics/symmetric-cryptography/' | relative_url }}">previous topic</a>) has one problem it cannot solve by itself: both sides need the same secret key before anything works, and getting that key across safely is exactly the problem encryption was supposed to solve in the first place. Asymmetric cryptography exists to break that circularity.</p>
+<p class="lede">The reason I need asymmetric cryptography is the key-distribution problem: symmetric encryption is excellent once both sides already share a secret, but it does not tell me how strangers should establish or authenticate that secret in the first place.</p>
 
 ## The core idea: two different keys
 
@@ -25,15 +25,15 @@ The relationship between them supports two distinct, and easy to confuse, operat
 </div>
 
 1. **Encryption** — the public key locks, the private key is the only thing that unlocks. This gives confidentiality: anyone can send the owner a secret, but only the owner can read it.
-2. **Signing** — the private key signs, the public key verifies. This gives authenticity and, in principle, non-repudiation: only the owner could have produced a valid signature, and anyone can check it without needing any secret at all. In practice that guarantee is only as strong as how the private key is actually protected — see [Symmetric vs Asymmetric Cryptography]({{ '/topics/symmetric-vs-asymmetric/' | relative_url }}) and [Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}#non-repudiation-what-it-actually-promises) for exactly what can go wrong.
+2. **Signing** — the private key signs, and the public key verifies. This provides evidence that someone controlling the private key produced the signature. Attribution to a person or organisation still depends on how the public key was authenticated and how the private key was protected.
 
 This second use is exactly the mechanism behind the overview's "Official ID & Notary Stamp" and "Handwritten Signature" examples — a CA's signature on a certificate, or a signed software update, is this exact operation.
 
 ## Why this solves the key-distribution problem
 
-A public key needs no protection in transit — it can travel over the most hostile network imaginable and it doesn't matter, because knowing it doesn't let anyone decrypt anything or forge a signature. That completely sidesteps symmetric crypto's original problem.
+A public key does not need confidentiality in transit, but it does need **authenticity**. If an attacker can replace Alice's public key with their own, the victim may encrypt to or verify signatures from the attacker instead. Certificates, authenticated directories, fingerprints checked over another channel, and trust-on-first-use are different ways of solving that binding problem.
 
-The trade-off: asymmetric operations are computationally expensive — often 100–1000× slower than symmetric ones for equivalent data sizes. In practice, almost nobody encrypts bulk data directly with RSA or ECC. Instead, systems use **hybrid encryption**: asymmetric crypto establishes or protects a short-lived symmetric key, and that symmetric key does the actual heavy lifting. This is precisely what happens during a [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) — and, decades earlier and still running today, in PGP/OpenPGP encrypted email. [Symmetric vs Asymmetric Cryptography]({{ '/topics/symmetric-vs-asymmetric/' | relative_url }}#the-real-answer-is-both-hybrid-encryption-and-pgp-as-the-enduring-example) walks through the PGP version of this pattern in detail.
+The trade-off is performance and payload size: public-key operations are much more expensive than symmetric encryption, but the ratio varies heavily by algorithm, operation, hardware, and message size. In practice I should use **hybrid encryption**: public-key cryptography or key agreement establishes/protects a short-lived symmetric key, and that key handles the bulk data.
 
 ## The two main families: RSA and ECC
 
@@ -44,7 +44,7 @@ The trade-off: asymmetric operations are computationally expensive — often 100
 | Relative speed | Slower, especially key generation | Faster for equivalent security |
 | Signing scheme | RSA-PSS (modern) or PKCS#1 v1.5 (legacy) | ECDSA, or EdDSA (Ed25519) |
 | Key exchange scheme | Not typically used this way | ECDH (Elliptic Curve Diffie-Hellman) |
-| Maturity | Older, extremely well-studied, still widely deployed | Newer, now the default for most new systems (TLS 1.3, SSH, modern certificates) |
+| Maturity | Older, extremely well-studied, still widely deployed | Well-established and common in new systems; TLS key exchange, SSH keys, and certificate signing algorithms are separate choices |
 
 The headline difference is size, for the same security margin:
 
@@ -53,7 +53,7 @@ The headline difference is size, for the same security margin:
   <p class="diagram-caption">RSA key sizes grow steeply; ECC stays compact at every security level</p>
 </div>
 
-Smaller keys mean smaller certificates, faster handshakes, and less CPU spent per connection — which is why ECC has become the default recommendation for new systems, not because RSA is broken.
+Smaller keys and signatures can reduce certificate size and computation, which is why elliptic-curve schemes are common in new systems. RSA is still widely deployed and is not “broken” at approved key sizes.
 
 ## EdDSA and Ed25519: the newer signing scheme
 
@@ -98,7 +98,7 @@ The public and private key aren't two independent secrets that happen to work to
 That asymmetry is the entire reason a public key is safe to publish anywhere and a private key never is:
 
 - **A leaked public key costs nothing.** It was already meant to be public. Nothing about having it gets an attacker any closer to the private key, because that direction is exactly the hard problem.
-- **A leaked private key regenerates the public key too, deterministically.** There's no such thing as "only the private key leaked, the public key is still fine" — anyone holding the private key can trivially recompute the exact matching public key at will, so a private-key leak is a total, immediate compromise of both halves at once.
+- **A leaked private key compromises the security purpose of the key pair.** The public key was never secret, so “compromising both halves” is not the useful description. The problem is that the attacker can now decrypt, sign, or impersonate wherever that private key is trusted, depending on the scheme.
 
 A real demonstration — derive the public key from the same private key twice, independently, and compare:
 
@@ -131,6 +131,6 @@ Byte-for-byte identical, every time, forever — because it isn't really "regene
   <p><strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the current Digital Signature Standard, approving RSA, ECDSA, and EdDSA. <strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers key-establishment schemes (including ECDH). <strong><a href="https://csrc.nist.gov/pubs/sp/800/186/final">NIST SP 800-186</a></strong> specifies the approved elliptic curves (P-256, P-384, P-521, and Edwards curves).</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 Asymmetric cryptography is the mathematical machinery — but on its own, it only tells you "this public key can only be unlocked by whoever holds the matching private key." It says nothing about *whose* key that is. Binding a public key to a real-world identity is exactly the job of [Certificate Authorities & Certificates]({{ '/topics/certificates/' | relative_url }}), and negotiating a fresh key pair safely for every connection is the job of [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}).

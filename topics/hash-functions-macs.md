@@ -8,9 +8,9 @@ permalink: /topics/hash-functions-macs/
 
 # Hash Functions & MACs
 
-<p class="lede">The overview's "Tamper-Evident Seal" example described a hash function without naming it: a fragile mark that shatters if a single character changes, so the bank can instantly tell whether Alice's instruction was altered in transit. The one-way, avalanche-effect math is what makes that possible — and the keyed variant, a MAC, is what's needed to also prove who created the seal, not just that it wasn't broken.</p>
+<p class="lede">I use hashes for compact fingerprints and integrity checks, but only when the expected digest comes from somewhere I trust. If an attacker can replace both a file and its digest, an unkeyed hash proves nothing. A MAC adds a shared secret when I also need origin authentication.</p>
 
-## What a cryptographic hash function guarantees
+## What a cryptographic hash function is designed to provide
 
 A cryptographic hash function takes an input of any size and produces a fixed-size output (a **digest**), with three properties that make it useful for security:
 
@@ -51,7 +51,7 @@ A common mix-up worth stating plainly: hashing is **one-way** and has no key —
 
 ## MACs: adding a key to prove who sent it
 
-A plain hash proves data wasn't altered — but anyone can compute `SHA-256(message)`, including an attacker who altered the message and recomputed a matching hash to go with it. A hash alone can't prove *authenticity*, only accidental-corruption-style integrity.
+A plain hash can detect accidental corruption when I already have a trusted reference digest. Anyone can compute `SHA-256(message)`, including an attacker who replaces both the message and digest, so a hash alone cannot prove authenticity or adversarial integrity.
 
 A **MAC (Message Authentication Code)** fixes this by mixing in a secret key, so only someone holding that key could have produced a valid tag:
 
@@ -60,11 +60,11 @@ A **MAC (Message Authentication Code)** fixes this by mixing in a secret key, so
   <p class="diagram-caption">Same key on both sides — anyone without K can't produce a matching tag</p>
 </div>
 
-**HMAC (Hash-based MAC)** is the standard construction, defined in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198/1/final)**. It's deliberately *not* as simple as `H(key + message)` — see below for why.
+**HMAC (Hash-based MAC)** is the standard construction, defined in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**. It's deliberately *not* as simple as `H(key + message)` — see below for why.
 
 ## Why naive `H(key + message)` is broken: length-extension attacks
 
-SHA-256, SHA-1, and MD5 all use a **Merkle–Damgård** construction internally, which processes input block by block and leaks its entire internal state as the final output. That means for these algorithms, if you know `H(secret + message)` and the length of `secret`, you can compute `H(secret + message + attacker_data)` for *any* `attacker_data` you like — without ever knowing `secret`. This is a **length-extension attack**, and it has been used in real exploits (Flickr's API signature scheme was broken this way in 2009).
+SHA-256, SHA-1, and MD5 use a **Merkle–Damgård** construction internally. If I know `H(secret || message)` and can determine or guess the secret length, I can continue from that internal state and compute a valid digest for `secret || message || glue_padding || attacker_data` without learning the secret. The glue padding is part of the forged message; it cannot simply be omitted from the formula. This is a **length-extension attack**.
 
 HMAC avoids this entirely with a nested construction — roughly `H((key XOR opad) + H((key XOR ipad) + message))` — that hashes twice with the key mixed in at both layers, so the internal-state leak that breaks the naive approach no longer helps an attacker. (SHA-3's sponge construction isn't vulnerable to this specific attack in the first place, which is one of its advantages — though HMAC is still the standard, well-analyzed choice regardless of the underlying hash.)
 
@@ -93,9 +93,9 @@ Change one character in the input, or the key, and re-run — the output has no 
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/180-4/final">FIPS 180-4</a></strong> defines the SHA-2 family. <strong><a href="https://csrc.nist.gov/pubs/fips/202/final">FIPS 202</a></strong> defines SHA-3 and the SHAKE extendable-output functions. <strong><a href="https://csrc.nist.gov/pubs/fips/198/1/final">FIPS 198-1</a></strong> defines HMAC. <strong><a href="https://csrc.nist.gov/pubs/sp/800/131/a/r2/final">NIST SP 800-131A Rev. 2</a></strong> formally disallows SHA-1 for digital signature generation.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/fips/180-4/final">FIPS 180-4</a></strong> defines the SHA-2 family. <strong><a href="https://csrc.nist.gov/pubs/fips/202/final">FIPS 202</a></strong> defines SHA-3 and SHAKE. <strong><a href="https://csrc.nist.gov/pubs/fips/198-1/final">FIPS 198-1</a></strong> defines HMAC; NIST has announced an intended transition of that material to SP 800-224, so I should recheck the status when updating this page. <strong><a href="https://csrc.nist.gov/pubs/sp/800/131/a/r2/final">NIST SP 800-131A Rev. 2</a></strong> disallows SHA-1 for digital-signature generation.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 Every [certificate's signature]({{ '/topics/certificates/' | relative_url }}#what-algorithms-actually-sign-these-certificates) is really "sign the hash of the data," not the raw data itself — hashing first is what lets [Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}) work on messages of any size with a fixed-size cryptographic operation. And every AEAD cipher discussed under [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) has a MAC (or MAC-equivalent) built directly into it — GCM's authentication tag is doing exactly the job described above, just folded into the encryption step itself.

@@ -8,7 +8,7 @@ permalink: /topics/hash-collisions-length-extension/
 
 # Hash Collisions & Length-Extension Attacks
 
-<p class="lede"><a href="{{ '/topics/hash-functions-macs/' | relative_url }}">Hash Functions & MACs</a> stated that MD5 and SHA-1 are broken, and that a naive <code>H(secret + message)</code> construction is vulnerable to length extension. Both claims, proven directly below — real downloadable collision files, and a working length-extension forgery in running code, not just an assertion.</p>
+<p class="lede">I keep these files and scripts because “MD5 and SHA-1 have collisions” is too easy to repeat without understanding what it means. Here I can verify the collision pairs myself and run the length-extension forgery end to end.</p>
 
 ## MD5 collisions: two different files, one hash
 
@@ -186,6 +186,6 @@ There is no equivalent attack against this line. [HMAC]({{ '/topics/hash-functio
   <p>Wang and Yu, <em>"How to Break MD5 and Other Hash Functions"</em> (2005) is the original MD5 collision paper. Stevens, Bursztein, Karpman, Albertini, and Markov, <em>"The First Collision for Full SHA-1"</em> (Google/CWI, 2017) is the SHAttered paper — full technical detail and the original full-size PDFs at <a href="https://shattered.io">shattered.io</a>. <strong><a href="https://www.rfc-editor.org/rfc/rfc2104">RFC 2104</a></strong> defines HMAC.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 The hands-on companion to [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}): everything stated there about MD5, SHA-1, and length extension, demonstrated here with real files and running code rather than taken on faith.

@@ -1,8 +1,7 @@
 title: Field Journal
 description: >-
-  An educational, ever-growing security engineering reference — cryptography
-  foundations, PKI, key management, authentication/authorization, network
-  security, and applied topics, organized by category.
+  My working security engineering journal — explanations, command output,
+  diagrams, references, and corrections kept for the next time I need them.
 baseurl: "/journal"
 url: "https://llody9977.github.io"
 

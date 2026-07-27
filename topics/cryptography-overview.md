@@ -1,14 +1,14 @@
 ---
 title: Cryptography Overview
-description: The four pillars of cryptography — confidentiality, integrity, authenticity, non-repudiation — and a worked analogy for how they combine in practice.
+description: My working map of the security properties cryptographic systems can support.
 permalink: /topics/cryptography-overview/
 ---
 
 <span class="eyebrow">Cryptography / Overview</span>
 
-# Cryptography, mapped out.
+# Cryptography, my working map
 
-<p class="lede">Every time you send a message, log into a bank, or load a webpage, your data travels across an open, untrusted network — passed along by routers, cables, and servers operated by total strangers. Cryptography is the math and engineering built to make that untrusted journey safe.</p>
+<p class="lede">I use cryptography to protect data even when the network, storage, or intermediary cannot be trusted. The important part for me is not memorising algorithms first; it is knowing which security property a primitive actually provides, and which property it does not.</p>
 
 ## Why cryptography? The open network problem
 
@@ -24,14 +24,14 @@ The internet is that crowded street. Cryptography exists because we cannot make 
 
 ---
 
-## The 4 core pillars of security
+## Four properties I use to organise these notes
 
-These four are cryptography's own framing, not the full [security triad]({{ '/topics/security-fundamentals/' | relative_url }}) — confidentiality and integrity are shared with it directly; authenticity and non-repudiation are the extended properties cryptographic tools happen to be the primary mechanism for. Availability, the triad's third leg, sits outside this list entirely — no cipher, hash, or signature keeps a server reachable. Before looking at any algorithms or math, every cryptographic tool is designed to solve one or more of these four challenges:
+This is a useful study framework, not a universal or complete taxonomy of cryptography. Confidentiality and integrity come from the [CIA triad]({{ '/topics/security-fundamentals/' | relative_url }}); authenticity and accountability become important once keys are tied to identities. Availability remains outside the list because a cipher, hash, or signature does not keep a service reachable.
 
 1. **Confidentiality (Secrecy)** — Ensuring that *only* the intended recipient can read the message contents.
 2. **Integrity (Tamper Prevention)** — Ensuring the message has not been altered, modified, or corrupted during transit.
 3. **Authenticity (Identity Verification)** — Confirming that the message genuinely originated from the claimed sender.
-4. **Non-Repudiation (Proof of Action)** — Ensuring the sender cannot later claim they never sent or authorized the message.
+4. **Evidence / Non-repudiation support** — Producing evidence that can help attribute an action to a signing key. Whether this is enough to bind a human or organisation also depends on identity proofing, key custody, audit records, and the applicable process or law.
 
 ---
 
@@ -52,21 +52,21 @@ Because Alice lives far away, she must hand her written instruction to an indepe
   <span class="callout-title">2. Integrity — The Tamper-Evident Seal</span>
   <p><strong>The Threat:</strong> An attacker picks open the briefcase, adds a zero to make it <code>$100,000</code>, and snaps the briefcase closed again.</p>
   <p><strong>The Solution:</strong> Alice seals the document inside a special wax envelope stamped with a fragile micro-pattern. If anyone tampers with even a single character, the seal shatters irreparably. When the bank receives it, any broken seal means immediate rejection.</p>
-  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/hash-functions-macs/' | relative_url }}">Hash Functions & MACs</a></strong> (like SHA-256 and HMAC) generate a unique mathematical fingerprint. If even 1 bit of data changes, the hash output changes completely.</p>
+  <p><em>In Cryptography:</em> a trusted <strong><a href="{{ '/topics/hash-functions-macs/' | relative_url }}">hash or MAC</a></strong> can detect a change. A hash is not unique in the mathematical sense—collisions exist—and an unkeyed digest only helps against an attacker if the expected digest arrives through a trusted channel.</p>
 </div>
 
 <div class="callout">
   <span class="callout-title">3. Authenticity — The Official ID & Notary Stamp</span>
   <p><strong>The Threat:</strong> Eve hands a locked briefcase to the courier claiming, <em>"I am Alice, transfer $10,000 to Eve."</em></p>
   <p><strong>The Solution:</strong> The bank teller checks the document for Alice's official notary stamp and signature card on file. Unless the document carries Alice's verified mark, the teller ignores the request.</p>
-  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/certificates/' | relative_url }}">Digital Certificates & CAs</a></strong> (Public Key Infrastructure) verify that a public key genuinely belongs to the person or website claiming it.</p>
+  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/certificates/' | relative_url }}">Digital certificates and CAs</a></strong> bind a public key to a name or other asserted identity under a particular validation policy. A domain-validated TLS certificate mainly proves control of the domain, not the real-world identity of a company or person.</p>
 </div>
 
 <div class="callout">
   <span class="callout-title">4. Non-Repudiation — The Handwritten Signature on Record</span>
   <p><strong>The Threat:</strong> Next week, after the bank transfers $10,000, Alice regrets her transfer. She sues the bank, claiming: <em>"I never authorized that transfer! A bank teller stole my money!"</em></p>
   <p><strong>The Solution:</strong> The bank produces the original document bearing Alice's unique, certified handwritten signature. Because only Alice holds the legal stamp and signing pen, she cannot legally or practically deny having authorized the transaction.</p>
-  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/digital-signatures/' | relative_url }}">Asymmetric Digital Signatures</a></strong> (like ECDSA or RSA signing) use a private key held strictly by the owner, proving to any third party that only the key holder could have generated the signature.</p>
+  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/digital-signatures/' | relative_url }}">digital signatures</a></strong> such as ECDSA, Ed25519, or RSA-PSS show that a valid signature was produced using the corresponding private key. I still need separate evidence to establish who controlled that key at the time.</p>
 </div>
 
 ---
@@ -78,18 +78,18 @@ Because Alice lives far away, she must hand her written instruction to an indepe
 | **Confidentiality** | *"Can anyone else read this?"* | Eavesdropping / Leakage | **Encryption** ([AES]({{ '/topics/symmetric-cryptography/' | relative_url }}), ChaCha20, RSA) |
 | **Integrity** | *"Has this been modified?"* | Tampering / Corruption | **[Cryptographic Hashes & MACs]({{ '/topics/hash-functions-macs/' | relative_url }})** (SHA-256, HMAC) |
 | **Authenticity** | *"Is the sender who they claim?"* | Impersonation / Spoofing | **[Certificates & PKI]({{ '/topics/certificates/' | relative_url }})** (X.509, CAs) |
-| **Non-Repudiation** | *"Can the sender deny this later?"* | False Denial / Backtracking | **[Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }})** (ECDSA, Ed25519, RSA) |
+| **Evidence / accountability** | *"What evidence ties this action to a key?"* | Weak attribution | **[Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }})** (ECDSA, Ed25519, RSA-PSS) |
 
 ---
 
 ## How real-world protocols combine all four
 
-Modern web security doesn't pick just one pillar — it combines all four into unified protocols like **[TLS / HTTPS]({{ '/topics/tls-ssl-handshake/' | relative_url }})**:
+Modern web security combines several properties in protocols such as **[TLS / HTTPS]({{ '/topics/tls-ssl-handshake/' | relative_url }})**:
 
 1. **Authenticity:** Your browser checks the website's SSL certificate issued by a **[Certificate Authority]({{ '/topics/certificates/' | relative_url }})** to confirm `bank.com` is genuine.
-2. **Non-Repudiation & Key Exchange:** The server and browser use **[Asymmetric Cryptography]({{ '/topics/key-exchange-derivation/' | relative_url }})** (Elliptic Curve Diffie-Hellman) to safely negotiate shared secrets.
+2. **Authenticated key agreement:** The server normally signs the handshake transcript with the private key corresponding to its certificate. The peers use **[(EC)DHE key agreement]({{ '/topics/key-exchange-derivation/' | relative_url }})** to establish shared secrets. ECDHE itself does not provide non-repudiation.
 3. **Confidentiality:** All web traffic (passwords, credit cards, HTML) is encrypted using fast **[Symmetric Ciphers]({{ '/topics/symmetric-cryptography/' | relative_url }})** (AES-GCM).
-4. **Integrity:** Every network packet includes an **[Auth Tag / MAC]({{ '/topics/hash-functions-macs/' | relative_url }})** to ensure no router along the way modified the data.
+4. **Integrity:** Each protected TLS record carries an AEAD authentication tag. This is a TLS-record property, not a tag added independently to every IP packet.
 
 ## What "secure" actually means: time, not certainty
 
@@ -97,6 +97,6 @@ Every cipher on this site is breakable, given enough time and compute — brute 
 
 A credit card number needs to stay confidential for a few years; a state secret might need decades; a root CA key backing an entire trust hierarchy might need to hold for longer than that. "Secure" always means "secure for how long this needs to matter" — which is exactly why key sizes get revised upward over time (see [Recommended Algorithms & Regional Standards]({{ '/topics/recommended-algorithms/' | relative_url }})), why algorithms eventually get deprecated rather than staying in use forever, and why the entire post-quantum migration is racing against a clock at all: an attacker recording encrypted traffic *today* and decrypting it once a capable quantum computer exists later is simply attacking on a longer time horizon than the data's protection was designed for. The math doesn't change; the value of breaking it in time does.
 
-## Where this fits
+## How I connect this
 
-This is the conceptual entry point for everything under Cryptography, one level beneath [Security Fundamentals]({{ '/topics/security-fundamentals/' | relative_url }})'s CIA framing — [Foundations]({{ '/topics/symmetric-cryptography/' | relative_url }}) covers each of the four pillars' primitives in depth, [Public Key Infrastructure]({{ '/topics/certificates/' | relative_url }}) covers authenticity and non-repudiation at internet scale, and [Applied Cryptography]({{ '/topics/password-storage/' | relative_url }}) covers where these primitives show up in real systems (passwords, disks, blockchains). Everything under [Key Management]({{ '/topics/hsm-kms/' | relative_url }}), [Authentication & Authorization]({{ '/topics/oauth-oidc/' | relative_url }}), [Network Security]({{ '/topics/dns-security/' | relative_url }}), and [Emerging Topics]({{ '/topics/ai-llm-security/' | relative_url }}) builds directly on these four pillars, applied to a specific layer of a real system.
+This is my entry point for the rest of the journal. [Foundations]({{ '/topics/symmetric-cryptography/' | relative_url }}) covers the primitives, [Public Key Infrastructure]({{ '/topics/certificates/' | relative_url }}) covers identity binding and trust, and [Applied Cryptography]({{ '/topics/password-storage/' | relative_url }}) covers the places where implementation details usually matter more than the neat textbook model.

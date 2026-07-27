@@ -8,7 +8,7 @@ permalink: /topics/full-disk-file-encryption/
 
 # Full-Disk & File Encryption
 
-<p class="lede"><a href="{{ '/topics/tls-ssl-handshake/' | relative_url }}">TLS</a> and <a href="{{ '/topics/ssh/' | relative_url }}">SSH</a> protect data <strong>in transit</strong> — while it's moving across a network an attacker can watch. Data <strong>at rest</strong> is the very different problem: protecting data sitting on a storage device an attacker can physically hold, at their leisure, powered off, for as long as they like.</p>
+<p class="lede">For my threat model, full-disk encryption mainly answers one question: if somebody takes the powered-off or locked device, can they read the storage without the unlock secret? It does not protect an already unlocked machine from malware or a logged-in attacker.</p>
 
 ## The threat model: physical access, not network eavesdropping
 
@@ -16,9 +16,14 @@ Full-disk encryption (FDE) exists for a specific scenario: a lost or stolen lapt
 
 ## How full-disk encryption actually works: XTS mode
 
-Disks need **random access** — the OS reads and writes individual sectors constantly, not the file sequentially start to finish. That rules out [CBC and CTR]({{ '/topics/symmetric-cryptography/' | relative_url }}#modes-of-operation-why-aes-alone-isnt-enough): both chain state between blocks, which doesn't fit a "decrypt sector 8,000,000 without touching anything else" access pattern.
+Disks need independent, rewriteable data units and must avoid leaking equality patterns when sectors are moved or rewritten. Sector-local CBC constructions and counter modes can support random access, so random access alone does not “rule them out”. XTS was designed specifically for storage-device confidentiality and uses the data-unit position as a tweak.
 
-**XTS mode** (XEX-based Tweaked-codebook with ciphertext Stealing) solves this by using the **sector number itself** as a "tweak" — an extra input alongside the key. Two sectors containing identical plaintext still encrypt to different ciphertext, because their sector numbers differ, closing the exact pattern-leak problem [ECB]({{ '/topics/symmetric-cryptography/' | relative_url }}#modes-of-operation-why-aes-alone-isnt-enough) has — while still allowing any single sector to be decrypted independently of every other one.
+**XTS mode** (XEX-based Tweaked-codebook with Ciphertext Stealing) uses the data-unit number—normally related to the sector—as a tweak. Identical plaintext at different positions encrypts differently while each data unit remains independently accessible.
+
+<div class="callout warn">
+  <span class="callout-title">XTS gives confidentiality, not authentication</span>
+  <p><a href="https://csrc.nist.gov/pubs/sp/800/38/e/final">NIST SP 800-38E</a> states that XTS-AES does not authenticate the data or its source. An attacker able to modify sectors may cause controlled or unpredictable plaintext changes without an authentication failure. A complete storage design may need integrity protection from the filesystem, hardware, or another authenticated layer.</p>
+</div>
 
 ## The real problem: where the key actually comes from
 
@@ -26,7 +31,7 @@ The cipher is almost never the hard part of disk encryption — key management i
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/dek-kek.svg' | relative_url }}" alt="Diagram showing disk data encrypted by a Data Encryption Key (DEK), which is itself wrapped by a Key Encryption Key (KEK). The KEK can be unlocked three ways: a password or PIN via PBKDF2/Argon2, a TPM or Secure Enclave that only releases it if the boot process is untampered, or a recovery key as a backup." >
-  <p class="diagram-caption">Changing your password only re-wraps the KEK — the DEK, and your actual data, is never touched</p>
+  <p class="diagram-caption">Changing an unlock password normally changes its protector/KEK and re-wraps the unchanged volume key; the bulk data is not re-encrypted</p>
 </div>
 
 - **DEK (Data Encryption Key)** — encrypts the actual bulk data under XTS, fixed for the entire life of the volume. Re-encrypting an entire multi-terabyte disk every time a password changes would be impossibly slow, so it never does.
@@ -43,7 +48,7 @@ The KEK itself can come from a few different sources, often combined:
 | System | Platform | Typical backing |
 |---|---|---|
 | BitLocker | Windows | AES-XTS, usually TPM-backed with a PIN option |
-| FileVault | macOS | AES-XTS, tied to the user's login password and the Secure Enclave |
+| FileVault | macOS | AES-XTS; hardware-backed key handling differs between Intel Macs, T2 Macs, and Apple silicon |
 | LUKS / dm-crypt | Linux | AES-XTS, passphrase, keyfile, or TPM-backed unlock |
 
 ## File-level vs. disk-level encryption
@@ -62,9 +67,9 @@ $ hdiutil imageinfo encrypted_demo.dmg -stdinpass
 Password:
 Format: UDRW
 	Encrypted: true
-	Class Name: CEncryptedEncoding
-	Encryption: AES-256
 ```
+
+`hdiutil imageinfo` fields vary by macOS release. The command above was rechecked on 26 July 2026; `Encrypted: true` is the stable field I rely on, rather than expecting an old `Class Name` line.
 
 That's a genuinely encrypted, mountable volume — the same primitive concept as BitLocker/FileVault/LUKS, just created directly via macOS's disk image tooling rather than the OS's built-in whole-disk flow.
 
@@ -79,13 +84,13 @@ The VA had no technical control requiring full-disk encryption on a device that,
 - **Confusing sleep with shutdown** — decryption keys often remain resident in RAM during sleep, and some cold-boot attacks can extract keys from recently-powered-down RAM. Full shutdown clears this risk more reliably.
 - **Assuming FDE protects a running, unlocked system** — see the file-vs-disk distinction above; it doesn't, by design.
 - **Losing the recovery key** — the backup unlock method is only useful if it was actually saved somewhere durable before it's needed.
-- **Weak PIN on older hardware without full bus encryption** — some pre-TPM-2.0-era attacks sniffed the LPC bus between the TPM and CPU to recover keys in transit internally; modern TPM 2.0 implementations address this.
+- **Assuming “TPM 2.0” automatically prevents bus sniffing** — discrete TPM traffic can still be exposed if the platform and unlock design do not protect the relevant exchange. A pre-boot PIN, parameter/session encryption where supported, and integrated SoC security can reduce this risk; the TPM version number alone is not proof.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/38/e/final">NIST SP 800-38E</a></strong> defines XTS-AES specifically for storage encryption. Hardware claiming FIPS validation for its cryptographic modules (common in TPMs and HSMs) is certified against <strong><a href="https://csrc.nist.gov/pubs/fips/140-2/final">FIPS 140-2</a></strong> or the newer <strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong>.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/38/e/final">NIST SP 800-38E</a></strong> defines XTS-AES for storage confidentiality and explicitly notes the lack of authentication. Hardware cryptographic-module claims can be checked against <strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> and the NIST CMVP database.</p>
 </div>
 
-## Where this fits
+## How I connect this
 
 The cipher underneath full-disk encryption is the same [AES]({{ '/topics/symmetric-cryptography/' | relative_url }}) covered earlier — only the *mode* (XTS instead of GCM/CTR) changes, driven entirely by the random-access requirement. The key-derivation half reuses [Password Storage]({{ '/topics/password-storage/' | relative_url }})'s slow-KDF approach for the password-unlock path, layered underneath a second key purely to make password changes fast.
