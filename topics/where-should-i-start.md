@@ -36,6 +36,14 @@ CIA is the starting point, not the whole of security. The [NIST security glossar
 
 The distinction matters. Authentication does not decide permission; authorization does. A digital signature may support authenticity, integrity, and non-repudiation, but the strength of that evidence still depends on identity proofing, control of the signing key, and the surrounding process. NIST defines [authenticity](https://csrc.nist.gov/glossary/term/authenticity), [authentication](https://csrc.nist.gov/glossary/term/authentication), [authorization](https://csrc.nist.gov/glossary/term/authorization), [accountability](https://csrc.nist.gov/glossary/term/accountability), and [non-repudiation](https://csrc.nist.gov/glossary/term/non_repudiation) separately.
 
+### My foundation reading order
+
+1. **[Security Objectives & Properties]({{ '/topics/security-objectives-properties/' | relative_url }})** — what I need to preserve.
+2. **[Identity & Access Fundamentals]({{ '/topics/identity-access-fundamentals/' | relative_url }})** — who or what is acting, how it is verified, and what it may do.
+3. **[Threats, Vulnerabilities & Risk]({{ '/topics/risk-fundamentals/' | relative_url }})** — what could cause harm and how I prioritize it.
+4. **[Trust Boundaries & Threat Modeling]({{ '/topics/trust-boundaries-threat-modeling/' | relative_url }})** — how I apply the concepts to one actual system.
+5. **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})** — how I select, layer, and validate safeguards.
+
 ## The technologies are mechanisms, not the starting objective
 
 Once I understand the required security properties, I can see why each technology or practice exists:
@@ -54,20 +62,41 @@ No item covers security by itself. Encryption cannot keep an unavailable service
 
 ## So what: security work covers several connected disciplines
 
-I use this map to avoid treating every security activity as the same thing:
+I picture the work as connected layers. Direction and priorities flow down from the purpose. Test results, incidents, and operational evidence flow back up and change decisions.
 
-| Discipline | Main question |
-|---|---|
-| **Governance** | Who sets direction, owns decisions, accepts risk, and provides oversight? |
-| **Risk management** | Which possible harms matter most, and how should I respond? |
-| **Threat modeling** | What can go wrong in this system or design, and what will I do about it? |
-| **Threat intelligence** | What analyzed threat information gives me useful context for a decision? |
-| **Threat detection** | What evidence shows suspicious or harmful activity may be happening now? |
-| **Security engineering** | How should I design, implement, and validate controls? |
-| **Security operations and incident response** | How will I monitor, contain, investigate, recover, and improve? |
-| **Compliance** | Which legal, regulatory, contractual, or standard requirements must I satisfy and evidence? |
+<div class="security-layer-map" role="group" aria-label="Security work shown as six connected layers, from the purpose at the top to assurance and improvement at the bottom, with evidence feeding back upward.">
+  <div class="security-layer security-layer-purpose">
+    <span class="security-layer-label">Purpose</span>
+    <div><strong>Protect people, assets, and operations</strong><p>Preserve confidentiality, integrity, availability, authenticity, accountability, privacy, safety, and resilience according to the need.</p></div>
+  </div>
+  <div class="security-layer-connector" aria-hidden="true">direction ↓ &nbsp; evidence ↑</div>
+  <div class="security-layer security-layer-direct">
+    <span class="security-layer-label">Direct</span>
+    <div><strong>Governance · risk management · compliance</strong><p>Set ownership, priorities, risk tolerance, obligations, policy, and oversight.</p></div>
+  </div>
+  <div class="security-layer-connector" aria-hidden="true">↓</div>
+  <div class="security-layer security-layer-understand">
+    <span class="security-layer-label">Understand</span>
+    <div><strong>Assets · system context · threat modeling · threat intelligence</strong><p>Understand what matters, how the system works, what can go wrong, and which threats are relevant.</p></div>
+  </div>
+  <div class="security-layer-connector" aria-hidden="true">↓</div>
+  <div class="security-layer security-layer-protect">
+    <span class="security-layer-label">Build &amp; protect</span>
+    <div><strong>Architecture · engineering · security controls</strong><p>Design and implement identity, cryptographic, application, system, network, physical, and process controls.</p></div>
+  </div>
+  <div class="security-layer-connector" aria-hidden="true">↓</div>
+  <div class="security-layer security-layer-operate">
+    <span class="security-layer-label">Operate</span>
+    <div><strong>Monitoring · detection · response · recovery</strong><p>Find harmful activity, contain it, restore trustworthy operations, and keep essential services available.</p></div>
+  </div>
+  <div class="security-layer-connector" aria-hidden="true">↓</div>
+  <div class="security-layer security-layer-assure">
+    <span class="security-layer-label">Assure &amp; improve</span>
+    <div><strong>Testing · audit · metrics · lessons learned</strong><p>Produce evidence, identify gaps, and feed what I learn back into risk, governance, and design.</p></div>
+  </div>
+</div>
 
-These disciplines overlap, but they are not interchangeable. A threat model is specific to a system and its assumptions. [Threat intelligence](https://csrc.nist.gov/glossary/term/threat_intelligence) adds analyzed context about threats to support decisions. Detection uses telemetry and rules to find activity in an operating environment. Governance and risk management decide what the organization will prioritize and who is accountable.
+These are not departments or one-time project phases. They are different views of the same security problem. A threat model is specific to a system and its assumptions. [Threat intelligence](https://csrc.nist.gov/glossary/term/threat_intelligence) supplies analyzed context for decisions. Detection uses operating evidence to find activity that may already be happening. Governance and risk management decide what the organization will prioritize and who is accountable. Compliance adds mandatory constraints and evidence requirements, but satisfying them does not by itself prove that every material risk is controlled.
 
 ## Now what: choose the path that matches my problem
 

@@ -22,7 +22,17 @@
       url: /topics/security-fundamentals/
     - title: 2. Where Should I Start?
       url: /topics/where-should-i-start/
-    - title: 3. Cryptography
+    - title: 3. Security Objectives & Properties
+      url: /topics/security-objectives-properties/
+    - title: 4. Identity & Access Fundamentals
+      url: /topics/identity-access-fundamentals/
+    - title: "5. Threats, Vulnerabilities & Risk"
+      url: /topics/risk-fundamentals/
+    - title: 6. Trust Boundaries & Threat Modeling
+      url: /topics/trust-boundaries-threat-modeling/
+    - title: 7. Security Controls & Defense in Depth
+      url: /topics/security-controls-defense-in-depth/
+    - title: 8. Cryptography
       children:
         - title: 1. Overview
           url: /topics/cryptography-overview/
@@ -62,13 +72,13 @@
               url: /topics/full-disk-file-encryption/
             - title: 3. Blockchain Cryptography
               url: /topics/blockchain-cryptography/
-    - title: 4. Key Management
+    - title: 9. Key Management
       children:
         - title: HSM & KMS
           url: /topics/hsm-kms/
         - title: Security Certifications
           url: /topics/security-certifications/
-    - title: 5. Authentication & Authorization
+    - title: 10. Authentication & Authorization
       children:
         - title: 1. SSH
           url: /topics/ssh/
@@ -76,11 +86,11 @@
           url: /topics/oauth-oidc/
         - title: 3. Machine-to-Machine API Authentication
           url: /topics/api-security/
-    - title: 6. Network Security
+    - title: 11. Network Security
       children:
         - title: DNS Security
           url: /topics/dns-security/
-    - title: 7. Emerging Topics
+    - title: 12. Emerging Topics
       children:
         - title: AI & LLM Security
           url: /topics/ai-llm-security/

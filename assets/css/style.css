@@ -407,6 +407,64 @@ hr {
   margin: 0.9rem 0 0;
 }
 
+/* ---------------- Security discipline layers ---------------- */
+
+.security-layer-map {
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 1.25rem;
+  margin: 0 0 1.75rem;
+}
+
+.security-layer {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 0.28fr) 1fr;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: 9px;
+  padding: 0.8rem 1rem;
+  background: var(--paper);
+}
+
+.security-layer-purpose { border-left-color: var(--critical); }
+.security-layer-direct { border-left-color: var(--amber); }
+.security-layer-understand { border-left-color: var(--accent); }
+.security-layer-protect { border-left-color: var(--teal); }
+.security-layer-operate { border-left-color: var(--accent-dark); }
+.security-layer-assure { border-left-color: var(--neutral); }
+
+.security-layer-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.security-layer strong { color: var(--ink); }
+.security-layer p { margin: 0.2rem 0 0; font-size: 0.9rem; }
+
+.security-layer-connector {
+  min-height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .security-layer-map { padding: 0.9rem; }
+  .security-layer { grid-template-columns: 1fr; gap: 0.25rem; }
+}
+
 .image-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
