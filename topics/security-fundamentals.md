@@ -91,7 +91,7 @@ CIA is a strong starting point, not a complete security model. I may also need t
 - **Safety** — whether failures can cause physical injury, environmental damage, or other unacceptable real-world harm.
 - **Compliance** — whether required laws, regulations, contracts, and standards are satisfied. Passing an audit is evidence about defined requirements, not proof that every material risk is controlled.
 
-The boundaries are important. Encryption can support confidentiality, and authenticated encryption can detect tampering, but neither keeps a service available. Authentication can establish who is present, but authorization still decides what that identity may do. Reliability controls may improve availability without addressing an attacker. Security depends on how these pieces work together.
+The boundaries are important. Encryption can support confidentiality, and authenticated encryption can detect tampering, but neither keeps a service available. Authentication can establish who is present, but authorization still decides what that identity may do. A backup server can keep a service available when hardware fails, but redundancy alone may not stop an attacker from compromising both servers. Security depends on how these pieces work together.
 
 ## Now what: my quick security review
 
