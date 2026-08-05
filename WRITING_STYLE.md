@@ -23,7 +23,9 @@ Assume I have forgotten the surrounding knowledge.
 - Use one concrete example, scenario, command, or diagram when it improves recall.
 - Separate concepts that are commonly confused and explain the boundary between them.
 - End substantial pages with a short checklist, decision rule, or summary I can scan later.
-- Link to deeper journal pages instead of repeating an entire prerequisite topic.
+- Keep each page self-contained because entries are written ad hoc.
+- Link only to an existing journal page when it directly restores a prerequisite or materially improves recall. Explain the minimum required context locally.
+- Do not promise future entries or narrate that a subject belongs in separate notes.
 
 ## Choose one primary writing framework
 

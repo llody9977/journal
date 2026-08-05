@@ -47,7 +47,7 @@ Calling a system “secure” without naming the asset, threat, impact, and acce
 - **Transfer or share** some consequences through contracts or insurance, without pretending responsibility disappears.
 - **Accept** the remaining risk when the right owner understands and approves it.
 
-That remaining exposure is **residual risk**. A control does not make it vanish; it changes the risk to a level I may or may not accept. The fuller governance process belongs in my separate GRC notes; here I only need the mental model.
+That remaining exposure is **residual risk**. A control does not make it vanish; it changes the risk to a level I may or may not accept.
 
 I also should not rely on prevention alone. A sound design combines:
 
