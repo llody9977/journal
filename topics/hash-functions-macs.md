@@ -2,9 +2,10 @@
 title: Hash Functions & MACs
 description: SHA-2/3, collision resistance, HMAC, length-extension attacks, and where plain hashing gets misused.
 permalink: /topics/hash-functions-macs/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Foundations / Deep Dive</span>
+<span class="eyebrow">Cryptography / Concepts</span>
 
 # Hash Functions & MACs
 
@@ -12,11 +13,11 @@ permalink: /topics/hash-functions-macs/
 
 ## What a cryptographic hash function is designed to provide
 
-A cryptographic hash function takes an input of any size and produces a fixed-size output (a **digest**), with three properties that make it useful for security:
+A cryptographic hash function maps an input to a fixed-size output called a **digest**. It is deterministic and is designed around the three resistance properties in the next section. A well-designed hash also shows strong diffusion, often called the avalanche effect.
 
-- **Deterministic** — the same input always produces the same output, every time, on every machine.
-- **One-way (preimage resistant)** — given a digest, there's no feasible way to work backward to find an input that produces it, short of trying inputs one by one.
-- **Avalanche effect** — changing even one character of the input produces a completely different, unpredictable digest. There's no "partial credit" or visible similarity between the outputs.
+- **Deterministic** — the same bytes produce the same digest.
+- **One-way in practice** — preimage resistance should make finding an input for a given digest computationally infeasible.
+- **Strong diffusion** — a small input change should affect the digest unpredictably. This is useful behavior, but it is not a substitute for the formal security properties below.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/hash-avalanche.svg' | relative_url }}" alt="Diagram showing SHA-256 applied to two nearly identical strings — 'The quick brown fox' and 'The quick brown fox.' with one added period — producing two completely unrelated hash outputs, illustrating the avalanche effect." >
@@ -27,8 +28,8 @@ A cryptographic hash function takes an input of any size and produces a fixed-si
 
 | Property | What it means | What breaks without it |
 |---|---|---|
-| **Preimage resistance** | Given digest `H(x)`, you can't find any `x` that produces it | An attacker could reverse-engineer original data from its hash |
-| **Second-preimage resistance** | Given a specific `x`, you can't find a *different* `x'` with the same hash | An attacker could substitute a different file/message with the same digest |
+| **Preimage resistance** | Given digest `H(x)`, finding any matching `x` is computationally infeasible | An attacker could recover a matching input from its hash |
+| **Second-preimage resistance** | Given a specific `x`, finding a different `x'` with the same hash is computationally infeasible | An attacker could substitute a different file/message with the same digest |
 | **Collision resistance** | You can't find *any* two different inputs `x` and `x'` that hash the same, without a specific target in mind | An attacker could forge a malicious document that hashes identically to a legitimately-signed one |
 
 ## SHA-2, SHA-3, and the broken ones
@@ -37,17 +38,17 @@ A cryptographic hash function takes an input of any size and produces a fixed-si
 |---|---|---|
 | MD5 | 128 bits | **Broken.** Practical collisions since 2004; still used non-cryptographically (checksums) but never for security |
 | SHA-1 | 160 bits | **Broken.** Google and CWI Amsterdam published a practical collision ("SHAttered") in 2017 — two different PDFs sharing one SHA-1 hash |
-| SHA-256 / SHA-384 / SHA-512 (SHA-2) | 256 / 384 / 512 bits | **Current standard.** No known practical attacks; SHA-256 is the default choice almost everywhere |
+| SHA-256 / SHA-384 / SHA-512 (SHA-2) | 256 / 384 / 512 bits | **Approved and widely used.** Select the member required by the protocol and security strength |
 | SHA3-256 / SHA3-512 (SHA-3) | 256 / 512 bits | **Approved alternative.** Different internal construction (Keccak, sponge-based) to SHA-2 — useful as a hedge if SHA-2's construction were ever weakened |
 
 <div class="callout warn">
   <span class="callout-title">"Broken" means practically demonstrated, not theoretical</span>
-  <p>The SHA-1 collision took Google and CWI roughly 6,500 CPU-years and 110 GPU-years of computation — expensive, but a one-time cost against a fixed algorithm, not a per-target cost. That's exactly why standards bodies deprecate an algorithm the moment a practical collision is shown, rather than waiting for it to become cheap.</p>
+  <p>The SHA-1 collision required substantial computation, but it moved collision attacks from theory into practice. Migration timing depends on the use, protocol, and standards process; I should follow the current standard rather than infer a universal cutoff from the demonstration date.</p>
 </div>
 
 ## Hashing is not encryption
 
-A common mix-up worth stating plainly: hashing is **one-way** and has no key — there's no "decrypt" operation, ever, by anyone, even the person who created the hash. If you find yourself needing to get the original data back out, you need encryption (see [Symmetric]({{ '/topics/symmetric-cryptography/' | relative_url }}) or [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }})), not a hash function.
+A common mix-up worth stating plainly: hashing is **one-way** and has no decryption operation. If I need to recover the original data, I need encryption (see [Symmetric]({{ '/topics/symmetric-cryptography/' | relative_url }}) or [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }})), not a hash function.
 
 ## MACs: adding a key to prove who sent it
 
@@ -93,9 +94,5 @@ Change one character in the input, or the key, and re-run — the output has no 
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/180-4/final">FIPS 180-4</a></strong> defines the SHA-2 family. <strong><a href="https://csrc.nist.gov/pubs/fips/202/final">FIPS 202</a></strong> defines SHA-3 and SHAKE. <strong><a href="https://csrc.nist.gov/pubs/fips/198-1/final">FIPS 198-1</a></strong> defines HMAC; NIST has announced an intended transition of that material to SP 800-224, so I should recheck the status when updating this page. <strong><a href="https://csrc.nist.gov/pubs/sp/800/131/a/r2/final">NIST SP 800-131A Rev. 2</a></strong> disallows SHA-1 for digital-signature generation.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/fips/180-4/final">FIPS 180-4</a></strong> defines the SHA-2 family. <strong><a href="https://csrc.nist.gov/pubs/fips/202/final">FIPS 202</a></strong> defines SHA-3 and SHAKE. <strong><a href="https://csrc.nist.gov/pubs/fips/198-1/final">FIPS 198-1</a></strong> remains the final HMAC standard; NIST proposed withdrawing it and moving the material to <a href="https://csrc.nist.gov/pubs/sp/800/224/ipd">draft SP 800-224</a>, which was still an initial public draft when I checked this page. <strong><a href="https://csrc.nist.gov/pubs/sp/800/131/a/r2/final">NIST SP 800-131A Rev. 2</a></strong> is the final transition guidance and disallows SHA-1 for digital-signature generation.</p>
 </div>
-
-## How I connect this
-
-Every [certificate's signature]({{ '/topics/certificates/' | relative_url }}#what-algorithms-actually-sign-these-certificates) is really "sign the hash of the data," not the raw data itself — hashing first is what lets [Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}) work on messages of any size with a fixed-size cryptographic operation. And every AEAD cipher discussed under [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) has a MAC (or MAC-equivalent) built directly into it — GCM's authentication tag is doing exactly the job described above, just folded into the encryption step itself.

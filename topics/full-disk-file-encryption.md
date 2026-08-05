@@ -2,9 +2,10 @@
 title: Full-Disk & File Encryption
 description: Data at rest vs data in transit, XTS mode, and why disk encryption uses two keys (DEK/KEK) instead of one.
 permalink: /topics/full-disk-file-encryption/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Applied Cryptography / Deep Dive</span>
+<span class="eyebrow">Cryptography / Applied</span>
 
 # Full-Disk & File Encryption
 
@@ -34,13 +35,13 @@ The cipher is almost never the hard part of disk encryption — key management i
   <p class="diagram-caption">Changing an unlock password normally changes its protector/KEK and re-wraps the unchanged volume key; the bulk data is not re-encrypted</p>
 </div>
 
-- **DEK (Data Encryption Key)** — encrypts the actual bulk data under XTS, fixed for the entire life of the volume. Re-encrypting an entire multi-terabyte disk every time a password changes would be impossibly slow, so it never does.
-- **KEK (Key Encryption Key)** — encrypts (*wraps*) the DEK itself. This is the key that's actually derived from something you know or something the hardware verifies. Changing your password only re-wraps the (unchanged) DEK with a new KEK — a near-instant operation regardless of disk size.
+- **DEK (Data Encryption Key)** — encrypts the bulk data under XTS. It is normally long-lived, so changing an unlock password can rewrap the same DEK without rewriting every sector. Some products can rotate or migrate a volume key through a separate re-encryption operation.
+- **KEK (Key Encryption Key)** — encrypts (*wraps*) the DEK itself. It can be derived from a passphrase or released after hardware policy checks. Changing my password normally re-wraps the unchanged DEK with a new KEK, so the disk contents do not need to be encrypted again.
 
 The KEK itself can come from a few different sources, often combined:
 
 - **Password/PIN** — run through a [password-hardened KDF]({{ '/topics/password-storage/' | relative_url }}) like PBKDF2 or Argon2, exactly as covered on that page.
-- **TPM (Trusted Platform Module) / Secure Enclave** — a dedicated hardware chip that measures the boot process and only releases the KEK automatically if the boot chain is untampered, letting the disk unlock without a password prompt on trusted hardware.
+- **TPM (Trusted Platform Module) / Secure Enclave** — hardware-backed key protection can release or use key material only when a configured policy is satisfied. A TPM policy may bind release to expected platform measurements; the exact policy and recovery behavior depend on the product configuration.
 - **Recovery key** — a long, randomly-generated backup unlock code (BitLocker's is 48 digits), meant to be stored somewhere separate and safe — an organization's key escrow, a printed copy in a safe — for when the primary unlock method is lost.
 
 ## Common implementations
@@ -77,7 +78,7 @@ That's a genuinely encrypted, mountable volume — the same primitive concept as
 
 In May 2006, a data analyst at the US Department of Veterans Affairs took home a laptop and an external hard drive holding unencrypted personal data — names, dates of birth, and Social Security numbers — for an estimated 26.5 million veterans and active-duty personnel. Both were stolen in a burglary at his home. They were recovered intact three weeks later, and an FBI forensic examination found no evidence the data had actually been accessed — but that outcome was luck, not a property of any encryption, because there wasn't any on the device at all.
 
-The VA had no technical control requiring full-disk encryption on a device that, by design, could leave a secured facility carrying a database of that size. The incident is estimated to have cost the agency [$100–500 million](https://www.airandspaceforces.com/article/0906scandal/) in remediation, credit monitoring, and legal exposure, and it became one of the most-cited early arguments for mandating FDE on any device that both holds sensitive data and can physically leave a building. Every laptop a large organization issues today with BitLocker or FileVault enabled by default is, in part, a direct policy response to exactly this incident.
+The control failure was clear: sensitive data could leave a secured facility on portable storage without encryption. Full-disk encryption would not have prevented the theft, but it could have made the stored records unreadable without the unlock material. The broader lesson is to combine encryption with data minimization, device management, access controls, inventory, and a tested recovery process rather than rely on one control after a loss.
 
 ## Common pitfalls
 
@@ -90,7 +91,3 @@ The VA had no technical control requiring full-disk encryption on a device that,
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/38/e/final">NIST SP 800-38E</a></strong> defines XTS-AES for storage confidentiality and explicitly notes the lack of authentication. Hardware cryptographic-module claims can be checked against <strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> and the NIST CMVP database.</p>
 </div>
-
-## How I connect this
-
-The cipher underneath full-disk encryption is the same [AES]({{ '/topics/symmetric-cryptography/' | relative_url }}) covered earlier — only the *mode* (XTS instead of GCM/CTR) changes, driven entirely by the random-access requirement. The key-derivation half reuses [Password Storage]({{ '/topics/password-storage/' | relative_url }})'s slow-KDF approach for the password-unlock path, layered underneath a second key purely to make password changes fast.

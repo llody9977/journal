@@ -1,13 +1,13 @@
 ---
-title: TLS/SSL Handshake
+title: TLS Handshake
 description: How TLS 1.3 combines certificates, key exchange, and symmetric encryption into a single 1-round-trip handshake.
 permalink: /topics/tls-ssl-handshake/
-last_verified: 2026-07-26
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Public Key Infrastructure / Deep Dive</span>
+<span class="eyebrow">Cryptography / Protocol Walkthrough</span>
 
-# TLS / SSL Handshake
+# TLS Handshake
 
 <p class="lede">This is where my separate notes on certificates, key agreement, HKDF, signatures, and AEAD finally meet. I am using a normal certificate-authenticated TLS 1.3 handshake as the main path; resumption and PSK-only handshakes have different properties.</p>
 
@@ -17,8 +17,8 @@ last_verified: 2026-07-26
 
 | Version | Status |
 |---|---|
-| SSL 2.0 / SSL 3.0 | **Broken and retired.** SSLv3 is vulnerable to the POODLE attack; both are disabled everywhere. |
-| TLS 1.0 / TLS 1.1 | **Deprecated.** Formally retired by all major browsers in 2020. |
+| SSL 2.0 / SSL 3.0 | **Obsolete.** SSLv3 is prohibited by RFC 7568; I do not enable either version. |
+| TLS 1.0 / TLS 1.1 | **Deprecated.** RFC 8996 formally deprecated both versions in 2021. |
 | TLS 1.2 | **Still widely used**, secure when configured with modern cipher suites — but permits older, weaker options if not configured carefully. |
 | TLS 1.3 | **Current standard** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). Faster, and removed the insecure options entirely rather than just discouraging them. |
 
@@ -38,7 +38,7 @@ last_verified: 2026-07-26
 
 ## Why TLS 1.3 is faster: 1-RTT instead of 2-RTT
 
-A full TLS 1.2 handshake normally needed two round trips before the client could receive the server's Finished message and safely continue with application data. TLS 1.3 reorganised the handshake and places a key share in `ClientHello`, allowing a normal full handshake in one round trip when the server accepts the offered group. If it does not, `HelloRetryRequest` adds another round trip. Optional **0-RTT** resumption lets a client send early data before completing a new handshake, but that early data is replayable and must be restricted to replay-safe operations.
+A full TLS 1.2 handshake normally needed two round trips before the client could receive the server's Finished message and safely continue with application data. TLS 1.3 reorganized the handshake and places a key share in `ClientHello`, allowing a normal full handshake in one round trip when the server accepts the offered group. If it does not, `HelloRetryRequest` adds another round trip. Optional **0-RTT** resumption lets a client send early data before completing a new handshake, but that early data is replayable and must be restricted to replay-safe operations.
 
 ## What TLS 1.3 removed, and why
 
@@ -88,20 +88,16 @@ verify return:1
 
 That memory routinely contained exactly the material the handshake above is meant to protect: session data, plaintext from recent requests, and — worst case — the server's own TLS **private key**, the one thing the entire chain-of-trust and key-exchange sequence above assumes never leaks. A stolen private key doesn't just expose future traffic; combined with recorded past traffic from a connection that wasn't using ephemeral key exchange, it can decrypt sessions retroactively too. An estimated 17% of the internet's secure servers were vulnerable at disclosure, and because the bug left no reliable forensic trace, [there was no way for an affected operator to know for certain whether their key had actually been read](https://owasp.org/www-community/vulnerabilities/Heartbleed_Bug) before they rotated it.
 
-Heartbleed is also a clean illustration of why [forward secrecy]({{ '/topics/key-exchange-derivation/' | relative_url }}#forward-secrecy-why-ephemeral-matters) matters beyond the abstract: servers already running ephemeral (EC)DHE — the mandatory TLS 1.3 default today — limited Heartbleed's damage to sessions active at the moment of compromise, while servers still using static key exchange risked every past recorded session being decryptable once the long-term key leaked.
+Heartbleed is also a clean illustration of why [forward secrecy]({{ '/topics/key-exchange-derivation/' | relative_url }}#forward-secrecy-why-ephemeral-matters) matters beyond the abstract. For an ephemeral (EC)DHE session, later theft of the certificate private key does not by itself decrypt recorded traffic. Static RSA key exchange lacked that protection. Heartbleed could still expose plaintext, session material, or keys present in process memory, so forward secrecy limited one retrospective-decryption path rather than containing the whole incident.
 
 ## Common pitfalls
 
-- **Disabling certificate validation to silence an error** — by far the most common way TLS gets defeated in practice; it removes the entire protection TLS is supposed to provide and should never be a "quick fix."
+- **Disabling certificate validation to silence an error** — this removes server authentication and should never be a "quick fix."
 - **Supporting legacy TLS versions or cipher suites unnecessarily** — every enabled option is attack surface, even if never negotiated by legitimate clients.
-- **Having no revocation strategy** — OCSP stapling can improve privacy and latency where clients use OCSP, but browser behaviour differs and some ecosystems also use CRLSets, CRLite, or vendor-maintained revocation lists. I should follow the policy for the actual client population.
+- **Having no revocation strategy** — OCSP stapling can improve privacy and latency where clients use OCSP, but browser behavior differs and some ecosystems also use CRLSets, CRLite, or vendor-maintained revocation lists. I should follow the policy for the actual client population.
 - **Not enforcing HTTPS everywhere (HSTS)** — without it, a user's first request can still go out in plaintext before ever reaching an HTTPS redirect.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a></strong> is the TLS 1.3 specification. <strong><a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a></strong> gives government/enterprise guidance on TLS server configuration. <strong><a href="https://csrc.nist.gov/pubs/fips/203/final">FIPS 203</a></strong> defines ML-KEM, the post-quantum algorithm shown hybridized above.</p>
+  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a></strong> is the TLS 1.3 specification. <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a> prohibits SSLv3, and <a href="https://www.rfc-editor.org/rfc/rfc8996">RFC 8996</a> deprecates TLS 1.0 and 1.1. <strong><a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a></strong> gives government/enterprise guidance on TLS server configuration. <strong><a href="https://csrc.nist.gov/pubs/fips/203/final">FIPS 203</a></strong> defines ML-KEM, the post-quantum algorithm shown hybridized above.</p>
 </div>
-
-## How I connect this
-
-The payoff for everything else in Foundations and PKI: [Certificates]({{ '/topics/certificates/' | relative_url }}) establish who you're talking to, [Key Exchange]({{ '/topics/key-exchange-derivation/' | relative_url }}) establishes a secret without ever transmitting it, and [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) does the actual bulk encryption — all running automatically, in about one network round trip, every time a browser opens a padlocked address.

@@ -2,9 +2,10 @@
 title: "Symmetric Mode Attacks: ECB, CBC & CTR"
 description: Real, runnable demonstrations of the ECB pattern leak, CBC bit-flipping, and CTR nonce-reuse — with actual AES ciphertext.
 permalink: /topics/symmetric-mode-attacks/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Foundations / Deep Dive</span>
+<span class="eyebrow">Cryptography / Failure Analysis</span>
 
 # Symmetric Mode Attacks: ECB, CBC & CTR
 
@@ -12,7 +13,7 @@ permalink: /topics/symmetric-mode-attacks/
 
 <div class="callout">
   <span class="callout-title">About the keys below</span>
-  <p>Every command uses a fixed, published key and IV so the walkthrough is exactly reproducible — copy any command and get the identical output shown. Real systems must always use randomly generated, secret keys and IVs; using known values here is purely what makes this a repeatable demo rather than a one-off.</p>
+  <p>Every command uses a fixed, published key and IV so the walkthrough is exactly reproducible. In a real system the key must be secret and generated with a cryptographically secure random number generator. The IV/nonce rule depends on the mode: CBC encryption needs an unpredictable IV, while CTR requires a nonce/counter value that never repeats under the same key.</p>
 </div>
 
 ## 1. ECB: identical plaintext blocks → identical ciphertext blocks
@@ -46,7 +47,9 @@ $ xxd ctr_cipher.bin
 
 Four completely different-looking blocks from the same repeated plaintext. This is exactly the [pattern-leak diagram]({{ '/topics/symmetric-cryptography/' | relative_url }}#modes-of-operation-why-aes-alone-isnt-enough) from the Symmetric Cryptography page, reproduced with real AES output instead of illustration — and it's the same reason ECB-encrypted images famously still show a recognizable silhouette of the original picture.
 
-## 2. CBC: forging a privilege change without the key
+## 2. CBC: a missing integrity check that can lead to privilege escalation
+
+AES-CBC only provides confidentiality — nothing in the mode itself checks whether a ciphertext was tampered with in transit. MITRE classifies that gap as [CWE-353: Missing Support for Integrity Check](https://cwe.mitre.org/data/definitions/353.html). When an application then trusts a value recovered from that ciphertext to make an authorization decision, it compounds into [CWE-807: Reliance on Untrusted Inputs in a Security Decision](https://cwe.mitre.org/data/definitions/807.html) — attacker-controlled bytes deciding who counts as admin. The toy example below reproduces exactly that chain, using the same kind of `isadmin` flag popularized by [Cryptopals Set 2, Challenge 16, "CBC bitflipping attacks"](https://cryptopals.com/sets/2/challenges/16).
 
 The plaintext is a fake session string, exactly 32 bytes (two AES blocks): `user=alice;role=` (block 1) followed by `user;isadmin=0;;` (block 2).
 
@@ -87,7 +90,7 @@ block 1 (garbled): b'\xc3\xef<?\xef\xe1\xc4\x84\xf28\xe5\x11G\xdd\x8c\$'
 block 2 (target):   b'user;isadmin=1;;'
 ```
 
-`isadmin=0` became `isadmin=1`, byte-exact, with block 1 turned to unrecoverable noise. This demonstrates CBC malleability when there is no authentication. Microsoft’s [MS10-070](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2010/ms10-070) was a related but distinct CBC failure: a padding oracle in ASP.NET that leaked information through decryption errors. I should not describe that incident as this exact direct bit-flipping attack.
+`isadmin=0` became `isadmin=1`, byte-exact, with block 1 turned to unrecoverable noise. No exception was thrown and no check failed — CBC decryption has nothing built in that could reject this. In an application that trusted this field, that byte flip is a complete privilege-escalation primitive, built entirely from the ciphertext, without the key or the plaintext ever being seen. The fix is not a secret field name; it's authenticating the ciphertext with a MAC or an AEAD mode like GCM before trusting anything decrypted from it. Microsoft's [MS10-070](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2010/ms10-070) was a similar CBC problem, but a different attack. It was a "padding oracle": the attacker sent many guesses and learned secrets from how the server reacted to bad padding, not a single bit-flip like the example above.
 
 ## 3. CTR: nonce reuse exposes the plaintext relationship
 
@@ -147,12 +150,12 @@ Guessing 17 bytes of one message recovered the corresponding 17 bytes of the oth
 
 <div class="callout warn">
   <span class="callout-title">Switching to GCM does not fix nonce reuse</span>
-  <p>GCM is built on the same CTR-mode encryption core as above, plus an authentication tag. The authentication tag fixes the CBC-style bit-flipping problem outright (any tampering is detected). It does <strong>not</strong> fix nonce reuse — reusing a GCM nonce leaks the same two-time-pad relationship shown here, and additionally can expose the authentication key itself, letting an attacker forge valid tags for arbitrary messages. GCM is the right default specifically because it adds authentication, not because it's forgiving about nonces.</p>
+  <p>GCM uses counter-mode encryption plus the GHASH authenticator. A valid tag makes CBC-style undetected bit flipping fail. It does <strong>not</strong> make nonce reuse safe: reuse exposes the same plaintext relationship shown here and can reveal enough information about GCM's authentication subkey to enable forgeries. This does not mean the AES key itself is directly exposed. The operational rule is still simple: never repeat a GCM nonce under the same key.</p>
 </div>
 
 ## Common pitfalls, specific to these three demos
 
-- **Assuming "not ECB" is automatically safe** — CBC and CTR each have their own strict requirements (a MAC; a never-repeated nonce) that ECB doesn't even have the option to violate the same way.
+- **Assuming "not ECB" is automatically safe** — unauthenticated CBC is malleable and needs an unpredictable IV; CTR is also malleable and must never repeat a nonce/counter under the same key. A reviewed AEAD construction handles confidentiality and authentication together.
 - **Treating a random-looking ciphertext as proof of security** — the CTR ciphertexts above look perfectly random individually; the weakness only appears once two of them are compared.
 - **Reusing an IV/nonce "just for testing," then shipping it** — a shockingly common real-world root cause, since it "works" functionally right up until it's exploited.
 
@@ -160,7 +163,3 @@ Guessing 17 bytes of one message recovered the corresponding 17 bytes of the oth
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/38/a/final">NIST SP 800-38A</a></strong> defines ECB, CBC, and CTR. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/d/final">NIST SP 800-38D</a></strong> defines GCM. Vaudenay's 2002 paper <em>"Security Flaws Induced by CBC Padding"</em> formalized the padding-oracle attack class that CBC's lack of integrity checking enables.</p>
 </div>
-
-## How I connect this
-
-The hands-on companion to [Symmetric Cryptography]({{ '/topics/symmetric-cryptography/' | relative_url }}) — the same relationship [Hash Collisions & Length-Extension Attacks]({{ '/topics/hash-collisions-length-extension/' | relative_url }}) has to Hash Functions & MACs: real, runnable proof of what the diagrams and prose there only asserted.

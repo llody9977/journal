@@ -2,9 +2,10 @@
 title: Hash Collisions & Length-Extension Attacks
 description: Real, downloadable MD5 and SHA-1 collisions, and a working Python length-extension attack against a naive MAC.
 permalink: /topics/hash-collisions-length-extension/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Foundations / Deep Dive</span>
+<span class="eyebrow">Cryptography / Failure Analysis</span>
 
 # Hash Collisions & Length-Extension Attacks
 
@@ -74,7 +75,7 @@ Same story: identical SHA-1 output, genuinely different files. The real SHAttere
 
 <div class="callout warn">
   <span class="callout-title">File verification note</span>
-  <p>If you'd like to confirm the four files above weren't altered in transit from this site (a completely separate question from the MD5/SHA-1 collision demo itself — this uses SHA-256, which has no known collisions): <code>md5-collision-1.gif</code> → <code>bb0fd4741715de283750a967841dbeb0564a42205926a87d0fbb8738cbdf8e20</code>, <code>md5-collision-2.gif</code> → <code>6c8c640e19aaee6f511744da2d3b142791c3b8b5aa74b706dacb4e5e82e14bad</code>, <code>sha1-collision-1.pdf</code> → <code>ec1ba2bc0c80564a0b9cdfb04a5bbb86715189c40080cac0f054005f80ee711e</code>, <code>sha1-collision-2.pdf</code> → <code>24ba6c80f7b372a1c818a1ba3be9cc799b923868706c366d21ca17bc58b73234</code> (all SHA-256).</p>
+  <p>To confirm the four files above weren't altered in transit (a completely separate question from the MD5/SHA-1 collision demo itself — this uses SHA-256, which has no known collisions): <code>md5-collision-1.gif</code> → <code>bb0fd4741715de283750a967841dbeb0564a42205926a87d0fbb8738cbdf8e20</code>, <code>md5-collision-2.gif</code> → <code>6c8c640e19aaee6f511744da2d3b142791c3b8b5aa74b706dacb4e5e82e14bad</code>, <code>sha1-collision-1.pdf</code> → <code>ec1ba2bc0c80564a0b9cdfb04a5bbb86715189c40080cac0f054005f80ee711e</code>, <code>sha1-collision-2.pdf</code> → <code>24ba6c80f7b372a1c818a1ba3be9cc799b923868706c366d21ca17bc58b73234</code> (all SHA-256).</p>
 </div>
 
 ## Length-extension attack: forging a MAC without the key
@@ -128,6 +129,7 @@ def hex_to_state(hx): return list(struct.unpack('<4I', bytes.fromhex(hx)))
 
 # Self-check: this implementation must match hashlib exactly before we trust it
 assert state_to_hex(md5_full(b"The quick brown fox")) == hashlib.md5(b"The quick brown fox").hexdigest()
+print("self-check: MD5 implementation matches hashlib: yes")
 
 # --- The server's naive (broken) construction ---
 def naive_mac(secret, message):
@@ -136,6 +138,8 @@ def naive_mac(secret, message):
 SECRET = b"s3cr3tkey"                                # attacker does NOT know this
 original_message = b"user=alice&admin=false"
 original_mac = naive_mac(SECRET, original_message)   # leaked/observed, alongside the message
+print("observed message:", original_message)
+print("observed MAC:    ", original_mac)
 
 # --- Attacker: knows only original_message, original_mac, and a guess at len(SECRET) ---
 guessed_secret_len = 9
@@ -151,6 +155,8 @@ tail = injected_data + md5_padding(total_len_so_far + len(injected_data))
 for i in range(0, len(tail), 64):
     h = md5_compress(tail[i:i+64], h)
 forged_mac = state_to_hex(h)
+print("forged suffix:   ", injected_data)
+print("forged MAC:      ", forged_mac)
 
 # --- Does the real server (which HAS the secret) accept the forgery? ---
 print("forged MAC matches server check:", naive_mac(SECRET, forged_message) == forged_mac)
@@ -159,14 +165,11 @@ print("forged MAC matches server check:", naive_mac(SECRET, forged_message) == f
 Running it:
 
 ```
-Self-check: from-scratch MD5 matches hashlib.md5 -- OK
-
-Observed (public):  message = b'user=alice&admin=false'
-Observed (public):  MAC     = f68e58dd36a1291ffbbcc1f40e393f6d
-
-Forged message: b'user=alice&admin=false\x80\x00...\x00\xf8\x00\x00\x00\x00\x00\x00\x00&admin=true'
-Forged MAC:     bcb0f99f1209133ffd73692c4a305301
-
+self-check: MD5 implementation matches hashlib: yes
+observed message: b'user=alice&admin=false'
+observed MAC:     f68e58dd36a1291ffbbcc1f40e393f6d
+forged suffix:    b'&admin=true'
+forged MAC:       bcb0f99f1209133ffd73692c4a305301
 forged MAC matches server check: True
 ```
 
@@ -185,7 +188,3 @@ There is no equivalent attack against this line. [HMAC]({{ '/topics/hash-functio
   <span class="callout-title">Reference</span>
   <p>Wang and Yu, <em>"How to Break MD5 and Other Hash Functions"</em> (2005) is the original MD5 collision paper. Stevens, Bursztein, Karpman, Albertini, and Markov, <em>"The First Collision for Full SHA-1"</em> (Google/CWI, 2017) is the SHAttered paper — full technical detail and the original full-size PDFs at <a href="https://shattered.io">shattered.io</a>. <strong><a href="https://www.rfc-editor.org/rfc/rfc2104">RFC 2104</a></strong> defines HMAC.</p>
 </div>
-
-## How I connect this
-
-The hands-on companion to [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}): everything stated there about MD5, SHA-1, and length extension, demonstrated here with real files and running code rather than taken on faith.

@@ -2,10 +2,10 @@
 title: HSM & KMS
 description: What actually protects a private key — hardware security modules, cloud KMS, and envelope encryption.
 permalink: /topics/hsm-kms/
-last_verified: 2026-07-26
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Key Management / Deep Dive</span>
+<span class="eyebrow">Key Management / Architecture</span>
 
 # HSM & KMS
 
@@ -13,9 +13,9 @@ last_verified: 2026-07-26
 
 ## What an HSM actually is
 
-A **Hardware Security Module (HSM)** is a dedicated device for generating, storing, and using cryptographic keys inside a controlled boundary. Keys are commonly marked sensitive and non-extractable, but this is an object attribute and policy choice rather than a universal definition: some HSM keys can be exported in wrapped form for backup or migration, and some products permit plaintext export for specifically authorised objects.
+A **Hardware Security Module (HSM)** is a dedicated device for generating, storing, and using cryptographic keys inside a controlled boundary. Keys are commonly marked sensitive and non-extractable, but this is an object attribute and policy choice rather than a universal definition: some HSM keys can be exported in wrapped form for backup or migration, and some products permit plaintext export for specifically authorized objects.
 
-For a correctly configured non-extractable key, a compromised caller may be able to request signing or decryption operations without being able to copy the raw key. That is a useful containment property, but it does not make compromised credentials or unlimited HSM access harmless.
+For a correctly configured non-extractable key, a compromised caller may be able to request signing or decryption without copying the raw key. That contains one failure mode, but stolen credentials with broad operation permissions can still abuse the key through the API.
 
 HSMs are also physically tamper-resistant and often tamper-*responsive* — physical intrusion (drilling, probing, extreme temperature/voltage) can trigger automatic key zeroization, destroying the keys rather than letting them be extracted. This is the same principle behind the [Root CA's offline HSM storage]({{ '/topics/certificates/' | relative_url }}#root-ca) mentioned on the certificates page.
 
@@ -23,7 +23,7 @@ HSMs are also physically tamper-resistant and often tamper-*responsive* — phys
 
 No. I first need to check the provider and protection level. AWS KMS documents HSM-backed protection for KMS keys. Google Cloud KMS offers `SOFTWARE`, `HSM`, and external protection levels. Azure Key Vault supports both software-protected and HSM-protected keys, while Managed HSM supports HSM-protected keys only. A generic “KMS” label therefore does not mean the selected key is HSM-backed. See [Google Cloud protection levels](https://docs.cloud.google.com/kms/docs/protection-levels) and [Azure Key Vault key types](https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys).
 
-What you'd reach for a **dedicated** HSM (AWS CloudHSM, Azure Dedicated HSM, an on-prem Thales/Utimaco/Entrust appliance) instead of the shared KMS service for is a narrower set of real reasons:
+I would reach for a **dedicated** HSM (AWS CloudHSM, Azure Dedicated HSM, or an on-premises appliance) instead of a shared KMS service for a narrower set of reasons:
 
 - **Single-tenant exclusivity is a hard compliance requirement.** Some regulatory regimes and contracts require that no other customer's keys or operations ever share the same physical module — AWS KMS's HSMs are multi-tenant internally (isolated per customer, but shared hardware); CloudHSM's are not.
 - **Low-level API access.** KMS only exposes a fixed set of operations over a REST API. A dedicated HSM speaks PKCS#11, JCE, or a vendor SDK directly, which some legacy applications or custom cryptographic workflows require.
@@ -92,19 +92,19 @@ Verified OK
 | Level 3 | Adds tamper-*resistance* and zeroization on detected tampering — where most commercial HSMs sit |
 | Level 4 | Adds protection against environmental attacks (voltage/temperature manipulation) — the highest assurance level |
 
-When a vendor says "FIPS-validated," the level is the actual claim worth checking — Level 1 and Level 3 are very different guarantees. **AWS KMS and AWS CloudHSM are both, for example, validated at FIPS 140-3 Level 3** — a real, checkable claim, not marketing shorthand.
+When a vendor says “FIPS-validated,” the level and exact module are the claims worth checking. AWS documents its standard KMS HSM fleet as FIPS 140-3 Security Level 3 validated. For CloudHSM, the result depends on the instance type and cluster mode: AWS lists `hsm2m.medium` in FIPS mode under certificate #4703. I still need to verify the exact region, product version, mode, and certificate status rather than transfer one claim to every deployment.
 
 ### Where to actually verify a FIPS claim
 
-Take the claim to the source rather than the vendor's own page: NIST's **[CMVP validated modules search](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search)** is the authoritative, free, public list of every module that has actually passed testing — searchable by vendor, module name, standard (FIPS 140-2 or 140-3), and level. A real entry looks like **[certificate #4962, the Thales Luna G7 Cryptographic Module](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search)** — vendor name, exact module and firmware version, validation date, and level, all independently listed by NIST rather than self-reported. If a product claims "FIPS 140-3 Level 3" and it isn't findable on this list under that exact vendor and module name, that claim can't be verified as it stands — worth asking the vendor for the certificate number directly.
+Take the claim to the source rather than the vendor's own page: NIST's **[CMVP validated modules search](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search)** lists active, historical, and revoked validations and is searchable by vendor, module name, standard, and level. A real entry looks like **[certificate #4962, the Thales Luna G7 Cryptographic Module](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4962)** — it names the exact hardware and firmware versions, validation status, level, and operating caveats. If I cannot match a product and configuration to a CMVP certificate, the claimed validation remains unverified; I should ask the vendor for the certificate number and approved-mode instructions.
 
 FIPS 140 is the most common certification to check for a cryptographic module specifically, but it isn't the only one in play — [Security Certifications: FIPS, Common Criteria & PCI PTS]({{ '/topics/security-certifications/' | relative_url }}) covers the fuller landscape (Common Criteria, PCI PTS HSM, eIDAS) and why each exists.
 
-## Cloud KMS: the same protection, as an API
+## Cloud KMS: managed key operations through an API
 
 Running physical HSMs is operationally heavy, which is why **cloud KMS** services expose key management through APIs. Depending on the product and tier, the key may be software-protected, protected by a shared HSM service, stored in a managed single-tenant HSM, or handled by an external key manager.
 
-Almost every cloud KMS is built around **envelope encryption** — exactly the DEK/KEK pattern from Full-Disk & File Encryption, generalized beyond disks to any application data:
+Cloud KMS services commonly support **envelope encryption**—the DEK/KEK pattern from Full-Disk & File Encryption, generalized beyond disks to application data:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/dek-kek.svg' | relative_url }}" alt="Diagram showing application data encrypted by a Data Encryption Key (DEK), which is itself wrapped by a Key Encryption Key (KEK) that never leaves the KMS or HSM — only the wrapped DEK and the encrypted data are stored together." >
@@ -137,20 +137,16 @@ Whether a CMEK can be asymmetric depends on which provider's terminology is mean
 2. **Rewrap existing DEKs.** The application or managed service unwraps each DEK with the old KEK version and wraps it with the new version.
 3. **Re-encrypt the underlying data.** This is a separate and potentially expensive migration, usually required if the DEK itself changes.
 
-AWS KMS automatic/on-demand rotation is the first case: AWS states that it does not rotate data keys or re-encrypt existing data, and older key material remains available for decryption. Rewrapping existing DEKs is a valid application-managed migration, but it is not automatic or free; its cost scales with the number of wrapped keys and service behaviour. See the [AWS KMS rotation documentation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) and [Google Cloud CMEK rotation guidance](https://docs.cloud.google.com/kms/docs/cmek-rotation).
+AWS KMS automatic/on-demand rotation is the first case: AWS states that it does not rotate data keys or re-encrypt existing data, and older key material remains available for decryption. Rewrapping existing DEKs is a valid application-managed migration, but it is not automatic or free; its cost scales with the number of wrapped keys and service behavior. See the [AWS KMS rotation documentation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) and [Google Cloud CMEK rotation guidance](https://docs.cloud.google.com/kms/docs/cmek-rotation).
 
 ## Common pitfalls
 
-- **Treating KMS/HSM access credentials as less sensitive than the keys they protect** — if the IAM role or API credential that can *call* the KMS leaks, the attacker doesn't need the key material; they can just ask the KMS to decrypt things for them. **[Code Spaces](https://thehackernews.com/2014/06/cyber-attack-on-code-spaces-puts.html)**, a source-control hosting company, was destroyed within hours in a real 2014 incident that illustrates exactly this: attackers who compromised its AWS console credentials didn't need to break any encryption at all — they simply used the legitimate, authenticated console access to delete the company's EC2 resources, S3 buckets, and every backup, including the offsite ones stored in the same AWS account. No key was ever "broken"; the credential controlling access to everything was the entire attack surface, and it was enough on its own to end the company.
+- **Treating KMS/HSM access credentials as less sensitive than the keys they can use** — an attacker allowed to call `Decrypt`, `Sign`, change policy, schedule deletion, or disable a key may not need the raw bytes. I need least-privilege policies, separation of duties, protected recovery access, audit alerts, and deletion safeguards around the control plane as well as the cryptographic module.
 - **Encrypting bulk data directly through the KMS API** instead of using envelope encryption — most KMS `Encrypt` APIs cap the payload size (AWS KMS: 4 KB) specifically to push callers toward the DEK/KEK pattern.
 - **Equating "encrypted at rest" with "HSM-protected"** — ask specifically what protects the key doing the encrypting, not just whether the data happens to be encrypted somewhere.
 - **Copying a generic rotation policy** — rotation frequency should follow the threat model, cryptoperiod, provider semantics, compliance requirements, operational cost, and recovery plan. A new KMS version may protect only future writes unless I arrange rewrap or re-encryption separately.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> is the current cryptographic-module standard, and the <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">CMVP search</a></strong> verifies module claims. <strong><a href="https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html">PKCS#11 v3.1</a></strong> defines the token API and attributes demonstrated above. Provider behaviour is documented separately by <a href="https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html">AWS KMS rotation</a>, <a href="https://docs.cloud.google.com/kms/docs/protection-levels">Google Cloud protection levels</a>, and <a href="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys">Azure Key Vault key types</a>.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> is the current cryptographic-module standard, and the <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">CMVP search</a></strong> verifies module claims. <strong><a href="https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html">PKCS#11 v3.1</a></strong> defines the token API and attributes demonstrated above. Provider behavior is documented separately by <a href="https://docs.aws.amazon.com/kms/latest/developerguide/kms-internals.html">AWS KMS internals</a>, <a href="https://docs.aws.amazon.com/cloudhsm/latest/userguide/fips-validation.html">AWS CloudHSM validation</a>, <a href="https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html">AWS KMS rotation</a>, <a href="https://docs.cloud.google.com/kms/docs/protection-levels">Google Cloud protection levels</a>, and <a href="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys">Azure Key Vault key types</a>.</p>
 </div>
-
-## How I connect this
-
-This is the "where do the keys actually live" answer underneath [Certificate Authorities]({{ '/topics/certificates/' | relative_url }}) (root keys), [Full-Disk & File Encryption]({{ '/topics/full-disk-file-encryption/' | relative_url }}) (the KEK), and any production system doing its own [symmetric]({{ '/topics/symmetric-cryptography/' | relative_url }}) or [asymmetric]({{ '/topics/asymmetric-cryptography/' | relative_url }}) cryptography at scale — the primitives are the same everywhere; HSM/KMS is about the custody of the keys those primitives depend on. [Security Certifications]({{ '/topics/security-certifications/' | relative_url }}) covers the broader landscape of assurance standards a module or product might be evaluated against beyond FIPS 140 alone.

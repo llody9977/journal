@@ -5,11 +5,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var activeLink = sidebar.querySelector(".sidenav-link.is-active");
   if (activeLink) {
-    var ancestorSection = activeLink.closest(".sidenav-section");
-    if (ancestorSection) {
-      ancestorSection.classList.add("is-expanded");
-      var ancestorHeading = ancestorSection.querySelector(":scope > .sidenav-heading");
-      if (ancestorHeading) ancestorHeading.setAttribute("aria-expanded", "true");
+    var section = activeLink.closest(".sidenav-section");
+    while (section) {
+      section.classList.add("is-expanded");
+      var heading = section.querySelector(":scope > .sidenav-heading");
+      if (heading) heading.setAttribute("aria-expanded", "true");
+      section = section.parentElement ? section.parentElement.closest(".sidenav-section") : null;
     }
   }
 

@@ -2,16 +2,16 @@
 title: DNS Security
 description: DNS cache poisoning, DNSSEC's chain of trust, and why DNSSEC and encrypted DNS solve two completely different problems.
 permalink: /topics/dns-security/
-last_verified: 2026-07-26
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Network Security / Deep Dive</span>
+<span class="eyebrow">Network Security / Protocol Analysis</span>
 
 # DNS Security
 
 <p class="lede">My DNS notes cover three separate problems that are easy to mix up: authenticating DNS data with DNSSEC, encrypting the client-to-resolver hop with DoH/DoT, and managing third-party DNS delegations safely. None of these replaces HTTPS certificate validation.</p>
 
-## How I use this page
+## By use case
 
 - For protocol basics: [record types](#record-types-and-the-parameters-that-actually-matter-for-security), [cache poisoning](#why-an-unauthenticated-phone-book-is-a-problem), and [DNSSEC validation](#dnssec-the-same-chain-of-trust-idea-applied-to-dns).
 - For privacy: [DNSSEC versus DoH/DoT](#dnssec-does-not-encrypt-your-dns-queries).
@@ -105,7 +105,7 @@ A DNS resolver asks for the address of `bank.com` and, without DNSSEC validation
   <p class="diagram-caption">Root → TLD → domain — the same tree shape as the CA hierarchy, rooted in a trust anchor instead of a browser trust store</p>
 </div>
 
-This is structurally the same idea as [Certificate Authorities & Certificates]({{ '/topics/certificates/' | relative_url }}#certificate-authority-ca-types): a **DS (Delegation Signer)** record is the DNS equivalent of an intermediate CA's certificate, an **RRSIG** is the DNS equivalent of a CA's signature over a leaf certificate, and the root zone's key — physically held across multiple trusted parties worldwide in a highly ceremonial key-signing process — plays the same role a root CA does, except there's exactly one DNS root instead of hundreds of root CAs.
+This resembles the chain-building idea in [Certificate Authorities & Certificates]({{ '/topics/certificates/' | relative_url }}#certificate-authority-ca-types), but the objects are different. A parent zone's **DS** record authenticates selected DNSKEY material in the child zone. That child DNSKEY validates **RRSIG** records over RRsets in the child. A validating resolver starts from a configured root trust anchor and follows this signed delegation chain; a DS record is not an X.509 certificate.
 
 ## Seeing it live: one domain with DNSSEC, one without
 
@@ -183,14 +183,14 @@ This pattern is not specific to GitHub. The linked [APNIC article](https://blog.
 
 DNSSEC failures do not normally degrade to insecure acceptance. A bad signature or broken chain can cause validating resolvers to return `SERVFAIL`, while non-validating resolvers or clients with cached data may behave differently. On 5 May 2026, a signing-system fault caused a major `.de` DNSSEC outage; the details and observed impact should be taken from [DENIC's incident report](https://blog.denic.de/en/final-report-dns-outage-of-5-may-2026/) rather than generalised to literally every resolver and visitor.
 
-That risk — trading "vulnerable to an active, comparatively rare MITM cache-poisoning attack" for "one signing mistake takes the whole domain offline for every user on Earth" — is a real, defensible engineering tradeoff for an operator serving traffic at GitHub's scale, not simply an oversight. The mitigations available to an operator who skips DNSSEC for exactly this reason are narrower and don't fully substitute for it, but they do reduce the same underlying risk from other angles:
+This leaves an authentication gap, but I cannot infer GitHub's reason for accepting it from the DNS records alone. DNSSEC adds protection against forged authoritative answers and also adds signing, rollover, delegation, and outage risks that an operator must manage. The adjacent controls below reduce parts of the exposure, but they do not authenticate authoritative DNS data end to end:
 
 - **Source port and query ID randomization** — the direct, DNSSEC-independent fix for the original Kaminsky-class poisoning attack, now standard in every modern resolver.
 - **DoH/DoT** — protects the hop between the client/stub and the selected recursive resolver. The resolver operator and the resolver-to-authoritative path remain separate trust and privacy questions.
 - **CAA records** — constrain cooperating CAs, but a forged DNS view presented during issuance may also affect the CAA lookup unless it is authenticated.
 - **Certificate Transparency monitoring** — can reveal unexpected public issuance after logging. It is detection, not an instant guarantee that fraudulent use was prevented.
 
-None of these close the authentication gap the way DNSSEC actually would — they reduce the blast radius of the same threat from adjacent angles instead. That's the honest tradeoff large operators are making here, not an oversight to be corrected.
+None of these substitutes for DNSSEC validation. My practical conclusion is narrower: an unsigned zone leaves resolvers without cryptographic proof of its answers, while enabling DNSSEC creates an operational responsibility to keep the chain valid.
 
 ## DNSSEC does not encrypt your DNS queries
 
@@ -207,7 +207,7 @@ Encrypting the query itself is a separate, unrelated mechanism:
 
 **DoH (DNS over HTTPS)** tunnels DNS queries inside a normal HTTPS connection (indistinguishable from other web traffic, which is itself sometimes controversial since it can bypass network-level DNS filtering). **DoT (DNS over TLS)** does the same over a dedicated TLS connection on its own port (853), easier to identify and firewall separately from web traffic if that's desired. Both rely on exactly the same [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) — nothing new cryptographically, just DNS riding inside it.
 
-Using both gives complementary protection, but “fully protected” is too strong: the client still trusts the chosen recursive resolver's operation and privacy practices, and the resolver's upstream behaviour must be considered.
+Using both gives complementary protection, but “fully protected” is too strong: the client still trusts the chosen recursive resolver's operation and privacy practices, and the resolver's upstream behavior must be considered.
 
 ## Business case: enterprise SaaS domain delegation, and what's left behind
 
@@ -222,7 +222,7 @@ This exact CNAME-delegation pattern shows up constantly in real enterprise deplo
 
 **Where the risk actually enters — and it's two different mechanisms, not one.**
 
-DKIM works by having the sender hold a private key while the corresponding public key is published under a DNS selector. Leaving a vendor-controlled selector in DNS continues to authorise signatures made by the corresponding key for as long as the record and key remain active. Whether the vendor can still send after account closure depends on its provisioning and key lifecycle, so I should treat the stale record as an unnecessary trust delegation rather than claim indefinite capability as a fact. Removing or rotating it is an explicit offboarding step.
+DKIM works by having the sender hold a private key while the corresponding public key is published under a DNS selector. Leaving a vendor-controlled selector in DNS continues to authorize signatures made by the corresponding key for as long as the record and key remain active. Whether the vendor can still send after account closure depends on its provisioning and key lifecycle, so I should treat the stale record as an unnecessary trust delegation rather than claim indefinite capability as a fact. Removing or rotating it is an explicit offboarding step.
 
 The tracking/image CNAMEs carry the *other*, more commonly-discussed risk: the CNAME record and the Salesforce-side resource it points to are two separate things, provisioned and deprovisioned independently. If that link is forgotten after offboarding, the CNAME keeps resolving, but the resource it points to on the vendor's side is now unclaimed — and many SaaS platforms let a *new*, unrelated customer register that same custom domain against their own tenant with only DNS presence as proof of "ownership." Whoever does that first now effectively controls what `email.company.com` serves, with the company's own domain reputation attached to it. This is the well-documented **dangling DNS / subdomain takeover** class of vulnerability, not specific to Salesforce — the community-maintained [**"Can I take over XYZ?"**](https://github.com/EdOverflow/can-i-take-over-xyz) reference catalogs dozens of platforms sharing the identical exploitable shape: a CNAME left pointing at a deprovisioned resource that a new tenant can then claim. Unlike the DKIM case, this one *does* require someone to actively go claim the abandoned target — it's a race against whoever notices first, not a standing capability the original vendor already holds.
 
@@ -280,7 +280,3 @@ Four vendors, four CNAMEs, four separate offboarding steps required later — an
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://www.rfc-editor.org/rfc/rfc4033">RFC 4033</a>, <a href="https://www.rfc-editor.org/rfc/rfc4034">4034</a>, <a href="https://www.rfc-editor.org/rfc/rfc4035">4035</a></strong> define DNSSEC. <strong><a href="https://www.rfc-editor.org/rfc/rfc8484">RFC 8484</a></strong> defines DoH. <strong><a href="https://www.rfc-editor.org/rfc/rfc7858">RFC 7858</a></strong> defines DoT. The Kaminsky vulnerability is documented as <a href="https://www.kb.cert.org/vuls/id/800113">CERT/CC VU#800113</a>. <a href="https://blog.apnic.net/2017/12/06/dnssec-deployment-remains-low/">APNIC's analysis of low DNSSEC deployment</a> and <a href="https://blog.denic.de/en/final-report-dns-outage-of-5-may-2026/">DENIC's own report on the May 2026 .de outage</a> cover the operational-risk tradeoff discussed above. The <a href="https://cheatsheetseries.owasp.org/cheatsheets/Subdomain_Takeover_Prevention_Cheat_Sheet.html">OWASP Subdomain Takeover Prevention Cheat Sheet</a> and the <a href="https://github.com/EdOverflow/can-i-take-over-xyz">"Can I take over XYZ?"</a> reference cover the dangling-DNS risk class in the business case above in full.</p>
 </div>
-
-## How I connect this
-
-DNSSEC's chain of trust is the same structural idea as [Certificate Authorities & Certificates]({{ '/topics/certificates/' | relative_url }}), and DoH/DoT are just the [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) applied to a new kind of traffic. Nothing here is a new primitive — it's the same signature-chain and encrypted-transport ideas, solving the same two problems (authenticity, confidentiality) one layer further down the stack than TLS operates at.

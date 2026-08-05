@@ -2,9 +2,10 @@
 title: Key Exchange & Key Derivation
 description: Diffie-Hellman/ECDH, forward secrecy, and turning a shared secret into usable keys with HKDF.
 permalink: /topics/key-exchange-derivation/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Foundations / Deep Dive</span>
+<span class="eyebrow">Cryptography / Concepts</span>
 
 # Key Exchange & Key Derivation
 
@@ -21,22 +22,22 @@ permalink: /topics/key-exchange-derivation/
 
 The classical version (as pictured) relies on modular exponentiation: both parties agree publicly on a generator `g` and a prime `p`, each picks a private exponent, and the math (`g^a mod p`, then raised to the other party's exponent) happens to land on the same value from both directions — while reversing it (recovering `a` from `g^a mod p`) is the **discrete logarithm problem**, believed to be computationally infeasible for large enough parameters.
 
-**ECDH (Elliptic Curve Diffie-Hellman)** is the same idea, using point multiplication on an elliptic curve instead of modular exponentiation. It's the version almost everything uses today, for the same reason [ECC beat RSA]({{ '/topics/asymmetric-cryptography/' | relative_url }}#the-two-main-families-rsa-and-ecc) in the signing world: dramatically smaller keys for equivalent security.
+**ECDH (Elliptic Curve Diffie-Hellman)** is the same idea, using point multiplication on an elliptic curve instead of modular exponentiation. It is common in modern protocols because it provides compact keys at a given classical security strength. The selected curve, authentication method, protocol, and implementation still matter.
 
 ## Forward secrecy: why "ephemeral" matters
 
-| | Static (fixed) DH | Ephemeral DH (DHE / ECDHE) |
+| | Static key agreement | Ephemeral DH (DHE / ECDHE) |
 |---|---|---|
 | Key pair used | Same long-term key pair, every session | Fresh, temporary key pair, generated per session |
-| If the long-term private key leaks later | Every past session using it can be decrypted retroactively | Past sessions stay safe — the ephemeral keys that protected them are already gone |
-| Cost | Cheaper — no fresh key generation per connection | Slightly more compute per handshake |
-| Used by | Mostly historical / legacy configurations | Certificate-based TLS 1.3 handshakes, SSH, Signal |
+| If the long-term private agreement key leaks later | Recorded sessions that derived secrets directly from that static key may be exposed | Properly erased ephemeral secrets prevent a later authentication-key compromise from recovering completed session keys |
+| Operational requirement | Protect one long-lived agreement key | Generate fresh ephemeral keys and erase them after use |
+| Used by | Protocol-specific and legacy designs | Certificate-authenticated TLS 1.3 and many modern secure-channel protocols |
 
 That “past sessions stay safe after a later long-term-key compromise” property is **forward secrecy**. TLS 1.3 removed static RSA and static DH key exchange. A normal certificate-authenticated handshake uses ephemeral (EC)DHE. One exception matters: TLS 1.3 also permits PSK-only `psk_ke`, which does not provide forward secrecy for the resumption secret. [RFC 8446 §2.2](https://www.rfc-editor.org/rfc/rfc8446.html#section-2.2) explicitly distinguishes PSK-only from PSK with (EC)DHE.
 
 ## From shared secret to usable keys: KDFs
 
-The raw output of a DH or ECDH exchange isn't something you should plug directly into AES as a key — it can have subtle statistical structure that a truly random key shouldn't have, and real protocols usually need *several* independent keys from one exchange (one for each traffic direction, one for MAC/authentication, etc.), not just one.
+I do not use the raw output of a DH or ECDH exchange directly as an AES key. A key derivation function gives the output the required form and context separation, while real protocols normally need several independent keys from one exchange—for example, separate traffic keys for each direction.
 
 **HKDF (HMAC-based Key Derivation Function)**, defined in **[RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)**, solves this in two steps:
 
@@ -62,18 +63,17 @@ $ openssl pkeyutl -derive -inkey bob.pem -peerkey alice_pub.pem -out bob_shared.
 $ diff alice_shared.bin bob_shared.bin && echo IDENTICAL
 IDENTICAL
 
-$ xxd alice_shared.bin
-00000000: 24ad 370d 4851 e9a6 4a1d 089e 36e0 797f  $.7.HQ..J...6.y.
-00000010: ecb0 2645 e3d4 9161 ae56 44d2 8d64 814e  ..&E...a.VD..d.N
+$ wc -c < alice_shared.bin
+32
 ```
 
-Alice derived her copy using only *her* private key and *Bob's public* key; Bob derived his using only *his* private key and *Alice's public* key. Neither private key, nor the shared secret itself, ever needed to be transmitted — and both sides landed on the identical 32 bytes above. (Real output, generated for this demo — X25519 requires OpenSSL 1.1.0+; macOS's bundled LibreSSL doesn't support it, hence the Homebrew OpenSSL used here.)
+Alice derives her copy using her private key and Bob's public key; Bob does the reverse. The generated private keys and the 32 output bytes change on every run, but `diff` should still print `IDENTICAL`. This only demonstrates agreement. A real protocol must authenticate the exchanged public keys and feed the shared secret through a suitable KDF.
 
 ## Real-world case: Logjam (2015)
 
-**Logjam** ([CVE-2015-4000](https://nvd.nist.gov/vuln/detail/CVE-2015-4000), disclosed May 2015) exploited a leftover from 1990s US export restrictions on cryptography: many TLS servers still supported a legacy "export-grade" Diffie-Hellman mode capped at a 512-bit prime, kept around for compatibility long after the restrictions themselves were lifted. Because the TLS handshake at the time didn't cryptographically bind the negotiated cipher suite as tightly as it should have, an active man-in-the-middle attacker could intercept the handshake and trick both browser and server into "downgrading" to the weak export-grade group — even when neither side actually wanted it — then break that specific 512-bit exchange (using precomputation, on academic-scale compute available at the time, according to the [researchers who disclosed it](https://weakdh.org/)) and read or modify everything that followed.
+**Logjam** ([CVE-2015-4000](https://nvd.nist.gov/vuln/detail/CVE-2015-4000), disclosed May 2015) exploited support for 512-bit export-grade Diffie-Hellman in TLS. An active attacker could rewrite the offered cipher suites so a vulnerable server selected export DHE. The server's signed key-exchange structure did not cover the original client offer, so the client could accept the downgraded exchange. After computing the weak 512-bit secret, the attacker could read or modify the protected traffic. The [researchers' site](https://weakdh.org/) also explains why reuse of common primes made precomputation valuable.
 
-Logjam is mainly a lesson about weak shared DH groups and downgrade resistance, not a failure of forward secrecy itself. The practical fix was to remove export-grade suites, use appropriately sized or standardised groups, and cryptographically bind negotiation. TLS 1.3 follows the same general approach by removing legacy negotiation choices rather than keeping them available.
+Logjam is mainly a lesson about weak shared DH groups and downgrade resistance, not a failure of forward secrecy itself. The practical fix was to remove export-grade suites, use appropriately sized or standardized groups, and bind negotiation to the authenticated transcript. TLS 1.3 removes the export and static key-exchange choices involved here.
 
 ## Common pitfalls
 
@@ -86,7 +86,3 @@ Logjam is mainly a lesson about weak shared DH groups and downgrade resistance, 
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers DH/ECDH key-establishment schemes. <strong><a href="https://www.rfc-editor.org/rfc/rfc7748">RFC 7748</a></strong> specifies the X25519 and X448 curves used above. <strong><a href="https://www.rfc-editor.org/rfc/rfc5869">RFC 5869</a></strong> defines HKDF.</p>
 </div>
-
-## How I connect this
-
-This is the machinery running underneath every [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) — (EC)DHE establishes the shared secret, HKDF turns it into the actual traffic keys, and those keys hand off to the [symmetric cipher]({{ '/topics/symmetric-cryptography/' | relative_url }}) doing the real encryption work for the rest of the connection.

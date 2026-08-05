@@ -1,11 +1,11 @@
 ---
 title: Certificate Transparency
-description: How public, append-only Merkle tree logs stop CAs (or attackers) from issuing certificates in secret.
+description: How public, append-only logs make public TLS certificate issuance observable and auditable.
 permalink: /topics/certificate-transparency/
-last_verified: 2026-07-26
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Public Key Infrastructure / Deep Dive</span>
+<span class="eyebrow">Cryptography / Public Key Infrastructure</span>
 
 # Certificate Transparency
 
@@ -49,14 +49,10 @@ Several commercial and free services (Cert Spotter, Facebook's CT monitoring too
 ## Common pitfalls
 
 - **Treating CT as prevention rather than detection** — CT does not stop issuance, and an SCT may precede inclusion. Visibility depends on log compliance, monitoring, consistency checks, and browser enforcement.
-- **Not monitoring your own domains** — the data is public and free to query; not watching it means finding out about a mis-issuance the hard way instead.
+- **Not monitoring my domains** — the data is public and queryable; monitoring gives me a chance to investigate unexpected issuance promptly.
 - **Confusing an SCT with inclusion proof or a CA signature** — an SCT is a promise to include; an inclusion proof shows an entry is in a particular tree; the CA signature is the certificate issuer's attestation. None of these alone says the certificate should have been issued.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://www.rfc-editor.org/rfc/rfc6962">RFC 6962</a></strong> is the original Certificate Transparency specification; <strong><a href="https://www.rfc-editor.org/rfc/rfc9162">RFC 9162</a></strong> is the updated version (CTv2). Google's own <a href="https://certificate.transparency.dev/">certificate.transparency.dev</a> documents the current log list and policy requirements.</p>
 </div>
-
-## How I connect this
-
-CT doesn't replace anything covered under [Certificate Authorities & Certificates]({{ '/topics/certificates/' | relative_url }}) — it adds a public accountability layer on top, using the same Merkle tree math as [Blockchain Cryptography]({{ '/topics/blockchain-cryptography/' | relative_url }}), so that the trust the rest of PKI depends on doesn't rest solely on individual CAs behaving correctly, unobserved.

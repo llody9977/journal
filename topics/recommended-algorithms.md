@@ -2,7 +2,7 @@
 title: Recommended Algorithms & Regional Standards
 description: My dated cryptographic-algorithm selection notes, including NIST transitions, post-quantum standards, and jurisdiction-specific requirements.
 permalink: /topics/recommended-algorithms/
-last_verified: 2026-07-26
+last_verified: 2026-08-05
 ---
 
 <span class="eyebrow">Cryptography / Reference</span>
@@ -11,7 +11,7 @@ last_verified: 2026-07-26
 
 <p class="lede">This is a dated lookup page, not a timeless recommendation. Before I choose an algorithm I need the security strength, the exact operation, protocol interoperability, data lifetime, implementation support, and any regulator or customer profile that applies.</p>
 
-## How I use this page
+## By use case
 
 - [Current NIST-oriented selection table](#nist-recommended-algorithms-and-how-long-theyre-good-for)
 - [Legacy algorithms and the actual failure reason](#legacy-and-broken-algorithms-whats-actually-wrong-with-each)
@@ -24,16 +24,16 @@ Per **[NIST SP 800-57 Part 1 Rev. 5](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5
 
 | Algorithm | Recommended parameters | Security strength | Guidance |
 |---|---|---|---|
-| **AES** | AES-128 or AES-256 | 128-bit / 256-bit | [FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) — AES-128 sufficient against classical attacks well beyond 2030; AES-256 preferred for long-lived data as a quantum hedge (see below) |
-| **RSA** | ≥ 2048-bit | 112-bit at 2048, 128-bit at 3072 | 2048-bit acceptable through 2030; 3072-bit or larger recommended for anything used beyond 2030 |
-| **ECDSA / ECDH** | P-224 | 112-bit | Acceptable through 2030 |
-| **ECDSA / ECDH** | **P-256** | 128-bit | Current recommended default — see [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }}) |
-| **ECDSA / ECDH** | P-384 | 192-bit | Preferred for high-value or long-life signatures (e.g. root CA keys) |
+| **AES** | AES-128 or AES-256 | 128-bit / 256-bit | [FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) defines both; select the size through the protocol profile, security strength, and data lifetime |
+| **RSA** | At least 2048 bits | 112-bit at 2048, 128-bit at 3072 | RSA-2048 remains acceptable in final SP 800-131A Rev. 2; use the final guidance and required protection period to plan migration |
+| **ECDSA / ECDH** | P-224 | 112-bit | Accepted by current final guidance for some uses, but provides less margin than P-256 |
+| **ECDSA / ECDH** | **P-256** | 128-bit | Common approved choice—see [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }}) |
+| **ECDSA / ECDH** | P-384 | 192-bit | Higher-strength approved option; choose it when the protocol, lifetime, and interoperability justify it |
 | **SHA-2** | SHA-256 / 384 / 512 | Collision: 128 / 192 / 256-bit; preimage: up to digest length | [FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final) — current standard, no known practical attacks |
 
 SHA-1 and 3DES/TDEA are deliberately left out of this table — both are disallowed rather than recommended; see [Legacy and broken algorithms](#legacy-and-broken-algorithms-whats-actually-wrong-with-each) directly below for why.
 
-"Acceptable through 2030" is a planning horizon, not a hard cutoff a system stops working on — it's NIST's estimate of when 112-bit security strength stops being comfortably ahead of attacker capability, re-evaluated periodically as compute cost and cryptanalysis both move.
+The 2030 transition language around 112-bit strength is a planning horizon, not a mathematical expiry date. I must distinguish final SP 800-131A Rev. 2 from the Rev. 3 draft, then check the final rule in force for the system's deployment and data lifetime.
 
 ## Legacy and broken algorithms: what's actually wrong with each
 
@@ -62,11 +62,11 @@ NIST has already standardized the replacements for the Shor's-algorithm-vulnerab
 
 | Standard | Algorithm | Role |
 |---|---|---|
-| **[FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)** | ML-KEM (based on CRYSTALS-Kyber) | Key establishment — the post-quantum replacement for RSA/ECDH key exchange |
-| **[FIPS 204](https://csrc.nist.gov/pubs/fips/204/final)** | ML-DSA (based on CRYSTALS-Dilithium) | General-purpose signatures — the default post-quantum replacement for RSA/ECDSA |
+| **[FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)** | ML-KEM (based on CRYSTALS-Kyber) | Standardized post-quantum key-encapsulation mechanism |
+| **[FIPS 204](https://csrc.nist.gov/pubs/fips/204/final)** | ML-DSA (based on CRYSTALS-Dilithium) | Standardized post-quantum digital-signature scheme |
 | **[FIPS 205](https://csrc.nist.gov/pubs/fips/205/final)** | SLH-DSA (based on SPHINCS+) | Stateless hash-based signature scheme whose security analysis relies on several properties of the underlying hash functions, including preimage, second-preimage, and collision resistance—not collision resistance alone |
 
-The NSA's **[CNSA 2.0 advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)** sets technology-specific transition expectations for US National Security Systems. The advisory originally used the pre-standardisation Kyber/Dilithium names; later profiles map these to the selected high-security ML-KEM/ML-DSA parameters. The dates are not one four-step schedule for every system:
+The NSA's **[CNSA 2.0 advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)** sets technology-specific transition expectations for US National Security Systems. The advisory originally used the pre-standardization Kyber/Dilithium names; later profiles map these to selected high-security ML-KEM/ML-DSA parameters. The dates are not one four-step schedule for every system:
 
 | Technology class | Advisory timing |
 |---|---|
@@ -82,7 +82,7 @@ This is a defense-specific timeline, stricter than general civilian guidance —
 
 ## China: the ShangMi (SM) algorithm suite
 
-China standardises a distinct set of domestically designed commercial cryptographic algorithms. Whether support or certification is mandatory depends on the product, sector, procurement, data classification, and regulation; I should not describe the whole country or every service as having one blanket mandate.
+China standardizes a distinct set of domestically designed commercial cryptographic algorithms. Whether support or certification is mandatory depends on the product, sector, procurement, data classification, and regulation; I should not describe the whole country or every service as having one blanket mandate.
 
 | Algorithm | Type | International equivalent |
 |---|---|---|
@@ -105,7 +105,3 @@ Products in regulated or government procurement contexts may need the relevant S
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final">NIST SP 800-57 Part 1 Rev. 5</a></strong> and final <strong><a href="https://csrc.nist.gov/pubs/sp/800/131/a/r2/final">SP 800-131A Rev. 2</a></strong> define the current key-size and transition guidance; Rev. 3 remains a draft as of this update. <strong><a href="https://csrc.nist.gov/pubs/fips/203/final">FIPS 203</a></strong>, <strong><a href="https://csrc.nist.gov/pubs/fips/204/final">FIPS 204</a></strong>, and <strong><a href="https://csrc.nist.gov/pubs/fips/205/final">FIPS 205</a></strong> define ML-KEM, ML-DSA, and SLH-DSA. <a href="https://sweet32.info/">Sweet32</a>, <a href="https://www.rfc-editor.org/rfc/rfc7465">RFC 7465</a>, and the <a href="https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF">NSA CNSA 2.0 advisory</a> support the transition notes above.</p>
 </div>
-
-## How I connect this
-
-This is the practical lookup companion to [Foundations]({{ '/topics/symmetric-cryptography/' | relative_url }}) — that section explains how AES, RSA, ECDSA, and SHA-2 actually work; this page covers which specific variant and key size to actually deploy, for how long, and which of them a given jurisdiction might require instead.

@@ -2,9 +2,10 @@
 title: SSH
 description: SSH's trust-on-first-use model vs TLS's CA-backed one, key-based authentication, and SSH certificates.
 permalink: /topics/ssh/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Authentication & Authorization / Deep Dive</span>
+<span class="eyebrow">Authentication & Authorization / Protocol</span>
 
 # SSH
 
@@ -36,7 +37,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
   <p class="diagram-caption">No CA in the loop by default — both sides just have to decide to trust a bare key</p>
 </div>
 
-Typing `yes` here is the **only** identity check SSH is offering you — there's no CA silently doing it for you like there is with a browser and TLS. If an attacker is actively intercepting this specific connection (a coffee-shop Wi-Fi MITM, for instance), this prompt is the one and only moment that would reveal it, by showing a fingerprint that doesn't match the real server's. Answering `yes` without checking the fingerprint against a value obtained through some other trusted channel skips that check entirely. Once accepted, the fingerprint is cached in `~/.ssh/known_hosts`, and future connections are silently verified against it — which is also why a *sudden* "**WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED**" message is something to actually stop and investigate, not click past.
+In a default TOFU setup, this prompt asks me to make the first identity decision. The fingerprint only helps if I compare it with a value obtained through an independent trusted channel; otherwise an attacker on that first path can present their own key. Once accepted, the host key is cached in `~/.ssh/known_hosts` and later connections are checked against it. SSH can also use host certificates or verified SSHFP records, so TOFU is the default model rather than the protocol's only option.
 
 ## Client authentication: password vs. public key
 
@@ -53,7 +54,7 @@ After confirming that key-based access, recovery access, and automation all work
 |---|---|
 | RSA | Still common, especially in older infrastructure; 3072+ bits recommended if used |
 | ECDSA | Supported, but see the [nonce-reuse risk]({{ '/topics/digital-signatures/' | relative_url }}#where-real-signature-schemes-go-wrong-the-nonce-trap) covered under Digital Signatures |
-| **Ed25519** | **Recommended default** for new keys — small, fast, and immune to the nonce-reuse failure class entirely ([RFC 8709](https://www.rfc-editor.org/rfc/rfc8709)) |
+| **Ed25519** | Common default for new OpenSSH keys—small and deterministic, so signing does not depend on a fresh random nonce for every signature ([RFC 8709](https://www.rfc-editor.org/rfc/rfc8709)) |
 
 ## Practical demo: generating and inspecting a key
 
@@ -99,29 +100,25 @@ Captured on **26 July 2026**. `ssh-keyscan` only retrieves what the current netw
 
 ## SSH certificates: fixing TOFU at scale
 
-TOFU works fine for a personal server, but breaks down badly across a fleet of thousands of hosts and engineers — nobody manually verifies fingerprints at that scale, so in practice TOFU becomes "click yes and hope." **SSH certificates** (a lesser-known but well-supported OpenSSH feature) fix this the same way TLS fixed it for the web: a CA signs short-lived certificates for both host keys and user keys, so trust is established once (trusting the CA) instead of once per host or per user, forever. Tools like `step-ssh`, HashiCorp Vault's SSH secrets engine, and Teleport are built around exactly this model, typically issuing certificates valid for hours, not indefinitely.
+TOFU can be manageable for a small personal setup, but it becomes difficult to verify and rotate across a large fleet. **OpenSSH certificates** let administrators trust an SSH CA, then accept host or user keys carrying a valid, scoped, time-limited certificate from that CA. This reduces per-host fingerprint handling. It is conceptually similar to centralized certificate trust, but OpenSSH certificates are not X.509 and use different formats and policy controls.
 
 ## Real-world case: the XZ Utils backdoor (2024)
 
 In late March 2024, Microsoft engineer and PostgreSQL developer Andres Freund noticed that SSH logins on a test system were consuming unusual CPU and taking roughly half a second. The extra few hundred milliseconds led him into `liblzma`, the XZ compression library pulled into `sshd` on affected distributions through `systemd`.
 
-What he found was a deliberately planted backdoor ([CVE-2024-3094](https://nvd.nist.gov/vuln/detail/CVE-2024-3094)) affecting XZ/liblzma 5.6.0–5.6.1. The activation chain combined build logic with payload material hidden in release-tarball test files, so a normal source checkout did not reveal the complete delivered behaviour. The malicious library could interfere with `sshd` authentication on affected builds and enable attacker-controlled remote code execution.
+What he found was a deliberately planted backdoor ([CVE-2024-3094](https://nvd.nist.gov/vuln/detail/CVE-2024-3094)) affecting XZ/liblzma 5.6.0–5.6.1. The activation chain combined build logic with payload material hidden in release-tarball test files, so a normal source checkout did not reveal the complete delivered behavior. The malicious library could interfere with `sshd` authentication on affected builds and enable attacker-controlled remote code execution.
 
-None of this was a break in SSH's cryptographic protocol. The backdoor sat underneath it in a dependency and was found through an unexpected performance/CPU observation. My lesson is to treat build artefacts and transitive dependencies as part of the security boundary, not to quote one inconsistent slowdown number.
+None of this was a break in SSH's cryptographic protocol. The backdoor sat underneath it in a dependency and was found through an unexpected performance/CPU observation. My lesson is to treat build artifacts and transitive dependencies as part of the security boundary, not to quote one inconsistent slowdown number.
 
 ## Common pitfalls
 
 - **Typing `yes` reflexively** at the host authenticity prompt without checking the fingerprint through any independent channel.
 - **Ignoring a host-key-changed warning** — legitimate rebuilds, rotations, load-balancer changes, and stale `known_hosts` entries are common causes, while MITM is a serious possible cause. I should verify the new fingerprint out of band before replacing the old entry.
 - **Leaving password authentication enabled** on internet-facing servers.
-- **Weak private key file permissions** — SSH will refuse to use a private key that's group- or world-readable; this isn't pedantry, it's the client protecting you from a key any other local user could read.
+- **Weak private key file permissions** — OpenSSH refuses to use a private key that is accessible to other local users. I keep the key readable only by its owner.
 - **One key reused everywhere, no passphrase** — a single laptop compromise then grants access everywhere that key is trusted.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://www.rfc-editor.org/rfc/rfc4253">RFC 4253</a></strong> defines the SSH transport protocol. <strong><a href="https://www.rfc-editor.org/rfc/rfc8709">RFC 8709</a></strong> defines Ed25519 and Ed448 for SSH. OpenSSH's own certificate format is documented in its <code>PROTOCOL.certkeys</code> file rather than an RFC.</p>
 </div>
-
-## How I connect this
-
-SSH reuses the same [asymmetric]({{ '/topics/asymmetric-cryptography/' | relative_url }}) and [key-exchange]({{ '/topics/key-exchange-derivation/' | relative_url }}) machinery as TLS, which is exactly why understanding one makes the other faster to pick up — the real difference worth remembering is entirely about trust distribution, not cryptography.

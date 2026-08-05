@@ -2,9 +2,10 @@
 title: Asymmetric Cryptography
 description: RSA and ECC (ECDSA/ECDH/EdDSA), key pairs, and how public-key cryptography solves what symmetric crypto can't.
 permalink: /topics/asymmetric-cryptography/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Cryptography / Foundations / Deep Dive</span>
+<span class="eyebrow">Cryptography / Concepts</span>
 
 # Asymmetric Cryptography
 
@@ -14,18 +15,19 @@ permalink: /topics/asymmetric-cryptography/
 
 Instead of one shared secret, asymmetric cryptography generates a mathematically-linked **key pair**:
 
-- A **public key** — safe to hand out to literally anyone, publish on a website, print on a business card.
-- A **private key** — kept by exactly one party, never transmitted, never shared.
+- A **public key** — designed to be distributed. Its owner or purpose still needs to be authenticated.
+- A **private key** — kept secret and restricted to authorized operations. It may be held by one device, an HSM, or a threshold system rather than one person.
 
 The relationship between them supports two distinct, and easy to confuse, operations:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Two diagrams. First: anyone can encrypt using the public key, but only the private key owner can decrypt. Second: only the private key owner can sign, but anyone with the public key can verify that signature.">
-  <p class="diagram-caption">Same key pair, two opposite-direction guarantees</p>
+  <p class="diagram-caption">The public/private relationship, used by schemes with different purposes</p>
 </div>
 
-1. **Encryption** — the public key locks, the private key is the only thing that unlocks. This gives confidentiality: anyone can send the owner a secret, but only the owner can read it.
-2. **Signing** — the private key signs, and the public key verifies. This provides evidence that someone controlling the private key produced the signature. Attribution to a person or organisation still depends on how the public key was authenticated and how the private key was protected.
+1. **Public-key encryption** — in a scheme designed for encryption, the public key protects a small value and the private key decrypts it. Real systems normally use this inside hybrid encryption rather than for bulk data.
+2. **Signing** — in a signature scheme, the private key signs and the public key verifies. This provides evidence that someone controlling the private key produced the signature. Attribution to a person or organization still depends on how the public key was authenticated and how the private key was protected.
+3. **Key agreement** — schemes such as ECDH let two parties derive a shared secret. ECDH is neither encryption nor a signature and must be authenticated by the surrounding protocol.
 
 This second use is exactly the mechanism behind the overview's "Official ID & Notary Stamp" and "Handwritten Signature" examples — a CA's signature on a certificate, or a signed software update, is this exact operation.
 
@@ -41,7 +43,7 @@ The trade-off is performance and payload size: public-key operations are much mo
 |---|---|---|
 | Hard problem it relies on | Factoring the product of two large primes | The elliptic curve discrete logarithm problem |
 | Typical key sizes | 2048 / 3072 / 4096 bits | 256 / 384 / 521 bits |
-| Relative speed | Slower, especially key generation | Faster for equivalent security |
+| Performance | Depends on operation, parameter size, hardware, and implementation | Often smaller keys and signatures; performance still depends on the selected operation and curve |
 | Signing scheme | RSA-PSS (modern) or PKCS#1 v1.5 (legacy) | ECDSA, or EdDSA (Ed25519) |
 | Key exchange scheme | Not typically used this way | ECDH (Elliptic Curve Diffie-Hellman) |
 | Maturity | Older, extremely well-studied, still widely deployed | Well-established and common in new systems; TLS key exchange, SSH keys, and certificate signing algorithms are separate choices |
@@ -59,7 +61,7 @@ Smaller keys and signatures can reduce certificate size and computation, which i
 
 **EdDSA** (Edwards-curve Digital Signature Algorithm), most commonly seen as **Ed25519**, is a newer signature scheme built on different curve math than ECDSA. Two practical advantages drive its growing adoption:
 
-- **Deterministic** — ECDSA requires a fresh random number for every single signature; if that randomness is ever weak, reused, or predictable, the private key can be recovered entirely (this is exactly what happened in the Sony PS3 signing-key leak in 2010). Ed25519 removes the random number from the equation, closing off that entire failure class.
+- **Deterministic nonce derivation** — ECDSA needs a unique, unpredictable per-signature nonce; weak or reused nonces can expose the private key. Ed25519 derives its per-message nonce deterministically, avoiding dependence on fresh randomness for every signature. It does not remove the need for secure key generation or protection against implementation and side-channel faults.
 - **Fast, and simple to implement correctly** — fewer edge cases than ECDSA, which has made it popular for SSH keys, new certificate types, and systems like Signal's protocol.
 
 ## Practical demo: generating and using key pairs with OpenSSL
@@ -130,7 +132,3 @@ Byte-for-byte identical, every time, forever — because it isn't really "regene
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the current Digital Signature Standard, approving RSA, ECDSA, and EdDSA. <strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers key-establishment schemes (including ECDH). <strong><a href="https://csrc.nist.gov/pubs/sp/800/186/final">NIST SP 800-186</a></strong> specifies the approved elliptic curves (P-256, P-384, P-521, and Edwards curves).</p>
 </div>
-
-## How I connect this
-
-Asymmetric cryptography is the mathematical machinery — but on its own, it only tells you "this public key can only be unlocked by whoever holds the matching private key." It says nothing about *whose* key that is. Binding a public key to a real-world identity is exactly the job of [Certificate Authorities & Certificates]({{ '/topics/certificates/' | relative_url }}), and negotiating a fresh key pair safely for every connection is the job of [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}).

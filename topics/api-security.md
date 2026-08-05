@@ -2,13 +2,14 @@
 title: Machine-to-Machine API Authentication
 description: My notes on API keys, OAuth client credentials, mTLS, proof-of-possession, and signed requests.
 permalink: /topics/api-security/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Authentication & Authorization / Deep Dive</span>
+<span class="eyebrow">Authentication & Authorization / Decision Guide</span>
 
 # Machine-to-Machine API Authentication
 
-<p class="lede">I am keeping this page narrowly scoped to authenticating service-to-service calls, scheduled jobs, CLI tools, and webhooks. “API security” is much broader and also includes object/function authorisation, input validation, rate limits, inventory, business-logic abuse, and safe consumption of third-party APIs; I use the <a href="https://owasp.org/API-Security/">OWASP API Security Top 10</a> for that wider checklist.</p>
+<p class="lede">I keep this page narrowly scoped to authenticating service-to-service calls, scheduled jobs, CLI tools, and webhooks. API security is much broader: it also includes object and function authorization, input validation, rate limits, inventory, business-logic abuse, and safe use of third-party APIs. I use the <a href="https://owasp.org/API-Security/">OWASP API Security Top 10</a> for that wider checklist.</p>
 
 ## API keys: the simplest, and weakest, option
 
@@ -23,7 +24,7 @@ High-entropy API keys do not need a deliberately slow password hash. A common de
 
 ## OAuth's Client Credentials grant: machine-to-machine OAuth
 
-When both parties are services (no user, no browser, no redirect), OAuth 2.0 has a purpose-built grant type: the client sends its `client_id` and `client_secret` directly to the Authorization Server and receives an access token back — a much shorter version of the [Authorization Code flow]({{ '/topics/oauth-oidc/' | relative_url }}#the-authorization-code-flow-with-pkce), since there's no user consent step to orchestrate. The `client_secret` still needs to be protected exactly like a password — this grant only makes sense between two systems that can each keep a secret safely. It also has a specific weakness worth naming directly: unlike the user-facing flow, there's no human present to answer a step-up challenge if something looks wrong. [The section below](#closing-the-impersonation-gap-in-machine-to-machine-auth) covers what actually substitutes for that.
+When both parties are services (no user, no browser, no redirect), OAuth 2.0 has a purpose-built grant type: the client sends its `client_id` and `client_secret` directly to the Authorization Server and receives an access token back — a much shorter version of the [Authorization Code flow]({{ '/topics/oauth-oidc/' | relative_url }}#the-authorization-code-flow-with-pkce), since there's no user consent step to orchestrate. The `client_secret` still needs to be protected exactly like a password — this grant only makes sense between two systems that can each keep a secret safely. It also has a specific weakness worth naming directly: unlike the user-facing flow, there's no human present to answer a [step-up challenge]({{ '/topics/step-up-authentication/' | relative_url }}) if something looks wrong. [The section below](#closing-the-impersonation-gap-in-machine-to-machine-auth) covers what actually substitutes for that.
 
 ## Mutual TLS (mTLS): both sides prove who they are
 
@@ -34,7 +35,7 @@ The [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) only auth
   <p class="diagram-caption">Same certificate validation logic, running in both directions</p>
 </div>
 
-This is the backbone of most **service mesh** and **zero-trust** architectures — every service gets its own short-lived certificate, usually issued by an internal [private CA]({{ '/topics/certificates/' | relative_url }}#public-vs-private-ca-side-by-side) (exactly the `step-ca` pattern demonstrated on the Certificates page), so that every internal call is authenticated without any shared secret at all.
+mTLS is one common building block in **service mesh** and **zero-trust** architectures. A deployment can give each workload a short-lived certificate from an internal [private CA]({{ '/topics/certificates/' | relative_url }}#public-vs-private-ca-side-by-side), then authenticate both ends of an internal connection without a shared application secret. Authorization is still separate: a valid workload certificate does not decide which operation that workload may perform.
 
 ## Signed requests and webhooks: similar goal, different schemes
 
@@ -79,7 +80,7 @@ Changing signed bytes makes verification fail under the corresponding scheme. Th
 
 ## Closing the impersonation gap in machine-to-machine auth
 
-A stolen `client_id`/`client_secret` pair — or a stolen bare API key, or a stolen bearer token — *is* the service's identity to whoever holds it, indistinguishably from the real client. In the user-facing [Authorization Code flow]({{ '/topics/oauth-oidc/' | relative_url }}#the-authorization-code-flow-with-pkce), a login from a new device or an unusual location can still be met with a step-up challenge — MFA, a re-auth prompt, a risk-based check — because a human is present to answer one. Client Credentials has no equivalent: there's nobody to challenge, so the credential alone is the entire proof of identity, and a leak (checked into a repo, exposed in a build log, exfiltrated from a compromised host) hands over full impersonation with nothing else asked of the attacker.
+A stolen `client_id`/`client_secret` pair — or a stolen bare API key, or a stolen bearer token — *is* the service's identity to whoever holds it, indistinguishably from the real client. In the user-facing [Authorization Code flow]({{ '/topics/oauth-oidc/' | relative_url }}#the-authorization-code-flow-with-pkce), a login from a new device or an unusual location can still be met with a [step-up challenge]({{ '/topics/step-up-authentication/' | relative_url }}) — MFA, a re-auth prompt, a risk-based check — because a human is present to answer one. Client Credentials has no equivalent: there's nobody to challenge, so the credential alone is the entire proof of identity, and a leak (checked into a repo, exposed in a build log, exfiltrated from a compromised host) hands over full impersonation with nothing else asked of the attacker.
 
 Three real mechanisms close this gap by removing the shared secret from the picture entirely, rather than trying to bolt on a "step-up" with no human to prompt:
 
@@ -102,7 +103,7 @@ Where none of these are in reach, the fallback is limiting what a leaked secret 
 
 In January 2023, T-Mobile disclosed that a bad actor had obtained names, billing addresses, emails, phone numbers, dates of birth, account numbers, and other limited account data for roughly 37 million customer accounts through a single API. T-Mobile said the actor first retrieved data around 25 November 2022, that it identified the activity on 5 January 2023, and that it traced and stopped the activity within a day.
 
-The company's [Form 8-K](https://www.sec.gov/Archives/edgar/data/1283699/000119312523010949/d641142d8k.htm) says the data was obtained “without authorization”, but does not say whether that meant missing authentication, a stolen credential, an authorisation flaw, or another control failure. I therefore cannot claim that every authentication method in this table would have stopped the actor. The defensible lesson is narrower: every endpoint needs tested authentication **and authorisation**, least privilege, enumeration resistance, rate limits, anomaly detection, and data-minimisation controls.
+The company's [Form 8-K](https://www.sec.gov/Archives/edgar/data/1283699/000119312523010949/d641142d8k.htm) says the data was obtained “without authorization”, but does not say whether that meant missing authentication, a stolen credential, an authorization flaw, or another control failure. I therefore cannot claim that every authentication method in this table would have stopped the actor. The defensible lesson is narrower: every endpoint needs tested authentication **and authorization**, least privilege, enumeration resistance, rate limits, anomaly detection, and data-minimization controls.
 
 ## Common pitfalls
 
@@ -115,7 +116,3 @@ The company's [Form 8-K](https://www.sec.gov/Archives/edgar/data/1283699/0001193
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://www.rfc-editor.org/rfc/rfc6749#section-4.4">RFC 6749 §4.4</a></strong> defines Client Credentials; <strong><a href="https://www.rfc-editor.org/rfc/rfc8705">RFC 8705</a></strong> defines OAuth mTLS; <strong><a href="https://www.rfc-editor.org/rfc/rfc7523">RFC 7523</a></strong> defines JWT assertions; and <strong><a href="https://www.rfc-editor.org/rfc/rfc9449">RFC 9449</a></strong> defines DPoP. The examples above cite the official <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html">AWS</a>, <a href="https://docs.stripe.com/webhooks/signature">Stripe</a>, <a href="https://shopify.dev/docs/apps/build/webhooks/subscribe/https#step-5-verify-the-webhook">Shopify</a>, and <a href="https://developer.paypal.com/api/rest/webhooks/rest/">PayPal</a> verification documentation. The <a href="https://owasp.org/API-Security/">OWASP API Security Top 10</a> covers the wider API-security scope outside authentication.</p>
 </div>
-
-## How I connect this
-
-Every mechanism here is a recombination of the same primitives: mTLS is [certificates]({{ '/topics/certificates/' | relative_url }}) and the [TLS handshake]({{ '/topics/tls-ssl-handshake/' | relative_url }}) applied in both directions, HMAC signing is [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}) applied to HTTP requests instead of generic messages, and OAuth Client Credentials is [OAuth & OpenID Connect]({{ '/topics/oauth-oidc/' | relative_url }}) without the human step. Securing an API is mostly about picking the right existing tool for who — or what — is actually on the other end of the connection.

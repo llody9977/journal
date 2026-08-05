@@ -2,23 +2,18 @@
   {% for item in include.items %}
     <li class="sidenav-item">
       {% if item.children %}
-        {% if include.depth == 0 %}
-          <div class="sidenav-section">
-            <button type="button" class="sidenav-heading" aria-expanded="false">
-              <span>{{ item.title }}</span>
-              <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-                <path d="M2 3 L5 7 L8 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <div class="sidenav-body">
-              {% include nav-list.html items=item.children depth=1 %}
-            </div>
+        <div class="sidenav-section">
+          <button type="button" class="sidenav-heading{% if include.depth > 0 %} sidenav-heading-sub{% endif %}" aria-expanded="false">
+            <span>{{ item.title }}</span>
+            <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+              <path d="M2 3 L5 7 L8 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="sidenav-body">
+            {% assign next_depth = include.depth | plus: 1 %}
+            {% include nav-list.html items=item.children depth=next_depth %}
           </div>
-        {% else %}
-          <p class="sidenav-subheading">{{ item.title }}</p>
-          {% assign next_depth = include.depth | plus: 1 %}
-          {% include nav-list.html items=item.children depth=next_depth %}
-        {% endif %}
+        </div>
       {% else %}
         {% if item.url %}
           {% assign clean_url = item.url | relative_url %}

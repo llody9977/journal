@@ -2,14 +2,14 @@
 title: Security Certifications
 description: FIPS 140, Common Criteria, PCI PTS HSM, and eIDAS — what each certification actually claims, who requires it, and where to verify one.
 permalink: /topics/security-certifications/
-last_verified: 2026-07-26
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Key Management / Deep Dive</span>
+<span class="eyebrow">Governance, Risk & Compliance / Assurance</span>
 
 # Security Certifications
 
-<p class="lede">This page is my checklist for reading certification claims without accepting the marketing shorthand. I need the exact product/module, version, certificate number, scope, assurance level, Security Target or Protection Profile, status, and the programme that issued it.</p>
+<p class="lede">This page is my checklist for reading certification claims without accepting the marketing shorthand. I need the exact product or module, version, certificate number, scope, assurance level, Security Target or Protection Profile, status, and the program that issued it.</p>
 
 ## Why independent certification exists at all
 
@@ -78,7 +78,3 @@ These examples are snapshots, not permanent status claims. Each certificate is t
   <span class="callout-title">Reference</span>
   <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> is the current cryptographic module standard; <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">CMVP's validated modules search</a></strong> is where to verify a claim against it. The <strong><a href="https://www.commoncriteriaportal.org/">Common Criteria portal</a></strong> lists internationally certified products; <strong><a href="https://www.niap-ccevs.org/">NIAP</a></strong> covers the US government's Protection Profiles specifically. The <strong><a href="https://listings.pcisecuritystandards.org/documents/PCI_HSM_Security_Requirements_v4.pdf">PCI PTS HSM Security Requirements</a></strong> define the payments-industry standard. <strong>EN 419 221-5</strong> (CEN) is the eIDAS Protection Profile for qualified signature devices.</p>
 </div>
-
-## How I connect this
-
-This is the "how do I actually check that claim" companion to [HSM & KMS]({{ '/topics/hsm-kms/' | relative_url }}) — that page covers what an HSM does and why custody matters; this one covers how the industry independently verifies that a specific product actually does what its vendor says, and which of several overlapping schemes applies to a given use case (general-purpose key custody, US federal procurement, payment processing, or EU-qualified signatures).

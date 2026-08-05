@@ -172,14 +172,14 @@ a:hover { text-decoration: underline; }
   color: var(--rule-strong);
 }
 
-.sidenav-section.is-expanded .sidenav-heading .chevron { transform: rotate(180deg); }
+.sidenav-section.is-expanded > .sidenav-heading .chevron { transform: rotate(180deg); }
 
 .sidenav-body {
   display: none;
   padding-bottom: 0.5rem;
 }
 
-.sidenav-section.is-expanded .sidenav-body { display: block; }
+.sidenav-section.is-expanded > .sidenav-body { display: block; }
 
 .sidenav-list {
   list-style: none;
@@ -191,16 +191,16 @@ a:hover { text-decoration: underline; }
 .sidenav-list .sidenav-list { padding-left: 0.75rem; }
 .sidenav-list-root { padding-left: 0; }
 
-.sidenav-subheading {
-  font-family: var(--font-mono);
-  font-size: 0.63rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.sidenav-heading-sub {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--muted);
-  margin: 0.7rem 0 0.3rem 0.6rem;
+  padding: 0.4rem 0.6rem;
 }
 
-.sidenav-subheading:first-child { margin-top: 0.2rem; }
+.sidenav-heading-sub:hover { color: var(--ink-2); }
 
 .sidenav-link {
   display: flex;
@@ -396,6 +396,15 @@ hr {
   height: auto;
   display: block;
   margin: 0 auto;
+}
+
+.diagram-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 8px;
+  background: var(--paper);
 }
 
 .diagram-caption {

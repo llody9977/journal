@@ -2,17 +2,18 @@
 title: AI & LLM Security
 description: Prompt injection, MCP tool poisoning, model supply-chain scanning, and concrete mitigation architectures for AI systems.
 permalink: /topics/ai-llm-security/
+last_verified: 2026-08-05
 ---
 
-<span class="eyebrow">Emerging Topics / Deep Dive</span>
+<span class="eyebrow">Emerging Topics / Threat Analysis</span>
 
 # AI & LLM Security
 
 <p class="lede">My main rule for an LLM system is to treat model output, retrieved content, tool metadata, and model files as untrusted input. Prompt injection is not solved by a clever system prompt, and the old controls—least privilege, validation, provenance, signing, isolation, and approval—still carry most of the load.</p>
 
-## Prompt injection: SQL injection's harder successor
+## Prompt injection: instructions and data share one context
 
-Parameterized queries solve the common case where untrusted **values** must not become SQL syntax, provided the application does not fall back to string concatenation or use untrusted identifiers/dynamic query fragments unsafely. LLM contexts do not offer an equivalent hard separation between “data to analyse” and natural-language “instructions to follow”:
+Parameterized queries solve the common case where untrusted **values** must not become SQL syntax, provided the application does not fall back to string concatenation or use untrusted identifiers/dynamic query fragments unsafely. LLM contexts do not offer an equivalent hard separation between “data to analyze” and natural-language “instructions to follow”:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/prompt-injection.svg' | relative_url }}" alt="Diagram contrasting parameterized SQL queries, where user data is structurally bound as a literal value and can never become code, with an LLM context window, where the system prompt, user message, and retrieved documents or tool output all flow into one undifferentiated context that the model cannot reliably separate — meaning data can be followed as instructions." >
@@ -22,7 +23,7 @@ Parameterized queries solve the common case where untrusted **values** must not 
 - **Direct prompt injection** — the user directly types an instruction meant to override the system prompt ("ignore previous instructions and...").
 - **Indirect prompt injection** — the more dangerous variant: the malicious instruction arrives embedded in *retrieved content* the model wasn't expecting to contain instructions at all — a webpage a RAG pipeline fetched, a résumé an HR-screening agent read, an email a summarization tool processed. The model can't reliably tell "text I'm summarizing" apart from "a command I should follow," because both are just tokens in the same context window.
 
-This is currently an **open research problem**, not a solved one — every mitigation (covered below) reduces risk without eliminating it the way parameterized queries eliminated classic SQL injection. It has held the #1 spot on the OWASP LLM Top 10 across every edition released so far.
+This remains an **open research problem** rather than a control I can eliminate with one parser or filter. Each mitigation below reduces likelihood or impact. OWASP lists Prompt Injection as **LLM01:2025**, but the ranking is a useful risk guide rather than proof that every application has the same priority order.
 
 ## MCP: the same problem, one layer deeper
 
@@ -37,7 +38,7 @@ An agent connecting to an MCP server doesn't just get access to a tool — it fi
 
 A few MCP-specific risk patterns worth naming directly:
 
-- **Tool poisoning** — a malicious or compromised MCP server embeds hidden instructions in a tool's name, description, or parameter schema, which the agent reads during discovery, before the user has asked for anything related to that tool at all. Research comparing major MCP clients has found this to be the most prevalent and impactful client-side MCP vulnerability class identified so far.
+- **Tool poisoning** — a malicious or compromised MCP server embeds instructions in a tool name, description, or schema that the model reads during discovery. Whether those instructions influence behavior depends on the client and model, so I treat all discovered metadata as untrusted rather than assume one universal exploit rate.
 - **Confused deputy across servers** — an agent connected to multiple MCP servers simultaneously (say, an internal ticketing server and a public web-search server) can be manipulated by one untrusted server into misusing the *other*, more privileged one, exactly the classic confused-deputy problem applied to tool-calling agents.
 - **Rug-pull updates** — a tool's description can legitimately change between the moment a user (or developer) reviews and approves it and the moment it's actually invoked, since most clients re-fetch tool definitions live rather than pinning them.
 
@@ -60,7 +61,7 @@ No single fix eliminates prompt injection, but a real defense-in-depth stack mea
 
 Beyond runtime prompt injection, there's a distinct, more familiar-shaped problem: is the model file itself safe to load in the first place?
 
-PyTorch checkpoints have historically relied on Python pickle, whose general object deserialisation can execute code. Since PyTorch 2.6, `torch.load` defaults to `weights_only=True` when the caller does not provide a custom `pickle_module`. This restricted unpickler reduces the risk for plain state dictionaries but is not a universal safety guarantee; loading with `weights_only=False`, allow-listing unsafe globals, custom formats, or old versions can still execute code. See the official [PyTorch serialization notes](https://docs.pytorch.org/docs/main/notes/serialization.html#torch-load-with-weights-only-true).
+PyTorch checkpoints have historically relied on Python pickle, whose general object deserialization can execute code. Since PyTorch 2.6, `torch.load` defaults to `weights_only=True` when the caller does not provide a custom `pickle_module`. This restricted unpickler reduces the risk for plain state dictionaries but is not a universal safety guarantee; loading with `weights_only=False`, allow-listing unsafe globals, custom formats, or old versions can still execute code. See the official [PyTorch serialization notes](https://docs.pytorch.org/docs/main/notes/serialization.html#torch-load-with-weights-only-true).
 
 **ModelScan** (open source, from Protect AI) statically analyzes a model file for exactly this, without ever loading or executing it. A real test — a pickle file rigged with the classic malicious payload shape, compared against an ordinary one:
 
@@ -88,13 +89,13 @@ Scanning clean_model.pkl using modelscan.scanners.PickleUnsafeOpScan model scan
 No issues found! 🎉
 ```
 
-Same scanner, two files—one is flagged for an obvious unsafe operator and one produces no findings. “No issues found” only means the scanner did not recognise a problem; static scanning has false negatives and does not establish provenance or safety.
+Same scanner, two files—one is flagged for an obvious unsafe operator and one produces no findings. “No issues found” only means the scanner did not recognize a problem; static scanning has false negatives and does not establish provenance or safety.
 
 The other half of the fix is the same as for any downloaded artifact:
 
 - **Prefer safetensors over pickle** — a format developed specifically to close this gap, storing only tensor weights with no executable content and no deserialization hooks at all.
 - **Hashing** — verify a SHA-256 checksum obtained through a trusted channel. A digest published beside a compromised file can be replaced with it.
-- **Signing** — verify model artefacts against an expected publisher identity and trusted signing policy. A valid signature binds the artefact to a signing key; it does not prove the model is benign.
+- **Signing** — verify model artifacts against an expected publisher identity and trusted signing policy. A valid signature binds the artifact to a signing key; it does not prove the model is benign.
 
 ## API keys for LLM providers are just API keys
 
@@ -102,7 +103,7 @@ An OpenAI, Anthropic, or other provider API key follows the exact same rules as 
 
 ## Data leakage: prompts and completions are data too
 
-Anything sent to a third-party LLM API is now subject to that provider's logging, retention, and (depending on the plan and settings) potential training-data policies. Never put secrets, credentials, or regulated personal data into a prompt sent to a service you don't control unless you've specifically verified its data-handling terms. Separately, LLMs have been shown in research settings to sometimes reproduce verbatim fragments of their training data — a real, studied phenomenon (memorization) worth knowing about if a model was trained or fine-tuned on sensitive material.
+Anything I send to a third-party LLM API is subject to that provider's logging, retention, and—depending on the plan and settings—training-data policies. I do not send secrets, credentials, or regulated personal data until I have verified the service's data handling and the organization's approved use. Separately, research has shown that models can sometimes reproduce fragments of training data, so sensitive fine-tuning data needs its own minimization and access controls.
 
 ## Common pitfalls
 
@@ -115,9 +116,5 @@ Anything sent to a third-party LLM API is now subject to that provider's logging
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p>The <a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">OWASP LLM01 Prompt Injection</a> page and <a href="https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html">Prompt Injection Prevention Cheat Sheet</a> cover the main runtime risk. <strong><a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a></strong> covers broader AI risk, <strong><a href="https://atlas.mitre.org/">MITRE ATLAS</a></strong> catalogues adversarial techniques, <a href="https://docs.pytorch.org/docs/main/notes/serialization.html">PyTorch's serialization notes</a> document <code>weights_only</code>, and <a href="https://github.com/protectai/modelscan">ModelScan</a> is the scanner demonstrated above.</p>
+  <p>The <a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">OWASP LLM01 Prompt Injection</a> page and <a href="https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html">Prompt Injection Prevention Cheat Sheet</a> cover the main runtime risk. <strong><a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a></strong> covers broader AI risk, <strong><a href="https://atlas.mitre.org/">MITRE ATLAS</a></strong> catalogs adversarial techniques (see the <a href="{{ '/topics/threat-frameworks/' | relative_url }}">Threat Frameworks</a> page for how it relates to MITRE ATT&amp;CK), <a href="https://docs.pytorch.org/docs/main/notes/serialization.html">PyTorch's serialization notes</a> document <code>weights_only</code>, and <a href="https://github.com/protectai/modelscan">ModelScan</a> is the scanner demonstrated above.</p>
 </div>
-
-## How I connect this
-
-The supply-chain half of this folds directly back into [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}) and [Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }}), and API key handling is just [API Security]({{ '/topics/api-security/' | relative_url }}) again. Prompt injection and MCP tool poisoning are the genuinely new part — problems this field is still actively working out, with defense-in-depth rather than a clean structural fix as the current state of the art.
