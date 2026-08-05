@@ -18,7 +18,7 @@ Instead of one shared secret, asymmetric cryptography generates a mathematically
 - A **public key** — designed to be distributed. Its owner or purpose still needs to be authenticated.
 - A **private key** — kept secret and restricted to authorized operations. It may be held by one device, an HSM, or a threshold system rather than one person.
 
-The relationship between them supports two distinct, and easy to confuse, operations:
+The relationship between them supports three distinct, and easy to confuse, operations:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Two diagrams. First: anyone can encrypt using the public key, but only the private key owner can decrypt. Second: only the private key owner can sign, but anyone with the public key can verify that signature.">
@@ -29,7 +29,26 @@ The relationship between them supports two distinct, and easy to confuse, operat
 2. **Signing** — in a signature scheme, the private key signs and the public key verifies. This provides evidence that someone controlling the private key produced the signature. Attribution to a person or organization still depends on how the public key was authenticated and how the private key was protected.
 3. **Key agreement** — schemes such as ECDH let two parties derive a shared secret. ECDH is neither encryption nor a signature and must be authenticated by the surrounding protocol.
 
-This second use is exactly the mechanism behind the overview's "Official ID & Notary Stamp" and "Handwritten Signature" examples — a CA's signature on a certificate, or a signed software update, is this exact operation.
+The signature use is the mechanism behind the overview's "Official ID & Notary Stamp" and "Handwritten Signature" examples—a CA's signature on a certificate and a signed software update both use it.
+
+## Can I encrypt with the private key and decrypt with the public key?
+
+My practical answer is **no**. That wording describes neither confidentiality nor a standard digital-signature API:
+
+- **For confidentiality:** the sender encrypts to the recipient's public key, and only the recipient's private key can decrypt. If the public key could recover the plaintext, anyone could read it.
+- **For authenticity and integrity:** the owner signs with the private key, and others verify with the public key. Verification normally returns valid or invalid; it does not decrypt the signature into the original message.
+
+At the bare RSA-primitive level, the public and private exponent operations can reverse one another for a valid RSA representative. That narrow algebraic fact is why “encrypt with the private key” appears in some explanations. It is not a secure encryption scheme and it does not generalize to other public-key systems.
+
+The standards deliberately separate the purposes. [RFC 8017](https://www.rfc-editor.org/rfc/rfc8017) defines RSA encryption as `RSAEP`/`RSADP` with an encryption encoding such as OAEP, and signatures as `RSASP1`/`RSAVP1` with a signature encoding such as PSS. Swapping the keys or calling signing “private-key encryption” drops these scheme-specific security rules. ECDSA and Ed25519 make the distinction even clearer: they sign and verify, but they cannot encrypt or decrypt data at all.
+
+| My objective | Correct operation | Typical use | What it produces | What it does not produce |
+|---|---|---|---|---|
+| Deliver a secret to one recipient | Encrypt or encapsulate with the recipient's public key; decrypt or decapsulate with the recipient's private key | Hybrid Public Key Encryption (HPKE), OpenPGP, or an external party sending a data-encryption key (DEK) to a key-management service (KMS)-held RSA key | Confidentiality to the private-key holder | Sender identity in the basic mode |
+| Let anyone check who controlled a signing key | Sign with the private key; verify with the public key | CA certificates, code signing, signed JWTs, Git signatures | Integrity and evidence of signing-key possession | Confidentiality or automatic proof of human intent |
+| Establish a shared secret | Each side combines its private key with the other side's public key inside a protocol | TLS 1.3 ephemeral Elliptic Curve Diffie-Hellman (ECDHE) | Shared key material for later symmetric encryption | Authentication unless the protocol binds identities to the exchange |
+
+[RFC 9180](https://www.rfc-editor.org/rfc/rfc9180) is a useful modern reference for Hybrid Public Key Encryption (HPKE): it combines a public-key key-encapsulation mechanism, a key-derivation function, and symmetric authenticated encryption instead of applying asymmetric encryption directly to a large payload.
 
 ## Why this solves the key-distribution problem
 
@@ -130,5 +149,5 @@ Byte-for-byte identical, every time, forever — because it isn't really "regene
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the current Digital Signature Standard, approving RSA, ECDSA, and EdDSA. <strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers key-establishment schemes (including ECDH). <strong><a href="https://csrc.nist.gov/pubs/sp/800/186/final">NIST SP 800-186</a></strong> specifies the approved elliptic curves (P-256, P-384, P-521, and Edwards curves).</p>
+  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc8017">RFC 8017</a></strong> separates RSA encryption schemes from RSA signature schemes. <strong><a href="https://www.rfc-editor.org/rfc/rfc9180">RFC 9180</a></strong> specifies HPKE. <strong><a href="https://www.rfc-editor.org/rfc/rfc8032">RFC 8032</a></strong> specifies EdDSA. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the current Digital Signature Standard, approving RSA, ECDSA, and EdDSA. <strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers key-establishment schemes including ECDH, while <strong><a href="https://csrc.nist.gov/pubs/sp/800/186/final">NIST SP 800-186</a></strong> specifies approved elliptic curves.</p>
 </div>

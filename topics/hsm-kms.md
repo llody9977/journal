@@ -117,17 +117,48 @@ This pattern exists partly for exactly the reason [Symmetric Cryptography]({{ '/
 
 ## CMEK: customer-managed keys, and whether they're symmetric or asymmetric
 
-**CMEK (Customer-Managed Encryption Key)** is the term for a KEK the customer explicitly creates and controls — its rotation schedule, access policy, region, and deletion — rather than a default key the cloud provider generates and manages invisibly on the customer's behalf. The actual cryptography doesn't change; what changes is who controls the KEK's lifecycle sitting at the top of the same DEK/KEK chain described above.
+**CMEK (Customer-Managed Encryption Key)** is the term for a KEK resource the customer selects and controls—its access policy, location, rotation, disablement, and deletion—rather than relying only on a default key managed invisibly by the cloud service. The actual bulk-data cryptography may stay the same; what changes is customer control over the KEK lifecycle at the top of the DEK/KEK chain.
 
 Whether a CMEK can be asymmetric depends on which provider's terminology is meant:
 
-- **Google Cloud** uses "CMEK" narrowly — a CMEK is specifically a **symmetric** key used for envelope encryption of Google-managed data (Cloud Storage, BigQuery, and similar). Cloud KMS also supports asymmetric keys (RSA, EC), but those aren't called CMEKs in GCP's own terminology — they're used directly for signing or encryption, not for wrapping a DEK.
-- **AWS** and **Azure** use broader terms ("customer-managed key" / "CMK") that cover both symmetric and asymmetric keys under one umbrella.
+- **Google Cloud** uses “CMEK” narrowly. Its [CMEK guidance](https://docs.cloud.google.com/kms/docs/cmek-best-practices) requires the symmetric `ENCRYPT_DECRYPT` purpose for CMEK-integrated services. Cloud KMS also supports asymmetric RSA and EC keys for other purposes, but those are not the CMEKs used by these service integrations.
+- **AWS** and **Azure** use broader terms (“customer-managed key” / “CMK”) for customer-controlled KMS or Key Vault keys. The selected product still determines which key types and operations it accepts; for example, EBS requires a symmetric KMS key while Azure Managed Disks uses an RSA wrapping key.
 
 **Which to pick, and why:**
 
 - **Symmetric** is the default choice for the actual envelope-encryption use case this page describes — wrapping a DEK to protect data at rest. It's faster, and it's what the DEK/KEK pattern above assumes throughout.
-- **Asymmetric** earns its place for one specific, different job: letting a party who can't (or shouldn't) call the KMS API at all still participate. AWS KMS documents this directly — an external partner can download just the public key and encrypt data with it entirely outside AWS, with only the KMS-custodied private key able to decrypt it back inside the account that owns it. The same asymmetric key can also let a client verify a signature offline, with no network call to the KMS required at all. Neither of those is possible with a symmetric CMEK, since there's no "public half" to hand out in the first place.
+- **Asymmetric** earns its place for a different job: letting a party that cannot or should not call the KMS API still participate. [AWS KMS documents](https://docs.aws.amazon.com/kms/latest/developerguide/offline-public-key.html) downloading the public key for offline encryption or signature verification while the private key remains non-exportable in KMS. Neither operation is possible with a symmetric CMEK because there is no public half to distribute.
+
+## Giving a vendor access without giving away key custody
+
+When an integration guide says “share the CMEK,” I need to identify whether it means **grant permission to use a key** or **transfer key material**. These are not the same security model.
+
+For a normal managed-service integration, I prefer this boundary:
+
+1. I own the key resource in my KMS account, project, vault, or external key manager.
+2. The vendor or cloud service gives me a dedicated service principal, service account, or managed identity.
+3. I grant that identity only the required operations on one named key. Examples are `Encrypt`/`Decrypt`, `GenerateDataKey`, or `wrapKey`/`unwrapKey`; key administration, export, policy changes, grant delegation, and deletion remain separate unless the product has a documented need.
+4. I restrict the grant by service, resource, encryption context, account, region, or expiry where the platform supports it.
+5. I enable data-access audit logs, assign an owner and offboarding date, and test what happens when access is revoked or the key is unavailable.
+
+The cloud patterns make this distinction concrete:
+
+- **AWS:** the customer account keeps the KMS key. Cross-account use requires the key owner's key policy plus permission in the caller's account; KMS grants can give one principal revocable cryptographic use of one key. I should avoid a wildcard principal and broad `CreateGrant` permission.
+- **Google Cloud:** the resource service agent—not the developer or vendor employee—normally receives `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the CMEK. Google recommends separating key administrators from key users.
+- **Azure:** services such as Managed Disks use a managed identity with only `wrapKey`, `unwrapKey`, and `get` access to the Key Vault or Managed HSM key.
+
+Granting use is still meaningful authority. A vendor identity allowed to decrypt or unwrap can cause the KMS to perform that operation without extracting the raw key. Non-extractability protects against copying the key; it does not prevent abuse through an authorized API. I therefore need least privilege, resource binding, logs, and revocation—not only a claim that the key never leaves the HSM.
+
+### Custody models I should not confuse
+
+| Model | Where the operative key material resides | What the service receives | Control and limitation |
+|---|---|---|---|
+| Provider-managed key | Provider-controlled KMS/HSM | Transparent service access | Lowest operational effort; customer has little direct lifecycle or policy control |
+| CMEK with delegated use | Customer-controlled KMS namespace or vault | Permission to invoke named operations; not a raw key export | Customer controls policy, disablement, rotation, and deletion; service use can still expose authorized plaintext |
+| BYOK / imported key | A copy is imported into the provider's KMS/HSM | Provider service uses the imported copy through KMS | Customer chose or generated the material, but custody is no longer exclusively external once a copy is imported |
+| HYOK / external key manager | Customer-operated system outside the provider | Cryptographic requests cross to the external manager | Keeps raw key material outside the provider and supplies an independent kill switch; adds latency, availability, recovery, and integration dependencies |
+
+My working rule: if a vendor asks me to email, paste, or upload a raw symmetric CMEK outside a documented import ceremony, I stop. A supported integration should normally ask for a key identifier and a grant to its dedicated identity. If key import or external key management is required, the architecture and contract should name that custody model explicitly.
 
 ## Key rotation: distinguish version rotation from data migration
 
@@ -145,8 +176,10 @@ AWS KMS automatic/on-demand rotation is the first case: AWS states that it does 
 - **Encrypting bulk data directly through the KMS API** instead of using envelope encryption — most KMS `Encrypt` APIs cap the payload size (AWS KMS: 4 KB) specifically to push callers toward the DEK/KEK pattern.
 - **Equating "encrypted at rest" with "HSM-protected"** — ask specifically what protects the key doing the encrypting, not just whether the data happens to be encrypted somewhere.
 - **Copying a generic rotation policy** — rotation frequency should follow the threat model, cryptoperiod, provider semantics, compliance requirements, operational cost, and recovery plan. A new KMS version may protect only future writes unless I arrange rewrap or re-encryption separately.
+- **Calling raw-key transfer “CMEK sharing”** — a key identifier plus a least-privilege use grant preserves a different custody boundary from exporting and sending the key bytes. I should record which model the vendor actually implements.
+- **Granting the vendor key-administration rights when it only needs cryptographic use** — `Decrypt`, `wrapKey`, or `GenerateDataKey` is already powerful; policy changes, key deletion, export, and unrestricted grant creation should remain with separate customer-controlled identities.
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> is the current cryptographic-module standard, and the <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">CMVP search</a></strong> verifies module claims. <strong><a href="https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html">PKCS#11 v3.1</a></strong> defines the token API and attributes demonstrated above. Provider behavior is documented separately by <a href="https://docs.aws.amazon.com/kms/latest/developerguide/kms-internals.html">AWS KMS internals</a>, <a href="https://docs.aws.amazon.com/cloudhsm/latest/userguide/fips-validation.html">AWS CloudHSM validation</a>, <a href="https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html">AWS KMS rotation</a>, <a href="https://docs.cloud.google.com/kms/docs/protection-levels">Google Cloud protection levels</a>, and <a href="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys">Azure Key Vault key types</a>.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> is the current cryptographic-module standard, and the <strong><a href="https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search">CMVP search</a></strong> verifies module claims. <strong><a href="https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html">PKCS#11 v3.1</a></strong> defines the token API and attributes demonstrated above. KMS and CMEK access are cloud-product behavior rather than one RFC: see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-modifying-external-accounts.html">AWS cross-account KMS access</a>, <a href="https://docs.aws.amazon.com/kms/latest/developerguide/grants.html">AWS KMS grants</a>, <a href="https://docs.cloud.google.com/kms/docs/cmek">Google Cloud CMEK</a>, <a href="https://docs.cloud.google.com/kms/docs/separation-of-duties">Google Cloud separation of duties</a>, and <a href="https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption">Azure Managed Disks CMEK</a>. Provider protection and rotation behavior is documented separately by <a href="https://docs.aws.amazon.com/kms/latest/developerguide/kms-internals.html">AWS KMS internals</a>, <a href="https://docs.aws.amazon.com/cloudhsm/latest/userguide/fips-validation.html">AWS CloudHSM validation</a>, <a href="https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html">AWS KMS rotation</a>, <a href="https://docs.cloud.google.com/kms/docs/protection-levels">Google Cloud protection levels</a>, and <a href="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys">Azure Key Vault key types</a>.</p>
 </div>
