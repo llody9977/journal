@@ -99,21 +99,30 @@ If I see a cipher suite or API named with a plain mode and no authentication (`A
 
 ## Practical demo: encrypting a file with Node.js
 
-`openssl enc` is not suitable for this example because its command-line interface does not support AEAD modes such as GCM. I use Node's built-in [`node:crypto` API](https://nodejs.org/api/crypto.html) here, so the authentication tag is stored and checked explicitly with `getAuthTag()` and `setAuthTag()`.
+`openssl enc` is not suitable for this example because its command-line interface does not support AEAD modes such as GCM. I use Node's built-in [`node:crypto` API](https://nodejs.org/api/crypto.html) to demonstrate a small envelope-encryption design:
+
+1. A long-lived **key-encryption key (KEK)** stays outside the encrypted file.
+2. `encrypt.js` generates a fresh 256-bit **data-encryption key (DEK)** for this file with `randomBytes()`.
+3. The DEK encrypts the file once with AES-256-GCM and a 96-bit nonce.
+4. AES Key Wrap protects the DEK under the KEK, and the wrapped DEK is stored with the ciphertext.
+5. `decrypt.js` unwraps the DEK and writes plaintext only after GCM tag verification succeeds.
+
+By design, each generated DEK is used for exactly one GCM encryption. This removes the need to coordinate nonces across records in this demo; collisions remain negligibly unlikely because both the 256-bit DEK and 96-bit nonce come from a CSPRNG. A production design that reuses one DEK for multiple records needs an enforced nonce-allocation strategy and usage limits instead.
 
 <div class="diagram-frame">
-  <video class="diagram-video" controls muted loop playsinline preload="metadata" poster="{{ '/assets/video/node-aes-gcm-demo-poster.png' | relative_url }}?v=6" aria-label="A slow Node.js AES-256-GCM file walkthrough: configure the passphrase and input, review the encryption code, execute encryption, inspect the packed encrypted file, review the decryption code, then verify authentication and compare the recovered file. It displays every line of encrypt.js and decrypt.js and captures the output from an actual run.">
-    <source src="{{ '/assets/video/node-aes-gcm-demo.webm' | relative_url }}?v=6" type="video/webm">
-    <source src="{{ '/assets/video/node-aes-gcm-demo.mp4' | relative_url }}?v=6" type="video/mp4">
-    <img src="{{ '/assets/video/node-aes-gcm-demo-poster.png' | relative_url }}?v=6" alt="The verification section of the Node.js AES-256-GCM demo, ending with a verified authentication tag and an identical recovered file.">
+  <video class="diagram-video" controls muted loop playsinline preload="metadata" poster="{{ '/assets/video/node-aes-gcm-demo-poster.png' | relative_url }}?v=7" aria-label="A Node.js envelope-encryption walkthrough. A CSPRNG creates a local key-encryption key and a fresh per-file data key. AES Key Wrap protects the data key, AES-256-GCM encrypts the file once with a 96-bit nonce, and decryption verifies the tag before writing the recovered plaintext. The animation displays the complete runnable scripts and output captured from an actual run.">
+    <source src="{{ '/assets/video/node-aes-gcm-demo.webm' | relative_url }}?v=7" type="video/webm">
+    <source src="{{ '/assets/video/node-aes-gcm-demo.mp4' | relative_url }}?v=7" type="video/mp4">
+    <img src="{{ '/assets/video/node-aes-gcm-demo-poster.png' | relative_url }}?v=7" alt="The verification section of the Node.js envelope-encryption demo, ending with a verified authentication tag and an identical recovered file.">
   </video>
   <p class="diagram-caption">One captured run: encrypt, inspect the packed file, verify the tag, decrypt and compare</p>
 </div>
 
-The walkthrough follows the complete workflow: **configure the key and input → review the encryption code → run the encryption → inspect the encrypted file → review the decryption code → verify the authentication tag and recovered file**.
+The walkthrough follows the complete workflow: **create the local KEK and input → generate and wrap a per-file DEK → encrypt once with AES-GCM → inspect the envelope → unwrap and decrypt → verify the authentication tag and recovered file**.
 
-The video displays every line from the two scripts below. Because the animation reads directly from these files, what I see in the walkthrough is the same code I can run myself:
+The video displays every line from the three scripts below. Because the animation reads directly from these files, what I see in the walkthrough is the same code I can run myself:
 
+- [Download `generate-kek.js`]({{ '/assets/downloads/node-aes-gcm-demo/generate-kek.js' | relative_url }})
 - [Download `encrypt.js`]({{ '/assets/downloads/node-aes-gcm-demo/encrypt.js' | relative_url }})
 - [Download `decrypt.js`]({{ '/assets/downloads/node-aes-gcm-demo/decrypt.js' | relative_url }})
 
@@ -121,14 +130,17 @@ The video displays every line from the two scripts below. Because the animation 
 
 These commands repeat the workflow shown in the video. I run them from the repository root because that is where the paths to `encrypt.js` and `decrypt.js` begin.
 
-**1. Set the passphrase for this terminal session**
+**1. Create a KEK for this terminal session**
 
-I keep the passphrase outside the source files. `read -rs` stores what I type in a shell variable without displaying it, while `export` makes that stored value available to both Node processes.
+This command asks Node's cryptographic random number generator for 32 bytes and stores the Base64 representation in an exported environment variable. The second command checks the decoded length without printing the key.
 
 ```
-$ printf 'Passphrase: '; read -rs FILE_ENCRYPTION_PASSPHRASE; printf '\n'
-$ export FILE_ENCRYPTION_PASSPHRASE
+$ export FILE_KEK_BASE64="$(node assets/downloads/node-aes-gcm-demo/generate-kek.js)"
+$ node -e "console.log('KEK bytes:', Buffer.from(process.env.FILE_KEK_BASE64, 'base64').length)"
+KEK bytes: 32
 ```
+
+This environment variable is a local stand-in for a Key Management Service (KMS), not the production storage recommendation. In production, the application normally calls a KMS to generate or unwrap a data key; the KMS-held KEK is not exported to the process.
 
 **2. Create the plaintext file I want to encrypt**
 
@@ -144,7 +156,17 @@ $ printf 'private journal entry\n' > secret.txt
 $ node assets/downloads/node-aes-gcm-demo/encrypt.js
 ```
 
-The encryption script reads `secret.txt`, derives a 32-byte AES key with `scryptSync`, generates the salt and nonce, then writes everything needed for decryption to `secret.txt.enc`. The passphrase and derived AES key are not written into that file.
+The encryption script creates a new 32-byte DEK and 12-byte GCM nonce, wraps the DEK with AES Key Wrap, encrypts the file once, and writes this 94-byte envelope:
+
+| Field | Size | Purpose |
+|---|---:|---|
+| `JRN1` format marker | 4 bytes | Identifies the envelope version |
+| Wrapped DEK | 40 bytes | The 32-byte DEK protected under the KEK |
+| GCM nonce | 12 bytes | Generated by a CSPRNG; this DEK is used for one encryption only |
+| GCM tag | 16 bytes | Authenticates the ciphertext and envelope header |
+| Ciphertext | 22 bytes here | Encrypted contents of `secret.txt` |
+
+The format marker, wrapped DEK, and nonce are also supplied to GCM as Additional Authenticated Data (AAD), so changing the envelope header causes authentication to fail. The KEK and plaintext DEK are not written into the envelope.
 
 **4. Decrypt the file and verify its authentication tag**
 
@@ -166,7 +188,9 @@ $ echo $?
 
 An exit code of `0` means `diff` found no difference between the original and recovered files.
 
-The salt gives `scryptSync` a separate key-derivation input. The 96-bit nonce is an input to AES-GCM and must not repeat under the same derived key. Neither value needs to be secret, so both are stored with the ciphertext and authentication tag. In a real application I would normally obtain a data key from a KMS or protocol and use a reviewed envelope format.
+The wrapped DEK, nonce, tag, and format marker are not secrets and can be stored with the ciphertext. AES Key Wrap uses the fixed `A6A6A6A6A6A6A6A6` initial value defined by the key-wrap construction; that value is not a GCM nonce and is not required to be random. The GCM nonce rule applies to the per-file DEK used for content encryption.
+
+This is a production-style key hierarchy, but it remains a teaching format. For a deployed system I would use a reviewed envelope library or cloud encryption SDK, bind the expected KMS key identifier and encryption context, enforce authorization and audit logging around unwrap operations, and define format migration and key-rotation behavior.
 
 ## Protecting the one thing that matters: the key itself
 
@@ -176,7 +200,7 @@ Mitigating brute force against the key itself comes down to a short, concrete li
 
 - **Use the full recommended key length, not a shortened one.** AES-128 is currently fine; AES-256 is the recommended choice for data that needs to stay confidential for a long time, partly as a hedge against [Grover's algorithm]({{ '/topics/recommended-algorithms/' | relative_url }}#the-post-quantum-clock-why-what-nist-approved-and-what-to-actually-do-with-it) halving effective symmetric security under a future quantum attacker. See [Recommended Algorithms & Regional Standards]({{ '/topics/recommended-algorithms/' | relative_url }}) for the current guidance and how long each key size is expected to hold.
 - **Generate the key from a real CSPRNG, never a predictable source.** A 256-bit key generated from a weak or predictable seed doesn't actually have 256 bits of real entropy, no matter what the key size says on paper — see the [2008 Debian OpenSSL bug]({{ '/topics/asymmetric-cryptography/' | relative_url }}#common-pitfalls) for what happens when this goes wrong.
-- **Never use a raw human passphrase as the key directly.** A passphrase has far less real entropy than its character length suggests, and is brute-forceable at the *passphrase* level even when AES itself isn't remotely threatened. This is why the Node demo above derives a key with `scrypt` and a random salt rather than using the passphrase bytes directly — see [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}#a-different-problem-password-based-kdfs) and [Password Storage]({{ '/topics/password-storage/' | relative_url }}) for the full reasoning.
+- **Never use a raw human passphrase as the key directly.** A passphrase has far less entropy than a generated 256-bit key and remains guessable even when AES is not. This demo uses CSPRNG-generated keys instead. When a human passphrase is genuinely required, I use a password-based KDF such as scrypt or Argon2id with a random salt and suitable cost parameters—see [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}#a-different-problem-password-based-kdfs) and [Password Storage]({{ '/topics/password-storage/' | relative_url }}).
 - **Rotate keys to limit the blast radius, not to make brute force harder.** A single key's strength doesn't degrade with age or use. Rotation changes which key/version protects new material; migration of existing data depends on the service and design. [HSM & KMS]({{ '/topics/hsm-kms/' | relative_url }}#key-rotation-distinguish-version-rotation-from-data-migration) separates those cases.
 
 ## Common pitfalls
@@ -190,7 +214,7 @@ Mitigating brute force against the key itself comes down to a short, concrete li
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/197/final">FIPS 197</a></strong> defines AES itself. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/a/final">NIST SP 800-38A</a></strong> defines the classic modes (ECB, CBC, CFB, OFB, CTR). <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/d/final">NIST SP 800-38D</a></strong> defines GCM specifically, including nonce-uniqueness requirements. When in doubt about which mode to use, NIST's own guidance and most modern protocol defaults (TLS 1.3, SSH) converge on the same answer: an AEAD mode, not a plain one.</p>
+  <p><strong><a href="https://csrc.nist.gov/pubs/fips/197/final">FIPS 197</a></strong> defines AES. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/d/final">NIST SP 800-38D</a></strong> defines GCM and its key/nonce uniqueness requirement. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/f/final">NIST SP 800-38F</a></strong> defines AES Key Wrap. The <a href="https://nodejs.org/api/crypto.html">Node.js crypto documentation</a> defines the CSPRNG, AAD, and authentication-tag APIs used here. <a href="https://docs.aws.amazon.com/kms/latest/developerguide/data-keys.html">AWS KMS data-key documentation</a> shows the production envelope pattern: obtain a plaintext data key and its encrypted copy, encrypt locally, store the encrypted data key with the ciphertext, and remove the plaintext key from memory.</p>
 </div>
 
 ## Summary

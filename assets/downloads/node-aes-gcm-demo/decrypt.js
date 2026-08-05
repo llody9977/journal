@@ -3,27 +3,46 @@
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 
-const passphrase = process.env.FILE_ENCRYPTION_PASSPHRASE;
-if (!passphrase) {
-  throw new Error('Set FILE_ENCRYPTION_PASSPHRASE before running this script.');
+const MAGIC = Buffer.from('JRN1');
+const KEY_WRAP_IV = Buffer.alloc(8, 0xA6);
+const encodedKey = process.env.FILE_KEK_BASE64;
+if (!encodedKey) {
+  throw new Error('Set FILE_KEK_BASE64 before running this script.');
 }
-const packed = fs.readFileSync('secret.txt.enc');
 
-const salt = packed.subarray(0, 16);
-const nonce = packed.subarray(16, 28);
-const tag = packed.subarray(28, 44);
-const ciphertext = packed.subarray(44);
+let keyEncryptionKey;
+let dataKey;
+try {
+  keyEncryptionKey = Buffer.from(encodedKey, 'base64');
+  if (keyEncryptionKey.length !== 32 || keyEncryptionKey.toString('base64') !== encodedKey) {
+    throw new Error('FILE_KEK_BASE64 must contain exactly 32 Base64-encoded bytes.');
+  }
 
-const key = crypto.scryptSync(passphrase, salt, 32);
-const decipher = crypto.createDecipheriv('aes-256-gcm', key, nonce);
-decipher.setAuthTag(tag);
+  const packed = fs.readFileSync('secret.txt.enc');
+  if (packed.length < 72 || !packed.subarray(0, 4).equals(MAGIC)) {
+    throw new Error('Unsupported or truncated encrypted file.');
+  }
+  const wrappedDataKey = packed.subarray(4, 44);
+  const nonce = packed.subarray(44, 56);
+  const tag = packed.subarray(56, 72);
+  const ciphertext = packed.subarray(72);
+  const aad = Buffer.concat([MAGIC, wrappedDataKey, nonce]);
 
-// Do not save or use plaintext until final() authenticates the packet.
-const plaintext = Buffer.concat([
-  decipher.update(ciphertext),
-  decipher.final()
-]);
+  const unwrapper = crypto.createDecipheriv('id-aes256-wrap', keyEncryptionKey, KEY_WRAP_IV);
+  dataKey = Buffer.concat([unwrapper.update(wrappedDataKey), unwrapper.final()]);
 
-fs.writeFileSync('secret-decrypted.txt', plaintext);
-console.log('tag verified: yes');
-console.log('recovered:   ', JSON.stringify(plaintext.toString('utf8')));
+  const decipher = crypto.createDecipheriv('aes-256-gcm', dataKey, nonce);
+  decipher.setAuthTag(tag);
+  decipher.setAAD(aad);
+  const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+
+  fs.writeFileSync('secret-decrypted.txt', plaintext);
+  console.log('tag verified: yes');
+  console.log('recovered:   ', JSON.stringify(plaintext.toString('utf8')));
+} catch {
+  console.error('decryption failed: authentication or envelope validation error');
+  process.exitCode = 1;
+} finally {
+  if (dataKey) dataKey.fill(0);
+  if (keyEncryptionKey) keyEncryptionKey.fill(0);
+}

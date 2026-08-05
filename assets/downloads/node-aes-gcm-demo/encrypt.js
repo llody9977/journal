@@ -3,28 +3,42 @@
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 
-const passphrase = process.env.FILE_ENCRYPTION_PASSPHRASE;
-if (!passphrase) {
-  throw new Error('Set FILE_ENCRYPTION_PASSPHRASE before running this script.');
+const MAGIC = Buffer.from('JRN1');
+const KEY_WRAP_IV = Buffer.alloc(8, 0xA6);
+const encodedKey = process.env.FILE_KEK_BASE64;
+if (!encodedKey) {
+  throw new Error('Set FILE_KEK_BASE64 before running this script.');
 }
-const input = fs.readFileSync('secret.txt');
 
-const salt = crypto.randomBytes(16);
-const nonce = crypto.randomBytes(12);
+let keyEncryptionKey;
+let dataKey;
+try {
+  keyEncryptionKey = Buffer.from(encodedKey, 'base64');
+  if (keyEncryptionKey.length !== 32 || keyEncryptionKey.toString('base64') !== encodedKey) {
+    throw new Error('FILE_KEK_BASE64 must contain exactly 32 Base64-encoded bytes.');
+  }
 
-const key = crypto.scryptSync(passphrase, salt, 32);
-const cipher = crypto.createCipheriv('aes-256-gcm', key, nonce);
-const ciphertext = Buffer.concat([
-  cipher.update(input),
-  cipher.final()
-]);
-const tag = cipher.getAuthTag();
-const packed = Buffer.concat([salt, nonce, tag, ciphertext]);
+  const input = fs.readFileSync('secret.txt');
+  dataKey = crypto.randomBytes(32);
+  const nonce = crypto.randomBytes(12);
+  const wrapper = crypto.createCipheriv('id-aes256-wrap', keyEncryptionKey, KEY_WRAP_IV);
+  const wrappedDataKey = Buffer.concat([wrapper.update(dataKey), wrapper.final()]);
+  const aad = Buffer.concat([MAGIC, wrappedDataKey, nonce]);
 
-fs.writeFileSync('secret.txt.enc', packed);
+  const cipher = crypto.createCipheriv('aes-256-gcm', dataKey, nonce);
+  cipher.setAAD(aad);
+  const ciphertext = Buffer.concat([cipher.update(input), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  const packed = Buffer.concat([MAGIC, wrappedDataKey, nonce, tag, ciphertext]);
 
-console.log('salt:       ', salt.toString('hex'));
-console.log('nonce:      ', nonce.toString('hex'));
-console.log('tag:        ', tag.toString('hex'));
-console.log('ciphertext: ', ciphertext.toString('hex'));
-console.log('wrote:       secret.txt.enc (' + packed.length + ' bytes)');
+  fs.writeFileSync('secret.txt.enc', packed);
+  console.log('format:      ', MAGIC.toString());
+  console.log('wrapped key: ', wrappedDataKey.toString('hex'));
+  console.log('nonce:       ', nonce.toString('hex'));
+  console.log('tag:         ', tag.toString('hex'));
+  console.log('ciphertext:  ', ciphertext.toString('hex'));
+  console.log('wrote:        secret.txt.enc (' + packed.length + ' bytes)');
+} finally {
+  if (dataKey) dataKey.fill(0);
+  if (keyEncryptionKey) keyEncryptionKey.fill(0);
+}
