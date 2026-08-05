@@ -129,6 +129,19 @@ Whether a CMEK can be asymmetric depends on which provider's terminology is mean
 - **Symmetric** is the default choice for the actual envelope-encryption use case this page describes — wrapping a DEK to protect data at rest. It's faster, and it's what the DEK/KEK pattern above assumes throughout.
 - **Asymmetric** earns its place for a different job: letting a party that cannot or should not call the KMS API still participate. [AWS KMS documents](https://docs.aws.amazon.com/kms/latest/developerguide/offline-public-key.html) downloading the public key for offline encryption or signature verification while the private key remains non-exportable in KMS. Neither operation is possible with a symmetric CMEK because there is no public half to distribute.
 
+### Visual walkthrough: how the key layers and rotation fit together
+
+<div class="diagram-frame">
+  <video class="diagram-video" controls muted loop playsinline preload="metadata" poster="{{ '/assets/video/envelope-key-rotation-poster.png' | relative_url }}?v=1" aria-label="A slow envelope-encryption and key-rotation walkthrough. A symmetric data-encryption key encrypts the bulk data. A customer-managed key acts as the key-encryption key and wraps the data key. The animation compares a symmetric CMEK with an asymmetric RSA wrapping key, shows a vendor receiving narrow key-use permission instead of raw key material, rotates the CMEK from version 1 to version 2, decrypts old data with the retained version 1, compares rotation with rewrapping and re-encryption, and shows why version 1 must not be destroyed while old wrapped data keys still depend on it.">
+    <source src="{{ '/assets/video/envelope-key-rotation.webm' | relative_url }}?v=1" type="video/webm">
+    <source src="{{ '/assets/video/envelope-key-rotation.mp4' | relative_url }}?v=1" type="video/mp4">
+    <img src="{{ '/assets/video/envelope-key-rotation-poster.png' | relative_url }}?v=1" alt="Comparison of KEK rotation, DEK rewrapping, and data re-encryption, showing which key or ciphertext layer changes in each operation.">
+  </video>
+  <p class="diagram-caption">The DEK encrypts the data; the CMEK/KEK protects the DEK; old KEK versions remain available until migration is complete</p>
+</div>
+
+The animation uses one envelope throughout so I can follow the dependency: **data ciphertext → DEK → wrapped DEK → KEK version → customer-managed KMS policy**. The asymmetric example changes only the wrapping layer; the bulk data is still encrypted symmetrically.
+
 ## Giving a vendor access without giving away key custody
 
 When an integration guide says “share the CMEK,” I need to identify whether it means **grant permission to use a key** or **transfer key material**. These are not the same security model.
@@ -162,13 +175,55 @@ My working rule: if a vendor asks me to email, paste, or upload a raw symmetric 
 
 ## Key rotation: distinguish version rotation from data migration
 
-“Rotate the key” is overloaded. I need to identify which of these operations the product actually performs:
+My mental model is: **rotation changes the key version used for future protection; it does not make old ciphertext understand the new key**. Old data remains readable only while the system can still locate and use the old key material that protects its DEK.
+
+For one old object, the dependency looks like this:
+
+```
+old data A  --encrypted by-->  DEK-A
+DEK-A       --wrapped by---->  CMEK version 1
+envelope    --stores-------->  ciphertext + wrapped DEK-A + key/version reference
+```
+
+After rotation, version 2 becomes primary for new wrap or encryption operations. The old envelope does not change. To read it, the service follows its stored metadata, asks KMS to use version 1, unwraps DEK-A, and then uses DEK-A to decrypt the old data. Version 1 can be non-current or decrypt-only, but it must remain enabled and available.
+
+The exact lookup is product-specific:
+
+- **AWS automatic/on-demand rotation of a symmetric KMS key:** the logical key ID stays the same. AWS retains the older backing key material and automatically selects the material that originally encrypted the KMS ciphertext. The caller cannot select that internal material version.
+- **Google Cloud symmetric keys:** ciphertext records the version used. The new primary version handles new encryption; Cloud KMS can infer the old version for decryption while it remains enabled. CMEK-integrated services may re-encrypt old DEKs, use the new version only for new data, or continue using the originally configured version, depending on the service.
+- **Azure Key Vault:** rotation creates a new version. Encryption systems should retain a versioned key URI with protected data; old and new versions remain enabled until dependent DEKs are rewrapped. A versionless URI helps supported services discover the latest version for new operations.
+
+Asymmetric wrapping adds one lifecycle step: writers must receive the new public key for version 2, while the private key for version 1 must remain available to unwrap old DEKs. Google Cloud therefore does not automatically rotate asymmetric keys; distributing the new public key and tracking old versions are application responsibilities.
+
+“Rotate the key” is overloaded, so I identify which operation the product actually performs:
 
 1. **Create a new key version for future writes.** Existing ciphertext and wrapped DEKs remain associated with old versions, which the service retains for decryption.
 2. **Rewrap existing DEKs.** The application or managed service unwraps each DEK with the old KEK version and wraps it with the new version.
 3. **Re-encrypt the underlying data.** This is a separate and potentially expensive migration, usually required if the DEK itself changes.
 
-AWS KMS automatic/on-demand rotation is the first case: AWS states that it does not rotate data keys or re-encrypt existing data, and older key material remains available for decryption. Rewrapping existing DEKs is a valid application-managed migration, but it is not automatic or free; its cost scales with the number of wrapped keys and service behavior. See the [AWS KMS rotation documentation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) and [Google Cloud CMEK rotation guidance](https://docs.cloud.google.com/kms/docs/cmek-rotation).
+| Operation | What changes | What stays unchanged | When I need it |
+|---|---|---|---|
+| Rotate the KEK | Primary/current KEK material for future wraps | Existing wrapped DEKs and data ciphertext | Routine version rotation or compliance requirement |
+| Rewrap a DEK | The wrapped representation moves from KEK v1 to v2 | The plaintext DEK and bulk-data ciphertext | Remove dependence on an old KEK without rewriting the data |
+| Re-encrypt the data | The DEK and bulk-data ciphertext | The business plaintext and intended policy | Replace a compromised DEK, change the data cipher/format, or fully migrate protection |
+
+Rewrapping can be expressed as `Wrap(v2, Unwrap(v1, wrapped-DEK-A))`. The service temporarily recovers DEK-A inside its trusted boundary, wraps the same DEK under version 2, and replaces only the wrapped-DEK field. The large data ciphertext does not move.
+
+Routine KEK rotation also does not repair every compromise. If an attacker copied an old plaintext DEK, rewrapping that DEK does not make the attacker's copy disappear; I need a new DEK and data re-encryption. If only the old KEK's API permission was exposed and the raw key remained non-extractable, I can revoke that access, rewrap dependent DEKs, and retire the old version after verification. If the raw KEK material itself was copied, an attacker may still unwrap any old wrapped DEKs they captured; I should treat those DEKs as exposed and re-encrypt the affected data under new DEKs.
+
+### When can I disable or destroy the old version?
+
+I use this sequence:
+
+1. Inventory every reference to the old version, including wrapped DEKs, application ciphertext, snapshots, backups, replicas, exports, and offline archives.
+2. Confirm the service's rotation behavior. I do not assume it rewraps existing DEKs merely because a new primary version exists.
+3. Rewrap DEKs or re-encrypt data that must remain readable, then test recovery through the new version.
+4. Disable the old version first and monitor for failures. Disablement is normally reversible; destruction may not be.
+5. Destroy the old version only after retention, restore, legal-hold, and disaster-recovery checks show that no required data depends on it.
+
+Destroying an old KEK version while a wrapped DEK still depends on it is effectively cryptographic deletion of that data path: the ciphertext may still exist, but its DEK cannot be recovered. This is an availability and recovery decision, not routine cleanup.
+
+[AWS KMS rotation documentation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) states that older key material is retained and automatically selected for decryption, while rotation does not rotate data keys or re-encrypt data. [Google Cloud CMEK rotation guidance](https://docs.cloud.google.com/kms/docs/cmek-rotation) documents three different service behaviors and keeps previous versions active for old DEKs. [Azure Key Vault rotation guidance](https://learn.microsoft.com/en-us/azure/key-vault/keys/how-to-configure-key-rotation) requires version references and both versions to remain enabled until rewrapping completes.
 
 ## Common pitfalls
 

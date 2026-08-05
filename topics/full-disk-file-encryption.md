@@ -56,6 +56,8 @@ Cloud disk encryption uses the same envelope pattern, but the trust boundary is 
 
 The provider implementations are not interchangeable. [AWS documents](https://docs.aws.amazon.com/ebs/latest/userguide/how-ebs-encryption-works.html) an AES-256 data key protected by a symmetric KMS key. [Google documents](https://docs.cloud.google.com/kms/docs/cmek) symmetric server-side envelope encryption for CMEK-integrated services. [Azure documents](https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption) a symmetric DEK wrapped and unwrapped by an RSA customer-managed key through a managed identity.
 
+The [DEK, KEK, CMEK and rotation animation]({{ '/topics/hsm-kms/' | relative_url }}#visual-walkthrough-how-the-key-layers-and-rotation-fit-together) follows this hierarchy from bulk-data encryption through old-key-version retirement.
+
 ### Why I keep seeing symmetric encryption for disks
 
 - **Volume:** symmetric ciphers are designed for high-throughput bulk data. Public-key encryption has small payload limits and higher computational cost.
