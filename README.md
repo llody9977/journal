@@ -15,6 +15,10 @@ researched and verified rather than written from memory alone.
 Published via GitHub Pages, built and deployed by the GitHub Actions workflow
 above on every push to `main` — no manual build or deploy step required.
 
+## Writing standard
+
+All journal entries follow [`WRITING_STYLE.md`](WRITING_STYLE.md): a concise, recall-first personal voice, US English, primary references, and a writing framework selected for the topic.
+
 ## Structure
 
 - `index.md` — landing page / overview
