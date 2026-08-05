@@ -95,7 +95,7 @@ The boundaries are important. Encryption can support confidentiality, and authen
 
 ## Now what: my quick security review
 
-When I return to a system after a long time, I can restart with these questions:
+When I review a system, I start with these questions:
 
 1. **What do I value?** Identify the people, data, services, operations, and trust that need protection.
 2. **Where is the boundary?** Mark users, administrators, services, devices, networks, vendors, and trust transitions.
