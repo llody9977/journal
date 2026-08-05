@@ -10,17 +10,19 @@
 # stays obvious even if the list is ever re-sorted. Lists with no numbers can
 # be read in any order.
 #
-# "Security" is the first main group; more may be added as siblings later
-# (hence the "1." prefix on it) for topics outside security entirely.
+# "Security" is currently the only main topic group, so it does not need a
+# numeric prefix. Add ordering only when multiple main groups require it.
 
 - title: Overview
   url: /
 
-- title: 1. Security
+- title: Security
   children:
     - title: 1. What Is Security?
       url: /topics/security-fundamentals/
-    - title: 2. Cryptography
+    - title: 2. Where Should I Start?
+      url: /topics/where-should-i-start/
+    - title: 3. Cryptography
       children:
         - title: 1. Overview
           url: /topics/cryptography-overview/
@@ -60,13 +62,13 @@
               url: /topics/full-disk-file-encryption/
             - title: 3. Blockchain Cryptography
               url: /topics/blockchain-cryptography/
-    - title: 3. Key Management
+    - title: 4. Key Management
       children:
         - title: HSM & KMS
           url: /topics/hsm-kms/
         - title: Security Certifications
           url: /topics/security-certifications/
-    - title: 4. Authentication & Authorization
+    - title: 5. Authentication & Authorization
       children:
         - title: 1. SSH
           url: /topics/ssh/
@@ -74,11 +76,11 @@
           url: /topics/oauth-oidc/
         - title: 3. Machine-to-Machine API Authentication
           url: /topics/api-security/
-    - title: 5. Network Security
+    - title: 6. Network Security
       children:
         - title: DNS Security
           url: /topics/dns-security/
-    - title: 6. Emerging Topics
+    - title: 7. Emerging Topics
       children:
         - title: AI & LLM Security
           url: /topics/ai-llm-security/
