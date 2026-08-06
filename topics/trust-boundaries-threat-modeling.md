@@ -2,7 +2,7 @@
 title: Trust Boundaries & Threat Modeling
 description: My practical model for scope, data flows, trust decisions, attack surface, threats, mitigations, and validation.
 permalink: /topics/trust-boundaries-threat-modeling/
-last_verified: 2026-08-05
+last_verified: 2026-08-06
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -26,17 +26,10 @@ A useful system model includes:
 
 A trust boundary is not automatically a firewall or network segment. It is a point where a trust decision must be made—for example, when a browser calls an API, one service accepts a token from another, a process reads a file, or my application sends data to a supplier.
 
-```text
-[Employee browser]
-        |
-        | untrusted input + authenticated session
-        v
-[Payroll web/API] ---- service identity ----> [Payroll database]
-        |
-        | selected payment instruction
-        v
-[External bank API]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/payroll-trust-boundaries.svg' | relative_url }}" alt="Payroll data-flow and trust-boundary diagram. An employee browser sends an HTTPS request containing an authenticated session and untrusted input to the payroll web API. Inside the payroll application boundary, the API authorizes the employee action, validates the amount and payee, and enforces approval rules. The API uses a workload or service identity to access the payroll database across a separate sensitive-data boundary. Only an approved payment instruction is sent through an authenticated service request to the external bank API. Three numbered boundary checks call out user authentication, authorization and input validation; workload identity, least privilege and safe database queries; and payment approval, bank endpoint authentication and replay protection.">
+  <p class="diagram-caption">The arrows show data flows; the numbered boundaries show where trust changes and verification must happen</p>
+</div>
 
 Each arrow crosses a boundary with different questions. HTTPS can protect a channel, but it does not make browser input safe, grant database permission, or prove that a bank request is authorized.
 
