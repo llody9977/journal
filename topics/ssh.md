@@ -2,7 +2,7 @@
 title: SSH
 description: SSH's trust-on-first-use model vs TLS's CA-backed one, key-based authentication, and SSH certificates.
 permalink: /topics/ssh/
-last_verified: 2026-08-05
+last_verified: 2026-08-06
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocol</span>
@@ -44,7 +44,11 @@ In a default TOFU setup, this prompt asks me to make the first identity decision
 SSH supports both, but they're not equally good ideas:
 
 - **Password authentication** — sent (encrypted, but still) to the server for it to check; vulnerable to brute-force and credential-stuffing against internet-facing servers, and depends entirely on password strength.
-- **Public key authentication** — the client proves possession of a private key by signing a server-issued challenge, the exact [signing pattern]({{ '/topics/digital-signatures/' | relative_url }}) covered earlier. The private key never leaves the client, and there's nothing to brute-force remotely. The server just needs that public key listed in the account's `~/.ssh/authorized_keys`.
+- **Public key authentication** — the client proves possession of a private key by signing data bound to the current SSH session and authentication request, the [signing pattern]({{ '/topics/digital-signatures/' | relative_url }}) covered earlier. The server verifies the signature using an authorized public key; the private key is never sent. This removes a human password from the remote authentication path, but it does not make brute force mathematically impossible. Because the public key is not secret, an attacker could theoretically search offline for its matching private key. The search space of a securely generated modern key is simply too large for that attack to be practical. [RFC 4252, Section 7](https://www.rfc-editor.org/rfc/rfc4252#section-7) defines the signed fields and the server's checks.
+
+The comparison is about **effective security strength**, not key length alone. [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) places Ed25519 at about 128-bit security. If a password has `p` bits of entropy, the idealized difference in exhaustive-search work is about `2^(128-p)`—so I cannot give one fixed multiplier without knowing how the password was generated and how each attempt is checked. A stolen, passphrase-protected private-key file creates a different attack: the attacker can guess its passphrase offline, with the cost controlled by that passphrase and the key-file KDF. Stealing an unlocked key, an agent session, or the client itself bypasses brute force altogether.
+
+In a default OpenSSH setup, the authorized public key is commonly stored in the account's `~/.ssh/authorized_keys`. That file is not a protocol requirement: OpenSSH can use another `AuthorizedKeysFile`, obtain keys through `AuthorizedKeysCommand`, or trust user certificates through `TrustedUserCAKeys`, as documented in [`sshd_config(5)`](https://man.openbsd.org/sshd_config).
 
 After confirming that key-based access, recovery access, and automation all work, disabling password authentication (`PasswordAuthentication no`) removes password guessing and credential stuffing from the SSH service. I should test a second session before reloading the daemon so I do not lock myself out.
 
@@ -120,5 +124,5 @@ None of this was a break in SSH's cryptographic protocol. The backdoor sat under
 
 <div class="callout">
   <span class="callout-title">Reference</span>
-  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc4253">RFC 4253</a></strong> defines the SSH transport protocol. <strong><a href="https://www.rfc-editor.org/rfc/rfc8709">RFC 8709</a></strong> defines Ed25519 and Ed448 for SSH. OpenSSH's own certificate format is documented in its <code>PROTOCOL.certkeys</code> file rather than an RFC.</p>
+  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc4252">RFC 4252</a></strong> defines SSH user authentication, while <strong><a href="https://www.rfc-editor.org/rfc/rfc4253">RFC 4253</a></strong> defines the transport protocol. <strong><a href="https://www.rfc-editor.org/rfc/rfc8709">RFC 8709</a></strong> defines Ed25519 and Ed448 for SSH. OpenSSH's own certificate format is documented in its <code>PROTOCOL.certkeys</code> file rather than an RFC.</p>
 </div>
