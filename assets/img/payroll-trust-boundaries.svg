@@ -1,5 +1,5 @@
-<svg viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
-  <rect width="1200" height="760" fill="#ffffff"/>
+<svg viewBox="0 0 1200 790" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="790" fill="#ffffff"/>
 
   <defs>
     <marker id="flow-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
@@ -75,10 +75,10 @@
   <!-- Payroll database -->
   <g>
     <ellipse cx="1005" cy="205" rx="105" ry="31" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
-    <path d="M900 205 V298 C900 315 947 329 1005 329 C1063 329 1110 315 1110 298 V205" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
-    <ellipse cx="1005" cy="298" rx="105" ry="31" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
-    <text x="1005" y="253" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Payroll database</text>
-    <text x="1005" y="278" text-anchor="middle" font-size="13" fill="#475569">employee and payment data</text>
+    <path d="M900 205 V320 C900 337 947 351 1005 351 C1063 351 1110 337 1110 320 V205" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+    <ellipse cx="1005" cy="320" rx="105" ry="31" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
+    <text x="1005" y="248" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Payroll database</text>
+    <text x="1005" y="273" text-anchor="middle" font-size="13" fill="#475569">employee and payment data</text>
   </g>
 
   <!-- External bank API -->
@@ -108,35 +108,38 @@
   <text x="815" y="264" text-anchor="middle" font-size="14" font-weight="900" fill="#ffffff">2</text>
 
   <!-- Data flow 3: approved instruction to bank -->
-  <rect x="690" y="438" width="210" height="58" rx="10" fill="#ffffff" opacity="0.94"/>
-  <path d="M715 500 C770 500 800 535 888 535" fill="none" stroke="#64748b" stroke-width="4" marker-end="url(#flow-arrow)"/>
-  <text x="794" y="462" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">approved payment instruction</text>
-  <text x="794" y="483" text-anchor="middle" font-size="12.5" fill="#64748b">authenticated service request</text>
+  <rect x="725" y="444" width="175" height="58" rx="10" fill="#ffffff" opacity="0.96"/>
+  <path d="M715 515 C770 515 805 535 888 535" fill="none" stroke="#64748b" stroke-width="4" marker-end="url(#flow-arrow)"/>
+  <text x="812" y="468" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">approved payment</text>
+  <text x="812" y="489" text-anchor="middle" font-size="11.5" fill="#64748b">authenticated service request</text>
   <circle cx="835" cy="528" r="18" fill="#c2410c" stroke="#ffffff" stroke-width="4"/>
   <text x="835" y="534" text-anchor="middle" font-size="14" font-weight="900" fill="#ffffff">3</text>
 
   <!-- Boundary checks -->
   <g>
-    <rect x="35" y="675" width="350" height="64" rx="14" fill="#eff6ff" stroke="#93c5fd"/>
-    <circle cx="65" cy="707" r="15" fill="#2563eb"/>
-    <text x="65" y="712" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">1</text>
-    <text x="92" y="699" font-size="12.5" font-weight="800" fill="#1e3a8a">USER → APPLICATION</text>
-    <text x="92" y="721" font-size="12.5" fill="#475569">authenticate · authorize · validate input</text>
+    <rect x="35" y="665" width="350" height="95" rx="14" fill="#eff6ff" stroke="#93c5fd"/>
+    <circle cx="65" cy="712" r="15" fill="#2563eb"/>
+    <text x="65" y="717" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">1</text>
+    <text x="92" y="693" font-size="12.5" font-weight="800" fill="#1e3a8a">USER → APPLICATION</text>
+    <text x="92" y="718" font-size="12" fill="#475569">authenticate session · authorize action</text>
+    <text x="92" y="740" font-size="12" fill="#475569">validate untrusted input</text>
   </g>
 
   <g>
-    <rect x="425" y="675" width="350" height="64" rx="14" fill="#f0fdfa" stroke="#5eead4"/>
-    <circle cx="455" cy="707" r="15" fill="#0f766e"/>
-    <text x="455" y="712" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">2</text>
-    <text x="482" y="699" font-size="12.5" font-weight="800" fill="#134e4a">APPLICATION → DATABASE</text>
-    <text x="482" y="721" font-size="12.5" fill="#475569">workload identity · least privilege · safe query</text>
+    <rect x="425" y="665" width="350" height="95" rx="14" fill="#f0fdfa" stroke="#5eead4"/>
+    <circle cx="455" cy="712" r="15" fill="#0f766e"/>
+    <text x="455" y="717" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">2</text>
+    <text x="482" y="693" font-size="12.5" font-weight="800" fill="#134e4a">APPLICATION → DATABASE</text>
+    <text x="482" y="718" font-size="12" fill="#475569">workload identity · least privilege</text>
+    <text x="482" y="740" font-size="12" fill="#475569">use parameterized queries</text>
   </g>
 
   <g>
-    <rect x="815" y="675" width="350" height="64" rx="14" fill="#fff7ed" stroke="#fdba74"/>
-    <circle cx="845" cy="707" r="15" fill="#c2410c"/>
-    <text x="845" y="712" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">3</text>
-    <text x="872" y="699" font-size="12.5" font-weight="800" fill="#7c2d12">APPLICATION → BANK</text>
-    <text x="872" y="721" font-size="12.5" fill="#475569">approve payment · authenticate endpoint · prevent replay</text>
+    <rect x="815" y="665" width="350" height="95" rx="14" fill="#fff7ed" stroke="#fdba74"/>
+    <circle cx="845" cy="712" r="15" fill="#c2410c"/>
+    <text x="845" y="717" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">3</text>
+    <text x="872" y="693" font-size="12.5" font-weight="800" fill="#7c2d12">APPLICATION → BANK</text>
+    <text x="872" y="718" font-size="12" fill="#475569">approve payment · authenticate endpoint</text>
+    <text x="872" y="740" font-size="12" fill="#475569">protect integrity · prevent replay</text>
   </g>
 </svg>
