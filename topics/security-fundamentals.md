@@ -2,7 +2,7 @@
 title: What Is Security?
 description: My recall-first model for security—assets, threats, vulnerabilities, risk, controls, the CIA triad, and validation.
 permalink: /topics/security-fundamentals/
-last_verified: 2026-08-05
+last_verified: 2026-08-06
 ---
 
 <span class="eyebrow">Security / Overview</span>
@@ -17,24 +17,29 @@ My shortest useful model is:
 
 > A **threat** exploits or triggers a **vulnerability**, causing an **impact** to an **asset**. A **security control** reduces the likelihood, impact, or time taken to detect and recover from that event.
 
-The terms matter because they describe different parts of the problem:
+I use one clinic appointment outage to keep the terms separate:
 
-- **[Asset](https://csrc.nist.gov/glossary/term/asset)** — something valuable, such as a person, business process, service, device, dataset, reputation, or physical facility. NIST's definition includes both tangible and intangible value.
-- **[Threat](https://csrc.nist.gov/glossary/term/threat)** — an event, condition, or actor with the potential to cause harm. It may be malicious, accidental, or environmental.
-- **[Vulnerability](https://csrc.nist.gov/topics/security-and-privacy/risk-management/vulnerabilities)** — a weakness in a system, procedure, control, or implementation that a threat could exploit or trigger.
-- **Impact** — the harm that follows, such as financial loss, unsafe conditions, service disruption, privacy harm, legal exposure, or damaged trust.
-- **[Risk](https://csrc.nist.gov/glossary/term/risk)** — how much the possible event matters, considering both its likelihood and its impact. `Likelihood × impact` is a useful reminder, not a universal mathematical formula.
-- **[Security control](https://csrc.nist.gov/glossary/term/security_control)** — a safeguard or countermeasure used to change the risk. A control may prevent, detect, contain, respond to, or help recover from an event.
+<div class="diagram-frame">
+  <video class="diagram-video" controls autoplay muted loop playsinline preload="metadata" poster="{{ '/assets/video/security-risk-model-poster.png' | relative_url }}?v=1" aria-label="A clinic appointment-system walkthrough showing the difference between an asset, threat event, vulnerability, impact, risk, security controls, and residual risk. Appointment data, the booking service, and patient access are valuable assets. Denial-of-service traffic reaches one undersized server with no rate limiting or failover. Patients and reception staff lose access, creating operational harm. Likelihood and impact inform the initial risk assessment. Rate limiting, extra capacity, monitoring, response, and failover reduce the risk but do not remove it. The final screen shows the full relationship and asks whether the remaining risk is acceptable.">
+    <source src="{{ '/assets/video/security-risk-model.webm' | relative_url }}?v=1" type="video/webm">
+    <source src="{{ '/assets/video/security-risk-model.mp4' | relative_url }}?v=1" type="video/mp4">
+    <img src="{{ '/assets/video/security-risk-model-poster.png' | relative_url }}?v=1" alt="Security risk model connecting an asset, a threat reaching a vulnerability, the resulting impact, the risk assessment, controls, and residual risk.">
+  </video>
+  <p class="diagram-caption">One scenario, six separate ideas: what I value, what could happen, the weakness, the harm, how much it matters, and what changes it</p>
+</div>
 
-For example, in a clinic appointment system:
+My short lookup:
 
-- the appointment data and booking service are **assets**;
-- a denial-of-service attack is a **threat event**;
-- relying on one undersized server is a **vulnerability**;
-- patients being unable to retrieve appointments is the **impact**;
-- rate limits, extra capacity, monitoring, and failover are **controls**.
+| Term | Question I ask | Clinic example |
+|---|---|---|
+| **[Asset](https://csrc.nist.gov/glossary/term/asset)** | What do I value? | Appointment data, booking service, and patient access |
+| **[Threat](https://csrc.nist.gov/glossary/term/threat)** | What could cause harm? | Denial-of-service traffic |
+| **[Vulnerability](https://csrc.nist.gov/topics/security-and-privacy/risk-management/vulnerabilities)** | Which weakness makes harm possible? | One undersized server with no rate limit or failover |
+| **Impact** | What harm follows? | Patients lose access and clinic operations are disrupted |
+| **[Risk](https://csrc.nist.gov/glossary/term/risk)** | How much does the scenario matter? | The outage scenario assessed using likelihood and impact |
+| **[Security control](https://csrc.nist.gov/glossary/term/security_control)** | What changes the risk? | Rate limiting, capacity, monitoring, response, and failover |
 
-The vulnerability alone is not the whole risk. I still need to ask whether a relevant threat can reach it, what the resulting harm would be, and what existing controls already change the likelihood or impact. This is the basic reasoning used by **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** for risk assessment.
+A vulnerability is not the whole risk. I still check whether a relevant threat can reach it, what harm would follow, and how existing controls change the likelihood or impact. `Likelihood × impact` is a useful reminder, not a universal formula. This follows the basic risk-assessment reasoning in **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)**.
 
 Security is the broadest term here. **Information security** protects information in any form, while **cybersecurity** focuses on risks involving digital and connected systems. Real security work spans people, process, physical safeguards, and technology—not only software or encryption.
 
