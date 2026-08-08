@@ -27,9 +27,9 @@ Full-disk encryption protects data **only when the host device is powered off or
 
 Disk sectors cannot change size when encrypted (a 512-byte plaintext sector must produce a 512-byte ciphertext sector), ruling out AEAD modes like AES-GCM that append 16-byte authentication tags.
 
-Standardized in **[IEEE 1619](https://standards.ieee.org/ieee/1619/6966/)** and **[NIST SP 800-38E](https://csrc.nist.gov/pubs/sp/800/38/e/final)**, **AES-XTS** uses two independent 256-bit AES keys (**K_1, K_2**) and a sector tweak value:
+Standardized in **[IEEE 1619](https://standards.ieee.org/ieee/1619/6966/)** and **[NIST SP 800-38E](https://csrc.nist.gov/pubs/sp/800/38/e/final)**, **AES-XTS** uses two independent 256-bit AES keys (<b>K<sub>1</sub>, K<sub>2</sub></b>) and a sector tweak value:
 
-**C = AES-XTS(K_1, K_2, Sector Number, Plaintext)**
+<b>C = AES-XTS(K<sub>1</sub>, K<sub>2</sub>, Sector Number, Plaintext)</b>
 
 AES-XTS prevents pattern leakage between identical sectors and ensures that modifying a single ciphertext byte randomizes the entire 512-byte decrypted sector.
 
