@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}CBC bit-flipping · Field Journal Labs{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('cbc.index') }}">&larr; Start over</a>{% endblock %}
+{% block content %}
+<h1>Flip the ciphertext, flip the plaintext</h1>
+<p class="lede">The token is encrypted. From here on, pretend you are the attacker: you only ever touch the bytes in the ciphertext column below — never the key.</p>
+
+<h2>The encrypted token</h2>
+<div class="step">
+  <table>
+    <thead><tr><th>Block</th><th>Ciphertext (hex)</th><th>Plaintext — for reference only, an attacker can't see this</th></tr></thead>
+    <tbody>
+      {% for i in range(ciphertext_blocks|length) %}
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td><code>{{ ciphertext_blocks[i] }}</code></td>
+        <td><code>{{ plaintext_blocks[i] }}</code></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="field-hint">Full ciphertext: <code>{{ ciphertext_hex }}</code></p>
+</div>
+
+<h2><span class="step-number">3</span>Attack it</h2>
+<div class="step">
+  <div class="tabs">
+    <button type="button" class="tab-btn is-active" data-tab="guided">Guided: known-byte flip</button>
+    <button type="button" class="tab-btn" data-tab="custom">Advanced: pick your own byte</button>
+  </div>
+
+  <div class="tab-panel is-active" data-panel="guided">
+    <p>The mechanism: XOR a single delta byte into <strong>ciphertext block 1</strong>, and the identical delta appears in block 2's decrypted plaintext, at the same offset, once the server decrypts it. No key needed — only knowledge of what character is already sitting at that offset.</p>
+    <p>This demo targets block 2, byte offset 13 — the character right after <code>isadmin=</code>, known value <code>0</code> — because it's a concrete, checkable way to see the flip land. Flip it to <code>1</code> and you've demonstrated the integrity failure end to end.</p>
+    <form method="post" action="{{ url_for('cbc.flip') }}">
+      <input type="hidden" name="key_hex" value="{{ key_hex }}">
+      <input type="hidden" name="iv_hex" value="{{ iv_hex }}">
+      <input type="hidden" name="ciphertext_hex" value="{{ ciphertext_hex }}">
+      <input type="hidden" name="mode" value="guided">
+      <button type="submit">Flip byte 13 (isadmin): 0 &rarr; 1</button>
+    </form>
+  </div>
+
+  <div class="tab-panel" data-panel="custom">
+    <p>Choose any byte in block 1 or block 2 and a new character to flip it to. This only works because you (as the attacker) happen to know what character already sits at that position — you're not learning anything new, just rewriting something you already know.</p>
+    <form method="post" action="{{ url_for('cbc.flip') }}">
+      <input type="hidden" name="key_hex" value="{{ key_hex }}">
+      <input type="hidden" name="iv_hex" value="{{ iv_hex }}">
+      <input type="hidden" name="ciphertext_hex" value="{{ ciphertext_hex }}">
+      <input type="hidden" name="mode" value="custom">
+      <div class="key-row">
+        <div class="field">
+          <label for="block_index">Target plaintext block</label>
+          <select id="block_index" name="block_index">
+            <option value="1">1 — {{ plaintext_blocks[0] }}</option>
+            <option value="2" selected>2 — {{ plaintext_blocks[1] }}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="offset">Byte offset (0-15)</label>
+          <input type="number" id="offset" name="offset" min="0" max="15" value="13">
+        </div>
+        <div class="field">
+          <label for="new_char">New character</label>
+          <input type="text" id="new_char" name="new_char" maxlength="1" value="1">
+        </div>
+      </div>
+      <button type="submit">Compute the flip</button>
+    </form>
+    <p class="field-hint">Targeting block 1 flips a byte in the <strong>IV</strong> instead of a ciphertext block — watch what that does differently to block 2 in the result.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/cbc.js') }}"></script>
+{% endblock %}

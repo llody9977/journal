@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Deduced plaintext · ECB codebook attack{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('ecb.index') }}">&larr; Back to the lab</a>{% endblock %}
+{% block content %}
+<h1>Deduced plaintext</h1>
+<p class="lede">No key was uploaded, requested, or used anywhere on this page — just the two ciphertexts, matched block by block against the reference codebook.</p>
+
+<div class="result-banner">
+  <span class="callout-title">Recovered text ({{ result.matched_count }} / {{ result.block_count }} blocks matched)</span>
+  <div class="result-text">{{ result.deduced_text }}</div>
+</div>
+
+{% if result.matched_count < result.block_count %}
+<div class="callout warn">
+  <span class="callout-title">Some blocks didn't match</span>
+  <p>Shown as <code>&#65533;</code> below. This means that block's ciphertext isn't in the reference codebook — usually because the secret was encrypted under a different key than the codebook, or it contains a character outside the supported ASCII range.</p>
+</div>
+{% endif %}
+
+<h2>Block-by-block, the way <code>xxd</code> would show it</h2>
+<table>
+  <thead>
+    <tr><th>Block</th><th>Secret ciphertext (hex)</th><th>Match?</th><th>Deduced character</th></tr>
+  </thead>
+  <tbody>
+    {% for row in result.rows %}
+    <tr class="{{ 'match' if row.matched else 'no-match' }}">
+      <td>{{ row.index }}</td>
+      <td>{{ row.ciphertext_hex }}</td>
+      <td>{{ "found in codebook" if row.matched else "no match" }}</td>
+      <td class="deduced-char">{{ row.char if row.matched else "�" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p><a class="btn secondary" href="{{ url_for('ecb.index') }}">Try another secret</a></p>
+{% endblock %}

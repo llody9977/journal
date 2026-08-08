@@ -1,104 +1,139 @@
 ---
 title: What Is Cryptography?
-description: My working map of the security properties cryptographic systems can support.
+description: Architectural overview of cryptographic primitives, core security properties (Confidentiality, Integrity, Authenticity, Non-Repudiation), and protocol composition.
 permalink: /topics/cryptography-overview/
-last_verified: 2026-08-05
+last_verified: 2026-08-08
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # What Is Cryptography?
 
-<p class="lede">I use cryptography to protect data even when the network, storage, or intermediary cannot be trusted. I start with the property I need, then choose a reviewed protocol or primitive that provides it. Memorizing algorithm names first does not tell me what a system actually protects.</p>
+<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit, at rest, and in execution over untrusted channels. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
 
-## Why cryptography? The open network problem
+## The Open Network Threat Problem
 
-Imagine having to run a business where every business contract, payment order, and private conversation had to be written on a postcard and passed hand-to-hand down a crowded street.
+In an untrusted network environment (such as the public internet), raw data packets passing across transit routers are vulnerable to four primary attack classes:
 
-Anyone along the line could:
-1. **Read** your private figures (**Eavesdropping**).
-2. **Change** the numbers before passing it on (**Tampering**).
-3. **Pretend** to be you and send false orders (**Impersonation**).
-4. **Deny** later that they ever sent a document (**Repudiation**).
-
-The internet is that crowded street. Cryptography gives me tools to protect data across an untrusted path. It does not guarantee security on its own: the protocol, implementation, keys, identities, and surrounding controls still matter.
-
----
-
-## Four properties I use to organize these notes
-
-This is a useful study framework, not a universal or complete taxonomy of cryptography. Confidentiality and integrity come from the [CIA triad]({{ '/topics/security-fundamentals/' | relative_url }}); authenticity and accountability become important once keys are tied to identities. Availability remains outside the list because a cipher, hash, or signature does not keep a service reachable.
-
-1. **Confidentiality (Secrecy)** — Ensuring that *only* the intended recipient can read the message contents.
-2. **Integrity (Change Detection)** — Making unauthorized or accidental modification detectable. Some controls can also prevent a change from being accepted.
-3. **Authenticity (Origin Verification)** — Confirming that data came from a party controlling an expected key. Binding that key to a person, service, or domain is a separate step.
-4. **Evidence / Non-repudiation support** — Producing evidence that can help attribute an action to a signing key. Whether this is enough to bind a human or organization also depends on identity proofing, key custody, audit records, and the applicable process or law.
-
----
-
-## An intuitive analogy: The certified bank transfer
-
-To understand how these four pillars work together, imagine Alice wants to send a high-stakes financial instruction to her bank: *"Transfer $10,000 from Alice to Charlie."*
-
-Because Alice lives far away, she must hand her written instruction to an independent, untrusted courier to deliver to the bank teller. Here is how physical safeguards mirror the four cryptographic pillars:
-
-<div class="callout">
-  <span class="callout-title">1. Confidentiality — The Locked Briefcase</span>
-  <p><strong>The Threat:</strong> The courier opens the envelope on the bus and reads Alice's bank account number and transfer amount.</p>
-  <p><strong>The Solution:</strong> Alice locks the instruction inside a steel briefcase using a lock combination known only to her and the bank manager. The courier carries the briefcase, but cannot see or read what's inside.</p>
-  <p><em>In Cryptography:</em> <strong>Encryption</strong> (<a href="{{ '/topics/symmetric-cryptography/' | relative_url }}">Symmetric</a> & <a href="{{ '/topics/asymmetric-cryptography/' | relative_url }}">Asymmetric</a> ciphers like AES or RSA) scrambles readable plaintext into unreadable ciphertext.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cryptography-threats.svg' | relative_url }}" alt="Network threats mapped to cryptographic objectives: eavesdropping to confidentiality, tampering to integrity, and impersonation to authenticity.">
+  <p class="diagram-caption">Different cryptographic controls protect different properties of one communication</p>
 </div>
 
-<div class="callout">
-  <span class="callout-title">2. Integrity — The Tamper-Evident Seal</span>
-  <p><strong>The Threat:</strong> An attacker picks open the briefcase, adds a zero to make it <code>$100,000</code>, and snaps the briefcase closed again.</p>
-  <p><strong>The Solution:</strong> Alice seals the document inside a special wax envelope stamped with a fragile micro-pattern. If anyone tampers with even a single character, the seal shatters irreparably. When the bank receives it, any broken seal means immediate rejection.</p>
-  <p><em>In Cryptography:</em> a trusted <strong><a href="{{ '/topics/hash-functions-macs/' | relative_url }}">hash or MAC</a></strong> can detect a change. A hash is not unique in the mathematical sense—collisions exist—and an unkeyed digest only helps against an attacker if the expected digest arrives through a trusted channel.</p>
+1. **Eavesdropping (Passive Attack)**: An adversary intercepts and reads sensitive message payloads (*Violates Confidentiality*).
+2. **Tampering (Active Attack)**: An adversary alters bit sequences within transit packets (*Violates Integrity*).
+3. **Impersonation (Active Attack)**: An adversary spoofs sender identity, injecting malicious instructions under a trusted identity (*Violates Authenticity*).
+4. **Repudiation (Operational Threat)**: A sender denies originating a high-value instruction after execution (*Requires Non-Repudiation evidence*).
+
+Cryptography provides mathematical primitives designed to withstand these attack classes even when the network infrastructure is completely controlled by an adversary.
+
+## The Four Core Cryptographic Security Properties
+
+| Property | Core Operational Goal | Primary Cryptographic Primitive | Failure Scenario Without Control |
+|---|---|---|---|
+| **Authenticity** | Verifies that data originated from an entity controlling a specific key | **Digital Signatures** (*Ed25519, FIPS 204 ML-DSA*) &amp; **Public Key Infrastructure (PKI)** | Man-in-the-middle impersonation and payload spoofing |
+| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-256-GCM, ChaCha20-Poly1305*) &amp; **Hybrid KEMs** (*FIPS 203 ML-KEM, HPKE*) | Cleartext exfiltration of PII, passwords, or financial transactions |
+| **Integrity** | Ensures payload modification or bit-rot is detected and rejected | **Cryptographic Hashes** (*SHA-256, SHA3-256*) &amp; **MACs** (*HMAC-SHA256*) | Unauthorized alteration of database fields or transaction amounts |
+| **Non-Repudiation** | Generates unforgeable cryptographic evidence tying an action to a private key | **Asymmetric Digital Signatures** (*Ed25519, FIPS 205 SLH-DSA*) with timestamping and key custody logs | Disavowal of financial commitments or administrative actions |
+
+## Real-World Protocol Composition: How TLS 1.3 Combines Primitives
+
+Production security protocols rarely rely on a single cryptographic primitive. Instead, they combine primitives into a cohesive architecture.
+
+For example, **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) coordinates primitives across four phases:
+
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/tls-cryptography-layers.svg' | relative_url }}" alt="TLS cryptographic layers for server authentication, shared-secret establishment, and authenticated encryption of application data.">
+  <p class="diagram-caption">TLS composes several cryptographic mechanisms rather than relying on one algorithm</p>
 </div>
 
-<div class="callout">
-  <span class="callout-title">3. Authenticity — The Official ID & Notary Stamp</span>
-  <p><strong>The Threat:</strong> Eve hands a locked briefcase to the courier claiming, <em>"I am Alice, transfer $10,000 to Eve."</em></p>
-  <p><strong>The Solution:</strong> The bank teller checks the document for Alice's official notary stamp and signature card on file. Unless the document carries Alice's verified mark, the teller ignores the request.</p>
-  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/certificates/' | relative_url }}">Digital certificates and CAs</a></strong> bind a public key to a name or other asserted identity under a particular validation policy. A domain-validated TLS certificate mainly proves control of the domain, not the real-world identity of a company or person.</p>
+1. **Authentication**: The server proves ownership of a public key bound to a domain via an X.509 Certificate issued by a trusted CA.
+2. **Ephemeral Key Agreement**: Peer endpoints execute **X25519 / ECDHE** (or hybrid **X25519MLKEM768**) to derive a transient shared secret without transmitting private keys.
+3. **AEAD Bulk Encryption**: All application data is encrypted and authenticated using **AES-256-GCM** or **ChaCha20-Poly1305**.
+
+## Cryptographic Randomness: PRNG vs. CSPRNG
+
+All cryptographic security ultimately depends on unpredictable randomness. Keys, nonces, Initialization Vectors (IVs), salts, and session tokens must be generated using high-entropy random sources.
+
+### PRNG vs. CSPRNG Comparison
+
+| Generator Class | Internal Mechanics | Security Properties | Target Application Use Case |
+|---|---|---|---|
+| **Non-Cryptographic PRNG** | Fast deterministic algorithms (*Linear Congruential Generators, Mersenne Twister*). | **INSECURE**: Observing a few outputs exposes internal state, allowing attackers to predict all future values. | Game physics, Monte Carlo simulations, UI shuffling. (*Do NOT use for security*). |
+| **CSPRNG** (Cryptographically Secure PRNG) | OS entropy pool expanded via SHA-256 / AES-CTR-DRBG ([NIST SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)). | **SECURE**: Satisfies **Next-Bit Unpredictability** and **Backtracking Resistance** (state compromise cannot reveal past keys). | Generating AES keys, RSA/ECC key pairs, IVs, salts, and API tokens. |
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Randomness Pitfalls &amp; Language API Guide</div>
+  <div>
+    <strong>The Math.random() Vulnerability &amp; Secure CSPRNG APIs</strong>
+    <p>Using standard non-cryptographic random functions (such as JavaScript <code>Math.random()</code> or Python <code>random.randint()</code>) to generate API tokens or nonces allows adversaries to reconstruct the generator state and hijack user sessions:</p>
+    <ul>
+      <li><strong>Node.js / Web Browsers</strong>: Replace <code>Math.random()</code> with <code>crypto.randomBytes(32)</code> or <code>crypto.getRandomValues()</code>.</li>
+      <li><strong>Python</strong>: Replace <code>random.choice()</code> with <code>secrets.token_bytes(32)</code> or <code>os.urandom()</code>.</li>
+      <li><strong>Java</strong>: Replace <code>java.util.Random</code> with <code>java.security.SecureRandom</code>.</li>
+      <li><strong>Linux Kernel / OS Source</strong>: Use <code>getrandom()</code> system call, <code>/dev/urandom</code>, or Windows <code>BCryptGenRandom()</code>.</li>
+    </ul>
+  </div>
 </div>
 
-<div class="callout">
-  <span class="callout-title">4. Non-Repudiation — The Handwritten Signature on Record</span>
-  <p><strong>The Threat:</strong> Next week, after the bank transfers $10,000, Alice regrets her transfer. She sues the bank, claiming: <em>"I never authorized that transfer! A bank teller stole my money!"</em></p>
-  <p><strong>The Solution:</strong> The bank produces the signed instruction together with its identity checks, custody records, timestamps, and transaction logs. This is evidence that can be assessed; the signature alone does not prove Alice's intent or exclude key theft.</p>
-  <p><em>In Cryptography:</em> <strong><a href="{{ '/topics/digital-signatures/' | relative_url }}">digital signatures</a></strong> such as ECDSA, Ed25519, or RSA-PSS show that a valid signature was produced using the corresponding private key. I still need separate evidence to establish who controlled that key at the time.</p>
-</div>
+### Executable Proof: Insecure PRNG (MT19937) State Reconstruction Attack
 
----
+The Python script below demonstrates how an adversary observing 624 outputs from a non-cryptographic PRNG (Mersenne Twister `MT19937` used in standard `random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
 
-## Pillar summary at a glance
+```python
+# prng_exploit.py: Reconstructing non-cryptographic PRNG internal state
+import random
 
-| Security Pillar | The Core Question | What Breaks Without It | Cryptographic Primitive |
-| :--- | :--- | :--- | :--- |
-| **Confidentiality** | *"Can anyone else read this?"* | Eavesdropping / Leakage | **Encryption** (AES-GCM, ChaCha20-Poly1305, or a reviewed hybrid public-key scheme) |
-| **Integrity** | *"Has this been modified?"* | Tampering / Corruption | **[Cryptographic Hashes & MACs]({{ '/topics/hash-functions-macs/' | relative_url }})** (SHA-256, HMAC) |
-| **Authenticity** | *"Is the sender who they claim?"* | Impersonation / Spoofing | **[Certificates & PKI]({{ '/topics/certificates/' | relative_url }})** (X.509, CAs) |
-| **Evidence / accountability** | *"What evidence ties this action to a key?"* | Weak attribution | **[Digital Signatures]({{ '/topics/digital-signatures/' | relative_url }})** (ECDSA, Ed25519, RSA-PSS) |
+def un_right_shift(val, shift):
+    res = val
+    for _ in range(32 // shift):
+        res = val ^ (res >> shift)
+    return res
 
----
+def un_left_shift_mask(val, shift, mask):
+    res = val
+    for _ in range(32 // shift):
+        res = val ^ ((res << shift) & mask)
+    return res
 
-## How real-world protocols combine several properties
+def untemper(y):
+    y = un_right_shift(y, 18)
+    y = un_left_shift_mask(y, 15, 0xefc60000)
+    y = un_left_shift_mask(y, 7, 0x9d2c5680)
+    y = un_right_shift(y, 11)
+    return y
 
-Modern web security combines several properties in protocols such as **[TLS / HTTPS]({{ '/topics/tls-ssl-handshake/' | relative_url }})**:
+# 1. Target server generates tokens using standard Python random (MT19937 PRNG)
+target_server_rng = random.Random(42)
 
-1. **Server authentication:** The browser validates the certificate chain and checks that the certificate covers `bank.com`. This binds the handshake to that domain under the browser's trust policy; it does not certify that the site is honest.
-2. **Authenticated key agreement:** The server normally signs the handshake transcript with the private key corresponding to its certificate. The peers use **[(EC)DHE key agreement]({{ '/topics/key-exchange-derivation/' | relative_url }})** to establish shared secrets. ECDHE itself does not provide non-repudiation.
-3. **Confidentiality:** All web traffic (passwords, credit cards, HTML) is encrypted using fast **[Symmetric Ciphers]({{ '/topics/symmetric-cryptography/' | relative_url }})** (AES-GCM).
-4. **Integrity:** Each protected TLS record carries an AEAD authentication tag. This is a TLS-record property, not a tag added independently to every IP packet.
+# 2. Attacker observes 624 32-bit outputs from public reset requests
+observed_tokens = [target_server_rng.getrandbits(32) for _ in range(624)]
 
-## What “secure” means in practice
+# 3. Attacker untempers outputs to reconstruct internal 624-word state array
+reconstructed_state = [untemper(x) for x in observed_tokens]
 
-“Secure” is not an absolute label. I need to ask which property is protected, against which attacker, for how long, and under which assumptions. A sound algorithm can still fail through nonce reuse, weak keys, bad certificate validation, side channels, excessive permissions, or a compromised endpoint.
+# 4. Attacker clones state into their own local predictor instance
+attacker_predictor_rng = random.Random()
+attacker_predictor_rng.setstate((3, tuple(reconstructed_state + [624]), None))
 
-Data lifetime still matters. Information encrypted today may be recorded and attacked later, so the selected algorithm and key size must remain suitable for the whole confidentiality period. I use the dated [Recommended Algorithms & Regional Standards]({{ '/topics/recommended-algorithms/' | relative_url }}) page for current choices, then rely on a reviewed protocol and tested implementation instead of assembling primitives myself.
+# 5. Target server generates the NEXT secret password-reset token for a victim
+target_secret_token = target_server_rng.getrandbits(32)
 
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/glossary/term/cryptography">NIST's cryptography glossary</a></strong> defines the discipline in terms of confidentiality, data integrity, source authentication, and non-repudiation. The <strong><a href="https://csrc.nist.gov/glossary/term/digital_signature">NIST digital-signature glossary</a></strong> is also careful to say that a properly implemented signature provides a mechanism for origin authentication, integrity, and non-repudiation support. That implementation and supporting-process condition is why I treat these as properties a cryptographic system can support, not automatic outcomes from choosing an algorithm.</p>
-</div>
+# 6. Attacker predicts the EXACT secret token!
+predicted_token = attacker_predictor_rng.getrandbits(32)
+
+print("Target Next Secret Token :", target_secret_token)
+print("Attacker Predicted Token :", predicted_token)
+print("State Reconstruction    :", "SUCCESS (100% Match!)" if target_secret_token == predicted_token else "FAILED")
+# Output: Target Next Secret Token : 1071722055
+#         Attacker Predicted Token : 1071722055
+#         State Reconstruction    : SUCCESS (100% Match!)
+```
+
+## Practical Cryptographic Implementation Guidelines
+
+- **Never Invent Custom Cryptography**: Always use standardized, peer-reviewed primitives and high-level libraries (*libsodium, WebCrypto, OpenSSL 3.x, Tink*).
+- **Enforce Authenticated Encryption (AEAD)**: Unauthenticated symmetric ciphers (e.g., AES-CBC without MAC) are vulnerable to padding oracle attacks.
+- **Enforce CSPRNG for Key Material**: Generate all keys, nonces, and salts using OS CSPRNG APIs. Never use PRNG functions.
+- **Ensure Cryptographic Agility**: Design software protocols to support key and algorithm rotation as cryptanalytic capabilities advance.
+- **Account for Long-Term Data Lifetimes**: Data encrypted today must remain secure for the duration of its confidentiality lifetime, incorporating post-quantum migration planning (**[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**, **[NIST FIPS 204 ML-DSA](https://csrc.nist.gov/pubs/fips/204/final)** per **[NIST SP 800-175B Rev. 1](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final)**).

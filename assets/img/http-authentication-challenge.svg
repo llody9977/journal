@@ -1,0 +1,26 @@
+<svg viewBox="0 0 1200 545" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">HTTP authentication challenge and response</title>
+  <desc id="description">The server advertises an authentication scheme before the client retries with credentials.</desc>
+  <rect width="1200" height="545" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">HTTP authentication challenge and response</text>
+  <text x="50" y="88" font-size="16" fill="#475569">The server advertises an authentication scheme before the client retries with credentials.</text>
+  <rect x="10" y="120" width="250" height="60" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/><text x="135" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Client</text><path d="M135 180 V450" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/>
+<rect x="940" y="120" width="250" height="60" rx="18" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/><text x="1065" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Resource server</text><path d="M1065 180 V450" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/>
+    <path d="M135 220 L1065 220" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="188" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="205" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">1. REQUEST</text><text x="600" y="244" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">No credentials</text>
+    <path d="M1065 290 L135 290" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="258" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="275" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">2. 401 CHALLENGE</text><text x="600" y="314" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">WWW-Authenticate: Bearer</text>
+    <path d="M135 360 L1065 360" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="328" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="345" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">3. RETRY</text><text x="600" y="384" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">Authorization: Bearer &lt;token&gt;</text>
+    <path d="M1065 430 L135 430" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="398" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="415" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">4. 200 RESPONSE</text><text x="600" y="454" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">Credentials accepted</text><rect x="90" y="465" width="1020" height="46" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="600" y="494" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Authentication establishes who or what is calling; authorization still decides what the caller may access.</text>
+</svg>

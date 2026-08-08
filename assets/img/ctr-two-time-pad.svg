@@ -1,46 +1,54 @@
-<svg viewBox="0 0 740 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
-  <rect x="0" y="0" width="740" height="340" fill="#ffffff" />
-
+<svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">CTR Nonce-Reuse Two-Time Pad Attack Mechanics</title>
+  <desc id="description">Reusing a 96-bit nonce under the same key generates identical keystream (KS₁ = KS₂), enabling XOR cancellation</desc>
+  <rect width="1200" height="440" fill="#ffffff"/>
   <defs>
-    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
-    </marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">CTR Nonce-Reuse Two-Time Pad Attack Mechanics</text>
+  <text x="50" y="88" font-size="16" fill="#475569">Reusing a 96-bit nonce under the same key generates identical keystream (KS₁ = KS₂), enabling XOR cancellation</text>
+  
+    <g>
+      <!-- Top Row: Session 1 vs Session 2 -->
+      <!-- Session 1 Box -->
+      <rect x="50" y="110" width="520" height="95" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+      <text x="70" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">SESSION 1 (NONCE N)</text>
+      <text x="70" y="160" font-size="15" font-weight="800" fill="#0f172a">P₁: "Transfer $100 to Bob!!!"</text>
+      <text x="70" y="184" font-size="13" font-weight="600" fill="#475569">C₁ = P₁ ⊕ Keystream(N)</text>
 
-  <text x="20" y="25" font-size="13" font-weight="700" fill="#111827">Same key + same nonce used twice → same keystream, both times</text>
+      <!-- Session 2 Box -->
+      <rect x="630" y="110" width="520" height="95" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+      <text x="650" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">SESSION 2 (REUSED NONCE N)</text>
+      <text x="650" y="160" font-size="15" font-weight="800" fill="#0f172a">P₂: "Meet me at 9pm sharp!!!"</text>
+      <text x="650" y="184" font-size="13" font-weight="600" fill="#b91c1c">C₂ = P₂ ⊕ Keystream(N)  [DUPLICATE KEYSTREAM!]</text>
 
-  <rect x="20" y="40" width="180" height="36" rx="6" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
-  <text x="110" y="62" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">P1: "Transfer $100..."</text>
+      <!-- Solid Connecting Arrows to Adversary Analysis Box -->
+      <path d="M 310 205 L 310 225 L 420 225 L 420 240" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+      <rect x="330" y="213" width="70" height="20" rx="4" fill="#ffffff" stroke="#2563eb" stroke-width="1"/>
+      <text x="365" y="227" text-anchor="middle" font-size="11" font-weight="800" fill="#2563eb">Sent C₁</text>
 
-  <rect x="20" y="150" width="180" height="36" rx="6" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
-  <text x="110" y="172" font-size="11.5" font-weight="700" fill="#193e9f" text-anchor="middle">P2: "Meet me at 9pm..."</text>
+      <path d="M 890 205 L 890 225 L 780 225 L 780 240" fill="none" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow-red)"/>
+      <rect x="745" y="213" width="70" height="20" rx="4" fill="#ffffff" stroke="#b91c1c" stroke-width="1"/>
+      <text x="780" y="227" text-anchor="middle" font-size="11" font-weight="800" fill="#b91c1c">Sent C₂</text>
 
-  <path d="M200 58 L250 95" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
-  <path d="M200 168 L250 105" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
+      <!-- Middle Section: Adversary XOR Keystream Cancellation Box -->
+      <rect x="350" y="240" width="500" height="95" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+      <text x="600" y="266" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">ADVERSARY NETWORK ANALYSIS</text>
+      <text x="600" y="290" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">C₁ ⊕ C₂ = (P₁ ⊕ KS) ⊕ (P₂ ⊕ KS) = P₁ ⊕ P₂</text>
+      <text x="600" y="314" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">Keystream KS cancels out completely — Secret Key eliminated!</text>
 
-  <rect x="255" y="85" width="150" height="36" rx="6" fill="#193e9f" />
-  <text x="330" y="107" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">XOR same keystream</text>
+      <!-- Arrow down to Known-Plaintext Attack Result -->
+      <path d="M 600 335 L 600 368" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>
 
-  <path d="M405 95 L460 60" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
-  <path d="M405 110 L460 150" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
-
-  <rect x="465" y="40" width="180" height="36" rx="6" fill="#9f1239" />
-  <text x="555" y="62" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">C1 (sent over network)</text>
-
-  <rect x="465" y="150" width="180" height="36" rx="6" fill="#9f1239" />
-  <text x="555" y="172" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">C2 (sent over network)</text>
-
-  <text x="555" y="105" font-size="11" fill="#8491a3" text-anchor="middle">attacker sees only C1 and C2</text>
-
-  <path d="M555 76 L555 220" stroke="#8491a3" stroke-width="1.5" stroke-dasharray="3 3" />
-  <path d="M555 186 L555 220" stroke="#8491a3" stroke-width="1.5" stroke-dasharray="3 3" />
-
-  <rect x="255" y="220" width="230" height="46" rx="8" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
-  <text x="370" y="240" font-size="12" font-weight="700" fill="#a14c00" text-anchor="middle">attacker computes C1 XOR C2</text>
-  <text x="370" y="257" font-size="10.5" fill="#a14c00" text-anchor="middle">the keystream cancels out completely</text>
-
-  <path d="M370 266 L370 295" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ahc)" />
-
-  <rect x="220" y="300" width="300" height="34" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
-  <text x="370" y="322" font-size="12" font-weight="700" fill="#0f766e" text-anchor="middle">= P1 XOR P2 — no key needed at all</text>
+      <!-- Bottom Banner: Known-Plaintext Recovery -->
+      <rect x="50" y="370" width="1100" height="50" rx="10" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
+      <text x="600" y="394" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0f766e">Known-Plaintext Attack: Guess P₁ prefix ("Transfer $100 to") ⊕ (P₁ ⊕ P₂)</text>
+      <text x="600" y="410" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">Recovers P₂ Plaintext: "Meet me at 9pm s" WITHOUT Decryption Key!</text>
+    </g>
 </svg>

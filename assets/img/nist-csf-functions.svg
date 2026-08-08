@@ -1,0 +1,66 @@
+<svg viewBox="0 0 1200 680" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">NIST Cybersecurity Framework 2.0 functions</title>
+  <desc id="description">Govern informs all five operational functions, which continuously exchange information and improve one another.</desc>
+  <rect width="1200" height="680" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">NIST Cybersecurity Framework 2.0 functions</text>
+  <text x="50" y="88" font-size="16" fill="#475569">Govern informs all five operational functions, which continuously exchange information and improve one another.</text>
+  
+    <g>
+      <rect x="70" y="125" width="1060" height="125" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+      <text x="95" y="156" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">CROSS-CUTTING FUNCTION</text>
+      <text x="95" y="190" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">GOVERN</text>
+      <text x="95" y="230" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Set strategy, policy, roles, oversight, and risk-management expectations across every other function.</text>
+    </g>
+    <g>
+      <rect x="70" y="335" width="196" height="185" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      
+      <text x="95" y="385" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">IDENTIFY</text>
+      <text x="95" y="425" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Understand assets,</text>
+<text x="95" y="448" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">risks, and context</text>
+    </g><path d="M168 250 V320" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+    <path d="M271 428 L281 428" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    
+    <g>
+      <rect x="286" y="335" width="196" height="185" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+      
+      <text x="311" y="385" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">PROTECT</text>
+      <text x="311" y="425" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Apply safeguards</text>
+<text x="311" y="448" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">to manage risk</text>
+    </g><path d="M384 250 V320" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+    <path d="M487 428 L497 428" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    
+    <g>
+      <rect x="502" y="335" width="196" height="185" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+      
+      <text x="527" y="385" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">DETECT</text>
+      <text x="527" y="425" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Find and analyze</text>
+<text x="527" y="448" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">possible events</text>
+    </g><path d="M600 250 V320" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+    <path d="M703 428 L713 428" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    
+    <g>
+      <rect x="718" y="335" width="196" height="185" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+      
+      <text x="743" y="385" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">RESPOND</text>
+      <text x="743" y="425" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Contain and manage</text>
+<text x="743" y="448" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">an incident</text>
+    </g><path d="M816 250 V320" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+    <path d="M919 428 L929 428" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    
+    <g>
+      <rect x="934" y="335" width="196" height="185" rx="20" fill="#f0fdf4" stroke="#15803d" stroke-width="3"/>
+      
+      <text x="959" y="385" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">RECOVER</text>
+      <text x="959" y="425" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Restore services</text>
+<text x="959" y="448" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">and improve</text>
+    </g><path d="M1032 250 V320" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 7" marker-end="url(#arrow)"/><path d="M1050 545 Q1050 610 600 610 Q150 610 150 545" fill="none" stroke="#0f766e" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow)"/><text x="600" y="638" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Continuous feedback: lessons from detection, response, and recovery change priorities and safeguards.</text>
+</svg>

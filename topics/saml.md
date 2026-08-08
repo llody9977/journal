@@ -1,51 +1,75 @@
 ---
-title: "SAML 2.0"
-description: The Identity Provider / Service Provider roles, what an assertion actually contains, SP- vs IdP-initiated SSO, and how SAML compares to OAuth/OIDC in practice.
+title: SAML 2.0
+description: Architectural guide to Security Assertion Markup Language (SAML 2.0), XML-DSig assertions, Identity Provider (IdP) vs Service Provider (SP) flows, and OIDC comparison.
 permalink: /topics/saml/
-last_verified: 2026-08-05
+last_verified: 2026-08-06
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocol</span>
 
 # SAML 2.0
 
-<p class="lede">I use SAML 2.0 mainly for federated enterprise sign-on. It carries XML assertions between an Identity Provider and a Service Provider. OAuth solves delegated authorization, while OpenID Connect adds authentication on top of OAuth; the protocols overlap in SSO use cases but are not interchangeable.</p>
+<p class="lede">Security Assertion Markup Language (SAML 2.0) is an OASIS standard for federated enterprise Single Sign-On (SSO). SAML enables Identity Providers (IdP) to transmit XML-encoded authentication assertions and attribute statements to Service Providers (SP) over browser redirects and POST bindings without exposing user passwords.</p>
 
-## The two roles
+## Enterprise Roles: Identity Provider vs Service Provider
 
-- **Identity Provider (IdP)** — "the entity providing the identities, including the ability to authenticate a user," per [Okta's own SAML documentation](https://developer.okta.com/docs/concepts/saml/). This is where the user actually logs in — a corporate directory, Okta, Azure AD/Entra ID, or [AD FS]({{ '/topics/http-auth-schemes/' | relative_url }}#ad-fs--federation) sitting in front of Active Directory.
-- **Service Provider (SP)** — "the entity providing the service, typically in the form of an app." The SP never sees the user's password; it only ever sees what the IdP hands it.
-
-An **assertion** is an XML statement about the subject, authentication event, and optional attributes such as group, role, or email. Web SSO deployments normally protect the response or assertion with a signature; encryption is optional and serves a different confidentiality need. The SP must validate the applicable signature, issuer, audience, recipient or destination, time conditions, response correlation, and replay controls before creating a session.
-
-## SP-initiated vs. IdP-initiated SSO
-
-- **SP-initiated** — the user goes straight to the app first. The SP doesn't know who the user is yet, so it redirects them to the IdP, the IdP authenticates and redirects back with an assertion.
-- **IdP-initiated** — the user starts at the IdP (a corporate SSO portal/dashboard of app tiles), clicks an app, and the IdP sends the assertion to that SP directly, with no prior request from the SP to respond to.
-
-The common Redirect/POST browser profile uses the browser as the front channel. That is not the only SAML binding: Artifact Resolution and several other profiles use direct SOAP exchanges between the SP and IdP. I therefore need to identify the profile and binding before assuming where the assertion travels or which party communicates directly.
-
-## How this compares to OAuth/OIDC
-
-| | SAML 2.0 | OAuth 2.0 / OIDC |
-|---|---|---|
-| Token format | XML assertion, XML-DSig signed | JWT (typically), JWS/JWE |
-| Common browser transport | HTTP Redirect, POST, or Artifact bindings with XML/SOAP where specified | Front-channel redirects plus direct HTTP token calls; JSON is common |
-| What it was built for | Enterprise browser-based SSO | Delegated API authorization (OAuth), with identity added by OIDC |
-| Mobile/native app support | Web SSO profile is browser-oriented | Authorization Code with PKCE is designed for native apps |
-| Machine-to-machine | Not really designed for it | [Client Credentials]({{ '/topics/api-security/' | relative_url }}#oauths-client-credentials-grant-machine-to-machine-oauth) exists specifically for this |
-| Where it still dominates | Enterprise SSO into SaaS (Workday, Salesforce, ServiceNow, internal portals) | Everything web/mobile/API since roughly the mid-2010s |
-
-Neither has fully replaced the other. New consumer-facing and API-first products default to OIDC; a lot of enterprise B2B SSO integrations still speak SAML because that's what the buyer's existing IdP already does, and a vendor selling into large enterprises usually has to support both.
-
-## Common pitfalls
-
-- **Not validating the assertion's signature (or validating against the wrong key)** — an SP that skips signature validation, or that doesn't pin exactly which IdP/certificate it trusts, will accept a forged assertion from anyone who can reach it.
-- **Missing audience/recipient restriction checks** — an assertion issued for one SP should be rejected by a different SP it wasn't intended for; skipping this check opens the door to an assertion being replayed against the wrong service.
-- **Treating IdP-initiated SSO as inherently less secure without cause** — the real risk is skipping `InResponseTo`/replay checks that SP-initiated flows get almost for free, not the IdP-initiated pattern itself.
-- **Assuming SAML is "legacy" and therefore unmaintained** — it's an actively used, current standard for enterprise SSO; the accurate framing is "different use case than OIDC," not "obsolete."
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p>The <strong><a href="https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf">SAML 2.0 Core specification</a></strong> and its companion <a href="https://groups.oasis-open.org/higherlogic/ws/public/document?document_id=27819">Technical Overview</a> are published by OASIS. <a href="https://developer.okta.com/docs/concepts/saml/">Okta's SAML documentation</a> covers the IdP/SP roles and SSO flows in practical terms.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/saml-sp-initiated-flow.svg' | relative_url }}" alt="SAML service-provider-initiated sign-in sequence among the browser, service provider, and identity provider.">
+  <p class="diagram-caption">The browser transports the signed assertion from the identity provider to the service provider</p>
 </div>
+
+1. **Identity Provider (IdP)**: The centralized enterprise directory (*Okta, Entra ID, PingIdentity, Keycloak, AD FS*) that authenticates users and signs SAML assertions using an X.509 private key.
+2. **Service Provider (SP)**: The target SaaS application (*Salesforce, Workday, ServiceNow, AWS Console*) that relies on IdP assertions to create local user sessions.
+
+---
+
+## SP-Initiated vs IdP-Initiated SSO Flows
+
+| Dimension | SP-Initiated SSO | IdP-Initiated SSO |
+|---|---|---|
+| **Entry Point** | User navigates directly to SP URL (*e.g., `app.example.com`*). | User clicks app tile inside IdP Portal (*e.g., `okta.com`*). |
+| **Request Message** | SP generates `SAMLRequest` (AuthnRequest) sent to IdP. | No `AuthnRequest`; IdP directly generates `SAMLResponse`. |
+| **Replay Protection** | SP validates `InResponseTo` attribute matching request ID. | Requires strict timestamp (`NotOnOrAfter`) and assertion ID tracking. |
+| **Security Risk Profile** | **Recommended Flow**: Strongest CSRF and replay protection. | Vulnerable to unsolicited assertion replay if SP validation is weak. |
+
+---
+
+## Anatomy of a SAML 2.0 XML Assertion
+
+A SAML Assertion is an XML payload signed using **XML Digital Signatures (XML-DSig)**:
+
+```xml
+<saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+                 ID="_a1b2c3d4e5" IssueInstant="2026-08-06T12:00:00Z" Version="2.0">
+  <saml2:Issuer>https://idp.enterprise.com/saml</saml2:Issuer>
+  <!-- XML Digital Signature over Assertion -->
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">...</ds:Signature>
+  <saml2:Subject>
+    <saml2:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">
+      alice@enterprise.com
+    </saml2:NameID>
+  </saml2:Subject>
+  <saml2:Conditions NotBefore="2026-08-06T11:59:00Z" NotOnOrAfter="2026-08-06T12:05:00Z">
+    <saml2:AudienceRestriction>
+      <saml2:Audience>https://sp.service.com/saml/metadata</saml2:Audience>
+    </saml2:AudienceRestriction>
+  </saml2:Conditions>
+  <saml2:AttributeStatement>
+    <saml2:Attribute Name="role">
+      <saml2:AttributeValue>SecurityAdmin</saml2:AttributeValue>
+    </saml2:Attribute>
+  </saml2:AttributeStatement>
+</saml2:Assertion>
+```
+
+---
+
+## Technical Comparison: SAML 2.0 vs OpenID Connect (OIDC)
+
+| Dimension | SAML 2.0 | OpenID Connect (OIDC) |
+|---|---|---|
+| **Data Encoding** | XML Assertions (Verbose) | JSON Web Tokens (JWT / JWS) |
+| **Signature Standard** | XML-DSig (Complex canonicalization rules) | JWS (JSON Web Signature - Compact Base64URL) |
+| **Primary Domain** | Enterprise B2B SaaS SSO | Web, Mobile Native, Microservices, Public APIs |
+| **Native Mobile Support** | Complex (Requires embedded browser webviews) | **Native** (OAuth 2.1 Authorization Code + PKCE) |
+| **API Authorization** | Unsuited for API access token delegation | **Standard** (Provides both ID Token and Access Token) |

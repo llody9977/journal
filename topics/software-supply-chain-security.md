@@ -9,7 +9,7 @@ last_verified: 2026-08-05
 
 # Software Supply Chain Security: SBOM, CI/CD & SLSA
 
-<p class="lede">A production artifact normally contains my code, third-party components, and output from a build pipeline. I need to answer two separate questions: what is in this artifact, and what evidence shows how it was built? An inventory answers the first; provenance and pipeline controls help with the second.</p>
+<p class="lede">A production artifact normally contains application code, third-party components, and output from a build pipeline. I need to answer two separate questions: what is in this artifact, and what evidence shows how it was built? An inventory answers the first; provenance and pipeline controls help with the second.</p>
 
 ## SBOM: what's actually in the build
 
@@ -68,8 +68,3 @@ The controls answer different questions. An SBOM can show that XZ 5.6.x is prese
 - **Treating SBOM possession as vulnerability management** — an SBOM tells you what's present; something still has to cross-reference it against current CVE data on an ongoing basis for it to do anything.
 - **Assuming a scanner would have caught xz-utils** — it was hand-planted by a trusted maintainer through the legitimate release process; this is precisely the class of attack dependency scanners and SBOMs are not designed to catch.
 - **Long-lived cloud credentials sitting in CI/CD secret stores** — exactly [CICD-SEC-6](https://owasp.org/www-project-top-10-ci-cd-security-risks/), and exactly what OIDC-federated, short-lived credentials via a cloud STS are built to eliminate.
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p>Executive Order 14028 and <a href="https://www.ntia.gov/report/2021/minimum-elements-software-bill-materials-sbom">NTIA's 2021 Minimum Elements for SBOM</a> establish the original federal baseline. CISA's <a href="https://www.cisa.gov/sites/default/files/2025-08/2025_CISA_SBOM_Minimum_Elements.pdf">2025 update</a> was published as a draft for comment, so I do not present it as final policy. SPDX is ISO/IEC 5962:2021; <a href="https://cyclonedx.org/">CycloneDX</a> is the OWASP-originated alternative. The <a href="https://owasp.org/www-project-top-10-ci-cd-security-risks/">OWASP Top 10 CI/CD Security Risks</a> covers pipeline threats. <a href="https://slsa.dev/spec/v1.2/build-track-basics">SLSA v1.2 Build Track</a> defines the current approved build levels. Andres Freund's <a href="https://www.openwall.com/lists/oss-security/2024/03/29/4">original oss-security disclosure</a> and Red Hat's <a href="https://www.redhat.com/en/blog/urgent-security-alert-fedora-40-and-rawhide-users">distribution advisory</a> describe the XZ conditions and impact.</p>
-</div>

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}CBC bit-flipping result · Field Journal Labs{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('cbc.index') }}">&larr; Start over</a>{% endblock %}
+{% block content %}
+<h1>Integrity broken: the ciphertext was tampered with, and decryption didn't complain</h1>
+
+<div class="result-banner">
+  <p>Position <strong>{{ result.touched_block_label }}</strong>, byte {{ result.touched_offset }}: XORed in delta <code>0x{{ result.delta_hex }}</code>. That single byte turned known character <code>{{ result.old_char }}</code> into <code>{{ result.new_char }}</code> — inside plaintext block {{ result.target_block }} — after the server decrypted the tampered ciphertext with the real key.</p>
+</div>
+
+<h2>What changed on the wire</h2>
+<div class="step">
+  <table>
+    <thead><tr><th></th><th>IV</th><th>Ciphertext</th></tr></thead>
+    <tbody>
+      <tr><td>Before</td><td><code>{{ original_iv_hex }}</code></td><td><code>{{ original_ciphertext_hex }}</code></td></tr>
+      <tr><td>After</td><td><code>{{ new_iv_hex }}</code></td><td><code>{{ new_ciphertext_hex }}</code></td></tr>
+    </tbody>
+  </table>
+  <p class="field-hint">Only the bytes at {{ result.touched_block_label }}, offset {{ result.touched_offset }} differ between the two rows — one byte, XORed, nothing decrypted or guessed.</p>
+</div>
+
+<h2>What the server saw after decrypting</h2>
+<div class="step">
+  <table>
+    <thead><tr><th>Block</th><th>Hex</th><th>Decrypted text</th></tr></thead>
+    <tbody>
+      {% for b in decrypted_blocks %}
+      <tr class="{{ 'is-target' if loop.index0 == target_block_0idx else '' }}">
+        <td>{{ loop.index }}</td>
+        <td><code>{{ b.hex }}</code></td>
+        <td>
+          {% if b.text %}
+            <code>{{ b.text }}</code>
+          {% else %}
+            <span class="field-hint">not valid ASCII — garbled noise</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="callout warn">
+  <span class="callout-title">No error was raised</span>
+  <p>AES-CBC decryption always succeeds on any ciphertext that's a multiple of the block size — there is nothing in the algorithm that can detect this tampering. The application only finds out something is wrong if it later tries to parse <code>isadmin=1</code> and treats it as truth, or if a separate integrity check (a MAC, or AEAD like GCM) is layered on top and rejects the message first.</p>
+</div>
+
+{% if result.touched_block_label == "IV" %}
+<div class="callout">
+  <span class="callout-title">Why block 2 came through untouched</span>
+  <p>This flip modified the IV, not any ciphertext block. Block 1's plaintext is <code>D(C1) XOR IV</code> — so the IV change garbles block 1 exactly as expected. But block 2's plaintext is <code>D(C2) XOR C1</code>, and C1 was never touched. Attacking through the IV affects only the first block, with zero collateral damage anywhere else.</p>
+</div>
+{% else %}
+<div class="callout">
+  <span class="callout-title">The collateral damage is the tell</span>
+  <p>{{ result.touched_block_label }} decrypts to unrecoverable noise — that's the price of controlling the next block. In this token format nothing ever reads block 1 back out, so the damage is invisible to the application. A real design would put something the app actually checks in the sacrificed block, which is exactly what a MAC or GCM tag is for.</p>
+</div>
+{% endif %}
+
+<div class="callout warn">
+  <span class="callout-title">Why this is a real bug class, not just a puzzle</span>
+  <p>MITRE tracks the root cause as <a href="https://cwe.mitre.org/data/definitions/353.html">CWE-353: Missing Support for Integrity Check</a>. Once an application trusts a value recovered this way for an authorization decision, it becomes <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807: Reliance on Untrusted Inputs in a Security Decision</a> — the well-known privilege-escalation shape. The <code>isadmin</code> field used here is deliberately the same one from <a href="https://cryptopals.com/sets/2/challenges/16">Cryptopals Set 2, Challenge 16</a>, a standard teaching exercise for this exact chain — this lab demonstrates the underlying integrity failure, not a ready-to-run exploit against any particular system.</p>
+</div>
+{% endblock %}

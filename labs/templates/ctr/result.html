@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}CTR nonce reuse result · Field Journal Labs{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('ctr.index') }}">&larr; Start over</a>{% endblock %}
+{% block content %}
+<h1>Recovered without ever touching the key</h1>
+
+<div class="result-banner">
+  <p>Guessed message {{ result.target|upper }}'s plaintext at offset {{ result.offset }}: <code>{{ result.crib }}</code>. XORing that guess into <code>XOR(Ca, Cb)</code> at the same offset recovered this slice of message {{ result.other|upper }}:</p>
+  {% if result.recovered_text %}
+    <p class="result-text">{{ result.recovered_text }}</p>
+  {% else %}
+    <p class="field-hint">Not valid printable ASCII — hex: <code>{{ result.recovered_hex }}</code>. That's the signature of a wrong guess: the XOR still runs, it just doesn't cancel out to anything readable.</p>
+  {% endif %}
+</div>
+
+<h2>The mechanics</h2>
+<div class="step">
+  <table>
+    <thead><tr><th></th><th>Value (hex)</th></tr></thead>
+    <tbody>
+      <tr><td>XOR(Ca, Cb)</td><td style="word-break:break-all;"><code>{{ result.xor_c_hex }}</code></td></tr>
+      <tr><td>Recovered slice</td><td><code>{{ result.recovered_hex }}</code></td></tr>
+    </tbody>
+  </table>
+  <p class="field-hint">No decryption happened here — <code>Cipher(...).decryptor()</code> was never called, and the key never appeared in this request at all. The entire recovery is <code>XOR(Ca, Cb) XOR guess</code>.</p>
+</div>
+
+<div class="callout warn">
+  <span class="callout-title">Go back and check it against the plaintext column</span>
+  <p>The previous page showed both real messages in plain sight, labeled as something an attacker wouldn't normally get. Compare the recovered slice above against the corresponding characters of message {{ result.other|upper }} there — a correct guess reproduces them exactly.</p>
+</div>
+
+<div class="callout">
+  <span class="callout-title">Why this happened</span>
+  <p>CTR mode XORs a keystream derived purely from the key and nonce onto the plaintext. Reuse that same key+nonce pair for a second message, and both ciphertexts were XORed with the <em>identical</em> keystream — so XORing the two ciphertexts together cancels the keystream out completely, leaving nothing but <code>XOR(Pa, Pb)</code>. See the <a href="https://llody9977.github.io/journal/topics/symmetric-mode-attacks/#3-ctr-nonce-reuse-exposes-the-plaintext-relationship">CTR section of the Field Journal</a> for the same relationship demonstrated with real AES output, and why "reuse a nonce for one test run" is one of the most common real ways this failure ships to production.</p>
+</div>
+{% endblock %}

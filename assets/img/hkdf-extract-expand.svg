@@ -1,0 +1,54 @@
+<svg viewBox="0 0 1200 385" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">HKDF: extract once, expand by purpose</title>
+  <desc id="description">HKDF converts input key material into independent, context-bound protocol keys.</desc>
+  <rect width="1200" height="385" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">HKDF: extract once, expand by purpose</text>
+  <text x="50" y="88" font-size="16" fill="#475569">HKDF converts input key material into independent, context-bound protocol keys.</text>
+  
+    <g>
+      <rect x="50" y="135" width="233.75" height="205" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">INPUT</text>
+      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Secret + salt</text>
+      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">possibly biased</text>
+<text x="75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">key material</text>
+    </g>
+
+    <g>
+      <rect x="338.75" y="135" width="233.75" height="205" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+      <text x="363.75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">EXTRACT</text>
+      <text x="363.75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">HKDF-Extract</text>
+      <text x="363.75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">creates a strong</text>
+<text x="363.75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">pseudorandom key</text>
+    </g>
+
+    <g>
+      <rect x="627.5" y="135" width="233.75" height="205" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+      <text x="652.5" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">EXPAND</text>
+      <text x="652.5" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">HKDF-Expand</text>
+      <text x="652.5" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">uses an info label</text>
+<text x="652.5" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">for domain separation</text>
+    </g>
+
+    <g>
+      <rect x="916.25" y="135" width="233.75" height="205" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+      <text x="941.25" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">OUTPUT</text>
+      <text x="941.25" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Purpose keys</text>
+      <text x="941.25" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">encryption key</text>
+<text x="941.25" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">MAC key · IV</text>
+    </g>
+    <path d="M291.75 237.5 L330.75 237.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <text x="311.25" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">NORMALIZE</text>
+    <path d="M580.5 237.5 L619.5 237.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <text x="600" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">PRK</text>
+    <path d="M869.25 237.5 L908.25 237.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <text x="888.75" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">DERIVE</text>
+</svg>

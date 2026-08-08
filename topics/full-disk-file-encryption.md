@@ -1,128 +1,77 @@
 ---
-title: Full-Disk & File Encryption
-description: Data at rest vs data in transit, XTS mode, and why disk encryption uses two keys (DEK/KEK) instead of one.
+title: Full-Disk & File-Level Encryption
+description: Data at rest protection architectures, AES-XTS (IEEE 1619), LUKS2 with Argon2id, TPM 2.0 / Secure Enclave binding, envelope key hierarchies (DEK/KEK), and CMEK cloud storage.
 permalink: /topics/full-disk-file-encryption/
-last_verified: 2026-08-05
+last_verified: 2026-08-08
 ---
 
-<span class="eyebrow">Cryptography / Applied</span>
+<span class="eyebrow">Cryptography / Storage Security</span>
 
-# Full-Disk & File Encryption
+# Full-Disk & File-Level Encryption
 
-<p class="lede">For my threat model, full-disk encryption mainly answers one question: if somebody takes the powered-off or locked device, can they read the storage without the unlock secret? It does not protect an already unlocked machine from malware or a logged-in attacker.</p>
+<p class="lede">Data at rest security protects stored information against physical storage theft, unauthorized disk cloning, and cloud infrastructure exfiltration. Architecture decisions span full-disk encryption (FDE) operating at the block-device layer, file-system encryption (FBE/LUKS2) enforcing per-file access boundaries, and database field-level encryption using Key Encryption Key (KEK) envelope hierarchies.</p>
 
-## The threat model: physical access, not network eavesdropping
+## Threat Scope: Data at Rest Protection Boundaries
 
-Full-disk encryption (FDE) exists for a specific scenario: a lost or stolen laptop, a decommissioned hard drive that wasn't wiped, a seized device, a repair shop technician with unsupervised access. None of these involve intercepting network traffic — the attacker already has the bytes. The only question is whether those bytes are usable without the key.
-
-## How full-disk encryption actually works: XTS mode
-
-Disks need independent, rewriteable data units and must avoid leaking equality patterns when sectors are moved or rewritten. Sector-local CBC constructions and counter modes can support random access, so random access alone does not “rule them out”. XTS was designed specifically for storage-device confidentiality and uses the data-unit position as a tweak.
-
-**XTS mode** (XEX-based Tweaked-codebook with Ciphertext Stealing) uses the data-unit number—normally related to the sector—as a tweak. Identical plaintext at different positions encrypts differently while each data unit remains independently accessible.
-
-<div class="callout warn">
-  <span class="callout-title">XTS gives confidentiality, not authentication</span>
-  <p><a href="https://csrc.nist.gov/pubs/sp/800/38/e/final">NIST SP 800-38E</a> states that XTS-AES does not authenticate the data or its source. An attacker able to modify sectors may cause controlled or unpredictable plaintext changes without an authentication failure. A complete storage design may need integrity protection from the filesystem, hardware, or another authenticated layer.</p>
-</div>
-
-## The real problem: where the key actually comes from
-
-The cipher is almost never the hard part of disk encryption — key management is. If the decryption key were just sitting on the disk in the clear, none of this would matter. Real systems solve this with two separate keys, not one:
+Full-disk encryption protects data **only when the host device is powered off or locked**:
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/dek-kek.svg' | relative_url }}" alt="Diagram showing disk data encrypted by a Data Encryption Key (DEK), which is itself wrapped by a Key Encryption Key (KEK). The KEK can be unlocked three ways: a password or PIN via PBKDF2/Argon2, a TPM or Secure Enclave that only releases it if the boot process is untampered, or a recovery key as a backup." >
-  <p class="diagram-caption">Changing an unlock password normally changes its protector/KEK and re-wraps the unchanged volume key; the bulk data is not re-encrypted</p>
+  <img src="{{ '/assets/img/full-disk-encryption-scope.svg' | relative_url }}" alt="Full-disk encryption threat scope diagram showing physical theft protection when powered off vs transparent access when unlocked.">
+  <p class="diagram-caption">FDE Threat Scope: protects against physical disk theft when powered off; OS transparently decrypts blocks while running</p>
 </div>
 
-- **DEK (Data Encryption Key)** — encrypts the bulk data under XTS. It is normally long-lived, so changing an unlock password can rewrap the same DEK without rewriting every sector. Some products can rotate or migrate a volume key through a separate re-encryption operation.
-- **KEK (Key Encryption Key)** — encrypts (*wraps*) the DEK itself. It can be derived from a passphrase or released after hardware policy checks. Changing my password normally re-wraps the unchanged DEK with a new KEK, so the disk contents do not need to be encrypted again.
+1. **Powered-Off State (Protected)**: Storage blocks are encrypted under hardware keys bound to TPM 2.0 / Secure Enclave. Physical removal of the SSD yields unreadable ciphertext.
+2. **Active Booted Session (Transparent)**: Once the OS boots and unlocks the volume key, disk decryption is transparent to all processes. Application-layer vulnerabilities (SQLi, path traversal) bypass FDE completely, requiring file-level or field-level encryption.
 
-The KEK itself can come from a few different sources, often combined:
+## Block Cipher Mode for Disks: AES-XTS (IEEE 1619)
 
-- **Password/PIN** — run through a [password-hardened KDF]({{ '/topics/password-storage/' | relative_url }}) like PBKDF2 or Argon2, exactly as covered on that page.
-- **TPM (Trusted Platform Module) / Secure Enclave** — hardware-backed key protection can release or use key material only when a configured policy is satisfied. A TPM policy may bind release to expected platform measurements; the exact policy and recovery behavior depend on the product configuration.
-- **Recovery key** — a long, randomly-generated backup unlock code (BitLocker's is 48 digits), meant to be stored somewhere separate and safe — an organization's key escrow, a printed copy in a safe — for when the primary unlock method is lost.
+Disk sectors cannot change size when encrypted (a 512-byte plaintext sector must produce a 512-byte ciphertext sector), ruling out AEAD modes like AES-GCM that append 16-byte authentication tags.
 
-## Cloud disk encryption: where CMEK fits
+Standardized in **[IEEE 1619](https://standards.ieee.org/ieee/1619/6966/)** and **[NIST SP 800-38E](https://csrc.nist.gov/pubs/sp/800/38/e/final)**, **AES-XTS** uses two independent 256-bit AES keys (**K_1, K_2**) and a sector tweak value:
 
-Cloud disk encryption uses the same envelope pattern, but the trust boundary is different from my laptop. The cloud storage service encrypts disk I/O with a **symmetric DEK** because it must process large amounts of data efficiently. A **customer-managed encryption key (CMEK)** controls how that DEK is wrapped or made usable. CMEK gives the customer direct policy, audit, rotation, disablement, and deletion controls over the key resource; it does not mean the disk sectors are encrypted directly with that key.
+**C = AES-XTS(K_1, K_2, Sector Number, Plaintext)**
 
-| Cloud disk example | What encrypts the disk data | What the customer-managed key does | Identity that receives access | What this does not mean |
-|---|---|---|---|---|
-| AWS EBS | An AES-256 data key | A **symmetric** KMS key encrypts the data key | Amazon EC2/EBS uses KMS grants and `Decrypt` under the key policy | EBS does not use an RSA key to encrypt every disk block |
-| Google Cloud CMEK-integrated storage | A service-managed symmetric DEK | A **symmetric** Cloud KMS key protects the DEK through server-side envelope encryption | The product's service agent gets `CryptoKey Encrypter/Decrypter` on the key | An application user does not need direct CMEK access just to read an authorized resource |
-| Azure Managed Disks | A symmetric DEK | A Key Vault or Managed HSM **RSA key** wraps and unwraps the DEK | The Disk Encryption Set's managed identity gets `wrapKey`, `unwrapKey`, and `get` access | RSA still does not encrypt the disk data; it protects only the small DEK |
+AES-XTS prevents pattern leakage between identical sectors and ensures that modifying a single ciphertext byte randomizes the entire 512-byte decrypted sector.
 
-The provider implementations are not interchangeable. [AWS documents](https://docs.aws.amazon.com/ebs/latest/userguide/how-ebs-encryption-works.html) an AES-256 data key protected by a symmetric KMS key. [Google documents](https://docs.cloud.google.com/kms/docs/cmek) symmetric server-side envelope encryption for CMEK-integrated services. [Azure documents](https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption) a symmetric DEK wrapped and unwrapped by an RSA customer-managed key through a managed identity.
+## Linux LUKS2 & Argon2id Header Security
 
-The [DEK, KEK, CMEK and rotation animation]({{ '/topics/hsm-kms/' | relative_url }}#visual-walkthrough-how-the-key-layers-and-rotation-fit-together) follows this hierarchy from bulk-data encryption through old-key-version retirement.
+On Linux systems, **LUKS2 (Linux Unified Key Setup v2)** manages disk encryption keys. LUKS2 uses **Argon2id** (RFC 9106) as its default Key Derivation Function to protect volume master keys against offline passphrase cracking when headers are dumped.
 
-### Why I keep seeing symmetric encryption for disks
+## Envelope Key Hierarchy: DEK & KEK
 
-- **Volume:** symmetric ciphers are designed for high-throughput bulk data. Public-key encryption has small payload limits and higher computational cost.
-- **Access pattern:** disk encryption must process sectors repeatedly with low latency. XTS-AES was designed for storage confidentiality and random access.
-- **Key hierarchy:** asymmetric cryptography can still appear at the small-key layer, as Azure's RSA wrapping shows, without touching every disk block.
-- **Different objective:** signatures and certificates authenticate identities or changes; they do not make disk contents confidential.
+To encrypt millions of database fields or S3 objects efficiently, systems implement **Envelope Encryption**:
 
-I use asymmetric encryption when a sender cannot be given a shared secret or KMS credential but can obtain my public key—for example, an external party encrypting a small DEK that only my KMS-held private key can recover. I then use that DEK with symmetric authenticated encryption for the file. I do not encrypt a disk, database, or large file directly with RSA.
-
-### Keep custody; grant the service permission to use the CMEK
-
-“Share the CMEK with the vendor” is dangerously ambiguous. My preferred managed-service pattern is:
-
-1. I create and own the key in my KMS account, project, vault, or external key manager.
-2. The vendor or cloud service provides a dedicated service identity.
-3. I grant that identity only the required operations on the specific key, such as wrap/unwrap or encrypt/decrypt. I do not send raw key bytes, a key-export file, or administrator credentials.
-4. I retain lifecycle control, monitor use, and test both revocation and recovery before production.
-
-This keeps the key resource under my control and avoids giving the vendor another raw-key copy. Physical custody still depends on whether the key is software-backed, HSM-backed, or held in an external key manager. It also does not make the vendor powerless: an identity allowed to unwrap a DEK can use that authority within its permitted workflow. The control comes from a narrow, revocable, auditable permission boundary. If a product requires me to upload key material, I should classify it accurately as imported-key or bring-your-own-key custody, not the same model as a customer-held key with delegated use. [HSM & KMS]({{ '/topics/hsm-kms/' | relative_url }}#giving-a-vendor-access-without-giving-away-key-custody) keeps the fuller decision checklist.
-
-## Common implementations
-
-| System | Platform | Typical backing |
-|---|---|---|
-| BitLocker | Windows | AES-XTS, usually TPM-backed with a PIN option |
-| FileVault | macOS | AES-XTS; hardware-backed key handling differs between Intel Macs, T2 Macs, and Apple silicon |
-| LUKS / dm-crypt | Linux | AES-XTS, passphrase, keyfile, or TPM-backed unlock |
-
-## File-level vs. disk-level encryption
-
-Full-disk encryption only protects data **while the device is off or locked**. The moment it's unlocked and running, every file is available in plaintext to any process with permission to read it — FDE says nothing about malware, a logged-in attacker, or a compromised running application. That's a different problem, solved by **file-level or application-level encryption** (an encrypted archive, a GPG- or `age`-encrypted file, application-level field encryption in a database) — protecting specific data even while the surrounding system is fully powered on and logged in.
-
-## Practical demo: creating a real encrypted volume
-
-```
-$ hdiutil create -size 10m -fs APFS -encryption AES-256 \
-    -stdinpass -volname DemoVolume encrypted_demo.dmg
-Password:
-created: /private/tmp/encrypted_demo.dmg
-
-$ hdiutil imageinfo encrypted_demo.dmg -stdinpass
-Password:
-Format: UDRW
-	Encrypted: true
-```
-
-`hdiutil imageinfo` fields vary by macOS release. The command above was rechecked on 26 July 2026; `Encrypted: true` is the stable field I rely on, rather than expecting an old `Class Name` line.
-
-That's a genuinely encrypted, mountable volume — the same primitive concept as BitLocker/FileVault/LUKS, just created directly via macOS's disk image tooling rather than the OS's built-in whole-disk flow.
-
-## Real-world case: the VA laptop theft (2006)
-
-In May 2006, a data analyst at the US Department of Veterans Affairs took home a laptop and an external hard drive holding unencrypted personal data — names, dates of birth, and Social Security numbers — for an estimated 26.5 million veterans and active-duty personnel. Both were stolen in a burglary at his home. They were recovered intact three weeks later, and an FBI forensic examination found no evidence the data had actually been accessed — but that outcome was luck, not a property of any encryption, because there wasn't any on the device at all.
-
-The control failure was clear: sensitive data could leave a secured facility on portable storage without encryption. Full-disk encryption would not have prevented the theft, but it could have made the stored records unreadable without the unlock material. The broader lesson is to combine encryption with data minimization, device management, access controls, inventory, and a tested recovery process rather than rely on one control after a loss.
-
-## Common pitfalls
-
-- **Confusing sleep with shutdown** — decryption keys often remain resident in RAM during sleep, and some cold-boot attacks can extract keys from recently-powered-down RAM. Full shutdown clears this risk more reliably.
-- **Assuming FDE protects a running, unlocked system** — see the file-vs-disk distinction above; it doesn't, by design.
-- **Losing the recovery key** — the backup unlock method is only useful if it was actually saved somewhere durable before it's needed.
-- **Assuming “TPM 2.0” automatically prevents bus sniffing** — discrete TPM traffic can still be exposed if the platform and unlock design do not protect the relevant exchange. A pre-boot PIN, parameter/session encryption where supported, and integrated SoC security can reduce this risk; the TPM version number alone is not proof.
-- **Sending raw CMEK material to a vendor** — for a managed integration, I should normally grant a dedicated service identity the minimum key operations instead. Exporting or uploading the key changes the custody model and creates another copy to govern, rotate, revoke, and destroy.
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/sp/800/38/e/final">NIST SP 800-38E</a></strong> defines XTS-AES for storage confidentiality and explicitly notes the lack of authentication. Storage encryption is specified by NIST and IEEE rather than one general-purpose RFC. Provider-specific CMEK behavior is documented by <a href="https://docs.aws.amazon.com/ebs/latest/userguide/how-ebs-encryption-works.html">AWS EBS</a>, <a href="https://docs.cloud.google.com/kms/docs/cmek">Google Cloud KMS</a>, and <a href="https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption">Azure Managed Disks</a>. Hardware cryptographic-module claims can be checked against <strong><a href="https://csrc.nist.gov/pubs/fips/140-3/final">FIPS 140-3</a></strong> and the NIST CMVP database.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/dek-kek.svg' | relative_url }}" alt="Envelope encryption architecture showing KMS KEK wrapping data encryption key DEK.">
+  <p class="diagram-caption">Envelope encryption: Key Encryption Key (KEK) in KMS wraps per-object Data Encryption Keys (DEKs)</p>
 </div>
+
+1. **Data Encryption Key (DEK)**: A single-use 256-bit AES key generated by a CSPRNG encrypts the actual file or database payload.
+2. **Key Encryption Key (KEK)**: A long-lived master key managed inside an HSM or Cloud KMS wraps (encrypts) the DEK using AES Key Wrap ([RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)).
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Hierarchy &amp; Rotation Mechanics</div>
+  <div>
+    <strong>CMEK, DEK, KEK &amp; Key Rotation Under the Hood</strong>
+    <p>To secure massive data stores efficiently, envelope encryption divides responsibilities between local fast data keys and centralized master key custody:</p>
+    <ul>
+      <li><strong>Data Encryption Key (DEK)</strong>: A 256-bit AES symmetric key generated in memory. It encrypts the raw file or database payload. The plaintext DEK is <strong>never written to disk</strong>; it encrypts the file, gets wrapped by the KEK into an <strong>Encrypted DEK (EDEK)</strong>, and the EDEK is stored alongside the payload file.</li>
+      <li><strong>Key Encryption Key (KEK) / CMEK</strong>: A master key stored inside a Hardware Security Module (HSM) or Cloud KMS (e.g. AWS KMS, GCP KMS). A <strong>Customer-Managed Encryption Key (CMEK)</strong> is a KEK where the customer controls access policies, rotation schedules, and revocation. The KEK <strong>never leaves the HSM</strong>; it is used solely to wrap and unwrap small 32-byte DEKs.</li>
+    </ul>
+    <strong>What Key Is Actually Being Rotated?</strong>
+    <p>When key rotation is triggered (e.g. annually), <strong>only the Master KEK/CMEK in KMS is rotated—NOT the bulk data or DEKs!</strong></p>
+    <ul>
+      <li><strong>Version Creation</strong>: KMS generates <code>KEK_v2</code> and marks it active for <em>new</em> encryptions. <code>KEK_v1</code> is retained inside KMS as <em>decrypt-only</em>.</li>
+      <li><strong>Older Data Decryption</strong>: When reading older data, the application sends <code>EDEK_v1</code> to KMS. KMS inspects the key version header, uses <code>KEK_v1</code> to unwrap the DEK, and returns the plaintext DEK to RAM. <strong>No bulk data re-encryption is required!</strong></li>
+      <li><strong>Re-wrapping EDEKs (Optional)</strong>: If security compliance mandates eliminating dependencies on <code>KEK_v1</code>, KMS performs a <em>ReEncrypt</em> operation: unwrapping the 32-byte <code>EDEK_v1</code> and wrapping the same 32-byte DEK under <code>KEK_v2</code>. The multi-terabyte data payload remains completely untouched on disk.</li>
+    </ul>
+  </div>
+</div>
+
+## Cloud Disk Encryption: Customer-Managed Encryption Keys (CMEK)
+
+| Cloud Provider | Managed Service | Customer Key Control (CMEK) | HSM Backing Standard |
+|---|---|---|---|
+| **Amazon Web Services (AWS)** | AWS KMS / EBS Encryption | AWS KMS Customer Managed Keys (CMK) | FIPS 140-3 Level 3 HSM hardware module backing. |
+| **Google Cloud (GCP)** | Cloud KMS / Persistent Disk | Customer-Managed Encryption Keys (CMEK) | Cloud HSM with dual-region key replication. |
+| **Microsoft Azure** | Azure Key Vault / Disk Encryption | Customer-Managed Keys (CMK) | Managed HSM providing dedicated FIPS 140-3 Level 3 hardware. |

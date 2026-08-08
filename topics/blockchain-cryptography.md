@@ -1,49 +1,54 @@
 ---
-title: Blockchain Cryptography
-description: Hash chains, Merkle trees, and transaction signing — the cryptography actually underneath a blockchain, without the hype.
+title: Blockchain & Distributed Ledger Cryptography
+description: Cryptographic primitives in distributed ledgers, hash-linked block headers, Merkle trees, secp256k1 ECDSA, Schnorr signatures (BIP 340), BLS aggregation, and Zero-Knowledge Proofs (zk-SNARKs).
 permalink: /topics/blockchain-cryptography/
-last_verified: 2026-08-05
+last_verified: 2026-08-08
 ---
 
-<span class="eyebrow">Cryptography / Applied</span>
+<span class="eyebrow">Cryptography / Distributed Systems</span>
 
-# Blockchain Cryptography
+# Blockchain & Distributed Ledger Cryptography
 
-<p class="lede">For my notes, hashes, signatures, and Merkle trees explain how a blockchain commits to data and authorizes transactions. They do not make mutually distrusting nodes agree by themselves. Consensus rules, network assumptions, incentives, and the fork-choice mechanism are essential to deciding which history is accepted.</p>
+<p class="lede">Distributed ledgers eliminate central trust authorities by combining cryptographic primitives into immutability and authorization engines. Blockchains coordinate hash-linked data chains, Merkle-tree transaction inclusion proofs, public-key digital signatures (secp256k1 / Ed25519), BLS signature aggregation, and Zero-Knowledge Proofs (ZK-SNARKs) to enforce consensus across untrusted P2P nodes.</p>
 
-## The chain part: linking blocks by hash
+## Cryptographic Layering in Blockchains
 
-Each block contains a commitment to an earlier block, commonly the previous block header's hash. Changing old data changes that commitment and makes the later history inconsistent. An attacker would need to produce an alternative history that satisfies the network's consensus and finality rules and then get it accepted. The required work and probability differ sharply between proof-of-work, proof-of-stake, permissioned, and other designs; the hash link alone does not make rewriting history economically impossible.
-
-## The transactions part: Merkle trees
-
-Each block needs to commit to potentially thousands of transactions without storing all of them directly in the header that gets hashed. A **Merkle tree** solves this by hashing transactions in pairs, repeatedly, up to a single root hash:
+Distributed ledgers compose cryptographic primitives across four architectural layers:
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/merkle-tree.svg' | relative_url }}" alt="Diagram of a Merkle tree: four transactions are each hashed, the resulting hashes are combined and hashed in pairs, and those results are combined into a single Merkle Root stored in the block header. Changing any one transaction changes its hash, which changes every hash above it up to the root." >
-  <p class="diagram-caption">One root hash commits to every transaction beneath it, without storing them all in the header</p>
+  <img src="{{ '/assets/img/blockchain-cryptography-layers.svg' | relative_url }}" alt="Blockchain cryptography layers: Hash chains, Merkle trees, digital signatures, and zero-knowledge proofs.">
+  <p class="diagram-caption">Blockchain Cryptography Layering: hash chains enforce immutability; Merkle trees enable light client proofs; signatures authorize state transitions</p>
 </div>
 
-This gives two useful properties: the block header only needs to store one small, fixed-size hash no matter how many transactions are in the block, and it's possible to prove a specific transaction is included in a block by revealing only the handful of sibling hashes along its path to the root (a "Merkle proof") — without needing every other transaction in the block at all.
+## 1. Hash-Linked Chains: Immutability Enforcers
 
-## The ownership part: signing transactions
+Blocks are linked together sequentially by embedding the 256-bit cryptographic hash digest of block **n-1** into the header of block **n**:
 
-A transaction is valid only when it satisfies that blockchain's authorization rules. In a simple externally owned account, this normally includes a signature from the required private key. Bitcoin address types and Ethereum externally owned accounts derive identifiers through different transformations of public keys or scripts; they are not X.509 identities and no certificate authority assigns them. Smart-contract wallets, multisignature scripts, and account-abstraction designs can impose more complex authorization rules.
+<b>Block_Header<sub>n</sub> = H(Block_Header<sub>n-1</sub> ∥ Merkle_Root<sub>n</sub> ∥ Timestamp ∥ Nonce)</b>
 
-Bitcoin's legacy transaction signatures and Ethereum accounts use **ECDSA over secp256k1** today; Bitcoin Taproot adds Schnorr signatures over the same curve. Other chains use Ed25519 and other schemes. This makes the [nonce-reuse trap]({{ '/topics/digital-signatures/' | relative_url }}#where-real-signature-schemes-go-wrong-the-nonce-trap) operationally relevant: bad signing randomness has caused real cryptocurrency key recovery and theft.
+Altering a single transaction in block **n-10** alters <b>Block_Header<sub>n-10</sub></b>, invalidating the hash pointer stored in block **n-9** and breaking the hash chain up to the current tip.
 
-## What's deliberately left out here
+## 2. Merkle Trees & Light Client Proofs (SPV)
 
-Consensus mechanisms, network/finality assumptions, token economics, and smart-contract execution are outside this page's scope, but not optional parts of a blockchain. This page covers only the cryptographic building blocks.
+To verify that transaction <b>T<sub>x</sub></b> is included in a block containing <b>N</b> transactions, a client requires only <b>log<sub>2</sub>(N)</b> sibling hashes (a **Merkle Audit Path**) rather than downloading the full block data:
 
-## Common pitfalls
+<b>Proof Complexity = O(log<sub>2</sub> N) vs Full Block Download = O(N)</b>
 
-- **Weak randomness during signing** — see the nonce-reuse note above; this has caused real, irreversible fund losses.
-- **Address reuse** — reusing the same address repeatedly links transactions together publicly (blockchains are typically fully public ledgers), a privacy leak distinct from any cryptographic weakness.
-- **Confusing "hard to tamper with" with "anonymous"** — signatures and hashes provide integrity and authenticity, not anonymity; public blockchains are pseudonymous at best, and addresses are often de-anonymizable through transaction pattern analysis.
-- **Losing the private key** — a single-key self-custody account may become unrecoverable if its only key is lost. Custodial, multisignature, social-recovery, and smart-contract designs can provide different recovery paths, each with its own trust tradeoffs.
+Light clients (SPV nodes) download 80-byte block headers and verify transaction inclusion using Merkle inclusion proofs.
 
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p>The original <a href="https://bitcoin.org/bitcoin.pdf"><strong>Bitcoin whitepaper</strong></a> describes the hash chain, Merkle tree, proof-of-work, and network consensus. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> specifies ECDSA, but Bitcoin and Ethereum use the <code>secp256k1</code> curve from <a href="https://www.secg.org/sec2-v2.pdf">SEC 2</a>, not a NIST-recommended curve in SP 800-186.</p>
-</div>
+## 3. Transaction Authorization & Signature Schemes
+
+| Blockchain Network | Signature Scheme | Elliptic Curve / Primitive | Primary Engineering Characteristics |
+|---|---|---|---|
+| **Bitcoin (Legacy)** | **ECDSA** | `secp256k1` | Requires DER encoding; strict deterministic nonce safety (**[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)**). |
+| **Bitcoin (Taproot / BIP 340)** | **Schnorr Signatures** | `secp256k1` | Linearly additive; enables signature aggregation and Taproot MAST privacy ([BIP 340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)). |
+| **Ethereum (Consensus Layer)** | **BLS Signatures** | `BLS12-381` | Supports aggregation of thousands of validator signatures into 1 signature. |
+| **Ethereum (EVM Execution)** | **ECDSA** | `secp256k1` | Recovers public key from signature via recovery parameter `v in {27, 28}`. |
+| **Solana &amp; Polkadot** | **Ed25519** | `Curve25519` | High-throughput signature verification with deterministic nonces. |
+
+## 4. Advanced Cryptography: Zero-Knowledge Proofs (zk-SNARKs / STARKs)
+
+Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowledge Proofs**:
+
+1. **zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge)**: Enables a prover to demonstrate to a verifier that a computational statement is true (*e.g., "I know a private key that owns this UTXO and has sufficient balance"*) without revealing any private inputs.
+2. **zk-STARKs (Zero-Knowledge Scalable Transparent Arguments of Knowledge)**: Quantum-resistant zero-knowledge proofs relying purely on hash functions without requiring a trusted setup ceremony.

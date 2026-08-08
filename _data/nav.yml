@@ -26,6 +26,41 @@
         - title: 1.7 Security Controls & Defense in Depth
           url: /topics/security-controls-defense-in-depth/
     - title: 2. Cryptography
+      children:
+        - title: 2.1 What Is Cryptography?
+          url: /topics/cryptography-overview/
+        - title: 2.2 Symmetric Cryptography
+          url: /topics/symmetric-cryptography/
+        - title: "2.3 Symmetric Mode Attacks: ECB, CBC & CTR"
+          url: /topics/symmetric-mode-attacks/
+        - title: 2.4 Asymmetric Cryptography
+          url: /topics/asymmetric-cryptography/
+        - title: 2.5 Symmetric vs Asymmetric Cryptography
+          url: /topics/symmetric-vs-asymmetric/
+        - title: 2.6 Post-Quantum Cryptography (PQC)
+          url: /topics/post-quantum-cryptography/
+        - title: 2.7 Hash Functions & MACs
+          url: /topics/hash-functions-macs/
+        - title: 2.8 Hash Collisions & Length Extension
+          url: /topics/hash-collisions-length-extension/
+        - title: 2.9 Key Exchange & Key Derivation
+          url: /topics/key-exchange-derivation/
+        - title: 2.10 Digital Signatures
+          url: /topics/digital-signatures/
+        - title: 2.11 Recommended Algorithms & Regional Standards
+          url: /topics/recommended-algorithms/
+        - title: 2.12 Certificate Authorities & Certificates
+          url: /topics/certificates/
+        - title: 2.13 TLS Handshake
+          url: /topics/tls-ssl-handshake/
+        - title: 2.14 Certificate Transparency
+          url: /topics/certificate-transparency/
+        - title: 2.15 Password Storage
+          url: /topics/password-storage/
+        - title: 2.16 Full-Disk & File Encryption
+          url: /topics/full-disk-file-encryption/
+        - title: 2.17 Blockchain Cryptography
+          url: /topics/blockchain-cryptography/
     - title: 3. Key Management
     - title: 4. Authentication & Authorization
     - title: 5. Network Security

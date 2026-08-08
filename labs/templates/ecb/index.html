@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}ECB codebook attack · Field Journal Labs{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('index') }}">&larr; All labs</a>{% endblock %}
+{% block content %}
+<h1>The ECB codebook attack</h1>
+<p class="lede">AES-128-ECB encrypts every 16-byte plaintext block independently — the same block, the same key, always produces the same ciphertext block. That determinism is the entire flaw: if you can get a reference encryption of every possible block under someone's key, you can read their ciphertext back off the reference, without ever touching the key itself.</p>
+
+<div class="callout warn">
+  <span class="callout-title">Scope of this demo</span>
+  <p>Only printable ASCII is supported (space through <code>~</code>, 95 characters) — the codebook needs one reference block per possible character, and that only stays practical for a small alphabet. Use a throwaway random key generated below, never a real key or real secret.</p>
+</div>
+
+<h2><span class="step-number">1</span>Get a key</h2>
+<div class="step">
+  <p>AES-128 needs a 16-byte (32 hex character) key. Generate a random one, or paste your own.</p>
+  <div class="key-row">
+    <div class="field">
+      <label for="key-hex">Key (hex)</label>
+      <input type="text" id="key-hex" maxlength="32" placeholder="32 hex characters" autocomplete="off">
+    </div>
+    <button type="button" class="secondary" id="gen-key-btn">Generate random key</button>
+  </div>
+  <p class="field-hint">This never leaves your browser except when you explicitly ask the server to encrypt something with it (Step 2b / 3b below). For Step 2a / 3a, it's only used locally, in the <code>openssl</code> command you run yourself.</p>
+</div>
+
+<h2><span class="step-number">2</span>Build the reference codebook</h2>
+<div class="step">
+  <p>The codebook is one 16-byte block per printable ASCII character, that character repeated 16 times — encrypted once, under your key. It's the "answer key" the attack looks things up in.</p>
+  <div class="charset-box">{{ charset }}</div>
+
+  <div class="tabs">
+    <button type="button" class="tab-btn is-active" data-tab="codebook-local">Do it locally</button>
+    <button type="button" class="tab-btn" data-tab="codebook-web">Do it here</button>
+  </div>
+
+  <div class="tab-panel is-active" data-panel="codebook-local">
+    <p>1. Download the reference plaintext (public, deterministic — no secret in it):</p>
+    <p><a class="btn secondary" href="{{ url_for('static', filename='downloads/ref-plain.bin') }}" download>Download ref-plain.bin</a></p>
+    <p>2. Encrypt it with your key from Step 1:</p>
+    <pre><code class="cmd" data-template="openssl enc -aes-128-ecb -K {KEY} -nopad -in ref-plain.bin -out ref-cipher.bin">openssl enc -aes-128-ecb -K &lt;your key&gt; -nopad -in ref-plain.bin -out ref-cipher.bin</code></pre>
+    <p class="field-hint">You'll upload the resulting <code>ref-cipher.bin</code> in Step 4.</p>
+  </div>
+
+  <div class="tab-panel" data-panel="codebook-web">
+    <p>The server builds the same reference plaintext, encrypts it with the key above, and hands back <code>ref-cipher.bin</code> for you to download — nothing is kept afterward.</p>
+    <form method="post" action="{{ url_for('ecb.build_codebook') }}">
+      <input type="hidden" name="key_hex" class="key-mirror">
+      <button type="submit">Build codebook now</button>
+    </form>
+  </div>
+</div>
+
+<h2><span class="step-number">3</span>Encrypt a secret with the same key</h2>
+<div class="step">
+  <p>Pick a message. It gets encoded the same way as the codebook (one repeated-character block per character) so its ciphertext blocks are directly comparable — that's what makes the lookup in Step 4 a plain byte match instead of real cryptanalysis.</p>
+  <div class="field">
+    <label for="secret-text">Secret text (ASCII only)</label>
+    <textarea id="secret-text" rows="2" maxlength="500" placeholder="e.g. Transfer $500 to Alice"></textarea>
+  </div>
+
+  <div class="tabs">
+    <button type="button" class="tab-btn is-active" data-tab="secret-local">Do it locally</button>
+    <button type="button" class="tab-btn" data-tab="secret-web">Do it here</button>
+  </div>
+
+  <div class="tab-panel is-active" data-panel="secret-local">
+    <p>1. Build the encoded plaintext (this Python one-liner applies the same one-block-per-character encoding):</p>
+    <pre><code class="cmd" data-template="python3 -c &quot;import sys; text = '{SECRET}'; sys.stdout.buffer.write(b''.join(c.encode()*16 for c in text))&quot; > secret-plain.bin">python3 -c "import sys; text = '&lt;your secret&gt;'; sys.stdout.buffer.write(b''.join(c.encode()*16 for c in text))" > secret-plain.bin</code></pre>
+    <p>2. Encrypt it with the same key as the codebook:</p>
+    <pre><code class="cmd" data-template="openssl enc -aes-128-ecb -K {KEY} -nopad -in secret-plain.bin -out secret.bin">openssl enc -aes-128-ecb -K &lt;your key&gt; -nopad -in secret-plain.bin -out secret.bin</code></pre>
+  </div>
+
+  <div class="tab-panel" data-panel="secret-web">
+    <p>The server encodes your text and encrypts it with the key above, and hands back <code>secret.bin</code> — nothing is kept afterward.</p>
+    <form method="post" action="{{ url_for('ecb.build_secret') }}">
+      <input type="hidden" name="key_hex" class="key-mirror">
+      <input type="hidden" name="secret_text" class="secret-mirror">
+      <button type="submit">Encrypt secret now</button>
+    </form>
+  </div>
+</div>
+
+<h2><span class="step-number">4</span>Deduce the plaintext — the actual attack</h2>
+<div class="step">
+  <p>This is the part that never sees a key. Upload only the two ciphertexts — <code>ref-cipher.bin</code> and <code>secret.bin</code> — and the lookup does the rest.</p>
+  <form method="post" action="{{ url_for('ecb.deduce') }}" enctype="multipart/form-data">
+    <div class="field">
+      <label for="ref_cipher">Reference codebook ciphertext</label>
+      <input type="file" id="ref_cipher" name="ref_cipher" required>
+    </div>
+    <div class="field">
+      <label for="secret_cipher">Secret ciphertext</label>
+      <input type="file" id="secret_cipher" name="secret_cipher" required>
+    </div>
+    <button type="submit">Deduce the plaintext</button>
+  </form>
+</div>
+
+<div class="callout">
+  <span class="callout-title">What this doesn't cover</span>
+  <p>Real secrets aren't encoded as one repeated character per block — that structure exists here purely so the block match is visible with nothing more than <code>xxd</code>. The underlying flaw generalizes directly to the classic byte-at-a-time chosen-prefix ECB attack, which recovers unknown plaintext without needing it pre-structured this way. See the <a href="https://llody9977.github.io/journal/topics/symmetric-mode-attacks/">Symmetric Mode Attacks</a> page in the journal for the pattern-leak version of this same flaw.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ecb.js') }}"></script>
+{% endblock %}

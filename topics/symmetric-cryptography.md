@@ -1,227 +1,110 @@
 ---
 title: Symmetric Cryptography
-description: AES, block vs stream ciphers, modes of operation, authenticated encryption, and the key-distribution problem it doesn't solve.
+description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), Grover's quantum search, and Node.js envelope encryption.
 permalink: /topics/symmetric-cryptography/
-last_verified: 2026-08-05
+last_verified: 2026-08-08
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # Symmetric Cryptography
 
-<p class="lede">My working model is simple: both sides share one secret key, and that key handles the bulk encryption. Most of the surrounding protocol work is about establishing, authenticating, deriving, storing, and rotating that key safely.</p>
+<p class="lede">In symmetric cryptography, both communicating parties share an identical secret key used for both encryption and decryption. Symmetric ciphers provide high-throughput bulk encryption, but rely on external mechanisms (such as asymmetric key exchange or Key Management Services) to solve the initial key-distribution problem.</p>
 
-## The core idea: one key, both directions
+## Core Principles: One Key, Both Directions
 
-The <a href="{{ '/topics/cryptography-overview/' | relative_url }}">What Is Cryptography?</a> page uses a locked-briefcase example: Alice and the bank manager know the same combination. That shared combination is the symmetric key—the same secret protects and recovers the message.
-
-<div class="diagram-frame">
-  <video class="diagram-video" controls autoplay muted loop playsinline preload="metadata" poster="{{ '/assets/video/symmetric-flow-poster.png' | relative_url }}?v=3" aria-label="A slow, worked AES-256-GCM implementation. A 256-bit key is shared out-of-band. The sender encrypts the plaintext Meet me at 7 AM using the shared key, a 96-bit nonce and authenticated metadata, producing an exact ciphertext and 128-bit authentication tag. The receiver recomputes and verifies the tag before revealing the plaintext. A final example changes one ciphertext bit and shows authentication failing.">
-    <source src="{{ '/assets/video/symmetric-flow.webm' | relative_url }}?v=3" type="video/webm">
-    <source src="{{ '/assets/video/symmetric-flow.mp4' | relative_url }}?v=3" type="video/mp4">
-    <img src="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" alt="Diagram showing symmetric encryption: a sender encrypts plaintext into ciphertext using key K, and a receiver decrypts that ciphertext back into plaintext using the same key K.">
-  </video>
-  <p class="diagram-caption">Worked AES-256-GCM example: out-of-band key sharing, encryption, tag verification and tamper rejection</p>
-</div>
-
-For this animation I use a fixed key and nonce so I can show the exact reproducible ciphertext and tag. I must not copy that into a real system: production keys need a CSPRNG, and a GCM nonce must not repeat under the same key. The important authentication point is that the receiver accepts the plaintext only after the tag verifies. Because both sides know K, that proves the packet came from **a holder of K** and was not altered; it does not prove which holder sent it.
-
-That single property is both the appeal and the limitation of symmetric crypto:
-
-- **Suitable for bulk data** — symmetric operations are normally much cheaper than public-key operations and may be accelerated directly by the CPU. The exact difference depends on the algorithms, operation, implementation, and hardware.
-- **Unsolved by itself** — both parties need the *same* key before any of this works, and the key has to arrive through some channel. If that channel is not already protected, I still have a key-distribution problem. [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }}) and [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}) cover the usual solution.
-- **No per-party attribution from the shared key** — because both sides hold the identical key, either one could have produced a given ciphertext or MAC. See [Symmetric vs Asymmetric Cryptography]({{ '/topics/symmetric-vs-asymmetric/' | relative_url }}#attribution-what-asymmetric-signatures-make-possible) for what a signature changes and what it still cannot prove alone.
-
-## Block ciphers vs. stream ciphers
-
-Symmetric algorithms come in two shapes, depending on how they chew through data:
-
-| | Block ciphers | Stream ciphers |
-|---|---|---|
-| Unit of operation | Fixed-size blocks (e.g. 128 bits) | One bit/byte at a time, continuously |
-| How it works | Same fixed transformation applied per block | Generates a pseudorandom keystream, XORed with data |
-| Examples | AES, (legacy) 3DES | ChaCha20, (legacy) RC4 |
-| Needs padding? | Depends on the mode; CBC does, while CTR and GCM do not | No |
-| Typical use today | AES with an authenticated mode such as GCM | ChaCha20-Poly1305 where it is supported or performs better |
-
-In practice I choose a reviewed AEAD construction, not a bare cipher category. AES-GCM and ChaCha20-Poly1305 are widely standardized choices. CTR and the encryption part of GCM use a block cipher to generate a keystream, which is why nonce reuse is so damaging.
-
-## Inside AES, briefly
-
-**AES (Advanced Encryption Standard)**, standardized in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)**, is a block cipher operating on 128-bit blocks, with three key size options:
-
-| Key size | Rounds | Notes |
-|---|---|---|
-| AES-128 | 10 | Still considered secure; smallest/fastest option |
-| AES-192 | 12 | Rarely used in practice — AES-128 or AES-256 dominate |
-| AES-256 | 14 | Larger classical key margin and the normal symmetric choice when planning for quantum search |
-
-Each round runs the same four transformations over the block: **SubBytes** (a fixed substitution table, providing non-linearity), **ShiftRows** (permutes bytes across rows), **MixColumns** (linearly mixes each column), and **AddRoundKey** (XORs in that round's derived key). None of this needs to be memorized to use AES correctly — but it explains why AES is a fixed, public, heavily-scrutinized algorithm: its safety comes entirely from the *key*, not from anyone not knowing how SubBytes works.
-
-## Modes of operation: why AES alone isn't enough
-
-AES only defines how to scramble *one 128-bit block*. Real messages are longer than one block, so a **mode of operation** defines how to chain many blocks together — and getting this wrong is one of the most common real-world cryptography mistakes.
-
-| Mode | How it works | Status |
-|---|---|---|
-| **ECB** (Electronic Codebook) | Each block encrypted independently, no chaining | **Insecure — don't use.** Identical plaintext blocks always produce identical ciphertext blocks |
-| **CBC** (Cipher Block Chaining) | Each block is XORed with the previous ciphertext block before encrypting; needs an unpredictable IV | Legacy compatibility only; it has no built-in integrity and needs a correctly ordered MAC |
-| **CTR** (Counter) | Encrypts counter blocks to build a keystream, then XORs it with data | No built-in integrity; the counter block must not repeat under the same key |
-| **GCM** (Galois/Counter Mode) | Counter-mode encryption plus an authentication tag | Widely standardized AEAD; safe use depends on key and nonce management |
-
-The reason ECB is singled out as broken, visually:
+Symmetric encryption transforms readable plaintext into unreadable ciphertext using a secret key **K**. The identical key **K** is required to decrypt the ciphertext back into plaintext.
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/ecb-pattern-leak.svg' | relative_url }}" alt="Three grids showing the same cross-shaped pattern: the plaintext grid, an ECB-encrypted version where the cross shape is still clearly visible because identical blocks encrypt identically, and a CTR/GCM-encrypted version that looks like random noise with no visible pattern.">
-  <p class="diagram-caption">Same key, same algorithm — the mode alone is the difference between "broken" and "fine"</p>
+  <img src="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" alt="Diagram showing symmetric encryption: sender encrypts plaintext into ciphertext using secret key K, receiver decrypts back into plaintext using secret key K.">
+  <p class="diagram-caption">AES-256-GCM authenticated encryption workflow: CSPRNG key generation, AEAD tag generation, and tamper rejection</p>
 </div>
 
-ECB doesn't fail because AES is weak — it fails because encrypting the same input always gives the same output, so any structure or repetition in the original data (like large blocks of the same color, or repeated headers) survives straight through into the ciphertext.
+### Advantages & Limitations
 
-<div class="callout">
-  <span class="callout-title">See it work</span>
-  <p><a href="{{ '/topics/symmetric-mode-attacks/' | relative_url }}">Symmetric Mode Attacks: ECB, CBC & CTR</a> reproduces this pattern leak with real AES ciphertext, then goes further — a working CBC bit-flipping attack that forges a privilege change without the key, and a CTR nonce-reuse break that recovers plaintext with nothing but XOR.</p>
-</div>
+- **High Speed & Low Overhead**: Hardware-accelerated CPU instructions (AES-NI) enable gigabytes-per-second encryption throughput.
+- **Key Distribution Problem**: Peer endpoints must securely share key **K** prior to communication. If the transit channel is untrusted, asymmetric key exchange (**[ECDHE]({{ '/topics/key-exchange-derivation/' | relative_url }})**) is required.
+- **No Per-Party Non-Repudiation**: Because both parties hold key **K**, either party could have generated a specific MAC tag. Symmetric MACs provide origin authenticity between key holders, but not legal non-repudiation.
 
-<div class="callout warn">
-  <span class="callout-title">Nonce reuse is not a minor bug</span>
-  <p>CTR and GCM depend on a nonce that must not repeat under the same key. CTR reuse repeats the keystream and exposes the XOR relationship between plaintexts. GCM reuse also undermines authentication and, depending on the available nonce/ciphertext/tag pairs, can enable tag forgery or recovery of authentication state. The exact damage depends on what the attacker observes, but the operational rule is straightforward: do not reuse the nonce with the same key.</p>
-</div>
+## Block Ciphers vs Stream Ciphers
 
-## Authenticated encryption (AEAD)
+Symmetric ciphers operate under two distinct mathematical paradigms:
 
-Plain encryption such as CBC or CTR only gives confidentiality; it does not make tampering detectable. **AEAD (Authenticated Encryption with Associated Data)** combines encryption and authentication in one construction. Successful tag verification gives ciphertext integrity and origin authentication to a holder of the shared key. It does not identify which key holder created the message.
+1. **Block Ciphers (*e.g., AES*)**: Process plaintext in fixed-size blocks (128 bits / 16 bytes). Data is transformed through multiple rounds of substitution and permutation. Unauthenticated block modes (such as CBC) require padding to align input data to 16-byte boundaries.
+2. **Stream Ciphers (*e.g., ChaCha20*)**: Process plaintext as a continuous stream of arbitrary length. The cipher generates a pseudo-random keystream of bytes that is XORed directly with plaintext. No block alignment or padding is required.
 
-- **AES-GCM** — widely used in protocols including TLS 1.3; often fast with hardware acceleration. Nonce uniqueness under each key is essential.
-- **ChaCha20-Poly1305** — another standardized AEAD option that performs well in software and is also defined for TLS 1.3.
+| Dimension | Block Ciphers (*e.g., AES*) | Stream Ciphers (*e.g., ChaCha20*) | Engineering Trade-off & Guidance |
+|---|---|---|---|
+| **Execution Mechanics** | Permutation-Substitution network per 128-bit block | Generates pseudo-random keystream XORed with plaintext | Block ciphers require complex S-Box substitutions; stream ciphers perform fast bitwise XOR. |
+| **Modern Standards** | **AES-256-GCM** ([FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) / [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | **ChaCha20-Poly1305** ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)) | Both are approved AEAD constructions enforcing confidentiality and origin authenticity. |
+| **Operational Unit** | Fixed-size data blocks (128 bits / 16 bytes) | Continuous byte/bit stream | Stream ciphers accept arbitrary payload lengths without block alignment overhead. |
+| **Padding Requirements** | Required for block modes like CBC; not required for GCM/CTR | None required | Padding oracle attacks occur when unauthenticated block padding is parsed. |
+| **Primary Real-World Use Cases** | Database field encryption, cloud storage volumes (EBS/LUKS2 via AES-XTS), high-throughput server TLS 1.3 with hardware AES-NI instructions. | Real-time video/audio streaming, low-latency mobile apps, VPN tunnels (WireGuard), embedded IoT microcontrollers lacking AES-NI hardware. | Select AES-256-GCM for server hardware with AES-NI; select ChaCha20-Poly1305 for mobile/ARM CPUs without hardware AES. |
 
-If I see a cipher suite or API named with a plain mode and no authentication (`AES-256-CBC` with no separate MAC step), I check where integrity is provided. If there is no separate MAC or authenticated container, the design is incomplete.
+## AES Architecture & Round Transformation Pipeline (FIPS 197)
 
-## Practical demo: encrypting a file with Node.js
-
-`openssl enc` is not suitable for this example because its command-line interface does not support AEAD modes such as GCM. I use Node's built-in [`node:crypto` API](https://nodejs.org/api/crypto.html) to demonstrate a small envelope-encryption design:
-
-1. A long-lived **key-encryption key (KEK)** stays outside the encrypted file.
-2. `encrypt.js` generates a fresh 256-bit **data-encryption key (DEK)** for this file with `randomBytes()`.
-3. The DEK encrypts the file once with AES-256-GCM and a 96-bit nonce.
-4. AES Key Wrap protects the DEK under the KEK, and the wrapped DEK is stored with the ciphertext.
-5. `decrypt.js` unwraps the DEK and writes plaintext only after GCM tag verification succeeds.
-
-By design, each generated DEK is used for exactly one GCM encryption. This removes the need to coordinate nonces across records in this demo; collisions remain negligibly unlikely because both the 256-bit DEK and 96-bit nonce come from a CSPRNG. A production design that reuses one DEK for multiple records needs an enforced nonce-allocation strategy and usage limits instead.
+Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)**, the **Advanced Encryption Standard (AES)** encrypts 128-bit (16-byte) plaintext blocks by loading data into a 4×4 byte state matrix **S** and processing it through repeated transformation rounds:
 
 <div class="diagram-frame">
-  <video class="diagram-video" controls muted loop playsinline preload="metadata" poster="{{ '/assets/video/node-aes-gcm-demo-poster.png' | relative_url }}?v=7" aria-label="A Node.js envelope-encryption walkthrough. A CSPRNG creates a local key-encryption key and a fresh per-file data key. AES Key Wrap protects the data key, AES-256-GCM encrypts the file once with a 96-bit nonce, and decryption verifies the tag before writing the recovered plaintext. The animation displays the complete runnable scripts and output captured from an actual run.">
-    <source src="{{ '/assets/video/node-aes-gcm-demo.webm' | relative_url }}?v=7" type="video/webm">
-    <source src="{{ '/assets/video/node-aes-gcm-demo.mp4' | relative_url }}?v=7" type="video/mp4">
-    <img src="{{ '/assets/video/node-aes-gcm-demo-poster.png' | relative_url }}?v=7" alt="The verification section of the Node.js envelope-encryption demo, ending with a verified authentication tag and an identical recovered file.">
-  </video>
-  <p class="diagram-caption">One captured run: encrypt, inspect the packed file, verify the tag, decrypt and compare</p>
+  <img src="{{ '/assets/img/aes-round-operations.svg' | relative_url }}" alt="AES round operations pipeline showing 128-bit state matrix transformed via SubBytes, ShiftRows, MixColumns, and AddRoundKey.">
+  <p class="diagram-caption">AES State Transformation Pipeline: 128-bit plaintext block matrix is transformed through iterative substitution, permutation, mixing, and key XOR rounds to produce ciphertext</p>
 </div>
 
-The walkthrough follows the complete workflow: **create the local KEK and input → generate and wrap a per-file DEK → encrypt once with AES-GCM → inspect the envelope → unwrap and decrypt → verify the authentication tag and recovered file**.
+### Detailed Round Execution Steps
 
-The video displays every line from the three scripts below. Because the animation reads directly from these files, what I see in the walkthrough is the same code I can run myself:
+1. **State Matrix Loading & Initial Round**: The 16-byte plaintext block is loaded into a 4×4 byte matrix. An initial `AddRoundKey` operation XORs the state matrix directly with the first round key (<b>K<sub>0</sub></b>).
+2. **Main Iterative Loop (Rounds 1 to N-1)**:
+   - **SubBytes**: Non-linear byte substitution using a lookup table (S-Box) to destroy linear relationships between key and ciphertext bits.
+   - **ShiftRows**: Cyclically shifts the bytes in rows 1, 2, and 3 of the state matrix by 1, 2, and 3 byte positions to diffuse bits across columns.
+   - **MixColumns**: Performs matrix multiplication over Galois Field **GF(2^8)** to mix all 4 bytes in each column, ensuring single-bit plaintext changes diffuse across the entire state.
+   - **AddRoundKey**: XORs the state matrix with the unique round key (<b>K<sub>i</sub></b>) derived from the key schedule.
+3. **Final Round (Round N)**:
+   - Executes **SubBytes** → **ShiftRows** → **AddRoundKey** (*the MixColumns step is explicitly omitted in the final round*).
+4. **Ciphertext Output**: Emits the transformed 4×4 state matrix as a 128-bit ciphertext block.
 
-- [Download `generate-kek.js`]({{ '/assets/downloads/node-aes-gcm-demo/generate-kek.js' | relative_url }})
-- [Download `encrypt.js`]({{ '/assets/downloads/node-aes-gcm-demo/encrypt.js' | relative_url }})
-- [Download `decrypt.js`]({{ '/assets/downloads/node-aes-gcm-demo/decrypt.js' | relative_url }})
+| AES Variation | Key Length | Processing Rounds (N) | Total Round Keys Required | Quantum Margin (Grover's Search) |
+|---|---|---|---|---|
+| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **64 bits effective security** (Vulnerable to quantum search) |
+| **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | 96 bits effective security |
+| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **128 bits effective security (Post-Quantum Safe)** |
 
-### Running the same demonstration myself
+## Grover's Quantum Algorithm Impact: Why AES-256 is Quantum-Safe
 
-These commands repeat the workflow shown in the video. I run them from the repository root because that is where the paths to `encrypt.js` and `decrypt.js` begin.
+A common question in cryptographic engineering is: *"What does it mean that quantum computers halve the effective security bits of symmetric ciphers, and why does AES-256 maintain a 128-bit post-quantum security margin?"*
 
-**1. Create a KEK for this terminal session**
+### Classical Brute-Force vs Grover's Quantum Search
 
-This command asks Node's cryptographic random number generator for 32 bytes and stores the Base64 representation in an exported environment variable. The second command checks the decoded length without printing the key.
+1. **Classical Brute-Force Complexity**: To guess a secret key of length **n** bits, a classical computer must test keys one by one. Finding a 128-bit key takes **2^128** operations in the worst case, which is computationally infeasible (**2^128 ≈ 3.4 × 10^38** attempts).
+2. **Grover's Quantum Acceleration**: Grover's algorithm running on a Cryptographically Relevant Quantum Computer (CRQC) performs an unstructured search over a database of **N** possibilities in **O(sqrt(N))** quantum iterations.
+3. **Impact on Symmetric Keys**:
+   - Taking the square root of **2^n** key combinations yields **sqrt(2^n) = 2^(n/2)**.
+   - **AES-128**: Grover's algorithm reduces search complexity from **2^128** down to **2^64** operations. A search space of **2^64** is within reach of quantum computing resources, rendering AES-128 vulnerable.
+   - **AES-256**: Grover's algorithm reduces search complexity from **2^256** down to **2^128** operations. A search space of **2^256** requires **3.4 × 10^38** quantum steps—a computational threshold that remains physically impossible to breach under known laws of thermodynamics.
 
-```
-$ export FILE_KEK_BASE64="$(node assets/downloads/node-aes-gcm-demo/generate-kek.js)"
-$ node -e "console.log('KEK bytes:', Buffer.from(process.env.FILE_KEK_BASE64, 'base64').length)"
-KEK bytes: 32
-```
+Deploying **AES-256** preserves a 128-bit security threshold against Grover's algorithm, making symmetric AES-256 quantum-safe without needing to replace the cipher algorithm.
 
-This environment variable is a local stand-in for a Key Management Service (KMS), not the production storage recommendation. In production, the application normally calls a KMS to generate or unwrap a data key; the KMS-held KEK is not exported to the process.
+## Cipher Modes of Operation: ECB vs CBC vs CTR vs GCM
 
-**2. Create the plaintext file I want to encrypt**
+AES alone only encrypts a single 128-bit block. Modes of operation chain multiple blocks together:
 
-This creates `secret.txt` containing `private journal entry` followed by a newline.
+| Mode | Operational Mechanics | Security Status & Failure Mode | Target Engineering Recommendation |
+|---|---|---|---|
+| **CBC (Cipher Block Chaining)** | XORs plaintext block with previous ciphertext block | **LEGACY / HIGH RISK**: Requires unpredictable IV. Vulnerable to padding oracle attacks unless combined with HMAC. | Replace with AES-GCM or AES-GCM-SIV. |
+| **CTR (Counter Mode)** | Encrypts incrementing counter to generate keystream | **STREAM MODE**: Fast, parallelizable. Nonce reuse completely breaks confidentiality. | Do not use plain CTR without an authentication tag (HMAC). |
+| **ECB (Electronic Codebook)** | Encrypts each block independently | **CRITICAL FAILURE**: Identical plaintext blocks produce identical ciphertext blocks, leaking structural patterns. | **DO NOT USE**: Never deploy ECB mode under any circumstances. |
+| **GCM (Galois/Counter Mode)** | CTR encryption + GHASH Galois authentication tag | **RECOMMENDED AEAD**: Provides confidentiality, integrity, and authenticity in one pass. | Standard default for TLS 1.3, SSH, and cloud database encryption. |
 
-```
-$ printf 'private journal entry\n' > secret.txt
-```
-
-**3. Encrypt the file**
-
-```
-$ node assets/downloads/node-aes-gcm-demo/encrypt.js
-```
-
-The encryption script creates a new 32-byte DEK and 12-byte GCM nonce, wraps the DEK with AES Key Wrap, encrypts the file once, and writes this 94-byte envelope:
-
-| Field | Size | Purpose |
-|---|---:|---|
-| `JRN1` format marker | 4 bytes | Identifies the envelope version |
-| Wrapped DEK | 40 bytes | The 32-byte DEK protected under the KEK |
-| GCM nonce | 12 bytes | Generated by a CSPRNG; this DEK is used for one encryption only |
-| GCM tag | 16 bytes | Authenticates the ciphertext and envelope header |
-| Ciphertext | 22 bytes here | Encrypted contents of `secret.txt` |
-
-The format marker, wrapped DEK, and nonce are also supplied to GCM as Additional Authenticated Data (AAD), so changing the envelope header causes authentication to fail. The KEK and plaintext DEK are not written into the envelope.
-
-**4. Decrypt the file and verify its authentication tag**
-
-```
-$ node assets/downloads/node-aes-gcm-demo/decrypt.js
-tag verified: yes
-recovered:    "private journal entry\n"
-```
-
-`tag verified: yes` means AES-GCM accepted the ciphertext and authentication tag. The script only writes `secret-decrypted.txt` after this check succeeds.
-
-**5. Confirm that the recovered file is identical**
-
-```
-$ diff secret.txt secret-decrypted.txt
-$ echo $?
-0
-```
-
-An exit code of `0` means `diff` found no difference between the original and recovered files.
-
-The wrapped DEK, nonce, tag, and format marker are not secrets and can be stored with the ciphertext. AES Key Wrap uses the fixed `A6A6A6A6A6A6A6A6` initial value defined by the key-wrap construction; that value is not a GCM nonce and is not required to be random. The GCM nonce rule applies to the per-file DEK used for content encryption.
-
-This is a production-style key hierarchy, but it remains a teaching format. For a deployed system I would use a reviewed envelope library or cloud encryption SDK, bind the expected KMS key identifier and encryption context, enforce authorization and audit logging around unwrap operations, and define format migration and key-rotation behavior.
-
-## Protecting the one thing that matters: the key itself
-
-Everything above assumes the key is secret. Unlike asymmetric crypto — where only *half* the key pair needs protecting, and the other half is meant to be handed out freely (see [Asymmetric Cryptography]({{ '/topics/asymmetric-cryptography/' | relative_url }}#why-exposing-a-public-key-is-safe-but-exposing-a-private-key-never-is)) — a symmetric key has no safe-to-expose half at all. Leak it, and the scheme is completely broken for anyone who now has it; there's no asymmetry to fall back on.
-
-Mitigating brute force against the key itself comes down to a short, concrete list:
-
-- **Use the full recommended key length, not a shortened one.** AES-128 is currently fine; AES-256 is the recommended choice for data that needs to stay confidential for a long time, partly as a hedge against [Grover's algorithm]({{ '/topics/recommended-algorithms/' | relative_url }}#the-post-quantum-clock-why-what-nist-approved-and-what-to-actually-do-with-it) halving effective symmetric security under a future quantum attacker. See [Recommended Algorithms & Regional Standards]({{ '/topics/recommended-algorithms/' | relative_url }}) for the current guidance and how long each key size is expected to hold.
-- **Generate the key from a real CSPRNG, never a predictable source.** A 256-bit key generated from a weak or predictable seed doesn't actually have 256 bits of real entropy, no matter what the key size says on paper — see the [2008 Debian OpenSSL bug]({{ '/topics/asymmetric-cryptography/' | relative_url }}#common-pitfalls) for what happens when this goes wrong.
-- **Never use a raw human passphrase as the key directly.** A passphrase has far less entropy than a generated 256-bit key and remains guessable even when AES is not. This demo uses CSPRNG-generated keys instead. When a human passphrase is genuinely required, I use a password-based KDF such as scrypt or Argon2id with a random salt and suitable cost parameters—see [Key Exchange & Key Derivation]({{ '/topics/key-exchange-derivation/' | relative_url }}#a-different-problem-password-based-kdfs) and [Password Storage]({{ '/topics/password-storage/' | relative_url }}).
-- **Rotate keys to limit the blast radius, not to make brute force harder.** A single key's strength doesn't degrade with age or use. Rotation changes which key/version protects new material; migration of existing data depends on the service and design. [HSM & KMS]({{ '/topics/hsm-kms/' | relative_url }}#key-rotation-distinguish-version-rotation-from-data-migration) separates those cases.
-
-## Common pitfalls
-
-- **Using ECB** — still shows up in default settings of older libraries and misconfigured tools. Always check the mode explicitly.
-- **Reusing a nonce/IV** under the same key — catastrophic for CTR/GCM. CBC IVs must be unpredictable for encryption; repeating one leaks whether the first plaintext blocks are equal, but it is not the same failure mode as CTR/GCM nonce reuse.
-- **Encrypting without authenticating** — plain CBC/CTR with no MAC lets an attacker flip bits in the ciphertext undetected. I use a reviewed AEAD construction such as GCM or ChaCha20-Poly1305 instead of assembling my own encrypt-then-MAC scheme.
-- **Designing my own cipher or mode** — a homemade construction has not received the analysis behind standardized, reviewed designs.
-
-## Reference: NIST standards
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p><strong><a href="https://csrc.nist.gov/pubs/fips/197/final">FIPS 197</a></strong> defines AES. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/d/final">NIST SP 800-38D</a></strong> defines GCM and its key/nonce uniqueness requirement. <strong><a href="https://csrc.nist.gov/pubs/sp/800/38/f/final">NIST SP 800-38F</a></strong> defines AES Key Wrap. The <a href="https://nodejs.org/api/crypto.html">Node.js crypto documentation</a> defines the CSPRNG, AAD, and authentication-tag APIs used here. <a href="https://docs.aws.amazon.com/kms/latest/developerguide/data-keys.html">AWS KMS data-key documentation</a> shows the production envelope pattern: obtain a plaintext data key and its encrypted copy, encrypt locally, store the encrypted data key with the ciphertext, and remove the plaintext key from memory.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/ecb-pattern-leak.svg' | relative_url }}" alt="ECB pattern leak comparison showing how ECB mode leaks image structure while CTR/GCM output appears completely random.">
+  <p class="diagram-caption">ECB mode pattern leak vs CTR/GCM randomized output</p>
 </div>
 
-## Summary
+## Authenticated Encryption with Associated Data (AEAD)
 
-| Choose | When |
-|---|---|
-| AES-GCM | When the protocol or platform provides a safe, reviewed API and reliable nonce management |
-| ChaCha20-Poly1305 | When the protocol or platform supports it and it fits the performance and interoperability needs |
-| AES-CBC + HMAC | Legacy systems that predate AEAD support — encrypt-then-MAC, never MAC-then-encrypt |
-| ECB | Never |
+Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but leaves payload bytes vulnerable to bit-flipping and padding oracle attacks. **AEAD constructions** generate a 128-bit cryptographic authentication tag over both the ciphertext and unencrypted header metadata (Associated Data).
+
+### Critical AEAD Rules & Nonce Safety
+
+1. **Never Reuse Nonces**: Reusing a 96-bit GCM nonce with the same key allows adversaries to recover the GHASH authentication key and forge authentication tags.
+2. **Deploy Synthetic IV (AES-GCM-SIV / RFC 8452) for Misuse Resistance**: When unique nonces cannot be guaranteed (*e.g., distributed stateless microservices*), deploy **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. If a nonce is accidentally repeated, AES-GCM-SIV degrades to deterministically leaking equality of identical messages without exposing the authentication key or plaintext.
+3. **Always Verify Tags Before Decrypting**: Software must compute and verify the authentication tag before exposing plaintext to the application layer.

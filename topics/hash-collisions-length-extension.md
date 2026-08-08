@@ -1,108 +1,88 @@
 ---
 title: Hash Collisions & Length-Extension Attacks
-description: Real, downloadable MD5 and SHA-1 collisions, and a working Python length-extension attack against a naive MAC.
+description: Executable cryptanalytic demonstrations of MD5 and SHA-1 collision pairs and a complete Python length-extension attack against naive hash MACs.
 permalink: /topics/hash-collisions-length-extension/
-last_verified: 2026-08-05
+last_verified: 2026-08-08
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
 
 # Hash Collisions & Length-Extension Attacks
 
-<p class="lede">I keep these files and scripts because “MD5 and SHA-1 have collisions” is too easy to repeat without understanding what it means. Here I can verify the collision pairs myself and run the length-extension forgery end to end.</p>
+<p class="lede">Evaluating cryptographic hash integrity requires distinguishing between theoretical weakness and practical cryptanalytic failure. This page provides executable cryptanalytic proofs: verifying real MD5 and SHA-1 collision pairs where distinct inputs yield identical digests, and executing a complete Python length-extension attack that forges valid authentication tags against naive hash constructions.</p>
 
-## MD5 collisions: two different files, one hash
+## 1. MD5 Hash Collisions: Two Distinct Files, Identical Digest
 
-A collision means two genuinely different inputs producing the identical hash output. Below are two real GIF files — different bytes, different images — with the same MD5 hash. These come from [corkami/collisions](https://github.com/corkami/collisions), a public research repository maintained by security researcher Ange Albertini, built specifically to make hash collisions visually obvious.
+A **hash collision** occurs when two distinct inputs **x ≠ x'** yield identical digests **H(x) = H(x')**.
+
+The two GIF files below (from security researcher Ange Albertini's research repository) contain different binary image data but produce the identical MD5 digest:
 
 <div class="image-pair">
   <figure>
-    <img src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="A green circle image, part of an MD5 collision pair">
+    <img src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="A green circle GIF image representing MD5 collision file 1">
     <figcaption>md5-collision-1.gif (10,386 bytes)</figcaption>
   </figure>
   <figure>
-    <img src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="A red X image, part of an MD5 collision pair">
+    <img src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="A red X GIF image representing MD5 collision file 2">
     <figcaption>md5-collision-2.gif (10,386 bytes)</figcaption>
   </figure>
 </div>
 
-<div class="callout">
-  <span class="callout-title">Verify it yourself</span>
-  <p>Download both — <a href="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}">md5-collision-1.gif</a> and <a href="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}">md5-collision-2.gif</a> — and run:</p>
-</div>
+### Verification Commands
 
-```
-$ md5 md5-collision-1.gif md5-collision-2.gif
-MD5 (md5-collision-1.gif) = d7a00002b2fa4dc40f03abba0a57631c
-MD5 (md5-collision-2.gif) = d7a00002b2fa4dc40f03abba0a57631c
+```bash
+# 1. Compute MD5 digests (Identical output)
+md5 md5-collision-1.gif md5-collision-2.gif
+# Output:
+# MD5 (md5-collision-1.gif) = d7a00002b2fa4dc40f03abba0a57631c
+# MD5 (md5-collision-2.gif) = d7a00002b2fa4dc40f03abba0a57631c
 
-$ cmp md5-collision-1.gif md5-collision-2.gif
-md5-collision-1.gif md5-collision-2.gif differ: char 468, line 1
-```
-
-Identical MD5 hash, confirmed genuinely different files — `cmp` finds the first differing byte at position 468. If a system only checks an MD5 hash to decide whether a file is the "approved" version of something, it cannot tell these two images apart.
-
-## SHA-1 collisions: the "SHAttered" style
-
-In 2017, Google and CWI Amsterdam published the first practical SHA-1 collision — the **SHAttered** attack — as two different PDF files sharing one SHA-1 hash. The pair below use the same technique (in a much smaller, purpose-built form from the same corkami collection) to make the same point:
-
-<div class="image-pair">
-  <figure>
-    <img src="{{ '/assets/img/sha1-collision-1.png' | relative_url }}" alt="A green diamond shape, rendered from a PDF that is part of a SHA-1 collision pair">
-    <figcaption>sha1-collision-1.pdf, rendered</figcaption>
-  </figure>
-  <figure>
-    <img src="{{ '/assets/img/sha1-collision-2.png' | relative_url }}" alt="A red X shape, rendered from a different PDF that is part of the same SHA-1 collision pair">
-    <figcaption>sha1-collision-2.pdf, rendered</figcaption>
-  </figure>
-</div>
-
-<div class="callout">
-  <span class="callout-title">Verify it yourself</span>
-  <p>Download both — <a href="{{ '/assets/downloads/sha1-collision-1.pdf' | relative_url }}">sha1-collision-1.pdf</a> and <a href="{{ '/assets/downloads/sha1-collision-2.pdf' | relative_url }}">sha1-collision-2.pdf</a> — and run:</p>
-</div>
-
-```
-$ shasum -a 1 sha1-collision-1.pdf sha1-collision-2.pdf
-5e00eced22afee33889d4766e8366e8326abc749  sha1-collision-1.pdf
-5e00eced22afee33889d4766e8366e8326abc749  sha1-collision-2.pdf
-
-$ cmp sha1-collision-1.pdf sha1-collision-2.pdf
-sha1-collision-1.pdf sha1-collision-2.pdf differ: char 193, line 8
+# 2. Compare binary content (Proves files are distinct)
+cmp md5-collision-1.gif md5-collision-2.gif
+# Output: md5-collision-1.gif md5-collision-2.gif differ: char 468, line 1
 ```
 
-Same story: identical SHA-1 output, genuinely different files. The real SHAttered PDFs (full-size, at [shattered.io](https://shattered.io)) demonstrate exactly this same property with two full documents that each render a different image.
+If an integrity check relies solely on MD5 to verify file authenticity, an adversary can substitute `md5-collision-2.gif` for `md5-collision-1.gif` without triggering hash validation errors.
 
-<div class="callout warn">
-  <span class="callout-title">File verification note</span>
-  <p>To confirm the four files above weren't altered in transit (a completely separate question from the MD5/SHA-1 collision demo itself — this uses SHA-256, which has no known collisions): <code>md5-collision-1.gif</code> → <code>bb0fd4741715de283750a967841dbeb0564a42205926a87d0fbb8738cbdf8e20</code>, <code>md5-collision-2.gif</code> → <code>6c8c640e19aaee6f511744da2d3b142791c3b8b5aa74b706dacb4e5e82e14bad</code>, <code>sha1-collision-1.pdf</code> → <code>ec1ba2bc0c80564a0b9cdfb04a5bbb86715189c40080cac0f054005f80ee711e</code>, <code>sha1-collision-2.pdf</code> → <code>24ba6c80f7b372a1c818a1ba3be9cc799b923868706c366d21ca17bc58b73234</code> (all SHA-256).</p>
-</div>
+## 2. SHA-1 Collisions: The SHAttered Attack Strategy
 
-## Length-extension attack: forging a MAC without the key
+In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrating the first practical SHA-1 collision using two distinct PDF documents sharing an identical SHA-1 hash.
 
-The setup: a naive server-side check computes `MAC = MD5(secret + message)` and sends `message` along with `MAC` to a client — for instance, as a signed URL parameter. The server later re-derives `MD5(secret + message)` itself and compares.
+```bash
+# Verify SHA-1 Collision Pair
+shasum -a 1 sha1-collision-1.pdf sha1-collision-2.pdf
+# Output:
+# 5e00eced22afee33889d4766e8366e8326abc749  sha1-collision-1.pdf
+# 5e00eced22afee33889d4766e8366e8326abc749  sha1-collision-2.pdf
 
-The attacker sees `message` and `MAC`, but never `secret`. Because MD5 (like SHA-1 and SHA-256) uses a **Merkle–Damgård construction**, `MAC` *is* MD5's complete internal state after processing `secret + message` — nothing about that state is hidden by the fact that it's presented as "just a hash." An attacker who also knows (or brute-forces, since it's usually short) the *length* of `secret` can resume MD5 computation from that leaked state and compute a valid MAC for `secret + message + glue_padding + anything_they_want` — without ever learning `secret` itself.
+cmp sha1-collision-1.pdf sha1-collision-2.pdf
+# Output: sha1-collision-1.pdf sha1-collision-2.pdf differ: char 193, line 8
+```
 
-Here's a complete, runnable implementation — a from-scratch MD5 that supports resuming from an arbitrary state, self-checked against Python's own `hashlib` before it's trusted for the attack:
+SHA-1 is formally prohibited by **[NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final)** for digital signatures due to collision vulnerability.
+
+## 3. Length-Extension Attack: Forging Naive Hash MACs
+
+Naive MAC constructions like **MAC = H(Secret || Message)** built on Merkle–Damgård hash functions (MD5, SHA-1, SHA-256) are vulnerable to **length-extension attacks**.
+
+Because a Merkle–Damgård hash output exposes the internal compression state **H**, an adversary who knows the message and the length of the secret can resume hashing from that state to append malicious payload bytes **Appended_Data** without knowing **Secret**.
+
+### Executable Python Length-Extension Forgery
 
 ```python
+# length_extension_attack.py: Forging a valid MAC without the secret key
 import struct, hashlib, math
 
+# MD5 Compression Constants & Utilities
 S = [7,12,17,22]*4 + [5,9,14,20]*4 + [4,11,16,23]*4 + [6,10,15,21]*4
 K = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 
-def left_rotate(x, c):
-    x &= 0xFFFFFFFF
-    return ((x << c) | (x >> (32 - c))) & 0xFFFFFFFF
+def left_rotate(x, c): return ((x << c) | (x >> (32 - c))) & 0xFFFFFFFF
 
 def md5_padding(msg_len_bytes):
     bit_len = (msg_len_bytes * 8) & 0xFFFFFFFFFFFFFFFF
-    padding = b'\x80'
     pad_len = (56 - (msg_len_bytes + 1) % 64) % 64
-    padding += b'\x00' * pad_len
-    padding += struct.pack('<Q', bit_len)
-    return padding
+    return b'\x80' + b'\x00' * pad_len + struct.pack('<Q', bit_len)
 
 def md5_compress(chunk, h):
     a0, b0, c0, d0 = h
@@ -117,74 +97,42 @@ def md5_compress(chunk, h):
         A, D, C, B = D, C, B, (B + left_rotate(F, S[i])) & 0xFFFFFFFF
     return [(a0+A)&0xFFFFFFFF, (b0+B)&0xFFFFFFFF, (c0+C)&0xFFFFFFFF, (d0+D)&0xFFFFFFFF]
 
-def md5_full(data):
-    h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
-    padded = data + md5_padding(len(data))
-    for i in range(0, len(padded), 64):
-        h = md5_compress(padded[i:i+64], h)
-    return h
-
 def state_to_hex(h): return b''.join(struct.pack('<I', x) for x in h).hex()
 def hex_to_state(hx): return list(struct.unpack('<4I', bytes.fromhex(hx)))
 
-# Self-check: this implementation must match hashlib exactly before we trust it
-assert state_to_hex(md5_full(b"The quick brown fox")) == hashlib.md5(b"The quick brown fox").hexdigest()
-print("self-check: MD5 implementation matches hashlib: yes")
+# Server Setup: Naive MAC = MD5(Secret + Message)
+SECRET = b"s3cr3tkey"  # 9 bytes (Unknown to attacker)
+orig_message = b"user=alice&admin=false"
+orig_mac = hashlib.md5(SECRET + orig_message).hexdigest()
 
-# --- The server's naive (broken) construction ---
-def naive_mac(secret, message):
-    return hashlib.md5(secret + message).hexdigest()
-
-SECRET = b"s3cr3tkey"                                # attacker does NOT know this
-original_message = b"user=alice&admin=false"
-original_mac = naive_mac(SECRET, original_message)   # leaked/observed, alongside the message
-print("observed message:", original_message)
-print("observed MAC:    ", original_mac)
-
-# --- Attacker: knows only original_message, original_mac, and a guess at len(SECRET) ---
+# Attacker Execution: Reconstruct internal state and append "&admin=true"
 guessed_secret_len = 9
 injected_data = b"&admin=true"
+state = hex_to_state(orig_mac)
 
-state = hex_to_state(original_mac)
-glue_padding = md5_padding(guessed_secret_len + len(original_message))
-forged_message = original_message + glue_padding + injected_data
+glue_padding = md5_padding(guessed_secret_len + len(orig_message))
+forged_message = orig_message + glue_padding + injected_data
 
-total_len_so_far = guessed_secret_len + len(original_message) + len(glue_padding)
-h = state
+total_len_so_far = guessed_secret_len + len(orig_message) + len(glue_padding)
 tail = injected_data + md5_padding(total_len_so_far + len(injected_data))
+
+h = state
 for i in range(0, len(tail), 64):
     h = md5_compress(tail[i:i+64], h)
 forged_mac = state_to_hex(h)
-print("forged suffix:   ", injected_data)
-print("forged MAC:      ", forged_mac)
 
-# --- Does the real server (which HAS the secret) accept the forgery? ---
-print("forged MAC matches server check:", naive_mac(SECRET, forged_message) == forged_mac)
+# Server Validation Test
+server_check = hashlib.md5(SECRET + forged_message).hexdigest()
+print("Forged MAC matches server verification:", server_check == forged_mac)
+# Output: Forged MAC matches server verification: True
 ```
 
-Running it:
+The script proves that an adversary can alter `admin=false` to `admin=true` and compute a valid digest accepted by the server without knowing the secret key.
 
-```
-self-check: MD5 implementation matches hashlib: yes
-observed message: b'user=alice&admin=false'
-observed MAC:     f68e58dd36a1291ffbbcc1f40e393f6d
-forged suffix:    b'&admin=true'
-forged MAC:       bcb0f99f1209133ffd73692c4a305301
-forged MAC matches server check: True
-```
+### Defensive Countermeasure: Use Standard HMAC or Sponge Hashes
 
-`True` is the whole point: the attacker turned `admin=false` into `admin=true`, appended it to the message, and produced a MAC the real server accepts as valid — having never seen `SECRET` even once.
+Deploying **HMAC-SHA256** ([FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)) neutralizes length-extension attacks by executing a nested double-hash algorithm:
 
-## Why HMAC isn't vulnerable to this
+**HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))**
 
-```python
-import hmac, hashlib
-tag = hmac.new(b"weakkey", b"user=alice&admin=false", hashlib.md5).hexdigest()
-```
-
-There is no equivalent attack against this line. [HMAC]({{ '/topics/hash-functions-macs/' | relative_url }}#macs-adding-a-key-to-prove-who-sent-it) hashes twice, with the key mixed in at both the inner and outer layer — the tag it produces is not usable as a resumable internal state the way a plain hash's output is, because it isn't the raw output of processing `key + message` in one pass. This is precisely why [Hash Functions & MACs]({{ '/topics/hash-functions-macs/' | relative_url }}#why-naive-hkey--message-is-broken-length-extension-attacks) insists on HMAC over hand-rolled concatenation, and it's not a theoretical concern — Flickr's API signature scheme was broken exactly this way in 2009, letting attackers forge valid API calls without the shared secret.
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p>Wang and Yu, <em>"How to Break MD5 and Other Hash Functions"</em> (2005) is the original MD5 collision paper. Stevens, Bursztein, Karpman, Albertini, and Markov, <em>"The First Collision for Full SHA-1"</em> (Google/CWI, 2017) is the SHAttered paper — full technical detail and the original full-size PDFs at <a href="https://shattered.io">shattered.io</a>. <strong><a href="https://www.rfc-editor.org/rfc/rfc2104">RFC 2104</a></strong> defines HMAC.</p>
-</div>
+Furthermore, modern sponge-based hash functions (**SHA-3 / FIPS 202**, **KMAC / SP 800-185**, and **BLAKE3**) squeeze outputs through internal capacity states, rendering them inherently immune to length extension by design.

@@ -1,81 +1,87 @@
 ---
 title: "Security Maturity Models"
-description: C2M2, OWASP SAMM, CIS Controls Implementation Groups, and why NIST is explicit that CSF Tiers are not a maturity scale — what "maturity" actually means per framework.
+description: Comprehensive analysis of CMMI, C2M2, OWASP SAMM, CIS Implementation Groups, SLSA levels, and NIST CSF Tiers.
 permalink: /topics/security-maturity-models/
-last_verified: 2026-07-28
+last_verified: 2026-08-06
 ---
 
 <span class="eyebrow">Governance, Risk & Compliance / Deep Dive</span>
 
 # Security Maturity Models
 
-<p class="lede">"What's our security maturity level?" gets asked a lot, and it's rarely clear which of several genuinely different scoring systems the question means — a program-wide capability score, an AppSec-practice score, a resource-tiering system, or a governance-rigor scale that NIST specifically warns people not to read as maturity at all. The <a href="{{ '/topics/cybersecurity-standards/' | relative_url }}">Cybersecurity Standards</a> page covers what each framework is; this page covers how — or whether — each one actually measures maturity.</p>
+<p class="lede">Security maturity models evaluate the consistency, repeatability, governance integration, and continuous improvement of an organization's security practices. Measuring maturity requires selecting the appropriate model for the scope: broad process maturity (CMMI), domain-specific capability (C2M2), software supply chain integrity (SLSA), application security practice growth (OWASP SAMM), or resource-tiered safeguard baselines (CIS Implementation Groups).</p>
 
-## CMMI: the generic ancestor every domain-specific model borrows from
+## The Security Maturity Model Comparison Matrix
 
-The 5-level pattern that shows up, in some rephrased form, across nearly every maturity model in this space traces back to the **Capability Maturity Model** lineage — originally a software-process model, now maintained by ISACA after its 2016 acquisition of the CMMI Institute:
+| Model | Target Scope | Metric Base | Maturity Levels | Domain Granularity |
+|---|---|---|---|---|
+| **CMMI v3.0** | General Process Engineering | Process repeatability & statistical control | 1 (Initial) $\rightarrow$ 5 (Optimizing) | Program-wide generic scale |
+| **C2M2 v2.1** | Enterprise Cybersecurity Program | Capability indicator levels across 10 domains | MIL1 (Initiated) $\rightarrow$ MIL3 (Managed) | Granular domain-by-domain evaluation |
+| **OWASP SAMM v2** | Software Security Program | Software assurance practice maturity | Level 0 (Unperformed) $\rightarrow$ Level 3 (Optimized) | Independent scoring across 15 practices |
+| **CIS Controls IGs** | Technical Control Safeguards | Resource capacity & risk exposure | IG1 (Hygiene) $\rightarrow$ IG3 (High Assurance) | Single tier assigned program-wide |
+| **NIST CSF Tiers** | Risk Governance Integration | Integration of cyber risk into corporate governance | Tier 1 (Partial) $\rightarrow$ Tier 4 (Adaptive) | Program-wide governance integration |
+| **SLSA v1.0** | Software Supply Chain Build Pipeline | Tamper-resistance & build provenance | Build Level 0 (None) $\rightarrow$ Level 3 (Hardened) | Specific to build & release pipelines |
 
-1. **Initial** — practices are ad hoc, undocumented, and depend on specific individuals rather than a repeatable process.
-2. **Managed** — basic project-level discipline exists; practices are planned and tracked, but not standardized across the organization.
-3. **Defined** — practices are documented, standardized, and applied consistently across the organization, not just within individual teams.
-4. **Quantitatively Managed** — practices are measured with actual metrics, and performance is managed statistically against those measurements.
-5. **Optimizing** — the organization actively improves practices based on quantitative feedback, treating the process itself as something to keep refining.
+## CMMI: The Foundational 5-Level Maturity Archetype
 
-CMMI itself is general-purpose (it started in software engineering process improvement, not security specifically), which is exactly why it's the ancestor rather than a direct competitor to the domain-specific models below: C2M2's three MILs and SAMM's three levels are both narrower, security-specific descendants of this same underlying idea — score a practice by how *consistent, documented, measured,* and *actively improved* it is, independent of which specific controls it happens to implement.
+The 5-level maturity scale derived from the **Capability Maturity Model Integration (CMMI)** forms the foundational architecture for domain-specific security maturity models:
 
-## C2M2: maturity indicator levels across ten domains
-
-The Department of Energy's [Cybersecurity Capability Maturity Model](https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2) is the clearest example of a genuine maturity model in this space: it scores practices across ten domains (Asset Management, Cybersecurity Architecture, Program Management, Incident Response, Identity and Access Management, Risk Management, Situational Awareness, Third-Party Risk, Threat and Vulnerability Management, Workforce Management) against three **Maturity Indicator Levels**:
-
-- **MIL1 (Initiated)** — practices are performed, but ad hoc, not yet consistent or documented.
-- **MIL2 (Performed)** — practices are executed consistently, with documented procedures.
-- **MIL3 (Managed)** — practices are actively monitored, measured, and continuously improved.
-
-An organization can sit at different MILs in different domains simultaneously — strong incident response, immature third-party risk management — and that unevenness is itself the useful signal, not a flaw in the model. Originally built with electricity, oil, and gas operators, C2M2 is explicitly usable by any sector and is now applied well beyond energy.
-
-## OWASP SAMM: maturity of the *practice*, not the *product*
-
-[SAMM](https://owaspsamm.org/about/) scores 15 security practices, grouped into 5 business functions, each independently on a 3-level maturity scale — "the activities on a lower maturity level are typically easier to execute and require less formalization than the ones on a higher maturity level." Critically, SAMM is scoring the organization's *software security program* (does secure design review happen, is there a threat-modeling practice, is dependency management systematic), not any one application's code — that's [ASVS's]({{ '/topics/cybersecurity-standards/' | relative_url }}#owasps-three-and-how-theyre-not-the-same-thing) job. And SAMM deliberately doesn't push every organization toward maximum maturity everywhere: "each organization can determine the target maturity level for each Security Practice that is the best fit" — a startup shipping fast may reasonably target SAMM level 1 in some practices and level 3 in others, rather than uniformly maxing out the model.
-
-## CIS Controls Implementation Groups: maturity by proxy, tiered by resources
-
-[IG1/IG2/IG3](https://www.cisecurity.org/controls/implementation-groups) aren't labeled a maturity model, but they function as one in practice: IG1 is "essential cyber hygiene... every enterprise should apply," IG2 layers on more safeguards for organizations with greater resources or risk exposure, and IG3 is the complete 153-safeguard set. The difference from C2M2/SAMM is what the tiers are indexed to — C2M2 and SAMM measure *how well* a practice is executed; CIS Implementation Groups are explicitly framed around *how much an organization can reasonably take on*, based on "the risk profile and resources an enterprise has available." IG1 is frequently used as exactly the concrete floor a resource-constrained team needs, independent of any broader maturity claim.
-
-## NIST CSF Tiers: not a maturity model, on purpose
-
-CSF's four Tiers — Partial, Risk Informed, Repeatable, Adaptive — describe "the degree to which an organization's cybersecurity risk management practices exhibit the characteristics defined in the Framework," and specifically how well cybersecurity risk decisions are integrated into the organization's *broader* risk management, and how much it shares/receives threat information externally. NIST is explicit that this is not the same thing as a maturity level: Tiers describe the rigor and integration of governance and risk-management *practices*, not how completely any given Function or Category has been implemented. An organization can be "Adaptive" (Tier 4) — highly integrated, continuously improving risk governance — while still choosing, deliberately and appropriately for its risk appetite, not to implement every possible Protect/Detect control. Conflating "Tier" with "maturity score" is the single most common misreading of CSF, and it leads organizations to chase a higher Tier number as if it were a completeness percentage, which is not what the Tier is measuring.
-
-## SLSA: a maturity model for the software supply chain
-
-[SLSA](https://slsa.dev/spec/v1.0/levels) (Supply-chain Levels for Software Artifacts) applies the exact same "levels of rigor" idea to a much narrower question: can a specific build artifact be trusted, and can its origin be verified? Its Build track runs L0 → L3:
-
-- **L0 (no guarantees)** — an unmanaged, single-machine build; nothing about how the artifact was produced is recorded.
-- **L1 (provenance exists)** — the build process is at least consistent and produces provenance documentation, though it's "trivial to bypass or forge."
-- **L2 (hosted build platform)** — builds run on a hosted platform that generates and signs the provenance itself, so the record can't just be hand-edited after the fact.
-- **L3 (hardened builds)** — the build platform isolates each run and protects its own signing secrets, preventing tampering *during* the build, not just detecting it afterward.
-
-This is the piece that directly answers "what does maturity even mean for SBOM/package/CI-CD security" — SLSA is that model, purpose-built for one narrow slice of the program (build integrity) rather than the whole security posture. The full picture — SBOMs, dependency risk, and CI/CD pipeline security more broadly — is covered on the [Software Supply Chain Security]({{ '/topics/software-supply-chain-security/' | relative_url }}#slsa-levels-of-build-integrity) page.
-
-## Comparing the five
-
-| | What it measures | Levels | Applies per-domain/practice? |
-|---|---|---|---|
-| CMMI | General process discipline (any domain) | Initial → Optimizing | No — one scale, applied generically |
-| C2M2 | How well a security domain's practices are executed | MIL1 → MIL3 | Yes, per domain |
-| OWASP SAMM | How mature the organization's *software security program* is | 0 → 3, per practice | Yes, per practice |
-| CIS Controls IGs | How much of the prioritized control set is implemented, tiered by resources | IG1 → IG3 | No — one tier for the whole program |
-| NIST CSF Tiers | Rigor/integration of risk *governance*, not completeness | Partial → Adaptive | No — one tier for the whole program |
-| SLSA | Whether a build's provenance can be trusted | L0 → L3 | Applies to build/release pipelines specifically, not the whole program |
-
-## Common pitfalls
-
-- **Reporting a single "our maturity is 3.2" number without saying against which model** — the number is meaningless without naming C2M2, SAMM, or whichever scale produced it; they measure different things entirely.
-- **Chasing a higher NIST CSF Tier as if it were a completion percentage** — it isn't one, and a Tier upgrade with no matching change in actual risk-informed decision-making is exactly the mistake NIST is warning against.
-- **Assuming CIS Implementation Groups measure execution quality** — IG level says "how much of the list applies to you," not "how well you're doing the parts you've adopted"; a team can be fully IG1-compliant and still be executing IG1 controls poorly.
-- **Applying one target maturity level uniformly across every SAMM practice** — SAMM is explicitly designed to allow uneven, prioritized targets; forcing uniformity wastes effort on low-priority practices.
-- **Treating SLSA L3 as "our whole supply chain is secure"** — SLSA levels a build pipeline's tamper-resistance specifically; they say nothing about whether the dependencies going into that build are themselves trustworthy, which is a separate SBOM/dependency-risk question.
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p><a href="https://cmmiinstitute.com/">CMMI</a> (ISACA). <a href="https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2">C2M2</a> (U.S. Department of Energy). <a href="https://owaspsamm.org/about/">OWASP SAMM</a>. <a href="https://www.cisecurity.org/controls/implementation-groups">CIS Controls Implementation Groups</a>. <a href="https://www.nist.gov/cyberframework">NIST CSF 2.0</a> Tiers. <a href="https://slsa.dev/spec/v1.0/levels">SLSA v1.0</a>.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cmmi-maturity-levels.svg' | relative_url }}" alt="Five maturity levels from Initial through Managed, Defined, Quantitatively Managed, and Optimizing.">
+  <p class="diagram-caption">Maturity moves from ad hoc practice to measured continuous improvement</p>
 </div>
+
+1. **Level 1 (Initial)**: Practices are ad hoc, undocumented, and dependent on individual heroism.
+2. **Level 2 (Managed)**: Basic project-level discipline exists; processes are planned and tracked.
+3. **Level 3 (Defined)**: Processes are documented, standardized, and integrated across the enterprise.
+4. **Level 4 (Quantitatively Managed)**: Process performance is measured statistically against quantitative quality goals.
+5. **Level 5 (Optimizing)**: Continuous process improvement is driven by statistical feedback and root-cause analysis.
+
+## C2M2: Department of Energy Capability Model
+
+Developed by the U.S. Department of Energy, the **[Cybersecurity Capability Maturity Model (C2M2)](https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2)** evaluates practices across 10 security domains using three **Maturity Indicator Levels (MILs)**:
+
+- **MIL1 (Initiated)**: Initial practices are performed, but remain ad hoc or inconsistently documented.
+- **MIL2 (Performed)**: Practices are executed consistently according to documented procedures and policies.
+- **MIL3 (Managed)**: Practices are actively monitored, measured, and continuously improved using quantitative metrics.
+
+An organization can operate at MIL3 in Incident Response while remaining at MIL1 in Third-Party Risk Management. This domain-level breakdown identifies precise investment targets.
+
+## OWASP SAMM: Software Assurance Maturity Model
+
+**[OWASP SAMM](https://owaspsamm.org/about/)** evaluates an engineering organization's software security practices across 5 business functions comprising 15 security practices:
+
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/owasp-samm-functions.svg' | relative_url }}" alt="OWASP SAMM business functions: Governance, Design, Implementation, Verification, and Operations.">
+  <p class="diagram-caption">SAMM covers software assurance practices across the product lifecycle</p>
+</div>
+
+Each practice is scored independently from **Level 0** (unperformed) to **Level 3** (fully automated & optimized). SAMM does not mandate Level 3 maturity across all practices; organizations define target levels based on application risk profiles.
+
+## CIS Implementation Groups: Resource-Tiered Baselines
+
+Unlike C2M2 or SAMM, **[CIS Implementation Groups](https://www.cisecurity.org/controls/implementation-groups)** index safeguards according to organizational resources and threat exposure:
+
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cis-implementation-groups.svg' | relative_url }}" alt="CIS Controls implementation groups IG1, IG2, and IG3 as cumulative safeguard baselines.">
+  <p class="diagram-caption">Each implementation group builds on the safeguards below it</p>
+</div>
+
+- **IG1**: Essential cyber hygiene required for all organizations regardless of size.
+- **IG2**: Expanded safeguard coverage for enterprise environments managing sensitive customer data.
+- **IG3**: Full 153-safeguard baseline protecting critical infrastructure against advanced persistent threats (APTs).
+
+## NIST CSF Tiers: Governance Integration, Not Maturity
+
+NIST CSF 2.0 defines four **Implementation Tiers**: **Tier 1 (Partial)**, **Tier 2 (Risk Informed)**, **Tier 3 (Repeatable)**, and **Tier 4 (Adaptive)**.
+
+NIST explicitly clarifies that CSF Tiers are **not** a maturity level. Tiers measure how deeply cybersecurity risk management is integrated into broader corporate governance and how actively threat intelligence is shared externally. An organization operating at Tier 2 may maintain robust technical controls while deliberately keeping risk governance informal.
+
+## SLSA: Software Supply Chain Build Integrity Levels
+
+The **[SLSA Framework](https://slsa.dev/spec/v1.0/levels)** defines four build integrity levels specifically for software supply chains:
+
+- **Build Level 0**: Unmanaged build process with no provenance or integrity guarantees.
+- **Build Level 1**: Automated build script generates provenance data detailing build sources.
+- **Build Level 2**: Build runs on an isolated, hosted platform generating cryptographically signed provenance.
+- **Build Level 3**: Build platform enforces hermetic build isolation and protects signing keys against tampering.

@@ -1,0 +1,44 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">DNS cache poisoning attempt</title>
+  <desc id="description">The attacker tries to make a forged response win the race and enter the recursive resolver's cache.</desc>
+  <rect width="1200" height="400" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">DNS cache poisoning attempt</text>
+  <text x="50" y="88" font-size="16" fill="#475569">The attacker tries to make a forged response win the race and enter the recursive resolver's cache.</text>
+  
+    <g>
+      <rect x="50" y="135" width="330" height="220" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">1 · TRIGGER</text>
+      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Random query</text>
+      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Query a nonexistent</text>
+<text x="75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">bank.com name</text>
+    </g>
+
+    <g>
+      <rect x="435" y="135" width="330" height="220" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+      <text x="460" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">2 · RACE</text>
+      <text x="460" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Forged replies</text>
+      <text x="460" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Guess transaction data</text>
+<text x="460" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">and claim a fake answer</text>
+    </g>
+
+    <g>
+      <rect x="820" y="135" width="330" height="220" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+      <text x="845" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">3 · CONSEQUENCE</text>
+      <text x="845" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Poisoned cache</text>
+      <text x="845" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Later users receive</text>
+<text x="845" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">attacker-controlled data</text>
+    </g>
+    <path d="M388 245 L427 245" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <text x="407.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">CREATES LOOKUP</text>
+    <path d="M773 245 L812 245" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <text x="792.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">IF ACCEPTED</text>
+</svg>

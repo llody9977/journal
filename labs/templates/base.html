@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Field Journal Labs{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark">FJ</span>
+      Field Journal Labs
+    </a>
+    {% block header_extra %}{% endblock %}
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>Interactive companion to the <a href="https://llody9977.github.io/journal/">Field Journal</a> — educational only, never use real secrets here.</footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

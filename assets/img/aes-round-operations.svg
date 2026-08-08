@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">AES State Transformation Pipeline (FIPS 197)</title>
+  <desc id="description">Sequential 128-bit block transformation through substitution, permutation, column mixing, and round key XOR</desc>
+  <rect width="1200" height="340" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">AES State Transformation Pipeline (FIPS 197)</text>
+  <text x="50" y="88" font-size="16" fill="#475569">Sequential 128-bit block transformation through substitution, permutation, column mixing, and round key XOR</text>
+  
+    <g>
+      <!-- Card 0: Input -->
+      <rect x="50" y="110" width="200" height="155" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+      <text x="68" y="134" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">0 · INPUT</text>
+      <text x="68" y="158" font-size="17" font-weight="800" fill="#0f172a">Plaintext State</text>
+      <text x="68" y="184" font-size="13" font-weight="500" fill="#475569">128-bit block (16 bytes)</text>
+      <text x="68" y="204" font-size="13" font-weight="500" fill="#475569">Loaded into 4×4 matrix S</text>
+      <text x="68" y="224" font-size="13" font-weight="600" fill="#2563eb">Initial AddRoundKey (K₀)</text>
+
+      <!-- Arrow 0 -> 1 -->
+      <path d="M250 187 L270 187" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+      <!-- Card 1: SubBytes -->
+      <rect x="275" y="110" width="200" height="155" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+      <text x="293" y="134" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">1 · SUBSTITUTE</text>
+      <text x="293" y="158" font-size="17" font-weight="800" fill="#0f172a">SubBytes</text>
+      <text x="293" y="184" font-size="13" font-weight="500" fill="#475569">Non-linear S-Box table</text>
+      <text x="293" y="204" font-size="13" font-weight="500" fill="#475569">Byte-for-byte lookup</text>
+      <text x="293" y="224" font-size="13" font-weight="600" fill="#0f766e">Destroys linearity</text>
+
+      <!-- Arrow 1 -> 2 -->
+      <path d="M475 187 L495 187" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
+
+      <!-- Card 2: ShiftRows -->
+      <rect x="500" y="110" width="200" height="155" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+      <text x="518" y="134" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">2 · PERMUTE</text>
+      <text x="518" y="158" font-size="17" font-weight="800" fill="#0f172a">ShiftRows</text>
+      <text x="518" y="184" font-size="13" font-weight="500" fill="#475569">Cyclic row shifts</text>
+      <text x="518" y="204" font-size="13" font-weight="500" fill="#475569">Rows 0, 1, 2, 3 shifted</text>
+      <text x="518" y="224" font-size="13" font-weight="600" fill="#b45309">Diffuses column bits</text>
+
+      <!-- Arrow 2 -> 3 -->
+      <path d="M700 187 L720 187" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>
+
+      <!-- Card 3: MixColumns -->
+      <rect x="725" y="110" width="200" height="155" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5"/>
+      <text x="743" y="134" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">3 · MIX</text>
+      <text x="743" y="158" font-size="17" font-weight="800" fill="#0f172a">MixColumns</text>
+      <text x="743" y="184" font-size="13" font-weight="500" fill="#475569">Galois Field GF(2⁸) matrix</text>
+      <text x="743" y="204" font-size="13" font-weight="500" fill="#475569">Mixes column bytes</text>
+      <text x="743" y="224" font-size="13" font-weight="600" fill="#7c3aed">Omitted in final round</text>
+
+      <!-- Arrow 3 -> 4 -->
+      <path d="M925 187 L945 187" fill="none" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-violet)"/>
+
+      <!-- Card 4: AddRoundKey & Output -->
+      <rect x="950" y="110" width="200" height="155" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2.5"/>
+      <text x="968" y="134" font-size="11" font-weight="900" letter-spacing="1" fill="#15803d">4 · OUTPUT</text>
+      <text x="968" y="158" font-size="17" font-weight="800" fill="#0f172a">AddRoundKey</text>
+      <text x="968" y="184" font-size="13" font-weight="500" fill="#475569">XOR state matrix S with Kᵢ</text>
+      <text x="968" y="204" font-size="13" font-weight="500" fill="#475569">Repeats for N rounds</text>
+      <text x="968" y="224" font-size="13" font-weight="700" fill="#15803d">Emits 128-bit Ciphertext</text>
+
+      <!-- Bottom Round Count Summary Banner -->
+      <rect x="50" y="280" width="1100" height="38" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="600" y="304" text-anchor="middle" font-size="13.5" font-weight="700" fill="#334155">Processing Rounds (N):  AES-128 = 10 Rounds (11 Keys)   |   AES-192 = 12 Rounds (13 Keys)   |   AES-256 = 14 Rounds (15 Keys)</text>
+    </g>
+</svg>

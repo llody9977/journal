@@ -1,0 +1,31 @@
+<svg viewBox="0 0 1200 625" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Step-up authentication for a high-risk action</title>
+  <desc id="description">The API requires a fresher or stronger authentication context before allowing the transaction.</desc>
+  <rect width="1200" height="625" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Step-up authentication for a high-risk action</text>
+  <text x="50" y="88" font-size="16" fill="#475569">The API requires a fresher or stronger authentication context before allowing the transaction.</text>
+  <rect x="10" y="120" width="250" height="60" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/><text x="135" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Client</text><path d="M135 180 V590" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/>
+<rect x="475" y="120" width="250" height="60" rx="18" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/><text x="600" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Resource server</text><path d="M600 180 V590" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/>
+<rect x="940" y="120" width="250" height="60" rx="18" fill="#fffbeb" stroke="#b45309" stroke-width="3"/><text x="1065" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Authorization server</text><path d="M1065 180 V590" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/>
+    <path d="M135 220 L600 220" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="299.1" y="188" width="136.8" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="205" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">1. REQUEST TRANSFER</text>
+    <path d="M600 290 L135 290" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="277.5" y="258" width="180" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="275" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">2. INSUFFICIENT ASSURANCE</text><text x="367.5" y="314" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">401 or authorization response</text>
+    <path d="M135 360 L1065 360" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="502.8" y="328" width="194.4" height="24" rx="12" fill="#ffffff"/><text x="600" y="345" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">3. REQUEST STRONGER CONTEXT</text><text x="600" y="384" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">acr_values and max_age</text>
+    <path d="M1065 430 L135 430" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="535.2" y="398" width="129.6" height="24" rx="12" fill="#ffffff"/><text x="600" y="415" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">4. RE-AUTHENTICATE</text><text x="600" y="454" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">phishing-resistant authenticator</text>
+    <path d="M1065 500 L135 500" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="520.8" y="468" width="158.4" height="24" rx="12" fill="#ffffff"/><text x="600" y="485" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">5. ISSUE UPDATED TOKEN</text><text x="600" y="524" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">fresh authentication context</text>
+    <path d="M135 570 L600 570" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="305.5" y="538" width="124" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="555" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">6. RETRY TRANSFER</text><text x="367.5" y="594" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">API validates the stronger context</text>
+</svg>

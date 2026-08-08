@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Binding an access token to its sender</title>
+  <desc id="description">A stolen token is insufficient unless the caller also proves possession of the bound key.</desc>
+  <rect width="1200" height="520" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Binding an access token to its sender</text>
+  <text x="50" y="88" font-size="16" fill="#475569">A stolen token is insufficient unless the caller also proves possession of the bound key.</text>
+  
+    <g>
+      <rect x="50" y="135" width="535" height="275" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">RFC 8705</text>
+      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">mTLS-bound token</text>
+      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Token contains the client</text>
+<text x="75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">certificate thumbprint.</text>
+<text x="75" y="286" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569"></text>
+<text x="75" y="309" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">API validates the certificate</text>
+<text x="75" y="332" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">used on the TLS connection.</text>
+    </g>
+
+    <g>
+      <rect x="615" y="135" width="535" height="275" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+      <text x="640" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">RFC 9449</text>
+      <text x="640" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">DPoP-bound token</text>
+      <text x="640" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Client signs a proof JWT</text>
+<text x="640" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">for each HTTP request.</text>
+<text x="640" y="286" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569"></text>
+<text x="640" y="309" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">API matches the proof key</text>
+<text x="640" y="332" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">to the token's confirmation claim.</text>
+    </g><rect x="50" y="430" width="1100" height="55" rx="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="600" y="464" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">Replay from another client fails because the attacker does not possess the bound private key.</text>
+</svg>

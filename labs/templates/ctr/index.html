@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}CTR nonce reuse · Field Journal Labs{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('index') }}">&larr; All labs</a>{% endblock %}
+{% block content %}
+<h1>CTR nonce reuse: the two-time pad</h1>
+<p class="lede">AES-CTR turns the block cipher into a keystream generator: the same key and nonce always produce the exact same keystream, XORed onto whatever plaintext you give it. Reuse that key+nonce pair for a second message, and the keystream cancels out the moment the two ciphertexts are XORed together — no key required, no cryptanalysis, just XOR.</p>
+
+<div class="callout warn">
+  <span class="callout-title">Scope of this demo</span>
+  <p>Two short ASCII messages, deliberately encrypted with the same key and nonce — the one thing CTR mode can never tolerate. Use a throwaway random key and nonce, never real ones, and never reuse a nonce in anything real.</p>
+</div>
+
+<h2><span class="step-number">1</span>Get a key and nonce</h2>
+<div class="step">
+  <p>AES-128-CTR needs a 16-byte key and a 16-byte nonce (the full initial counter block, same size as <code>openssl</code>'s <code>-iv</code> for CTR mode).</p>
+  <div class="key-row">
+    <div class="field">
+      <label for="key-hex">Key (hex)</label>
+      <input type="text" id="key-hex" maxlength="32" placeholder="32 hex characters" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="nonce-hex">Nonce (hex)</label>
+      <input type="text" id="nonce-hex" maxlength="32" placeholder="32 hex characters" autocomplete="off">
+    </div>
+    <button type="button" class="secondary" id="gen-btn">Generate both</button>
+  </div>
+</div>
+
+<h2><span class="step-number">2</span>Encrypt two different messages with the same key and nonce</h2>
+<div class="step">
+  <p>This is the mistake the whole lab hinges on: two different plaintexts, but no new nonce for the second one.</p>
+  <div class="field">
+    <label for="message-a">Message A (ASCII only)</label>
+    <input type="text" id="message-a" maxlength="500" value="{{ default_message_a }}">
+  </div>
+  <div class="field">
+    <label for="message-b">Message B (ASCII only)</label>
+    <input type="text" id="message-b" maxlength="500" value="{{ default_message_b }}">
+  </div>
+
+  <div class="tabs">
+    <button type="button" class="tab-btn is-active" data-tab="build-local">Do it locally</button>
+    <button type="button" class="tab-btn" data-tab="build-web">Do it here</button>
+  </div>
+
+  <div class="tab-panel is-active" data-panel="build-local">
+    <p>1. Write each message to its own file:</p>
+    <pre><code class="cmd" data-template="printf '%s' '{MSGA}' > pA.bin
+printf '%s' '{MSGB}' > pB.bin">printf '%s' '&lt;message A&gt;' &gt; pA.bin
+printf '%s' '&lt;message B&gt;' &gt; pB.bin</code></pre>
+    <p>2. Encrypt both with the same key <em>and the same nonce</em>:</p>
+    <pre><code class="cmd" data-template="openssl enc -aes-128-ctr -K {KEY} -iv {NONCE} -in pA.bin -out cA.bin
+openssl enc -aes-128-ctr -K {KEY} -iv {NONCE} -in pB.bin -out cB.bin">openssl enc -aes-128-ctr -K &lt;key&gt; -iv &lt;nonce&gt; -in pA.bin -out cA.bin
+openssl enc -aes-128-ctr -K &lt;key&gt; -iv &lt;nonce&gt; -in pB.bin -out cB.bin</code></pre>
+  </div>
+
+  <div class="tab-panel" data-panel="build-web">
+    <p>The server encrypts both messages with the key and nonce above, using the same nonce for both on purpose.</p>
+    <form method="post" action="{{ url_for('ctr.build') }}">
+      <input type="hidden" name="key_hex" class="key-mirror">
+      <input type="hidden" name="nonce_hex" class="nonce-mirror">
+      <input type="hidden" name="message_a" class="message-a-mirror">
+      <input type="hidden" name="message_b" class="message-b-mirror">
+      <button type="submit">Encrypt both now</button>
+    </form>
+  </div>
+</div>
+
+<div class="callout">
+  <span class="callout-title">What comes next</span>
+  <p>Once both ciphertexts exist, the next screen is the attack: XOR them together, then peel off one message's plaintext to recover the other's — using only the ciphertexts, never the key.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ctr.js') }}"></script>
+{% endblock %}

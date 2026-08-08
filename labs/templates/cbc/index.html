@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}CBC bit-flipping · Field Journal Labs{% endblock %}
+{% block header_extra %}<a class="back-link" href="{{ url_for('index') }}">&larr; All labs</a>{% endblock %}
+{% block content %}
+<h1>CBC bit-flipping: confidentiality without integrity</h1>
+<p class="lede">AES-CBC keeps data secret, but on its own it never checks whether a ciphertext was tampered with. Flip a bit in one ciphertext block, and the <em>next</em> block's decrypted plaintext flips a corresponding bit too — precisely, predictably, and without ever knowing the key. That's an integrity failure, not a confidentiality one: the attacker still can't read anything, but they can rewrite a byte they already know.</p>
+
+<div class="callout warn">
+  <span class="callout-title">Scope of this demo</span>
+  <p>Uses a fixed, two-block fake session token so the block-to-block relationship stays easy to follow. Use a throwaway random key and IV — never a real one. The point of this lab is the integrity break itself, not the specific field below — that field is only there because it's the standard, widely-used illustration of what the break enables.</p>
+</div>
+
+<h2>The fake session token</h2>
+<div class="step">
+  <p>Two 16-byte blocks, plaintext, before any encryption:</p>
+  <table>
+    <thead><tr><th>Block</th><th>Content</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>{{ block1 }}</code></td><td>filler — this one absorbs the damage</td></tr>
+      <tr><td>2</td><td><code>{{ block2 }}</code></td><td>an authorization field a real app might trust: <code>isadmin=0</code></td></tr>
+    </tbody>
+  </table>
+  <p class="field-hint">In CBC, block 2's decrypted plaintext is <code>D(C2) XOR C1</code> — the previous block's <em>ciphertext</em>, not anything from the key, feeds directly into it. That's the whole vulnerability in one equation. This particular field is the same one used in <a href="https://cryptopals.com/sets/2/challenges/16">Cryptopals Set 2, Challenge 16</a>, a widely-cited teaching exercise for this exact class of bug (<a href="https://cwe.mitre.org/data/definitions/353.html">CWE-353</a> feeding into <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807</a>) — it's used here for the same reason, not as a claim that this is a complete, ready-to-run exploit against a real system.</p>
+</div>
+
+<h2><span class="step-number">1</span>Get a key and IV</h2>
+<div class="step">
+  <p>AES-128-CBC needs a 16-byte key <em>and</em> a 16-byte IV. Neither needs to be memorized — the IV isn't secret in real systems (it normally travels alongside the ciphertext); only the key does.</p>
+  <div class="key-row">
+    <div class="field">
+      <label for="key-hex">Key (hex)</label>
+      <input type="text" id="key-hex" maxlength="32" placeholder="32 hex characters" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="iv-hex">IV (hex)</label>
+      <input type="text" id="iv-hex" maxlength="32" placeholder="32 hex characters" autocomplete="off">
+    </div>
+    <button type="button" class="secondary" id="gen-btn">Generate both</button>
+  </div>
+</div>
+
+<h2><span class="step-number">2</span>Encrypt the token (this is what "the server" holds the key for)</h2>
+<div class="step">
+  <div class="tabs">
+    <button type="button" class="tab-btn is-active" data-tab="build-local">Do it locally</button>
+    <button type="button" class="tab-btn" data-tab="build-web">Do it here</button>
+  </div>
+
+  <div class="tab-panel is-active" data-panel="build-local">
+    <p>1. Build the plaintext file:</p>
+    <pre><code>python3 -c "open('plain.bin','wb').write(b'{{ block1 }}' + b'{{ block2 }}')"</code></pre>
+    <p>2. Encrypt it with your key and IV:</p>
+    <pre><code class="cmd" data-template="openssl enc -aes-128-cbc -K {KEY} -iv {IV} -nopad -in plain.bin -out cipher.bin">openssl enc -aes-128-cbc -K &lt;key&gt; -iv &lt;iv&gt; -nopad -in plain.bin -out cipher.bin</code></pre>
+  </div>
+
+  <div class="tab-panel" data-panel="build-web">
+    <p>The server builds the same plaintext and encrypts it with the key/IV above.</p>
+    <form method="post" action="{{ url_for('cbc.build') }}">
+      <input type="hidden" name="key_hex" class="key-mirror">
+      <input type="hidden" name="iv_hex" class="iv-mirror">
+      <button type="submit">Build the token now</button>
+    </form>
+  </div>
+</div>
+
+<div class="callout">
+  <span class="callout-title">What comes next</span>
+  <p>Once you have <code>cipher.bin</code> (or click "Build the token now"), the next screen is the attack itself — flipping the <code>isadmin</code> flag using only the ciphertext, no key involved.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/cbc.js') }}"></script>
+{% endblock %}

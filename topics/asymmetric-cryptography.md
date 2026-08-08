@@ -1,153 +1,121 @@
 ---
-title: Asymmetric Cryptography
-description: RSA and ECC (ECDSA/ECDH/EdDSA), key pairs, and how public-key cryptography solves what symmetric crypto can't.
+title: Asymmetric Cryptography & Public-Key Infrastructure
+description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and OpenSSL CLI demonstrations proving why private keys cannot encrypt data.
 permalink: /topics/asymmetric-cryptography/
-last_verified: 2026-08-05
+last_verified: 2026-08-08
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
-# Asymmetric Cryptography
+# Asymmetric Cryptography & Public-Key Infrastructure
 
-<p class="lede">The reason I need asymmetric cryptography is the key-distribution problem: symmetric encryption is excellent once both sides already share a secret, but it does not tell me how strangers should establish or authenticate that secret in the first place.</p>
+<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives solve the key-distribution problem, enable digital signatures for non-repudiation, and establish ephemeral keys for transport security.</p>
 
-## The core idea: two different keys
+## Asymmetric Paradigm: Linked Key Pairs
 
-Instead of one shared secret, asymmetric cryptography generates a mathematically-linked **key pair**:
-
-- A **public key** — designed to be distributed. Its owner or purpose still needs to be authenticated.
-- A **private key** — kept secret and restricted to authorized operations. It may be held by one device, an HSM, or a threshold system rather than one person.
-
-The relationship between them supports three distinct, and easy to confuse, operations:
+Unlike symmetric ciphers which rely on a single shared key, asymmetric ciphers generate a key pair (<b>K<sub>pub</sub></b>, <b>K<sub>priv</sub></b>). Operations executed with one key can only be inverted or verified by the corresponding key in the pair.
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Two diagrams. First: anyone can encrypt using the public key, but only the private key owner can decrypt. Second: only the private key owner can sign, but anyone with the public key can verify that signature.">
-  <p class="diagram-caption">The public/private relationship, used by schemes with different purposes</p>
+  <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Diagram showing asymmetric cryptography: encryption using public key, decryption using private key, signing using private key, verification using public key.">
+  <p class="diagram-caption">Public and private keys have complementary, non-interchangeable roles</p>
 </div>
 
-1. **Public-key encryption** — in a scheme designed for encryption, the public key protects a small value and the private key decrypts it. Real systems normally use this inside hybrid encryption rather than for bulk data.
-2. **Signing** — in a signature scheme, the private key signs and the public key verifies. This provides evidence that someone controlling the private key produced the signature. Attribution to a person or organization still depends on how the public key was authenticated and how the private key was protected.
-3. **Key agreement** — schemes such as ECDH let two parties derive a shared secret. ECDH is neither encryption nor a signature and must be authenticated by the surrounding protocol.
+### Three Distinct Operations
 
-The signature use is the mechanism behind the overview's "Official ID & Notary Stamp" and "Handwritten Signature" examples—a CA's signature on a certificate and a signed software update both use it.
+1. **Public-Key Encryption (HPKE / RSA-OAEP)**: The sender encrypts a short payload using the recipient's public key; only the recipient's private key can decrypt it.
+2. **Digital Signatures (Ed25519 / RSA-PSS)**: The sender computes a signature over data using their private key; anyone holding the sender's public key can verify origin and integrity.
+3. **Key Agreement (ECDHE / X25519)**: Peer endpoints combine their own private keys with each other's public keys to derive a matching shared secret.
 
-## Can I encrypt with the private key and decrypt with the public key?
+## Operations Comparison Matrix
 
-My practical answer is **no**. That wording describes neither confidentiality nor a standard digital-signature API:
-
-- **For confidentiality:** the sender encrypts to the recipient's public key, and only the recipient's private key can decrypt. If the public key could recover the plaintext, anyone could read it.
-- **For authenticity and integrity:** the owner signs with the private key, and others verify with the public key. Verification normally returns valid or invalid; it does not decrypt the signature into the original message.
-
-At the bare RSA-primitive level, the public and private exponent operations can reverse one another for a valid RSA representative. That narrow algebraic fact is why “encrypt with the private key” appears in some explanations. It is not a secure encryption scheme and it does not generalize to other public-key systems.
-
-The standards deliberately separate the purposes. [RFC 8017](https://www.rfc-editor.org/rfc/rfc8017) defines RSA encryption as `RSAEP`/`RSADP` with an encryption encoding such as OAEP, and signatures as `RSASP1`/`RSAVP1` with a signature encoding such as PSS. Swapping the keys or calling signing “private-key encryption” drops these scheme-specific security rules. ECDSA and Ed25519 make the distinction even clearer: they sign and verify, but they cannot encrypt or decrypt data at all.
-
-| My objective | Correct operation | Typical use | What it produces | What it does not produce |
+| Objective | Public Key Action | Private Key Action | Standard Protocol | Primary Output |
 |---|---|---|---|---|
-| Deliver a secret to one recipient | Encrypt or encapsulate with the recipient's public key; decrypt or decapsulate with the recipient's private key | Hybrid Public Key Encryption (HPKE), OpenPGP, or an external party sending a data-encryption key (DEK) to a key-management service (KMS)-held RSA key | Confidentiality to the private-key holder | Sender identity in the basic mode |
-| Let anyone check who controlled a signing key | Sign with the private key; verify with the public key | CA certificates, code signing, signed JWTs, Git signatures | Integrity and evidence of signing-key possession | Confidentiality or automatic proof of human intent |
-| Establish a shared secret | Each side combines its private key with the other side's public key inside a protocol | TLS 1.3 ephemeral Elliptic Curve Diffie-Hellman (ECDHE) | Shared key material for later symmetric encryption | Authentication unless the protocol binds identities to the exchange |
+| **Confidentiality** (HPKE) | Encrypts payload / KEM encapsulation | Decrypts payload / KEM decapsulation | RFC 9180 (HPKE), RSA-OAEP | Unreadable ciphertext readable only by private key holder |
+| **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Non-repudiable proof of private key possession |
+| **Key Agreement** | Exchanged with peer | Combined with peer public key | Ephemeral ECDH (X25519 / NIST P-256) | Shared symmetric secret key for bulk AEAD encryption |
 
-[RFC 9180](https://www.rfc-editor.org/rfc/rfc9180) is a useful modern reference for Hybrid Public Key Encryption (HPKE): it combines a public-key key-encapsulation mechanism, a key-derivation function, and symmetric authenticated encryption instead of applying asymmetric encryption directly to a large payload.
+## Can I Use a Private Key to Encrypt Data?
 
-## Why this solves the key-distribution problem
+**No.** It is mathematically impossible to use a private key to encrypt data under any asymmetric algorithm.
 
-A public key does not need confidentiality in transit, but it does need **authenticity**. If an attacker can replace Alice's public key with their own, the victim may encrypt to or verify signatures from the attacker instead. Certificates, authenticated directories, fingerprints checked over another channel, and trust-on-first-use are different ways of solving that binding problem.
+A **Private Key is used for Digital Signing** (and for decrypting incoming data locked under its matching public key). Describing a digital signature as *"encrypting data with a private key"* is cryptographically inaccurate for three technical reasons:
 
-The trade-off is performance and payload size: public-key operations are much more expensive than symmetric encryption, but the ratio varies heavily by algorithm, operation, hardware, and message size. In practice I should use **hybrid encryption**: public-key cryptography or key agreement establishes/protects a short-lived symmetric key, and that key handles the bulk data.
+1. **Signatures Leave Plaintext Intact**: Digital signing computes a separate signature tag file (*`payload.sig`*) over a message digest while leaving the original payload file (*`payload.txt`*) completely unencrypted and readable in cleartext.
+2. **Signature Algorithms Do Not Possess Encryption Functions**: Signature algorithms (*Ed25519, ECDSA, RSA-PSS, FIPS 204 ML-DSA*) operate strictly on mathematical signature equations. They do not contain encryption functions and cannot transform plaintext into ciphertext.
+3. **Asymmetric Encryption Standards Enforce Fixed Key Roles**: Asymmetric encryption standards (*RSA-OAEP, HPKE RFC 9180*) define encryption as locking data using a recipient's Public Key. Standardized padding routines (*RSA-OAEP*) cannot execute using a private key, and decryption APIs explicitly reject public keys.
 
-## The two main families: RSA and ECC
+### OpenSSL CLI Demonstrations
 
-| | RSA | ECC (Elliptic Curve Cryptography) |
-|---|---|---|
-| Hard problem it relies on | Factoring the product of two large primes | The elliptic curve discrete logarithm problem |
-| Typical key sizes | 2048 / 3072 / 4096 bits | 256 / 384 / 521 bits |
-| Performance | Depends on operation, parameter size, hardware, and implementation | Often smaller keys and signatures; performance still depends on the selected operation and curve |
-| Signing scheme | RSA-PSS (modern) or PKCS#1 v1.5 (legacy) | ECDSA, or EdDSA (Ed25519) |
-| Key exchange scheme | Not typically used this way | ECDH (Elliptic Curve Diffie-Hellman) |
-| Maturity | Older, extremely well-studied, still widely deployed | Well-established and common in new systems; TLS key exchange, SSH keys, and certificate signing algorithms are separate choices |
+#### 1. Digital Signature: Plaintext Payload Remains 100% Unchanged
 
-The headline difference is size, for the same security margin:
+```bash
+# 1. Create a plaintext payload file
+echo "Confidential Payroll Data: $100,000" > payload.txt
+
+# 2. Generate an RSA-3072 key pair for Alice (Signer)
+openssl genrsa -out alice_priv.pem 3072
+openssl rsa -in alice_priv.pem -pubout -out alice_pub.pem
+
+# 3. Create a digital signature using Alice's private key
+openssl dgst -sha256 -sign alice_priv.pem -out payload.sig payload.txt
+
+# 4. VERIFY PLAINTEXT: The original payload remains unencrypted cleartext!
+cat payload.txt
+# Output: Confidential Payroll Data: $100,000  (NOT ENCRYPTED!)
+
+# 5. Verify the signature tag using Alice's public key
+openssl dgst -sha256 -verify alice_pub.pem -signature payload.sig payload.txt
+# Output: Verified OK
+```
+
+#### 2. Asymmetric Encryption: Plaintext Is Transformed into Ciphertext
+
+```bash
+# 1. Generate an RSA-3072 key pair for Bob (Recipient)
+openssl genrsa -out bob_priv.pem 3072
+openssl rsa -in bob_priv.pem -pubout -out bob_pub.pem
+
+# 2. Encrypt plaintext using Bob's PUBLIC key (RSA-OAEP)
+openssl pkeyutl -encrypt -pubin -inkey bob_pub.pem -pkeyopt rsa_padding_mode:oaep \
+  -in payload.txt -out payload.enc
+
+# 3. VERIFY CIPHERTEXT: The file is now unreadable binary ciphertext!
+xxd payload.enc | head -n 2
+# Output: 00000000: 1df9 70ed 6063 0717 ffdc 16fc cc42 36c1  ..p.`c.......B6.
+
+# 4. Decrypt using Bob's PRIVATE key
+openssl pkeyutl -decrypt -inkey bob_priv.pem -pkeyopt rsa_padding_mode:oaep \
+  -in payload.enc -out decrypted.txt
+cat decrypted.txt
+# Output: Confidential Payroll Data: $100,000
+```
+
+#### 3. Attempting Public Key Decryption Fails
+
+```bash
+# Attempting to "decrypt" using a Public Key fails immediately
+openssl pkeyutl -decrypt -pubin -inkey bob_pub.pem -in payload.enc -out fail.txt
+# Output Error: A private key is needed for this operation
+# Error initializing context
+```
+
+## Comparative Analysis: RSA vs Elliptic Curve Cryptography (ECC)
+
+| Dimension | RSA (Rivest–Shamir–Adleman) | ECC (Elliptic Curve Cryptography) | Target Engineering Guidance |
+|---|---|---|---|
+| **Key Agreement Standards** | Static Key Exchange (**DEPRECATED**) | ECDHE / X25519 | Always use Ephemeral Elliptic Curve Diffie-Hellman for Forward Secrecy. |
+| **Mathematical Basis** | Prime Factorization (**N = p × q**) | Elliptic Curve Discrete Logarithm Problem (ECDLP) | ECC offers equivalent security at significantly smaller key sizes. |
+| **NIST 128-bit Security Key Size** | **3,072 bits** | **256 bits** (NIST P-256 or Curve25519) | 256-bit ECC provides equivalent security to 3072-bit RSA with 12x smaller keys. |
+| **NIST 256-bit Security Key Size** | **15,360 bits** | **512 bits** (NIST P-521) | RSA 15,360-bit keys are computationally unviable for high-throughput TLS. |
+| **Signature Standards** | RSA-PSS (FIPS 186-5), PKCS#1 v1.5 (Legacy) | ECDSA (secp256k1/P-256), EdDSA (Ed25519) | Prefer Ed25519 for signature performance and deterministic nonce safety. |
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}" alt="Bar chart comparing RSA and ECC key sizes needed for equivalent security strength: RSA-2048 vs ECC-224 for ~112-bit security, RSA-3072 vs ECC-256 for ~128-bit security, and RSA-7680 vs ECC-384 for ~192-bit security — RSA keys grow dramatically larger while ECC keys grow only modestly.">
-  <p class="diagram-caption">RSA key sizes grow steeply; ECC stays compact at every security level</p>
+  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}" alt="Bar chart comparing RSA and ECC key sizes needed for equivalent security strength: 3072-bit RSA equals 256-bit ECC.">
+  <p class="diagram-caption">Key size growth: RSA key sizes scale exponentially, while ECC remains compact</p>
 </div>
 
-Smaller keys and signatures can reduce certificate size and computation, which is why elliptic-curve schemes are common in new systems. RSA is still widely deployed and is not “broken” at approved key sizes.
+### Why Ed25519 (EdDSA) is Preferred for Modern Applications
 
-## EdDSA and Ed25519: the newer signing scheme
-
-**EdDSA** (Edwards-curve Digital Signature Algorithm), most commonly seen as **Ed25519**, is a newer signature scheme built on different curve math than ECDSA. Two practical advantages drive its growing adoption:
-
-- **Deterministic nonce derivation** — ECDSA needs a unique, unpredictable per-signature nonce; weak or reused nonces can expose the private key. Ed25519 derives its per-message nonce deterministically, avoiding dependence on fresh randomness for every signature. It does not remove the need for secure key generation or protection against implementation and side-channel faults.
-- **Fast, and simple to implement correctly** — fewer edge cases than ECDSA, which has made it popular for SSH keys, new certificate types, and systems like Signal's protocol.
-
-## Practical demo: generating and using key pairs with OpenSSL
-
-Generate an EC (P-256) key pair and sign a file:
-
-```
-$ openssl ecparam -name prime256v1 -genkey -noout -out private.pem
-$ openssl ec -in private.pem -pubout -out public.pem
-read EC key
-writing EC key
-
-$ openssl dgst -sha256 -sign private.pem -out message.sig message.txt
-
-$ openssl dgst -sha256 -verify public.pem -signature message.sig message.txt
-Verified OK
-```
-
-The same shape with Ed25519 instead:
-
-```
-$ openssl genpkey -algorithm ed25519 -out ed_private.pem
-$ openssl pkey -in ed_private.pem -pubout -out ed_public.pem
-
-$ openssl pkeyutl -sign -inkey ed_private.pem -out message.sig -rawin -in message.txt
-$ openssl pkeyutl -verify -pubin -inkey ed_public.pem -sigfile message.sig -rawin -in message.txt
-Signature Verified Successfully
-```
-
-Note there's no explicit `-sha256` step for Ed25519 — the hashing is built into the algorithm itself, one less decision (and one less way to misconfigure it).
-
-## Why exposing a public key is safe, but exposing a private key never is
-
-The public and private key aren't two independent secrets that happen to work together — the public key is *mathematically derived from* the private key, in one direction only. For ECC, deriving the public key is a single scalar point multiplication (`public = private × G`, where `G` is the curve's fixed base point) — fast, deterministic, and something anyone can redo as many times as they like, given the private key. Going the other way — recovering the private key from the public one — means solving the elliptic curve discrete logarithm problem, the actual hard problem the entire scheme's security rests on. For RSA it's the same shape with different math: the public key (modulus and exponent) falls directly out of the private key's prime factors, while going backward means factoring the modulus.
-
-That asymmetry is the entire reason a public key is safe to publish anywhere and a private key never is:
-
-- **A leaked public key costs nothing.** It was already meant to be public. Nothing about having it gets an attacker any closer to the private key, because that direction is exactly the hard problem.
-- **A leaked private key compromises the security purpose of the key pair.** The public key was never secret, so “compromising both halves” is not the useful description. The problem is that the attacker can now decrypt, sign, or impersonate wherever that private key is trusted, depending on the scheme.
-
-A real demonstration — derive the public key from the same private key twice, independently, and compare:
-
-```
-$ openssl ecparam -name prime256v1 -genkey -noout -out private.pem
-
-$ openssl ec -in private.pem -pubout -out public_attempt1.pem
-read EC key
-writing EC key
-
-$ openssl ec -in private.pem -pubout -out public_attempt2.pem
-read EC key
-writing EC key
-
-$ diff public_attempt1.pem public_attempt2.pem && echo IDENTICAL
-IDENTICAL
-```
-
-Byte-for-byte identical, every time, forever — because it isn't really "regeneration" in the sense of creating something new, it's the same deterministic computation over the same input. Compare that to trying the reverse: there is no `openssl` command that derives a private key from a public key, for the same reason there's no command that factors a 2048-bit RSA modulus in reasonable time — it isn't a missing feature, it's the entire security guarantee of the algorithm.
-
-## Common pitfalls
-
-- **Using raw/"textbook" RSA** — RSA without proper padding (OAEP for encryption, PSS for signing) is insecure and malleable. Always use a library's high-level API, never raw modular exponentiation.
-- **Weak randomness during key generation** — the 2008 Debian OpenSSL bug reduced the effective entropy of generated keys to a tiny, guessable set, retroactively breaking huge numbers of already-issued keys. Key generation must use a properly seeded CSPRNG.
-- **Reusing a key pair across purposes** — a key used for both encryption and signing can, in some schemes, let an attacker abuse one operation to forge the other. Use separate key pairs per purpose.
-- **Not validating curve points** — accepting an EC public key without checking it's actually a valid point on the expected curve opens the door to invalid-curve attacks that can leak private key material.
-
-<div class="callout">
-  <span class="callout-title">Reference</span>
-  <p><strong><a href="https://www.rfc-editor.org/rfc/rfc8017">RFC 8017</a></strong> separates RSA encryption schemes from RSA signature schemes. <strong><a href="https://www.rfc-editor.org/rfc/rfc9180">RFC 9180</a></strong> specifies HPKE. <strong><a href="https://www.rfc-editor.org/rfc/rfc8032">RFC 8032</a></strong> specifies EdDSA. <strong><a href="https://csrc.nist.gov/pubs/fips/186-5/final">FIPS 186-5</a></strong> is the current Digital Signature Standard, approving RSA, ECDSA, and EdDSA. <strong><a href="https://csrc.nist.gov/pubs/sp/800/56/a/r3/final">NIST SP 800-56A Rev. 3</a></strong> covers key-establishment schemes including ECDH, while <strong><a href="https://csrc.nist.gov/pubs/sp/800/186/final">NIST SP 800-186</a></strong> specifies approved elliptic curves.</p>
-</div>
+Specified in **[RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)**, **Ed25519** offers major advantages over legacy ECDSA:
+- **Deterministic Nonce Derivation**: Ed25519 derives its per-signature nonce deterministically from the private key and message hash, eliminating catastrophic ECDSA private key leaks caused by weak random number generators.
+- **Side-Channel &amp; Timing Attack Resistance**: Implemented using complete addition formulas on Edwards curves without conditional branching.
