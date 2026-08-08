@@ -1,83 +1,101 @@
 ---
 title: Threats, Vulnerabilities & Risk
-description: My foundation for assets, threats, vulnerabilities, likelihood, impact, controls, treatment, and residual risk.
+description: Technical framework for evaluating threat sources, vulnerability metrics (CVSS v4.0, EPSS, CISA KEV), risk response strategies (NIST SP 800-39), and residual risk governance.
 permalink: /topics/risk-fundamentals/
-last_verified: 2026-08-05
+last_verified: 2026-08-07
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
 
 # Threats, Vulnerabilities & Risk
 
-<p class="lede">Risk connects something I value to possible harm. I do not treat every vulnerability as equally urgent: I ask which threat could exploit or trigger it, what impact would follow, how likely that scenario is, which controls already change it, and what risk remains.</p>
+<p class="lede">Risk connects high-value enterprise assets to plausible threat scenarios. Engineering effective defenses requires distinguishing software vulnerabilities from actual risk exposure: evaluating adversary capability, reachability, potential magnitude of impact, existing control efficacy, and residual risk governance approved by authorized executive risk owners.</p>
 
-## What: keep the parts of risk separate
-
-My shortest model is:
-
-> A threat event exploits or triggers a vulnerability, causing an impact to an asset. Existing controls change the likelihood, impact, or time needed to detect, respond, and recover.
-
-| Term | Meaning in my assessment |
-|---|---|
-| **Asset** | A person, service, process, dataset, device, facility, reputation, or other thing of value |
-| **Threat source** | The actor, condition, accident, or environmental cause that could create harm |
-| **Threat event** | The harmful event or action that may occur |
-| **Vulnerability** | A weakness in design, implementation, configuration, process, or control that the event could exploit or trigger |
-| **Likelihood** | How plausible the event and resulting impact are under the stated conditions |
-| **Impact** | The harm to operations, assets, people, other organizations, or obligations |
-| **Risk** | The significance of the possible harm, considering likelihood and impact |
-| **Control** | A safeguard or countermeasure intended to change the risk |
-| **Residual risk** | The risk remaining after existing or planned responses are considered |
-
-These terms follow the risk factors used in [NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final). `Likelihood × impact` is a useful reminder, not a universal mathematical formula. A number is only useful when the underlying scenario, assumptions, scale, evidence, and uncertainty are clear.
-
-## So what: a vulnerability is not the whole risk
-
-Suppose a payroll service allows administrators to change employee bank details:
-
-- employee salary data and payments are the **assets**;
-- a criminal using stolen administrator credentials is the **threat scenario**;
-- broad administrator access and no independent approval are **vulnerabilities**;
-- diverted salary, recovery work, distress, and loss of trust are possible **impacts**;
-- phishing-resistant authentication, narrow privileges, dual approval, change alerts, and audit logs are **controls**.
-
-The severity of one software flaw does not answer the whole risk question. I still need to know whether the vulnerable component is reachable, whether the attacker has the required conditions, what data or action is exposed, which controls interrupt the path, and what harm would result.
-
-The reverse is also true: serious risk can exist without a software vulnerability. A critical service may depend on one supplier, one administrator, one region, or an unsafe business process.
-
-## Assess risk as a scenario
-
-For each material scenario, I record:
-
-1. **Scope and assumptions.** Which system, process, time period, and operating conditions am I assessing?
-2. **Asset and objective.** What matters, and which security property could be lost?
-3. **Threat source and event.** Who or what could cause the harm, and what would happen?
-4. **Vulnerability or predisposing condition.** Why could the event succeed or have serious consequences?
-5. **Existing controls.** Which controls are actually operating, and what evidence supports that claim?
-6. **Likelihood and impact.** What supports the rating, and how uncertain is it?
-7. **Risk response.** Who owns the decision, what will change, and by when?
-8. **Residual risk.** What remains, who accepts it, and what should trigger reassessment?
-
-I avoid false precision. A qualitative `low / medium / high` scale can work when its criteria are defined. A score such as `4 × 5 = 20` does not become objective merely because it uses numbers.
-
-## Now what: choose and verify a risk response
-
-I can:
-
-- **Avoid** the risk by stopping the activity that creates it.
-- **Reduce** likelihood or impact with controls.
-- **Share or transfer** some consequences through another party, contract, or insurance without assuming responsibility disappears.
-- **Accept** the residual risk when the authorized owner understands the basis and consequences.
-
-For the payroll example, requiring independent approval may reduce the likelihood that one compromised account can redirect a payment. I then test the real workflow: can the same person still initiate and approve through another role, API, emergency path, or shared account? The control is not validated until the failure path has been exercised.
-
-<div class="callout">
-  <span class="callout-title">What I need to remember</span>
-  <p>I assess a risk scenario, not a vulnerability in isolation. I connect the asset, threat event, weakness, likelihood, impact, controls, evidence, owner, and residual risk.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/risk-fundamentals-engine.svg' | relative_url }}" alt="Threats, Vulnerabilities & Risk Engine diagram showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.">
+  <p class="diagram-caption">Threats, Vulnerabilities &amp; Risk Engine: Threat Scenario &amp; CVSS/EPSS Evaluation → Risk Treatment Options (Avoid, Reduce, Transfer, Accept) → Residual Risk Governance (NIST SP 800-30 / SP 800-39)</p>
 </div>
 
-## Primary references
+## The NIST SP 800-30 & SP 800-39 Risk Taxonomy
 
-- **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** — risk factors and assessment process.
-- **[NIST risk glossary](https://csrc.nist.gov/glossary/term/risk)** — risk definitions from NIST publications.
-- **[NIST security-control glossary](https://csrc.nist.gov/glossary/term/security_control)** — safeguards and countermeasures.
+Under **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** (Risk Assessment) and **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** (Risk Response & Governance), formal risk evaluation breaks down into ten discrete architectural factors:
+
+| Risk Factor | Formal NIST Standard Definition | Technical Realization Example | Primary Risk Role |
+|---|---|---|---|
+| **Asset** | An entity of value to the organization requiring security protection. | Customer PII database, payment ledger, core API gateway. | Target of security objectives (*CIA invariants*). |
+| **Threat Source** | Intent and capability to execute harm against an enterprise asset. | Cybercriminal syndicate, nation-state APT group, insider threat. | Originator of hostile activity. |
+| **Threat Event** | Specific harmful action executed by a threat source. | SQL injection attack, ransomware encryption, DDoS payload. | Actionable attack vector. |
+| **Vulnerability** | A weakness in design, code, configuration, or operational process. | Un-sanitized API parameter, unpatched library CVE, weak IAM rule. | Weakness exploited by threat events. |
+| **Predisposing Condition** | Environmental factor increasing the likelihood of exploitation. | Public internet exposure, flat network topology, missing mTLS. | Exposure multiplier. |
+| **Likelihood** | Plausibility that a threat event occurs and succeeds (**NIST SP 800-30**). | Rated High if exploit code is public and endpoint is routable. | Exploitation probability factor. |
+| **Impact** | Extent of harm resulting from successful vulnerability exploitation. | Financial loss, regulatory fine, operational downtime, breach notification. | Magnitude of potential harm. |
+| **Risk Exposure** | Overall significance of potential harm (**Risk = Likelihood × Impact**). | Qualitative rating (*Low/Med/High*) or quantitative FAIR financial loss (USD). | Decision metric for risk treatment. |
+| **Security Control** | Technical safeguard deployed to alter risk likelihood or impact. | Web Application Firewall (WAF), WebAuthn MFA, AES-256 encryption. | Mitigating countermeasure. |
+| **Residual Risk** | Exposure remaining after security controls operate (**NIST SP 800-39**). | Exposure approved and accepted by executive asset owners. | Net organization risk posture. |
+
+## Vulnerability Metrics & Exploit Scoring Frameworks
+
+Evaluating a vulnerability in isolation does not equal assessing risk. Engineering teams combine three complementary vulnerability metrics to prioritize remediations:
+
+| Vulnerability Metric | Scoring Philosophy &amp; Scale | Core Evaluation Vector | Primary Engineering Application |
+|---|---|---|---|
+| **CISA Known Exploited Vulnerabilities (KEV)** | Authoritative catalog of vulnerabilities confirmed to be exploited in active attacks (**[CISA KEV Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)**). | Validated real-world exploitation in active threat actor campaigns. | Mandatory emergency patch SLAs for federal &amp; enterprise infrastructure. |
+| **Common Vulnerability Scoring System (CVSS v4.0)** | Standardized severity rating (0.0 to 10.0) based on intrinsic flaw characteristics (**[FIRST CVSS v4.0](https://www.first.org/cvss/v4.0/specification-document)**). | Evaluates Attack Vector (AV), Complexity (AC), Privileges Required (PR), User Interaction (UI), and Impact Metrics. | Base technical severity triage, SAST/DAST scanner prioritization, SLA patch windows. |
+| **Exploit Prediction Scoring System (EPSS)** | Data-driven probability score (0.0 to 1.0 / 0% to 100%) predicting exploitation in the wild over 30 days (**[FIRST EPSS](https://www.first.org/epss/)**). | Analyzes threat intelligence feeds, public exploit code availability, and real-world attack activity. | Dynamic patch prioritization, filtering low-probability CVSS Critical flaws. |
+
+## Vulnerability Reachability Analysis & Derivation Framework
+
+Determining whether a vulnerability creates actionable risk requires conducting **Reachability Analysis**. A flaw in an un-called library function or an un-routable subnet presents zero immediate reachability (**Reachability = 0.0**). Security engineering derives reachability across four technical evaluation layers:
+
+| Reachability Derivation Layer | Derivation Mechanism &amp; Tooling | Technical Verification Target | Impact on Risk Exposure |
+|---|---|---|---|
+| **Dynamic Execution Tracing (IAST / eBPF)** | Monitored via Interactive Application Security Testing (IAST) agents or eBPF kernel probes during staging/production runtime. | Verifies whether the vulnerable code path or library function is loaded into memory and executed under real workloads. | **Confirmed Runtime Execution**: Highest reachability multiplier (**1.0**). |
+| **Identity &amp; Authorization Boundaries (RBAC / ABAC)** | Audited via Policy Decision Points (PDPs), OPA policies, and API Gateway Policy Enforcement Points (PEPs). | Verifies whether unauthenticated external callers can trigger the route or if fine-grained authorization gates block access prior to execution. | **Gated Auth Access**: Reduces reachability to authenticated, authorized identities (**0.2 to 0.5**). |
+| **Network Perimeter Exposure (VPC / Ingress / mTLS)** | Evaluated via network topology maps, ingress Security Groups, VPC routing tables, and mTLS sidecar policies. | Verifies whether the vulnerable service endpoint is directly routable from the public internet or isolated within private internal subnets. | **Isolated VPC Subnet**: Eliminates public internet reachability (**0.0**). |
+| **Static Call-Graph Analysis (SAST / AST Tracing)** | Traced via Static Application Security Testing (SAST) and Software Composition Analysis (SCA) call-graph generators. | Analyzes the application Abstract Syntax Tree (AST) to verify if public entry points transitively invoke the vulnerable third-party method. | **Dead / Un-called Code**: Confirms flaw is unreachable from public API endpoints (**0.0**). |
+
+## Composite Vulnerability Risk Scoring Models & Standards
+
+Relying solely on CVSS severity leads to patch fatigue. Modern security standards combine **CVSS**, **EPSS**, **CISA KEV**, **Reachability**, and **Asset Criticality** into multi-parameter decision models:
+
+| Composite Scoring Framework | Governing Body / Origin | Core Decision Input Vectors | Actionable Output &amp; Remediation SLA |
+|---|---|---|---|
+| **CISA &amp; CMU SSVC (Stakeholder-Specific Vulnerability Categorization)** | Carnegie Mellon University SEI &amp; CISA (**[CISA SSVC Guide](https://www.cisa.gov/stakeholder-specific-vulnerability-categorization-ssvc)**). | Decision tree evaluating **Exploitation** (*KEV/EPSS*), **Exposure** (*Reachability*), **Automatable** (*Wormable*), and **Mission Impact**. | Decision Categories: **Track** (De-prioritized), **Track***, **Attend**, or **Act** (Emergency patch within 24-72 hours). |
+| **CVSS v4.0 BTE (Base + Threat + Environmental)** | FIRST.org (**[CVSS v4.0 Spec](https://www.first.org/cvss/v4.0/specification-document)**). | Combines Base Flaw Severity + **Threat Metrics** (*EPSS / KEV exploit maturity*) + **Environmental Metrics** (*Modified reachability &amp; mTLS controls*). | Composite score (0.0 to 10.0) reflecting real-world environment risk rather than theoretical severity. |
+| **EPSS + CVSS Triage Matrix (FIRST / CISA Model)** | FIRST EPSS &amp; CISA Guidance. | Dual-axis matrix mapping **CVSS Base Score** (≥ 7.0) against **EPSS Exploit Probability** (> 10%) and **CISA KEV** active attack status. | Categorizes vulnerabilities into **Emergency Patch** (CVSS ≥ 7 + EPSS > 10% + KEV), **Scheduled Patch**, or **Monitor**. |
+| **Risk-Based Vulnerability Management (RBVM / VPR)** | Gartner &amp; Enterprise Vulnerability Vendors (*Tenable VPR / Qualys TruRisk*). | Dynamic algorithm weighting **CVE Flaw Severity** × **Exploit Threat Telemetry** × **Asset Criticality** × **Network Reachability**. | Dynamic Risk Score (1 to 1000) driving automated ticket escalation in CI/CD and ITSM workflows. |
+
+## Vulnerability vs Actual Risk Exposure Matrix
+
+A software vulnerability score (CVSS) does not equal total risk exposure. Actual risk depends on reachability, threat capability, and existing control coverage:
+
+| System Scenario &amp; Architectural Context | Base Vulnerability Score (CVSS) | Reachability &amp; Exposure Offset | True Risk Significance |
+|---|---|---|---|
+| **Internal Microservice RCE behind mTLS** | **CVSS 9.8** (Critical) | Non-routable internal VPC subnet requiring valid SPIFFE mTLS certs. | **MODERATE RISK**: Compensating network controls reduce likelihood; scheduled patch window. |
+| **Legacy TLS 1.0 Support on Public Web Endpoint** | **CVSS 5.3** (Medium) | Internet-exposed public endpoint storing financial PII. | **HIGH REGULATORY RISK**: Violates PCI-DSS 4.0 compliance mandatory requirements. |
+| **Public API Gateway SQL Injection** | **CVSS 9.8** (Critical) | Internet-routable, unauthenticated public endpoint. | **CRITICAL IMMEDIATE RISK**: Emergency patch deployment required within 24 hours. |
+| **Single-Zone Cloud Database Dependency** | **No CVE Score** (N/A) | No software bug present; reliance on single cloud availability zone. | **HIGH AVAILABILITY RISK**: Structural failure mode mitigated via multi-region replication. |
+
+## The Four Risk Response Strategies (NIST SP 800-39 / ISO 31000)
+
+When a risk assessment identifies exposure exceeding organizational risk appetite, security leadership selects one of four formal treatments:
+
+| Risk Treatment Strategy | Strategic Objective | Governing Mechanism | Technical Realization Example |
+|---|---|---|---|
+| **Accept** | Formally acknowledge and record residual risk when mitigation cost exceeds impact. | Executive risk sign-off &amp; risk register tracking. | CISO / VP of Engineering sign-off on accepted legacy software risk with 90-day review triggers. |
+| **Avoid** | Eliminate the risk vector completely by terminating the vulnerable feature. | Architecture deprecation &amp; protocol removal. | Disabling legacy TLS 1.0/1.1 support or removing un-maintained third-party webhooks. |
+| **Reduce (Mitigate)** | Lower likelihood or magnitude of impact by deploying technical safeguards. | Implementing **NIST SP 800-53 Rev. 5** security controls. | Enforcing WebAuthn FIDO2 MFA (AAL2), mTLS, WAF rate limits &amp; AES-256 database encryption. |
+| **Transfer (Share)** | Shift financial or operational loss exposure to external third parties. | Contractual SLAs &amp; financial coverage policies. | Procuring cybersecurity insurance policies &amp; delegating infrastructure to managed cloud providers. |
+
+## Essential Risk Assessment Diagnostic Checklist
+
+When evaluating an enterprise risk assessment or vulnerability management pipeline, evaluate these 6 diagnostic questions:
+
+| Diagnostic Focus Area | Key Architectural Evaluation Question | Target Verification &amp; Audit Evidence |
+|---|---|---|
+| **Contextual Reachability** | Are CVSS severity scores adjusted based on network reachability, identity boundaries, and compensating controls? | Network topology maps, mTLS sidecar configs &amp; SAST reachability audits. |
+| **Continuous Monitoring** | Is there an automated trigger to re-evaluate risk when major architectural changes or new CVEs occur? | Continuous Monitoring reports (**NIST SP 800-137**) &amp; CI/CD security triggers. |
+| **Control Efficacy** | Are existing security controls verified as actively operating before calculating residual risk? | Automated SIEM telemetry logs, penetration test reports &amp; SAST/DAST evidence. |
+| **Executive Governance** | Is all accepted residual risk formally signed off by an authorized executive asset owner (**NIST SP 800-39**)? | Executive risk sign-off records &amp; GRC risk register approval trails. |
+| **Exploit Intelligence** | Are vulnerability patch priorities driven by real-world exploitation telemetry (**EPSS &amp; CISA KEV**)? | Vulnerability management SLA reports &amp; EPSS prioritization dashboards. |
+| **Scenario Completeness** | Does the risk assessment evaluate all six components (*Asset, Threat Source, Event, Vulnerability, Likelihood, Impact*)? | Documented Risk Register matrices (**NIST SP 800-30 Rev. 1**). |

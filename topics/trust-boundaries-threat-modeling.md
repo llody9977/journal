@@ -1,77 +1,78 @@
 ---
 title: Trust Boundaries & Threat Modeling
-description: My practical model for scope, data flows, trust decisions, attack surface, threats, mitigations, and validation.
+description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question), and 4-stage execution pipelines.
 permalink: /topics/trust-boundaries-threat-modeling/
-last_verified: 2026-08-06
+last_verified: 2026-08-07
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
 
 # Trust Boundaries & Threat Modeling
 
-<p class="lede">Threat modeling is how I apply general security knowledge to one actual system. I first model what exists—actors, components, data, flows, dependencies, and trust boundaries—then ask what can go wrong, what I will do about it, and how I will validate the result.</p>
-
-## What: understand the system before listing threats
-
-A useful system model includes:
-
-- **Scope** — what is included, excluded, and assumed.
-- **Assets and security objectives** — what matters and which properties must be preserved.
-- **Actors** — people, workloads, devices, administrators, suppliers, and possible attackers.
-- **Components and data stores** — what processes or retains information.
-- **Data flows** — what moves, in which direction, under which protocol and identity.
-- **Entry points and attack surface** — where an actor can interact with the system.
-- **Trust zones and boundaries** — where data or an action crosses between different trust assumptions or privileges.
-- **Dependencies** — identity providers, cloud services, libraries, operators, and other systems whose behavior I rely on.
-
-A trust boundary is not automatically a firewall or network segment. It is a point where a trust decision must be made—for example, when a browser calls an API, one service accepts a token from another, a process reads a file, or my application sends data to a supplier.
+<p class="lede">Threat modeling is the structured engineering discipline of decomposing a system architecture to identify assets, data flows, trust boundaries, and plausible attack vectors prior to deployment. By systematically evaluating how adversaries can exploit trust transitions, engineering teams select targeted safeguards and validate control efficacy before vulnerabilities enter production.</p>
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/payroll-trust-boundaries.svg' | relative_url }}?v=3" alt="Payroll data-flow and trust-boundary diagram. An employee browser sends an HTTPS request containing an authenticated session and untrusted input to the payroll web API. Inside the payroll application boundary, the API authorizes the employee action, validates the amount and payee, and enforces approval rules. The API uses a workload or service identity to access the payroll database across a separate sensitive-data boundary. Only an approved payment instruction is sent through an authenticated service request to the external bank API. Three numbered boundary checks call out user authentication, authorization and input validation; workload identity, least privilege and safe database queries; and payment approval, bank endpoint authentication and replay protection.">
-  <p class="diagram-caption">The arrows show data flows; the numbered boundaries show where trust changes and verification must happen</p>
+  <img src="{{ '/assets/img/trust-boundaries-threat-modeling.svg' | relative_url }}" alt="Trust Boundaries & Threat Modeling DFD Architecture diagram showing External Untrusted Public Zone, DMZ Application Processing Zone, High-Assurance Data Enclave, and Trust Boundaries 1 & 2.">
+  <p class="diagram-caption">Trust Boundaries &amp; Threat Modeling DFD Architecture: Data Flow Diagram (DFD) → Trust Boundaries (Public Ingress &amp; Data Enclave) → High-Assurance Security Enclaves</p>
 </div>
 
-Each arrow crosses a boundary with different questions. HTTPS can protect a channel, but it does not make browser input safe, grant database permission, or prove that a bank request is authorized.
+## The System Architecture & Trust Component Model
 
-## Attack surface and trust boundaries are related, not identical
+Evaluating a system requires mapping eight core architectural elements across Data Flow Diagrams (DFDs):
 
-- The **attack surface** is the set of reachable ways an actor could interact with or influence the system: endpoints, ports, files, queues, administrative consoles, identities, dependencies, and physical interfaces.
-- A **trust boundary** marks a change in trust assumptions, authority, or privilege where the receiving side must verify what it is accepting.
+| DFD Component Type | Architectural Function | Security Boundary Role | Target Engineering Safeguard |
+|---|---|---|---|
+| **Attack Surface** | Sum total of reachable network ports, API endpoints, file uploaders. | Total exposure area available to external adversaries. | Port minimization, WAF rate limiting &amp; ingress IP filtering. |
+| **Data Flows** | Network requests, IPC channels, gRPC streams, message queues. | Transport pathways moving data between components. | Mutual TLS (mTLS) encryption, HMAC payload tags &amp; DPoP binding. |
+| **Data Stores** | Relational databases, NoSQL clusters, cache stores, object storage. | Passive repositories holding sensitive enterprise or customer data. | AES-256-GCM encryption at rest, KMS IAM policies &amp; column hashing. |
+| **External Entities** | End users, web browsers, mobile apps, third-party webhooks. | Origin of untrusted inputs outside organizational control. | WebAuthn passkeys, FIDO2 MFA, input sanitization &amp; TLS 1.3. |
+| **Processes &amp; Processing Nodes** | Web servers, microservices, background workers, serverless functions. | Execution points that transform data and evaluate policies. | Least-privilege execution, container sandboxing &amp; SAST/DAST audits. |
+| **Third-Party Dependencies** | Cloud IdPs, managed DBs, external SaaS APIs, open-source libraries. | Exogenous risk vectors outside direct code control. | Dependency scanning, SLSA v1.0 build provenance &amp; SSDF audits. |
+| **Trust Boundaries** | Transitions where data or control passes between trust levels. | Enforcement points requiring explicit verification. | API Gateway Policy Enforcement Points (PEPs) &amp; mTLS sidecars. |
+| **Trust Domains** | Perimeters sharing uniform security policies and administrative control. | Compartmentalized security zones preventing lateral movement. | Subnet microsegmentation, Kubernetes network policies &amp; IAM roles. |
 
-An internal service can still cross a trust boundary. A public endpoint is part of the attack surface, but the important boundary may continue deeper when that endpoint calls a high-privilege service.
+## Attack Surface vs Trust Boundary vs Trust Domain
 
-## So what: use four questions
+To avoid architectural flaws, security engineering distinguishes between three distinct perimeter concepts:
 
-The [OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/) gives me a methodology-neutral starting point:
+| Architectural Concept | Structural Definition & Scope | Primary Security Focus | Engineering Validation Mechanism |
+|---|---|---|---|
+| **Attack Surface** | The aggregate set of reachable endpoints, open ports, public APIs, and user inputs where an adversary can attempt entry. | Minimizing total exposed exposure area. | External vulnerability scanning, port audits &amp; attack surface management (ASM). |
+| **Trust Boundary** | An explicit architectural line where data or execution control transitions between different privilege levels or administrative perimeters. | Enforcing non-implicit verification on incoming payloads. | API Gateway input validation, mTLS certificate verification &amp; OAuth 2.1 inspection. |
+| **Trust Domain** | A logical or physical security zone within which all components share uniform administrative trust and policy governance. | Containing blast radius and preventing lateral movement. | Subnet VPC microsegmentation, Zero Trust network policies &amp; IAM boundary policies. |
 
-1. **What am I working on?** Agree on the scope and model the system.
-2. **What can go wrong?** Identify threats, misuse, failures, unsafe assumptions, and affected security properties.
-3. **What will I do about it?** Prioritize and choose design changes, mitigations, tests, or an explicit risk response.
-4. **Did I do a good job?** Review coverage, validate controls, record assumptions and residual risk, and revisit the model when the system changes.
+## Threat Modeling Methodologies Comparison Matrix
 
-STRIDE can help me remember six threat categories: spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege. It is a prompt, not a complete threat model or risk rating. I can use another method when privacy, safety, fraud, abuse, or a specialized system needs a different lens.
+Engineering teams select threat modeling frameworks based on system complexity, development cadence, and risk governance requirements:
 
-## Now what: produce a useful threat model
+| Threat Modeling Framework | Focus Area &amp; Philosophy | Core Execution Mechanism | Primary Engineering Applicability |
+|---|---|---|---|
+| **OCTAVE (Carnegie Mellon)** | Organizational asset-driven risk evaluation focusing on operational risks, assets, and vulnerabilities. | Self-directed workshops identifying operational assets, organizational threats, and defense posture. | Enterprise IT infrastructure, physical/digital asset governance, organizational risk audits. |
+| **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** | Universal meta-process for driving continuous threat modeling iterations across any architecture. | Iterates: 1. *What are we working on?* 2. *What can go wrong?* 3. *What are we doing about it?* 4. *Did we do a good job?* | Agile software engineering, sprint-level threat modeling, and team design reviews. |
+| **PASTA (Risk-Centric)** | Process for Attack Structure and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and risk scoring (**Risk = Likelihood × Impact**). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
+| **STRIDE (Microsoft)** | Developer-centric threat taxonomy categorizing 6 threat types (*Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation*). | Maps specific STRIDE categories to each component in a Data Flow Diagram (DFD). | Application security, microservices, API route design, and code-level threat modeling. |
+| **VAST (Agile / Scalable)** | Visual, Agile, and Software Threat modeling; divides into Application Threat Models and Operational Threat Models. | Uses automated storyboarding and integration directly into DevOps / CI/CD pipelines. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
 
-For one system or feature, I create:
+## The 4-Stage Threat Modeling Execution Pipeline
 
-1. A short purpose, scope, and list of assumptions.
-2. A diagram showing actors, components, stores, flows, and trust boundaries.
-3. A list of assets and required security properties.
-4. Prioritized threat scenarios tied to real components and flows.
-5. A response for each material scenario: mitigation, design change, transfer, avoidance, or acceptance.
-6. A named owner and validation method for each selected control.
-7. Residual risk and the conditions that require another review.
+Operationalizing threat modeling within software engineering teams requires following a 4-stage continuous execution pipeline:
 
-I revisit the model when a feature changes trust boundaries, a new dependency or data type appears, authorization changes, an incident invalidates an assumption, or the operating environment changes. The [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html) treats the model as a maintained system artifact, not a one-time diagram.
+| Execution Pipeline Stage | Primary Operational Actions | Governing Methodology | Target Engineering Deliverable |
+|---|---|---|---|
+| **Stage 1: Architecture Decomposition** | Deconstruct system into Data Flow Diagrams (DFDs), mapping external entities, processes, data stores, and trust boundaries. | DFD Modeling &amp; C4 Model Architecture | System Data Flow Diagram &amp; Entry Point Inventory. |
+| **Stage 2: Threat Identification** | Evaluate misuse scenarios and attack vectors against system components. | STRIDE / PASTA / OWASP Question 2 | Threat Register listing component vulnerabilities &amp; vectors. |
+| **Stage 3: Mitigation & Control Selection** | Select and implement technical security controls neutralizing identified high-risk threats. | NIST SP 800-53 / OWASP ASVS 4.0 | Applied security controls (WAF, mTLS, WebAuthn, AES-256). |
+| **Stage 4: Retrospective & Verification** | Validate control enforcement efficacy via automated testing and audit review. | OWASP Question 4 &amp; NIST SP 800-137 | Automated SAST/DAST regression tests &amp; threat model sign-off. |
 
-<div class="callout">
-  <span class="callout-title">What I need to remember</span>
-  <p>A threat model begins with an accurate system model. I mark where trust changes, identify what can go wrong, choose responses, validate them, and keep the assumptions and residual risk visible.</p>
-</div>
+## Essential Threat Modeling Diagnostic Checklist
 
-## Primary references
+When evaluating a threat model for a new architecture or system refactor, evaluate these 6 diagnostic questions:
 
-- **[OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/)** — the four-question framework and methodology-neutral guidance.
-- **[OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)** — practical system modeling and lifecycle guidance.
-- **[OWASP Threat Model Library](https://owasp.org/www-project-threat-model-library/)** — scope, actors, data flows, trust zones, boundaries, assumptions, threats, and mitigations.
+| Diagnostic Focus Area | Key Architectural Evaluation Question | Target Verification &amp; Audit Evidence |
+|---|---|---|
+| **Data Flow Completeness** | Does the System DFD map all external entities, processes, data stores, data flows, and trust boundaries? | Architecture DFD diagrams, API route manifests &amp; network mesh topology maps. |
+| **Mitigation Efficacy** | Are identified high-risk threats paired with concrete technical controls and automated security tests? | SAST/DAST scanning scripts, security unit tests &amp; PR approval gates. |
+| **Reassessment Triggers** | Is there an automated trigger to re-evaluate the threat model when major code or infrastructure changes occur? | CI/CD pipeline triggers, quarterly threat model review logs &amp; post-incident review records. |
+| **STRIDE Coverage** | Has every DFD element type been evaluated against its applicable STRIDE threat categories? | Documented Threat Register listing component, threat vector, risk score &amp; owner. |
+| **Third-Party Risk** | Are external cloud APIs, IdP dependencies, and open-source packages integrated into the threat model? | Software Bill of Materials (SBOM), dependency vulnerability reports &amp; SLSA provenance. |
+| **Trust Boundary Rigor** | Are explicit input verification and authentication controls deployed at every trust boundary crossing? | API Gateway policy rules, mTLS sidecar configs &amp; input sanitization test suites. |

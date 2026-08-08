@@ -1,0 +1,78 @@
+<svg viewBox="0 0 1200 565" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Security Objectives &amp; System Properties Matrix</title>
+  <desc id="description">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical Safeguard Mechanisms.</desc>
+  <rect width="1200" height="565" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Security Objectives &amp; System Properties Matrix</text>
+  <text x="50" y="88" font-size="16" fill="#475569">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical Safeguard Mechanisms.</text>
+  
+    <!-- Top CIA Triad Section (x=40, y=115, w=1120) -->
+    <!-- Card 1: Confidentiality (x=40, w=355) -->
+    <rect x="40" y="115" width="355" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+    <text x="60" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">CONFIDENTIALITY (NIST FIPS 199)</text>
+    <text x="60" y="165" font-size="15" font-weight="800" fill="#0f172a">Restricting Unauthorized Disclosure</text>
+    <line x1="60" y1="178" x2="375" y2="178" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="200" font-size="11.5" font-weight="600" fill="#0f172a">• Enforces authorized access boundaries</text>
+    <text x="60" y="220" font-size="11.5" font-weight="500" fill="#475569">• AES-256-GCM encryption at rest &amp; TLS 1.3</text>
+
+    <!-- Card 2: Integrity (x=422, w=355) -->
+    <rect x="422" y="115" width="355" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+    <text x="442" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">INTEGRITY (NIST FIPS 199)</text>
+    <text x="442" y="165" font-size="15" font-weight="800" fill="#0f172a">Guarding Against State Tampering</text>
+    <line x1="442" y1="178" x2="757" y2="178" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="442" y="200" font-size="11.5" font-weight="600" fill="#0f172a">• Prevents unauthorized state alteration</text>
+    <text x="442" y="220" font-size="11.5" font-weight="500" fill="#475569">• HMAC-SHA256 &amp; Ed25519 signatures</text>
+
+    <!-- Card 3: Availability (x=805, w=355) -->
+    <rect x="805" y="115" width="355" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+    <text x="825" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">AVAILABILITY (NIST FIPS 199)</text>
+    <text x="825" y="165" font-size="15" font-weight="800" fill="#0f172a">Ensuring Reliable Access</text>
+    <line x1="825" y1="178" x2="1140" y2="178" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="825" y="200" font-size="11.5" font-weight="600" fill="#0f172a">• Timely access for authorized identities</text>
+    <text x="825" y="220" font-size="11.5" font-weight="500" fill="#475569">• Redundant failover &amp; DDoS mitigation</text>
+
+    <!-- Middle Extended Properties Section (2x2 Grid: x=40 and x=615, w=545) -->
+    <!-- Grid Row 1 Left: Authenticity & Non-Repudiation (x=40, w=545, y=275, h=105) -->
+    <rect x="40" y="275" width="545" height="105" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
+    <text x="60" y="298" font-size="10.5" font-weight="900" letter-spacing="1" fill="#7c3aed">AUTHENTICITY &amp; NON-REPUDIATION</text>
+    <text x="60" y="318" font-size="14" font-weight="800" fill="#0f172a">Origin Proof &amp; Unforgeable Cryptographic Evidence</text>
+    <line x1="60" y1="330" x2="565" y2="330" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="350" font-size="11.5" font-weight="500" fill="#475569">• PKI Mutual TLS (mTLS), FIDO2 Passkeys / WebAuthn</text>
+    <text x="60" y="368" font-size="11.5" font-weight="500" fill="#475569">• Asymmetric Cryptographic Signatures (Ed25519 / ECDSA)</text>
+
+    <!-- Grid Row 1 Right: Accountability (x=615, w=545, y=275, h=105) -->
+    <rect x="615" y="275" width="545" height="105" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+    <text x="635" y="298" font-size="10.5" font-weight="900" letter-spacing="1" fill="#0f172a">ACCOUNTABILITY &amp; AUDITING</text>
+    <text x="635" y="318" font-size="14" font-weight="800" fill="#0f172a">Attributing System Actions to Verified Identity Context</text>
+    <line x1="635" y1="330" x2="1140" y2="330" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1" />
+    <text x="635" y="350" font-size="11.5" font-weight="500" fill="#475569">• Tamper-Evident Audit Logging (NIST SP 800-92)</text>
+    <text x="635" y="368" font-size="11.5" font-weight="500" fill="#475569">• SIEM Event Attribution &amp; Immutable Audit Trails</text>
+
+    <!-- Grid Row 2 Left: Privacy & Minimization (x=40, w=545, y=390, h=105) -->
+    <rect x="40" y="390" width="545" height="105" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
+    <text x="60" y="413" font-size="10.5" font-weight="900" letter-spacing="1" fill="#b91c1c">PRIVACY &amp; DATA MINIMIZATION</text>
+    <text x="60" y="433" font-size="14" font-weight="800" fill="#0f172a">Personal Data Processing Limits &amp; Legal Rights</text>
+    <line x1="60" y1="445" x2="565" y2="445" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="465" font-size="11.5" font-weight="500" fill="#475569">• Data Minimization, Pseudonymization &amp; Consent Management</text>
+    <text x="60" y="483" font-size="11.5" font-weight="500" fill="#475569">• NIST Privacy Framework, ISO/IEC 27701 &amp; GDPR / Singapore PDPA</text>
+
+    <!-- Grid Row 2 Right: Safety & Resilience (x=615, w=545, y=390, h=105) -->
+    <rect x="615" y="390" width="545" height="105" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2" />
+    <text x="635" y="413" font-size="10.5" font-weight="900" letter-spacing="1" fill="#15803d">SAFETY &amp; SYSTEM RESILIENCE</text>
+    <text x="635" y="433" font-size="14" font-weight="800" fill="#0f172a">Physical Protection &amp; Sustaining Operations Under Attack</text>
+    <line x1="635" y1="445" x2="1140" y2="445" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
+    <text x="635" y="465" font-size="11.5" font-weight="500" fill="#475569">• Fail-Safe Fault Isolation &amp; Hazard Containment (ISO 26262)</text>
+    <text x="635" y="483" font-size="11.5" font-weight="500" fill="#475569">• System Resilience &amp; Automated Recovery (NIST SP 800-160 Vol. 2)</text>
+
+    <!-- Bottom Bar: Mechanism Alignment (y=505, w=1120, h=45) -->
+    <text x="600" y="525" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">TECHNICAL SAFEGUARD ALIGNMENT (NIST SP 800-53 REV. 5)</text>
+    <text x="600" y="540" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0f172a">Technical mechanisms enforce specific properties. No single mechanism satisfies all objectives in isolation.</text>
+</svg>

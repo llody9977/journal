@@ -1,0 +1,92 @@
+<svg viewBox="0 0 1200 920" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="920" fill="#ffffff"/>
+
+  <defs>
+    <marker id="branch-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="52" font-size="29" font-weight="800" fill="#0f172a">Four ways to respond to an identified risk</text>
+  <text x="50" y="83" font-size="16" fill="#475569">Choose one response or combine them. The decision must be intentional, owned, documented, and monitored.</text>
+
+  <!-- Identified risk -->
+  <g>
+    <rect x="300" y="115" width="600" height="105" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+    <circle cx="355" cy="167" r="31" fill="#dc2626"/>
+    <path d="M355 145 V172 M355 186 V188" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <text x="405" y="157" font-size="16" font-weight="900" letter-spacing="1.2" fill="#b91c1c">IDENTIFIED RISK</text>
+    <text x="405" y="190" font-size="18" font-weight="700" fill="#0f172a">A plausible event could cause unacceptable harm.</text>
+  </g>
+
+  <!-- Branches -->
+  <path d="M600 220 V260 M315 260 H885 M315 260 V288 M885 260 V288 M600 260 V540 M315 540 H885 M315 540 V558 M885 540 V558"
+        fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M315 270 V294 M885 270 V294 M315 540 V564 M885 540 V564"
+        fill="none" stroke="#64748b" stroke-width="4" marker-end="url(#branch-arrow)"/>
+
+  <!-- Avoid -->
+  <g>
+    <rect x="50" y="300" width="530" height="220" rx="22" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+    <rect x="50" y="300" width="530" height="54" rx="22" fill="#7c3aed"/>
+    <path d="M50 330 H580 V354 H50Z" fill="#7c3aed"/>
+    <text x="78" y="336" font-size="22" font-weight="900" fill="#ffffff">AVOID</text>
+    <path d="M89 399 L112 376 H145 L168 399 V432 L145 455 H112 L89 432Z" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+    <path d="M111 400 L146 435 M146 400 L111 435" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/>
+    <text x="195" y="397" font-size="17" font-weight="800" fill="#0f172a">Stop the activity creating the risk.</text>
+    <text x="195" y="430" font-size="15" fill="#475569">Action: remove or redesign the risky feature.</text>
+    <text x="195" y="460" font-size="15" fill="#475569">Effect: the selected threat path no longer exists.</text>
+    <text x="195" y="490" font-size="15" fill="#475569">Trade-off: capability is lost or replaced.</text>
+  </g>
+
+  <!-- Reduce -->
+  <g>
+    <rect x="620" y="300" width="530" height="220" rx="22" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+    <rect x="620" y="300" width="530" height="54" rx="22" fill="#16a34a"/>
+    <path d="M620 330 H1150 V354 H620Z" fill="#16a34a"/>
+    <text x="648" y="336" font-size="22" font-weight="900" fill="#ffffff">REDUCE</text>
+    <path d="M724 374 L764 390 V426 Q764 458 724 474 Q684 458 684 426 V390Z" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+    <path d="M704 425 L718 439 L744 409" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="795" y="397" font-size="17" font-weight="800" fill="#0f172a">Keep the activity; lower its exposure.</text>
+    <text x="795" y="430" font-size="15" fill="#475569">Controls: prevent · detect · respond · recover.</text>
+    <text x="795" y="460" font-size="15" fill="#475569">Effect: lower likelihood or limit impact.</text>
+    <text x="795" y="490" font-size="15" fill="#475569">Residual risk remains and must be reassessed.</text>
+  </g>
+
+  <!-- Transfer or share -->
+  <g>
+    <rect x="50" y="570" width="530" height="220" rx="22" fill="#fffbeb" stroke="#d97706" stroke-width="3"/>
+    <rect x="50" y="570" width="530" height="54" rx="22" fill="#d97706"/>
+    <path d="M50 600 H580 V624 H50Z" fill="#d97706"/>
+    <text x="78" y="606" font-size="22" font-weight="900" fill="#ffffff">TRANSFER OR SHARE</text>
+    <rect x="83" y="654" width="90" height="105" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <path d="M100 680 H156 M100 702 H156 M100 724 H143" stroke="#d97706" stroke-width="4" stroke-linecap="round"/>
+    <path d="M105 645 L125 634 L145 645" fill="none" stroke="#d97706" stroke-width="3"/>
+    <text x="195" y="667" font-size="17" font-weight="800" fill="#0f172a">Allocate defined consequences or duties.</text>
+    <text x="195" y="700" font-size="15" fill="#475569">Use: insurance or a formal agreement.</text>
+    <text x="195" y="730" font-size="15" fill="#475569">Moves: specified financial loss or responsibility.</text>
+    <text x="195" y="760" font-size="15" fill="#475569">Does not remove customer harm or accountability.</text>
+  </g>
+
+  <!-- Accept -->
+  <g>
+    <rect x="620" y="570" width="530" height="220" rx="22" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+    <rect x="620" y="570" width="530" height="54" rx="22" fill="#2563eb"/>
+    <path d="M620 600 H1150 V624 H620Z" fill="#2563eb"/>
+    <text x="648" y="606" font-size="22" font-weight="900" fill="#ffffff">ACCEPT</text>
+    <rect x="683" y="648" width="86" height="110" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <rect x="706" y="638" width="40" height="18" rx="7" fill="#2563eb"/>
+    <path d="M699 687 L710 698 L733 676 M699 724 L710 735 L733 713" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="795" y="667" font-size="17" font-weight="800" fill="#0f172a">Own and monitor what remains.</text>
+    <text x="795" y="700" font-size="15" fill="#475569">Record: owner · rationale · residual rating.</text>
+    <text x="795" y="730" font-size="15" fill="#475569">Set: review date and material-change trigger.</text>
+    <text x="795" y="760" font-size="15" fill="#475569">Acceptance is a decision—not inaction.</text>
+  </g>
+
+  <!-- Recall rule -->
+  <g>
+    <rect x="50" y="825" width="1100" height="66" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="600" y="852" text-anchor="middle" font-size="13" font-weight="900" letter-spacing="1" fill="#475569">RECALL RULE</text>
+    <text x="600" y="877" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">Stop the activity · Control the exposure · Allocate defined consequences · Own and monitor what remains</text>
+  </g>
+</svg>

@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1200 510" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Trust Boundaries &amp; Threat Modeling DFD Architecture</title>
+  <desc id="description">System Data Flow Diagram (DFD) showing External Untrusted Public Zone, DMZ Application Zone, High-Assurance Data Enclave, Trust Boundaries 1 &amp; 2, and STRIDE per Element Mapping.</desc>
+  <rect width="1200" height="510" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Trust Boundaries &amp; Threat Modeling DFD Architecture</text>
+  <text x="50" y="88" font-size="16" fill="#475569">System Data Flow Diagram (DFD) showing External Untrusted Public Zone, DMZ Application Zone, High-Assurance Data Enclave, Trust Boundaries 1 &amp; 2, and STRIDE per Element Mapping.</text>
+  
+    <!-- Z-LAYER 1: DOMAIN CONTAINER BOXES -->
+    <!-- Domain 1: Untrusted External Zone (x=40, y=115, w=240, h=300) -->
+    <rect x="40" y="115" width="240" height="300" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" stroke-dasharray="6 4" />
+    <text x="60" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">UNTRUSTED PUBLIC ZONE</text>
+
+    <!-- Domain 2: DMZ Application Gateway Zone (x=380, y=115, w=420, h=300) -->
+    <rect x="380" y="115" width="420" height="300" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+    <text x="400" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">DMZ &amp; APPLICATION PROCESSING ZONE</text>
+
+    <!-- Domain 3: Sensitive Data Enclave (x=860, y=115, w=300, h=300) -->
+    <rect x="860" y="115" width="300" height="300" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2" />
+    <text x="880" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">HIGH-ASSURANCE DATA ENCLAVE</text>
+
+    <!-- Z-LAYER 2: BACKGROUND VERTICAL TRUST BOUNDARY DASHED LINES -->
+    <line x1="325" y1="115" x2="325" y2="415" stroke="#b91c1c" stroke-width="2.5" stroke-dasharray="8 6" />
+    <line x1="825" y1="115" x2="825" y2="415" stroke="#b45309" stroke-width="2.5" stroke-dasharray="8 6" />
+
+    <!-- Z-LAYER 3: TRUST BOUNDARY TOP HEADER BADGES -->
+    <rect x="235" y="103" width="180" height="24" rx="12" fill="#ffffff" stroke="#b91c1c" stroke-width="1.5" />
+    <text x="325" y="119" text-anchor="middle" font-size="9.5" font-weight="900" letter-spacing="0.5" fill="#b91c1c">TRUST BOUNDARY 1 (INGRESS)</text>
+
+    <rect x="735" y="103" width="180" height="24" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="1.5" />
+    <text x="825" y="119" text-anchor="middle" font-size="9.5" font-weight="900" letter-spacing="0.5" fill="#b45309">TRUST BOUNDARY 2 (ENCLAVE)</text>
+
+    <!-- Z-LAYER 4: PROCESS & DATA CARDS INSIDE DOMAINS -->
+    <!-- Card 1: External Entities -->
+    <rect x="55" y="165" width="210" height="110" rx="12" fill="#ffffff" stroke="#b91c1c" stroke-width="2" />
+    <text x="70" y="190" font-size="11" font-weight="900" fill="#b91c1c">EXTERNAL ENTITIES</text>
+    <text x="70" y="210" font-size="13" font-weight="800" fill="#0f172a">Public Client / Mobile App</text>
+    <line x1="70" y1="220" x2="250" y2="220" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+    <text x="70" y="240" font-size="11" font-weight="500" fill="#475569">• Untrusted Browser / SPA</text>
+    <text x="70" y="258" font-size="11" font-weight="500" fill="#475569">• Attacker Controlled Inputs</text>
+
+    <!-- Card 2: Process 1 API Gateway -->
+    <rect x="395" y="165" width="390" height="100" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
+    <text x="410" y="190" font-size="11" font-weight="900" fill="#2563eb">PROCESS 1: API GATEWAY &amp; PEP</text>
+    <text x="410" y="210" font-size="13" font-weight="800" fill="#0f172a">OAuth 2.1 Verification &amp; WAF Rate Limiting</text>
+    <line x1="410" y1="220" x2="770" y2="220" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+    <text x="410" y="238" font-size="11" font-weight="500" fill="#475569">• Validates JWT Bearer Tokens &amp; DPoP Proofs</text>
+    <text x="410" y="254" font-size="11" font-weight="500" fill="#475569">• Sanitizes Input &amp; Blocks Attack Payloads</text>
+
+    <!-- Card 3: Process 2 Payroll Microservice -->
+    <rect x="395" y="290" width="390" height="105" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="2" />
+    <text x="410" y="313" font-size="11" font-weight="900" fill="#0f766e">PROCESS 2: PAYROLL MICROSERVICE</text>
+    <text x="410" y="333" font-size="13" font-weight="800" fill="#0f172a">Business Logic &amp; Fine-Grained Authorization</text>
+    <line x1="410" y1="342" x2="770" y2="342" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="410" y="360" font-size="11" font-weight="500" fill="#475569">• ABAC / OPA Policy Evaluation Engine</text>
+    <text x="410" y="378" font-size="11" font-weight="500" fill="#475569">• Enforces SPIFFE Workload mTLS Identity</text>
+
+    <!-- Card 4: Data Store Payroll DB -->
+    <rect x="875" y="165" width="270" height="105" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="2" />
+    <text x="890" y="190" font-size="11" font-weight="900" fill="#b45309">DATA STORE: PAYROLL DB</text>
+    <text x="890" y="210" font-size="13" font-weight="800" fill="#0f172a">Encrypted Database</text>
+    <line x1="890" y1="220" x2="1130" y2="220" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="890" y="238" font-size="11" font-weight="500" fill="#475569">• AES-256-GCM Column Encryption</text>
+    <text x="890" y="254" font-size="11" font-weight="500" fill="#475569">• KMS IAM Key Policy Enforcement</text>
+
+    <!-- Card 5: External Service Bank API -->
+    <rect x="875" y="285" width="270" height="110" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2" />
+    <text x="890" y="308" font-size="11" font-weight="900" fill="#7c3aed">EXTERNAL SERVICE: BANK API</text>
+    <text x="890" y="328" font-size="13" font-weight="800" fill="#0f172a">Payment Gateway</text>
+    <line x1="890" y1="338" x2="1130" y2="338" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+    <text x="890" y="356" font-size="11" font-weight="500" fill="#475569">• mTLS Payment Execution</text>
+    <text x="890" y="374" font-size="11" font-weight="500" fill="#475569">• Signed Request Assertions</text>
+
+    <!-- Z-LAYER 5: FLOW ARROWS AND WHITE TRANSPORT BADGES (FOREGROUND) -->
+    <!-- Arrow 1: Untrusted to Gateway (x=265 to x=395 at y=215) -->
+    <path d="M 265 215 L 395 215" fill="none" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow-red)"/>
+    <rect x="295" y="190" width="60" height="20" rx="10" fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+    <text x="325" y="204" text-anchor="middle" font-size="9" font-weight="900" fill="#b91c1c">TLS 1.3</text>
+
+    <!-- Flow Arrow 2: Gateway to Microservice (x=590, y=265 to y=290) -->
+    <path d="M 590 265 L 590 290" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+    <!-- Arrow 3: Microservice to Database (x=785 to x=875 at y=342) -->
+    <path d="M 785 342 L 875 342" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>
+    <rect x="800" y="317" width="50" height="20" rx="10" fill="#ffffff" stroke="#b45309" stroke-width="1.5"/>
+    <text x="825" y="331" text-anchor="middle" font-size="9" font-weight="900" fill="#b45309">mTLS</text>
+
+    <!-- Z-LAYER 6: STRIDE SUMMARY FOOTER BAR -->
+    <rect x="40" y="430" width="1120" height="55" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+    <text x="600" y="466" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0f172a">External Entity: Spoofing &amp; Repudiation   •   Process: Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation</text>
+    <text x="600" y="480" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">Data Store: Tampering, Repudiation, Info Disclosure, DoS   •   Data Flow: Tampering, Info Disclosure, DoS</text>
+</svg>

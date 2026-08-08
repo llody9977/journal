@@ -1,0 +1,50 @@
+<svg viewBox="0 0 1200 767" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Four questions in a threat-modeling cycle</title>
+  <desc id="description">The model is useful only when architecture, threats, mitigations, and validation stay connected.</desc>
+  <rect width="1200" height="767" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Four questions in a threat-modeling cycle</text>
+  <text x="50" y="88" font-size="16" fill="#475569">The model is useful only when architecture, threats, mitigations, and validation stay connected.</text>
+  
+    <g>
+      <rect x="80" y="130" width="1040" height="115" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <text x="105" y="161" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">1 · SCOPE</text>
+      <text x="105" y="195" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">What are we working on?</text>
+      <text x="105" y="235" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Map components, data flows, identities, assets, and trust boundaries.</text>
+    </g>
+
+    <g>
+      <rect x="80" y="289" width="1040" height="115" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+      <text x="105" y="320" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">2 · ANALYZE</text>
+      <text x="105" y="354" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">What can go wrong?</text>
+      <text x="105" y="394" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Use threat scenarios, STRIDE, attack trees, and abuse cases where they fit.</text>
+    </g>
+
+    <g>
+      <rect x="80" y="448" width="1040" height="115" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+      <text x="105" y="479" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">3 · RESPOND</text>
+      <text x="105" y="513" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">What are we doing about it?</text>
+      <text x="105" y="553" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Choose controls that prevent, detect, contain, or support recovery.</text>
+    </g>
+
+    <g>
+      <rect x="80" y="607" width="1040" height="115" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+      <text x="105" y="638" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">4 · VALIDATE</text>
+      <text x="105" y="672" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Did we do a good job?</text>
+      <text x="105" y="712" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Test controls, review evidence, and record residual risk and assumptions.</text>
+    </g>
+    <path d="M600 252 L600 282" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="235" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="252" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">MODEL</text>
+    <path d="M600 411 L600 441" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="394" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="411" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">MITIGATE</text>
+    <path d="M600 570 L600 600" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <rect x="538" y="553" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="570" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">VERIFY</text>
+</svg>

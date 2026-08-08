@@ -260,12 +260,12 @@ a:hover { text-decoration: underline; }
   font-size: 1.45rem;
   font-weight: 600;
   color: var(--ink);
-  margin: 2.5rem 0 0.9rem;
-  padding-top: 0.25rem;
+  margin: 2rem 0 0.8rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--rule);
 }
 
-.content h2:first-of-type { border-top: none; padding-top: 0; }
+.content h2:first-of-type { border-top: none; padding-top: 0; margin-top: 1.5rem; }
 
 .content h3 {
   font-size: 1.1rem;

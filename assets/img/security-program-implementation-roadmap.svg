@@ -1,0 +1,53 @@
+<svg viewBox="0 0 1200 610" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Security Program Implementation Pathways</title>
+  <desc id="description">Operational flow mapping Security Program strategy down into Governance (GOVERN) and Technical Safeguards (TECHNICAL) connected by Top-Down and Bottom-Up operational feedback loops.</desc>
+  <rect width="1200" height="610" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Security Program Implementation Pathways</text>
+  <text x="50" y="88" font-size="16" fill="#475569">Operational flow mapping Security Program strategy down into Governance (GOVERN) and Technical Safeguards (TECHNICAL) connected by Top-Down and Bottom-Up operational feedback loops.</text>
+  
+    <!-- Top Card: SECURITY PROGRAM (x=150, y=115, w=900) -->
+    <rect x="150" y="115" width="900" height="80" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+    <text x="600" y="140" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1.5" fill="#2563eb">SECURITY PROGRAM &amp; ARCHITECTURE MAP</text>
+    <text x="600" y="164" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Translating Security Strategy into Operational Execution</text>
+
+    <!-- Arrow Top -> GOVERN -->
+    <path d="M 600 195 L 600 235" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+    <!-- Middle Tier Card: GOVERN (x=150, y=235, w=900) -->
+    <rect x="150" y="235" width="900" height="140" rx="16" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+    <text x="180" y="262" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">GOVERNANCE, ISMS &amp; RISK FRAMEWORKS (GOVERN)</text>
+    <text x="180" y="285" font-size="15" font-weight="800" fill="#0f172a">Enterprise Risk Appetite, ISMS &amp; Regulatory Compliance Mandates</text>
+    <line x1="180" y1="298" x2="1020" y2="298" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="180" y="322" font-size="12" font-weight="600" fill="#0f172a">• Define Business Context, Scope &amp; Risk Appetite (NIST SP 800-39 / SP 800-37)</text>
+    <text x="180" y="342" font-size="12" font-weight="600" fill="#0f172a">• Adopt ISMS &amp; Cybersecurity Frameworks (ISO/IEC 27001:2022 / NIST CSF 2.0 / CIS IG1)</text>
+    <text x="180" y="362" font-size="12" font-weight="600" fill="#0f172a">• Ensure Regulatory &amp; Privacy Mandates (SOC 2 Type II, PCI-DSS v4.0, GDPR, Singapore PDPA)</text>
+
+    <!-- Bi-Directional Connectors Between GOVERN and TECHNICAL (y=375 to y=435) -->
+    <!-- Top-Down Arrow (Left: x=450) -->
+    <path d="M 450 375 L 450 435" fill="none" stroke="#b45309" stroke-width="3.5" marker-end="url(#arrow-amber)"/>
+    <rect x="235" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="1.5"/>
+    <text x="335" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#b45309">TOP-DOWN: POLICY &amp; MANDATES ↓</text>
+
+    <!-- Bottom-Up Arrow (Right: x=750) -->
+    <path d="M 750 435 L 750 375" fill="none" stroke="#0f766e" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
+    <rect x="765" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#0f766e">BOTTOM-UP: TELEMETRY &amp; PROOF ↑</text>
+
+    <!-- Bottom Tier Card: TECHNICAL (x=150, y=435, w=900) -->
+    <rect x="150" y="435" width="900" height="140" rx="16" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+    <text x="180" y="462" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">TECHNICAL ARCHITECTURE &amp; SAFEGUARDS (TECHNICAL)</text>
+    <text x="180" y="485" font-size="15" font-weight="800" fill="#0f172a">System Security Engineering, Safeguards &amp; Control Validation</text>
+    <line x1="180" y1="498" x2="1020" y2="498" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="180" y="522" font-size="12" font-weight="600" fill="#0f172a">• Map Trust Boundaries, Data Flow Diagrams &amp; System Entry Points</text>
+    <text x="180" y="542" font-size="12" font-weight="600" fill="#0f172a">• Execute Threat Modeling &amp; Misuse Analysis (STRIDE / PASTA / VAST)</text>
+    <text x="180" y="562" font-size="12" font-weight="600" fill="#0f172a">• Deploy Safeguards (Crypto, OAuth IAM, WAF) &amp; Validate (SAST/DAST/Pentest/SLSA)</text>
+</svg>

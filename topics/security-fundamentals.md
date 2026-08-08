@@ -1,125 +1,84 @@
 ---
 title: What Is Security?
-description: My recall-first model for security—assets, threats, vulnerabilities, risk, controls, the CIA triad, and validation.
+description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and the universal risk management lifecycle.
 permalink: /topics/security-fundamentals/
-last_verified: 2026-08-06
+last_verified: 2026-08-07
 ---
 
 <span class="eyebrow">Security / Overview</span>
 
 # What Is Security?
 
-<p class="lede">Security is how I protect people, information, services, and other things I value from unacceptable harm. It is not one product or a permanent state of zero risk. It is an ongoing process of understanding risk, choosing controls, checking whether they work, and deciding what risk remains.</p>
+<p class="lede">Security is the continuous engineering discipline of protecting people, information, services, and valuable assets from unacceptable harm. It is neither a single product nor a static state of zero risk; rather, it is the systematic process of identifying threat scenarios, assessing risk, executing strategic responses via security controls, and governing residual risk.</p>
 
-## What: protect something valuable from harm
+## Defining Security Domains: Security vs InfoSec vs Cybersecurity
 
-My shortest useful model is:
+While the term "Security" is used casually as a general heading, technical engineering standards enforce explicit domain boundaries:
 
-> A **threat** exploits or triggers a **vulnerability**, causing an **impact** to an **asset**. A **security control** reduces the likelihood, impact, or time taken to detect and recover from that event.
-
-I use one clinic appointment outage to keep the terms separate:
-
-<div class="diagram-frame">
-  <video class="diagram-video" controls autoplay muted loop playsinline preload="metadata" poster="{{ '/assets/video/security-risk-model-poster.png' | relative_url }}?v=1" aria-label="A clinic appointment-system walkthrough showing the difference between an asset, threat event, vulnerability, impact, risk, security controls, and residual risk. Appointment data, the booking service, and patient access are valuable assets. Denial-of-service traffic reaches one undersized server with no rate limiting or failover. Patients and reception staff lose access, creating operational harm. Likelihood and impact inform the initial risk assessment. Rate limiting, extra capacity, monitoring, response, and failover reduce the risk but do not remove it. The final screen shows the full relationship and asks whether the remaining risk is acceptable.">
-    <source src="{{ '/assets/video/security-risk-model.webm' | relative_url }}?v=1" type="video/webm">
-    <source src="{{ '/assets/video/security-risk-model.mp4' | relative_url }}?v=1" type="video/mp4">
-    <img src="{{ '/assets/video/security-risk-model-poster.png' | relative_url }}?v=1" alt="Security risk model connecting an asset, a threat reaching a vulnerability, the resulting impact, the risk assessment, controls, and residual risk.">
-  </video>
-  <p class="diagram-caption">One scenario, six separate ideas: what I value, what could happen, the weakness, the harm, how much it matters, and what changes it</p>
-</div>
-
-My short lookup:
-
-| Term | Question I ask | Clinic example |
+| Security Domain | Governing Standard / Law | Primary Scope & Focus |
 |---|---|---|
-| **[Asset](https://csrc.nist.gov/glossary/term/asset)** | What do I value? | Appointment data, booking service, and patient access |
-| **[Threat](https://csrc.nist.gov/glossary/term/threat)** | What could cause harm? | Denial-of-service traffic |
-| **[Vulnerability](https://csrc.nist.gov/topics/security-and-privacy/risk-management/vulnerabilities)** | Which weakness makes harm possible? | One undersized server with no rate limit or failover |
-| **Impact** | What harm follows? | Patients lose access and clinic operations are disrupted |
-| **[Risk](https://csrc.nist.gov/glossary/term/risk)** | How much does the scenario matter? | The outage scenario assessed using likelihood and impact |
-| **[Security control](https://csrc.nist.gov/glossary/term/security_control)** | What changes the risk? | Rate limiting, capacity, monitoring, response, and failover |
-
-A vulnerability is not the whole risk. I still check whether a relevant threat can reach it, what harm would follow, and how existing controls change the likelihood or impact. `Likelihood × impact` is a useful reminder, not a universal formula. This follows the basic risk-assessment reasoning in **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)**.
-
-Security is the broadest term here. **Information security** protects information in any form, while **cybersecurity** focuses on risks involving digital and connected systems. Real security work spans people, process, physical safeguards, and technology—not only software or encryption.
-
-## So what: security is risk management, not perfect prevention
-
-Calling a system “secure” without naming the asset, threat, impact, and acceptable risk does not tell me much. No practical system removes every possible failure. I need to prioritize the risks that could cause unacceptable harm and choose a proportionate response:
-
-- **Avoid** the risk by stopping the risky activity.
-- **Reduce** it with controls that lower likelihood or impact.
-- **Transfer or share** some consequences through contracts or insurance, without pretending responsibility disappears.
-- **Accept** the remaining risk when the right owner understands and approves it.
-
-That remaining exposure is **residual risk**. A control does not make it vanish; it changes the risk to a level I may or may not accept.
-
-I also should not rely on prevention alone. A sound design combines:
-
-- **Preventive controls** to stop or limit an event.
-- **Detective controls** to reveal that something happened.
-- **Responsive controls** to contain and investigate it.
-- **Recovery controls** to restore trustworthy operations and data.
-
-The **[NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework)** gives me a broader recall map: **Govern, Identify, Protect, Detect, Respond, and Recover**. These functions describe connected cybersecurity outcomes, not six isolated teams or a one-time sequence.
-
-## The CIA triad: the three core security objectives
-
-The CIA triad helps me categorize what kind of security property could be lost. I use one appointment record to test the three objectives separately:
+| **Security** (Generic) | **NIST SP 800-37** / **CNSSI 4009** | The universal condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
+| **Information Security** (InfoSec) | **FISMA (44 U.S.C. § 3542)** / **ISO/IEC 27001** | Protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to preserve **Confidentiality, Integrity, and Availability (CIA)**. |
+| **Cybersecurity** | **NIST CSF 2.0** / **ISO/IEC 27032** | Protecting digital infrastructure, software applications, cloud services, and network data streams connected to cyberspace against cyber threats. |
+| **System Security Engineering** | **NIST SP 800-160 Vol. 1** | The engineering discipline of building resilient hardware, kernel, software, and cryptographic architectures that function predictably under hostile conditions. |
 
 <div class="diagram-frame">
-  <video class="diagram-video" controls autoplay muted loop playsinline preload="metadata" poster="{{ '/assets/video/cia-triad-poster.png' | relative_url }}?v=4" aria-label="A slow CIA triad walkthrough using one appointment record. Confidentiality blocks an unauthorized reader while allowing the authorized user. Integrity detects and rejects a change from 10:00 to 16:00. Availability uses failover so the authorized user can still access the record when the primary service is unavailable. The ending compares the three failures and provides a review checklist.">
-    <source src="{{ '/assets/video/cia-triad.webm' | relative_url }}?v=4" type="video/webm">
-    <source src="{{ '/assets/video/cia-triad.mp4' | relative_url }}?v=4" type="video/mp4">
-    <img src="{{ '/assets/video/cia-triad-poster.png' | relative_url }}?v=4" alt="CIA triad checklist: confidentiality limits reading to authorized parties, integrity keeps data accurate and unaltered, and availability keeps it accessible to authorized users when needed.">
-  </video>
-  <p class="diagram-caption">One appointment record, three separate tests: disclosure, improper change, and access when needed</p>
+  <img src="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" alt="Security Architecture and Domain Scopes showing Core Security Objectives, Information Security and Cybersecurity Scopes, Universal Risk Management Engine, and Security Controls Execution.">
+  <p class="diagram-caption">Security domain architecture: Core CIA Objectives → Information Security & Cybersecurity Scopes → Universal Risk Engine → Technical Controls Execution</p>
 </div>
 
-- **Confidentiality — only authorized parties can read the information.** If Mallory can see Mei's appointment record, confidentiality has failed.
-- **Integrity — the information remains accurate, complete, and protected from improper change or destruction.** If `10:00` becomes `16:00` and the system accepts it silently, integrity has failed.
-- **Availability — authorized users can access and use the information or service when needed.** If Mei is allowed to read the record but the service cannot return it, availability has failed.
+## Core Security Objectives: The CIA Triad & System Properties
 
-Integrity does not prove that information was true when it was first entered. It protects an accepted state from improper change and helps me detect when data should no longer be trusted.
+Evaluating harm to an asset requires testing it against fundamental security properties defined in **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)**:
 
-Availability overlaps heavily with reliability. A distributed denial-of-service attack, failed disk, bad deployment, ransomware incident, or exhausted database can all stop an authorized user from reaching a service. The causes differ, but the failed security objective is still availability.
+### 1. The CIA Triad
 
-These definitions follow **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** and the related NIST definitions of **[integrity](https://csrc.nist.gov/glossary/term/integrity)** and **[availability](https://csrc.nist.gov/glossary/term/availability)**.
+- **Confidentiality**: Preserves authorized restrictions on information access and disclosure, preventing unauthorized observation (*e.g., encrypting PII at rest via AES-256-GCM*).
+- **Integrity**: Guards against improper information modification or destruction, ensuring non-repudiation and authenticity (*e.g., cryptographic signatures on API payloads and database records*).
+- **Availability**: Ensures timely and reliable access to and use of information and services (*e.g., redundant load balancers, rate limiting, and auto-scaling failover clusters*).
 
-## What the CIA triad does not cover by itself
+### 2. Beyond the CIA Triad
 
-CIA is a strong starting point, not a complete security model. I may also need to examine:
+Comprehensive security engineering expands beyond the CIA triad to address additional critical properties across systems:
 
-- **Authenticity** — whether a person, system, message, or record is genuine and what it claims to be.
-- **Accountability** — whether actions can be traced to the responsible actor through trustworthy identity, authorization, and audit evidence.
-- **Privacy** — whether data processing creates unacceptable consequences for people, even when access is authorized and the system remains secure. The **[NIST Privacy Framework](https://www.nist.gov/privacy-framework)** treats privacy as its own risk-management problem.
-- **Safety** — whether failures can cause physical injury, environmental damage, or other unacceptable real-world harm.
-- **Compliance** — whether required laws, regulations, contracts, and standards are satisfied. Passing an audit is evidence about defined requirements, not proof that every material risk is controlled.
+- **Authenticity**: Verifying that a user, process, system, or payload is genuine (**NIST SP 800-63**).
+- **Accountability**: Ensuring system actions can be traced unequivocally to an authenticated identity via tamper-evident audit logging (**NIST SP 800-92**).
+- **Privacy**: Ensuring data processing respects individual rights and regulatory boundaries (**[NIST Privacy Framework](https://www.nist.gov/privacy-framework)**).
+- **Safety**: Ensuring system operational failures do not cause physical injury, environmental damage, or loss of life (**ISO 26262 / NIST SP 800-160**).
+- **Resilience**: The capacity of a system to withstand, adapt to, and recover from adverse conditions or attacks (**NIST SP 800-160 Vol. 2**).
 
-The boundaries are important. Encryption can support confidentiality, and authenticated encryption can detect tampering, but neither keeps a service available. Authentication can establish who is present, but authorization still decides what that identity may do. A backup server can keep a service available when hardware fails, but redundancy alone may not stop an attacker from compromising both servers. Security depends on how these pieces work together.
+## The Universal Engine: Continuous Risk Management
 
-## Now what: my quick security review
+Whether protecting a physical paper archive (**Information Security**) or a cloud-native microservice (**Cybersecurity**), security protection is never arbitrary. Both domains fall back to preserving the core **CIA Triad**, and both rely on the exact same decision engine: **Risk Management ([NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final) / [ISO/IEC 27005](https://www.iso.org/standard/75281.html))**.
 
-When I review a system, I start with these questions:
+Risk Management provides the structural engine connecting abstract security objectives to concrete technical controls across five continuous operational stages:
 
-1. **What do I value?** Identify the people, data, services, operations, and trust that need protection.
-2. **Where is the boundary?** Mark users, administrators, services, devices, networks, vendors, and trust transitions.
-3. **What could cause harm?** Consider malicious actions, mistakes, component failures, supply-chain events, and environmental conditions.
-4. **Which weaknesses make that possible?** Look for vulnerable code, unsafe defaults, excessive privilege, weak processes, missing capacity, and untested assumptions.
-5. **What would the impact be?** Categorize loss of confidentiality, integrity, availability, privacy, safety, financial value, or reputation.
-6. **Which controls change the risk?** Cover prevention, detection, response, and recovery instead of relying on one barrier.
-7. **How do I validate them?** Test denied and allowed access, tamper with data, simulate failure, restore backups, inspect alerts, and exercise incident procedures.
-8. **What risk remains?** Record the residual risk, its owner, the decision, and what change should trigger another review.
-
-<div class="callout">
-  <span class="callout-title">What I need to remember</span>
-  <p>Security starts with value and harm, not with a tool. I identify assets, threats, vulnerabilities, and impact; choose controls; validate the result; and make the remaining risk explicit.</p>
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/risk-management-lifecycle.svg' | relative_url }}" alt="The Continuous Risk Management Lifecycle diagram showing Stage 1 Problem Inputs, Stage 2 Risk Assessment, Stage 3 Risk Responses, Stage 4 Security Controls Execution, and Stage 5 Continuous Monitoring Feedback Loop.">
+  <p class="diagram-caption">The Continuous Risk Management Lifecycle (NIST SP 800-39 / SP 800-37): Inputs → Assessment → Strategic Response Selection → Controls Execution → Continuous Monitoring Feedback Loop</p>
 </div>
 
-## Primary references
+### Operational Lifecycle Breakdown
 
-- **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** — confidentiality, integrity, availability, and impact categorization.
-- **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** — risk assessment concepts and process.
-- **[NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework)** — Govern, Identify, Protect, Detect, Respond, and Recover outcomes.
-- **[NIST security-control glossary](https://csrc.nist.gov/glossary/term/security_control)** — control definitions sourced from NIST publications.
-- **[ISO/IEC 27000 family](https://www.iso.org/standard/iso-iec-27000-family)** — information-security management vocabulary and standards.
+| Lifecycle Stage | Primary Operational Actions & Mechanics | System Scenario Example |
+|---|---|---|
+| **Stage 1: Inputs**<br>*(Problem Domain)* | Gathers inputs from **Threat Modeling**, **CVSS Vulnerability Scans**, **Threat Intel**, Asset Inventories, and Gap Audits to construct scenario components (*Asset, Threat, Vulnerability, Impact*). | Unauthenticated public API route exposing customer database queries without rate limiting. |
+| **Stage 2: Evaluation**<br>*(Risk Assessment)* | Calculates exposure severity (**Risk = Likelihood × Impact**) per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** by rating threat plausibility and harm consequence. | Rating data exfiltration likelihood as **High** and financial harm as **Critical**. |
+| **Stage 3: Strategy**<br>*(Response Selection)* | Selects one of four formal responses per **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)**: **Avoid** (redesign feature), **Reduce** (deploy controls), **Transfer** (insurance/SLAs), or **Accept** (authorize exposure). | Selecting **Reduce (Mitigate)** to deploy technical security controls. |
+| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards per **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/final)** across 4 functions: **Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*). | Deploying OAuth 2.0 JWT verification, Web Application Firewall (WAF), and mTLS. |
+| **Stage 5: Loop**<br>*(Continuous Audit)* | Continuously monitors control efficacy (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), tracks new threats, and feeds metrics back into Stage 1 Inputs for re-assessment. | Automated SIEM alerting on brute-force spikes and feeding log metrics into annual audits. |
+
+A vulnerability alone does not constitute a risk. Risk assessment requires determining whether a plausible threat can reach the vulnerability, the magnitude of the resulting impact, and how existing controls alter overall probability. Risk management is never a static, one-time activity—it operates as a continuous feedback loop (**NIST SP 800-37**).
+
+## Essential System Security Diagnostic Checklist
+
+When evaluating the security posture of any new feature or system architecture, audit these 6 diagnostic questions:
+
+| Diagnostic Focus Area | Key Architectural Evaluation Question | Target Verification &amp; Audit Evidence |
+|---|---|---|
+| **Asset Categorization** | What sensitive data, critical services, or business operations require protection? | Data classification inventories, CMDB registers &amp; asset catalogues. |
+| **Control Verification** | Which preventive, detective, responsive, and recovery controls execute the reduction strategy? | Security controls baseline mapping (**NIST SP 800-53 Rev. 5**) &amp; continuous monitoring logs. |
+| **Domain Boundary Identification** | Are you managing paper records (InfoSec), digital endpoints (Cybersecurity), or hardware roots of trust? | Scope boundary documents &amp; system security plan (SSP) architecture bounds. |
+| **Exposure Assessment** | What is the risk severity based on threat likelihood and consequential impact? | Risk assessment reports (**NIST SP 800-30 Rev. 1**). |
+| **Objective Testing** | Which CIA triad properties, safety, or privacy limits would be breached if compromised? | FIPS 199 impact categorization &amp; privacy impact assessments (PIA). |
+| **Strategic Response Selection** | Which response strategy—Avoid, Reduce, Transfer, or Accept—is authorized by the risk owner? | Signed executive risk treatment plan (**NIST SP 800-39**). |

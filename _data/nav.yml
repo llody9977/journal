@@ -3,22 +3,13 @@
 # A `children` entry can itself be a group (has its own nested `children`)
 # to any depth — nesting is fully recursive (see _includes/nav-list.html).
 # A group with no `children` and no `url` renders as a "Soon" placeholder.
-#
-# Ordering rule: each list is sorted alphabetically by default. Where a list
-# has a genuine reading-order dependency (a later topic assumes an earlier
-# one), items are numbered ("1. ", "2. ", ...) instead so the intended order
-# stays obvious even if the list is ever re-sorted. Lists with no numbers can
-# be read in any order.
-#
-# "Security" is currently the only main topic group, so it does not need a
-# numeric prefix. Add ordering only when multiple main groups require it.
 
 - title: Overview
   url: /
 
 - title: Security
   children:
-    - title: 1. Overview & Foundations
+    - title: 1. Overview
       children:
         - title: 1.1 What Is Security?
           url: /topics/security-fundamentals/
@@ -26,91 +17,18 @@
           url: /topics/where-should-i-start/
         - title: 1.3 Security Objectives & Properties
           url: /topics/security-objectives-properties/
-        - title: 1.4 Identity & Access Fundamentals
-          url: /topics/identity-access-fundamentals/
+        - title: 1.4 Trust Boundaries & Threat Modeling
+          url: /topics/trust-boundaries-threat-modeling/
         - title: "1.5 Threats, Vulnerabilities & Risk"
           url: /topics/risk-fundamentals/
-        - title: 1.6 Trust Boundaries & Threat Modeling
-          url: /topics/trust-boundaries-threat-modeling/
+        - title: 1.6 Identity & Access Fundamentals
+          url: /topics/identity-access-fundamentals/
         - title: 1.7 Security Controls & Defense in Depth
           url: /topics/security-controls-defense-in-depth/
-    - title: 2. Governance, Risk & Compliance
-      children:
-        - title: 2.1 Cybersecurity Standards & Frameworks
-          url: /topics/cybersecurity-standards/
-        - title: 2.2 Security Maturity Models
-          url: /topics/security-maturity-models/
-        - title: 2.3 GRC Strategy
-          url: /topics/grc-framework-strategy/
-        - title: 2.4 Product Security Certifications
-          url: /topics/security-certifications/
-    - title: 3. Cryptography
-      children:
-        - title: 3.1 What Is Cryptography?
-          url: /topics/cryptography-overview/
-        - title: 3.2 Symmetric Cryptography
-          url: /topics/symmetric-cryptography/
-        - title: "3.3 Symmetric Mode Attacks: ECB, CBC & CTR"
-          url: /topics/symmetric-mode-attacks/
-        - title: 3.4 Asymmetric Cryptography
-          url: /topics/asymmetric-cryptography/
-        - title: 3.5 Symmetric vs Asymmetric Cryptography
-          url: /topics/symmetric-vs-asymmetric/
-        - title: 3.6 Hash Functions & MACs
-          url: /topics/hash-functions-macs/
-        - title: 3.7 Hash Collisions & Length Extension
-          url: /topics/hash-collisions-length-extension/
-        - title: 3.8 Key Exchange & Key Derivation
-          url: /topics/key-exchange-derivation/
-        - title: 3.9 Digital Signatures
-          url: /topics/digital-signatures/
-        - title: 3.10 Recommended Algorithms & Regional Standards
-          url: /topics/recommended-algorithms/
-        - title: 3.11 Certificate Authorities & Certificates
-          url: /topics/certificates/
-        - title: 3.12 TLS Handshake
-          url: /topics/tls-ssl-handshake/
-        - title: 3.13 Certificate Transparency
-          url: /topics/certificate-transparency/
-        - title: 3.14 Password Storage
-          url: /topics/password-storage/
-        - title: 3.15 Full-Disk & File Encryption
-          url: /topics/full-disk-file-encryption/
-        - title: 3.16 Blockchain Cryptography
-          url: /topics/blockchain-cryptography/
-    - title: 4. Key Management
-      children:
-        - title: 4.1 HSM & KMS
-          url: /topics/hsm-kms/
-    - title: 5. Authentication & Authorization
-      children:
-        - title: 5.1 SSH
-          url: /topics/ssh/
-        - title: "5.2 NTLM, Kerberos & HTTP Authentication Schemes"
-          url: /topics/http-auth-schemes/
-        - title: 5.3 OAuth & OpenID Connect
-          url: /topics/oauth-oidc/
-        - title: 5.4 SAML 2.0
-          url: /topics/saml/
-        - title: 5.5 Step-Up Authentication & MFA
-          url: /topics/step-up-authentication/
-        - title: 5.6 Machine-to-Machine API Authentication
-          url: /topics/api-security/
-        - title: 5.7 Security Token Service (STS)
-          url: /topics/security-token-service/
-        - title: 5.8 Authorization Models
-          url: /topics/authorization-models/
-    - title: 6. Network Security
-      children:
-        - title: 6.1 DNS Security
-          url: /topics/dns-security/
-    - title: 7. Threat Intelligence & Detection
-      children:
-        - title: 7.1 Threat Frameworks
-          url: /topics/threat-frameworks/
-    - title: 8. Emerging Topics
-      children:
-        - title: 8.1 AI & LLM Security
-          url: /topics/ai-llm-security/
-        - title: 8.2 Software Supply Chain Security
-          url: /topics/software-supply-chain-security/
+    - title: 2. Cryptography
+    - title: 3. Key Management
+    - title: 4. Authentication & Authorization
+    - title: 5. Network Security
+    - title: 6. Threat Intelligence & Detection
+    - title: 7. Emerging Topics
+    - title: 8. Governance, Risk & Compliance

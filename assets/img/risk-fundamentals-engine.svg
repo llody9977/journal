@@ -1,0 +1,79 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Threats, Vulnerabilities &amp; Risk Engine</title>
+  <desc id="description">Risk Management Architecture showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Threats, Vulnerabilities &amp; Risk Engine</text>
+  <text x="50" y="88" font-size="16" fill="#475569">Risk Management Architecture showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.</text>
+  
+    <!-- Top Stage: Threat & Vulnerability Evaluation Pipeline (y=115, h=135) -->
+    <!-- Card 1: Threat Source & Event (x=40, w=355) -->
+    <rect x="40" y="115" width="355" height="135" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
+    <text x="60" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">1. THREAT SOURCE &amp; EVENT (NIST 800-30)</text>
+    <text x="60" y="165" font-size="14" font-weight="800" fill="#0f172a">Adversary Vector &amp; Capability</text>
+    <line x1="60" y1="176" x2="375" y2="176" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="196" font-size="11.5" font-weight="500" fill="#475569">• Threat Source: Nation-state, criminal, insider, bug</text>
+    <text x="60" y="214" font-size="11.5" font-weight="500" fill="#475569">• Threat Event: SQLi, Ransomware, DDoS, Exploitation</text>
+
+    <!-- Card 2: Vulnerability Exposure (x=422, w=355) -->
+    <rect x="422" y="115" width="355" height="135" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+    <text x="442" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">2. VULNERABILITY EXPOSURE (CVSS &amp; EPSS)</text>
+    <text x="442" y="165" font-size="14" font-weight="800" fill="#0f172a">Flaw Reachability &amp; Exploitability</text>
+    <line x1="442" y1="176" x2="757" y2="176" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="442" y="196" font-size="11.5" font-weight="500" fill="#475569">• CVSS v4.0 Severity Score &amp; EPSS Exploit Probability</text>
+    <text x="442" y="214" font-size="11.5" font-weight="500" fill="#475569">• CISA Known Exploited Vulnerabilities (KEV) Catalog</text>
+
+    <!-- Card 3: Risk Evaluation Engine (x=805, w=355) -->
+    <rect x="805" y="115" width="355" height="135" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+    <text x="825" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">3. RISK EVALUATION (NIST 800-39 / FAIR)</text>
+    <text x="825" y="165" font-size="14" font-weight="800" fill="#0f172a">Risk Exposure = Likelihood × Impact</text>
+    <line x1="825" y1="176" x2="1140" y2="176" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+    <text x="825" y="196" font-size="11.5" font-weight="500" fill="#475569">• Qualitative (Low/Med/High) &amp; Quantitative Loss ($)</text>
+    <text x="825" y="214" font-size="11.5" font-weight="500" fill="#475569">• Existing Security Control Efficacy Offset</text>
+
+    <!-- Middle Stage: Risk Response Strategies (y=265, h=145) -->
+    <!-- Option 1: Avoid (x=40, w=260) -->
+    <rect x="40" y="265" width="260" height="145" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
+    <text x="55" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">1. AVOID</text>
+    <text x="55" y="315" font-size="13" font-weight="800" fill="#0f172a">Eliminate Risk Vector</text>
+    <line x1="55" y1="326" x2="285" y2="326" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+    <text x="55" y="346" font-size="11" font-weight="500" fill="#475569">Terminating vulnerable features</text>
+    <text x="55" y="364" font-size="11" font-weight="500" fill="#475569">or deprecating legacy protocols.</text>
+
+    <!-- Option 2: Reduce (x=327, w=260) -->
+    <rect x="327" y="265" width="260" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2" />
+    <text x="342" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. REDUCE (MITIGATE)</text>
+    <text x="342" y="315" font-size="13" font-weight="800" fill="#0f172a">Deploy Technical Controls</text>
+    <line x1="342" y1="326" x2="572" y2="326" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="342" y="346" font-size="11" font-weight="500" fill="#475569">NIST SP 800-53 controls,</text>
+    <text x="342" y="364" font-size="11" font-weight="500" fill="#475569">mTLS &amp; WebAuthn MFA.</text>
+
+    <!-- Option 3: Transfer (x=614, w=260) -->
+    <rect x="614" y="265" width="260" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
+    <text x="629" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">3. TRANSFER (SHARE)</text>
+    <text x="629" y="315" font-size="13" font-weight="800" fill="#0f172a">Shift Financial Exposure</text>
+    <line x1="629" y1="326" x2="859" y2="326" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+    <text x="629" y="346" font-size="11" font-weight="500" fill="#475569">Cybersecurity insurance policies</text>
+    <text x="629" y="364" font-size="11" font-weight="500" fill="#475569">and managed cloud SLAs.</text>
+
+    <!-- Option 4: Accept (x=901, w=259) -->
+    <rect x="901" y="265" width="259" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2" />
+    <text x="916" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">4. ACCEPT</text>
+    <text x="916" y="315" font-size="13" font-weight="800" fill="#0f172a">Formal Residual Approval</text>
+    <line x1="916" y1="326" x2="1145" y2="326" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="916" y="346" font-size="11" font-weight="500" fill="#475569">Executive risk owner sign-off</text>
+    <text x="916" y="364" font-size="11" font-weight="500" fill="#475569">for accepted residual risk.</text>
+
+    <!-- Bottom Stage: Residual Risk Governance (y=425, h=50) -->
+    <rect x="40" y="425" width="1120" height="50" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+    <text x="600" y="446" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="#0f172a">RESIDUAL RISK GOVERNANCE &amp; CONTINUOUS MONITORING (NIST SP 800-137)</text>
+    <text x="600" y="462" text-anchor="middle" font-size="10.5" font-weight="600" fill="#475569">Residual Risk = Assess Exposure → Execute Response Strategy → Executive Sign-Off → Re-Evaluate on System Architecture Trigger</text>
+</svg>
