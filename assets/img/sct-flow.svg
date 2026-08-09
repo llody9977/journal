@@ -3,61 +3,56 @@
   <desc id="description">Submitting pre-certificates to independent CT logs, receiving SCTs, and verifying inclusion via browser policies</desc>
   <rect width="1200" height="415" fill="#ffffff"/>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
     <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Signed Certificate Timestamps (SCT) Workflow &amp; CT Log Auditing</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Submitting pre-certificates to independent CT logs, receiving SCTs, and verifying via</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">inclusion browser policies</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Submitting pre-certificates to independent CT logs, receiving SCTs, and verifying via browser CT policies</text>
   
-    <g>
-      <!-- Top Row: 4 Sequential Workflow Steps -->
-      <!-- Step 1: Pre-Cert Submission -->
-      <rect x="50" y="110" width="230" height="100" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-      <text x="65" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">STEP 1: CERTIFICATE AUTHORITY</text>
-      <text x="65" y="158" font-size="14" font-weight="800" fill="#0f172a">Submit Pre-Certificate</text>
-      <text x="65" y="180" font-size="12" font-weight="500" fill="#475569">CA sends pre-cert payload to</text>
-      <text x="65" y="196" font-size="12" font-weight="600" fill="#2563eb">≥ 2 Independent CT Logs</text>
+  <g>
+    <!-- Top Row: 4 Sequential Workflow Steps -->
+    <!-- Step 1: Pre-Cert Submission -->
+    <rect x="50" y="110" width="230" height="100" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="65" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">STEP 1: CERTIFICATE AUTHORITY</text>
+    <text x="65" y="158" font-size="14" font-weight="800" fill="#0f172a">Submit Pre-Certificate</text>
+    <text x="65" y="180" font-size="12" font-weight="500" fill="#475569">CA sends pre-cert payload to</text>
+    <text x="65" y="196" font-size="12" font-weight="600" fill="#2563eb">≥ 2 Independent CT Logs</text>
 
-      <path d="M 280 160 L 330 160" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M 280 160 L 330 160" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
 
-      <!-- Step 2: CT Log SCT Return -->
-      <rect x="340" y="110" width="230" height="100" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
-      <text x="355" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">STEP 2: CT LOG SERVERS</text>
-      <text x="355" y="158" font-size="14" font-weight="800" fill="#0f172a">Generate &amp; Return SCT</text>
-      <text x="355" y="180" font-size="12" font-weight="500" fill="#475569">Logs append to Merkle Tree &amp;</text>
-      <text x="355" y="196" font-size="12" font-weight="600" fill="#b45309">Issue Signed SCT Promise</text>
+    <!-- Step 2: CT Log SCT Return -->
+    <rect x="340" y="110" width="230" height="100" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+    <text x="355" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">STEP 2: CT LOG SERVERS</text>
+    <text x="355" y="158" font-size="14" font-weight="800" fill="#0f172a">Generate &amp; Return SCT</text>
+    <text x="355" y="180" font-size="12" font-weight="500" fill="#475569">Logs append to Merkle Tree &amp;</text>
+    <text x="355" y="196" font-size="12" font-weight="600" fill="#b45309">Issue Signed SCT Promise</text>
 
-      <path d="M 570 160 L 620 160" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>
+    <path d="M 570 160 L 620 160" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>
 
-      <!-- Step 3: SCT Embedding -->
-      <rect x="630" y="110" width="230" height="100" rx="10" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
-      <text x="645" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">STEP 3: ISSUANCE &amp; EMBEDDING</text>
-      <text x="645" y="158" font-size="14" font-weight="800" fill="#0f172a">Embed SCT Extension</text>
-      <text x="645" y="180" font-size="12" font-weight="500" fill="#475569">CA embeds SCTs directly into</text>
-      <text x="645" y="196" font-size="12" font-weight="600" fill="#0f766e">Final X.509 Certificate</text>
+    <!-- Step 3: SCT Embedding -->
+    <rect x="630" y="110" width="230" height="100" rx="10" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
+    <text x="645" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">STEP 3: ISSUANCE &amp; EMBEDDING</text>
+    <text x="645" y="158" font-size="14" font-weight="800" fill="#0f172a">Embed SCT Extension</text>
+    <text x="645" y="180" font-size="12" font-weight="500" fill="#475569">CA embeds SCTs directly into</text>
+    <text x="645" y="196" font-size="12" font-weight="600" fill="#0f766e">Final X.509 Certificate</text>
 
-      <path d="M 860 160 L 910 160" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
+    <path d="M 860 160 L 910 160" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
 
-      <!-- Step 4: Browser Verification -->
-      <rect x="920" y="110" width="230" height="100" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-      <text x="935" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">STEP 4: CLIENT BROWSER</text>
-      <text x="935" y="158" font-size="14" font-weight="800" fill="#0f172a">Enforce CT Policy</text>
-      <text x="935" y="180" font-size="12" font-weight="500" fill="#475569">Verifies SCT Count &amp; Diversity</text>
-      <text x="935" y="196" font-size="12" font-weight="700" fill="#2563eb">Per Chrome/Apple CT Policy</text>
+    <!-- Step 4: Browser Verification -->
+    <rect x="920" y="110" width="230" height="100" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="935" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">STEP 4: CLIENT BROWSER</text>
+    <text x="935" y="158" font-size="14" font-weight="800" fill="#0f172a">Enforce CT Policy</text>
+    <text x="935" y="180" font-size="12" font-weight="500" fill="#475569">Verifies SCT Count &amp; Diversity</text>
+    <text x="935" y="196" font-size="12" font-weight="700" fill="#2563eb">Per Chrome/Apple CT Policy</text>
 
-      <!-- Bottom Card: Delivery Methods & Protection -->
-      <rect x="50" y="240" width="1100" height="170" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
-      <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SCT DELIVERY METHODS &amp; SECURITY GUARANTEE</text>
-      <text x="70" y="294" font-size="15" font-weight="800" fill="#0f172a">3 Approved SCT Delivery Methods in TLS Connections:</text>
-      <text x="70" y="320" font-size="13" font-weight="600" fill="#0f172a">1. X.509 Extension (Most Common): CA bakes SCTs directly into the certificate during issuance.</text>
-      <text x="70" y="342" font-size="13" font-weight="600" fill="#0f172a">2. TLS Extension (signed_certificate_timestamp): Web server transmits SCTs during ServerHello handshake.</text>
-      <text x="70" y="364" font-size="13" font-weight="600" fill="#0f172a">3. OCSP Stapling: Web server includes SCTs wrapped inside the signed OCSP response stapling payload.</text>
-      <text x="70" y="392" font-size="12.5" font-weight="700" fill="#0f766e">Security Guarantee: If a CA secretly issues a cert without logging it to CT, browsers reject the TLS connection immediately!</text>
-    </g>
+    <!-- Bottom Card: Delivery Methods & Protection -->
+    <rect x="50" y="240" width="1100" height="170" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+    <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SCT DELIVERY METHODS &amp; SECURITY GUARANTEE</text>
+    <text x="70" y="294" font-size="15" font-weight="800" fill="#0f172a">3 Approved SCT Delivery Methods in TLS Connections:</text>
+    <text x="70" y="320" font-size="13" font-weight="600" fill="#0f172a">1. X.509 Extension (Most Common): CA bakes SCTs directly into certificate extensions during issuance.</text>
+    <text x="70" y="342" font-size="13" font-weight="600" fill="#0f172a">2. TLS Extension (signed_certificate_timestamp): Transmitted in TLS handshake (TLS 1.3 Certificate extension / TLS 1.2 ServerHello).</text>
+    <text x="70" y="364" font-size="13" font-weight="600" fill="#0f172a">3. OCSP Stapling: Web server includes SCTs wrapped inside the signed OCSP response stapling payload.</text>
+    <text x="70" y="392" font-size="12" font-weight="700" fill="#0f766e">Browser Enforcement: Publicly trusted TLS server certificates lacking valid SCTs are rejected by Chrome/Apple root program CT policies.</text>
+  </g>
 </svg>

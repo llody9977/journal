@@ -27,7 +27,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 ### NIST SP 800-63B Core Authentication Requirements
 
 1. **Length-Based Security**:
-   * Enforce a minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA; 14+ characters recommended for administrative or privileged accounts).
+   * Enforce a minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA; 16+ characters recommended for administrative or privileged accounts).
    * Allow maximum lengths of at least **64 characters** to support easy-to-remember, high-entropy **passphrases** (e.g., `correct horse battery staple`).
 2. **Eliminate Arbitrary Complexity Rules**:
    * Deprecate rules requiring specific character mixes (uppercase, numbers, symbols) to improve user adoption and key diversity.
@@ -41,44 +41,40 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Interactive Strength Meter</span>
-    <h3>Password Entropy &amp; Strength Estimator</h3>
-    <p>Type any password or passphrase below to calculate its idealized character-set upper bound entropy (bits of security) and an estimated brute-force crack time. This math assumes uniform random guessing over the detected character set &mdash; real human-chosen passwords (including well-known example passphrases) have much lower <em>effective</em> entropy because dictionary and pattern-based attacks skip most of that idealized search space, so treat the numbers below as an optimistic upper bound, not a real-world guarantee.</p>
+    <h3>Password Entropy &amp; Search-Space Estimator</h3>
+    <p>Type any password or passphrase below to calculate its idealized character-set search-space upper bound (bits of security) and an estimated brute-force crack time. This math assumes uniform random guessing over the detected character set &mdash; real human-chosen passwords (including well-known example passphrases) have much lower <em>effective</em> entropy because dictionary and pattern-based attacks skip most of that idealized search space, so treat the numbers below as an optimistic upper bound, not a real-world guarantee.</p>
   </div>
 
   <div class="demo-body">
     <!-- Password Input -->
     <div class="demo-form-group">
-      <label for="entropy-password-input">Test Password or Passphrase:</label>
-      <input id="entropy-password-input" type="text" class="demo-input" style="width: 100%;" placeholder="Type a password..." value="correct horse battery staple">
+      <label for="password-input">Test Password / Passphrase:</label>
+      <input id="password-input" type="text" class="demo-input" placeholder="Type password here..." value="correct horse battery staple">
     </div>
 
-    <!-- Live Calculations -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-top: 1rem;">
-      <div style="background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px; text-align: center;">
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Length</div>
-        <div id="entropy-len-val" style="font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-top: 0.25rem;">0</div>
+    <!-- Character Pool & Entropy Display -->
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+      <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; text-align: center;">
+        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Password Length (L)</span>
+        <span id="password-len-val" style="font-size: 1.25rem; font-weight: 800; color: var(--text);">0</span>
       </div>
-      <div style="background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px; text-align: center;">
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Pool Size (R)</div>
-        <div id="entropy-pool-val" style="font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-top: 0.25rem;">0</div>
+      <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; text-align: center;">
+        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Character Pool (R)</span>
+        <span id="password-pool-val" style="font-size: 1.25rem; font-weight: 800; color: var(--text);">0</span>
       </div>
-      <div style="background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px; text-align: center;">
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Entropy (E)</div>
-        <div id="entropy-bits-val" style="font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-top: 0.25rem;">0 bits</div>
+      <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; text-align: center;">
+        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Idealized Upper Bound</span>
+        <span id="password-bits-val" style="font-size: 1.25rem; font-weight: 800; color: var(--accent);">0 bits</span>
       </div>
     </div>
 
-    <!-- Live Strength Status -->
-    <div id="entropy-status-bar" style="margin-top: 1rem; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; border: 1px solid transparent;"></div>
+    <!-- Live Status Indicator -->
+    <div id="password-status-bar" style="margin-top: 1rem; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;"></div>
 
-    <!-- Crack Time Display -->
-    <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--ink-2); background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px;">
-      <strong>Attacker Brute-Force Time Estimate:</strong>
-      <div style="margin: 0.25rem 0 0 0; font-size: 0.8rem; line-height: 1.4;">
-        Assuming a large-scale distributed cracking operation sustaining <strong>100,000 guesses/sec</strong> against a memory-hard hash like Argon2id/bcrypt (a single core manages only a few guesses/sec at ~250ms each, so this implies thousands of parallel workers):
-        <span id="entropy-crack-time" style="font-weight: 700; display: block; margin-top: 0.25rem; font-size: 0.9rem;"></span>
-      </div>
-      <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">This is a pure brute-force estimate over the detected character set &mdash; it does not model dictionary words, keyboard walks, or leaked-password lists, which crack predictable passphrases far faster than shown here.</div>
+    <!-- Estimated Crack Time Card -->
+    <div style="margin-top: 1rem; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Estimated Uniform Brute-Force Time (at 100,000 guesses/sec):</span>
+      <span id="password-crack-time" style="font-size: 1.1rem; font-weight: 800; color: var(--text);">N/A</span>
     </div>
   </div>
 </div>
@@ -86,12 +82,12 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 {% raw %}
 <script>
 (function() {
-  const passwordInput = document.getElementById('entropy-password-input');
-  const lenVal = document.getElementById('entropy-len-val');
-  const poolVal = document.getElementById('entropy-pool-val');
-  const bitsVal = document.getElementById('entropy-bits-val');
-  const statusBar = document.getElementById('entropy-status-bar');
-  const crackTime = document.getElementById('entropy-crack-time');
+  const passwordInput = document.getElementById('password-input');
+  const lenVal = document.getElementById('password-len-val');
+  const poolVal = document.getElementById('password-pool-val');
+  const bitsVal = document.getElementById('password-bits-val');
+  const statusBar = document.getElementById('password-status-bar');
+  const crackTime = document.getElementById('password-crack-time');
 
   if (!passwordInput || !lenVal || !poolVal || !bitsVal || !statusBar || !crackTime) return;
 
@@ -133,33 +129,33 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
     poolVal.innerText = R;
 
-    // Shannon Entropy Formula: E = L * log2(R)
+    // Idealized Uniform Search-Space Upper Bound: E = L * log2(R)
     const E = len * (Math.log(R) / Math.log(2));
     bitsVal.innerText = `${E.toFixed(1)} bits`;
 
-    // Qualitative Idealized Entropy Tier
+    // Qualitative Idealized Search-Space Tier
     let rating = '';
     let bgColor = '';
     let textColor = '';
     let borderColor = '';
 
     if (E < 28) {
-      rating = '&#10060; Low Search-Space Entropy (< 28 bits)';
+      rating = '&#10060; Low Search-Space Upper Bound (< 28 bits)';
       bgColor = 'rgba(159, 18, 57, 0.08)'; // critical-wash
       textColor = 'var(--critical)';
       borderColor = 'var(--critical)';
     } else if (E < 60) {
-      rating = '&#9888; Moderate Search-Space Entropy (28-59 bits)';
+      rating = '&#9888; Moderate Search-Space Upper Bound (28-59 bits)';
       bgColor = 'rgba(161, 76, 0, 0.08)'; // amber-wash
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
     } else if (E < 80) {
-      rating = '&#128309; High Search-Space Entropy (60-79 bits)';
+      rating = '&#128309; High Search-Space Upper Bound (60-79 bits)';
       bgColor = 'rgba(36, 87, 214, 0.08)'; // accent-wash
       textColor = 'var(--accent)';
       borderColor = 'var(--accent)';
     } else {
-      rating = '&#9989; Very High Search-Space Entropy (80+ bits)';
+      rating = '&#9989; Very High Search-Space Upper Bound (80+ bits)';
       bgColor = 'rgba(15, 118, 110, 0.08)'; // teal-wash
       textColor = 'var(--teal)';
       borderColor = 'var(--teal)';
@@ -170,28 +166,19 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     statusBar.style.color = textColor;
     statusBar.style.borderColor = borderColor;
 
-    // Crack time estimation: average-case seconds = (2^E / 2) / guessesPerSec
+    // Crack time estimation
     const totalPossibilities = Math.pow(2, E);
     const avgGuesses = totalPossibilities / 2;
-    const guessesPerSec = 100000; // assumed distributed cracking rate against a memory-hard hash
+    const guessesPerSec = 100000;
     const seconds = avgGuesses / guessesPerSec;
 
     let timeText = '';
-    if (seconds < 1) {
-      timeText = 'Instantaneous (under 1 second)';
-    } else if (seconds < 60) {
-      timeText = `~${Math.round(seconds)} seconds`;
-    } else if (seconds < 3600) {
-      timeText = `~${Math.round(seconds / 60)} minutes`;
-    } else if (seconds < 86400) {
-      timeText = `~${Math.round(seconds / 3600)} hours`;
-    } else if (seconds < 31536000) {
-      timeText = `~${Math.round(seconds / 86400)} days`;
-    } else if (seconds < 3153600000) {
-      timeText = `~${Math.round(seconds / 31536000)} years`;
-    } else {
-      timeText = 'Centuries / Billions of Years';
-    }
+    if (seconds < 1) timeText = 'Instantaneous';
+    else if (seconds < 60) timeText = `~${Math.round(seconds)} seconds`;
+    else if (seconds < 3600) timeText = `~${Math.round(seconds / 60)} minutes`;
+    else if (seconds < 86400) timeText = `~${Math.round(seconds / 3600)} hours`;
+    else if (seconds < 31536000) timeText = `~${Math.round(seconds / 86400)} days`;
+    else timeText = 'Years / Centuries';
 
     crackTime.innerText = timeText;
   }
@@ -201,8 +188,6 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 })();
 </script>
 {% endraw %}
-
----
 
 ## Specialized Password Hashing Functions Matrix
 
@@ -232,7 +217,7 @@ A **Pepper** is a 32-byte secret key stored outside the primary user database (*
 
 ## Argon2id Recommended Parameters (RFC 9106)
 
-Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST SP 800-63B Rev. 4](https://csrc.nist.gov/pubs/sp/800/63/b/r4/final)**, **Argon2id** provides optimal protection against both side-channel and GPU attacks. The current **[OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)** lists several single-lane (p=1) configurations, from **m=47104 KiB (46 MiB), t=1** as the strongest down to its minimum recommendation of **m=19456 KiB (19 MiB), t=2**. RFC 9106 separately recommends **m=65536 KiB (64 MiB), t=3, p=4** as its own memory-constrained profile (the tuner's default below), which spreads the work across four parallel lanes rather than OWASP's single lane:
+Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST SP 800-63B Rev. 4](https://csrc.nist.gov/pubs/sp/800/63/b/r4/final)**, **Argon2id** provides optimal protection against both side-channel and GPU attacks. The current **[OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)** lists several single-lane (p=1) configurations, from **m=47104 KiB (46 MiB), t=1, p=1** as the strongest down to its minimum recommendation of **m=19456 KiB (19 MiB), t=2, p=1**. RFC 9106 separately recommends **m=65536 KiB (64 MiB), t=3, p=4** as its own memory-constrained profile (the tuner's default below), which spreads the work across four parallel lanes rather than OWASP's single lane:
 
 <div class="interactive-demo-card">
   <div class="demo-header">
@@ -262,7 +247,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
     <div class="demo-form-group">
       <div style="display: flex; justify-content: space-between;">
         <label for="argon-threads">Parallelism (p - Threads): <span id="label-argon-threads-val" style="font-weight: 700;">4</span></label>
-        <span style="font-size: 0.8rem; color: var(--text-muted);">OWASP configs use p=1; RFC 9106's low-memory profile uses p=4</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">OWASP single-lane profiles specify p=1; RFC 9106 uses p=4</span>
       </div>
       <input id="argon-threads" type="range" class="demo-input" style="width: 100%;" min="1" max="8" step="1" value="4">
     </div>
@@ -309,25 +294,35 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
     timeValLabel.innerText = timeVal;
     threadsValLabel.innerText = threadsVal;
 
-    // Check compliance status against OWASP Password Storage Cheat Sheet profiles (all p=1)
+    // Check compliance status against OWASP (p=1) and RFC 9106 (p=4) profiles
     let statusHtml = '';
     let bgColor = '';
     let textColor = '';
     let borderColor = '';
 
-    if (memMiB >= 46 && timeVal >= 1) {
-      statusHtml = '&#9989; Meets OWASP Strongest Listed Profile (m&#8805;46 MiB, t&#8805;1)';
-      bgColor = 'rgba(15, 118, 110, 0.08)'; // teal-wash
+    if (threadsVal === 1 && memMiB >= 46 && timeVal >= 1) {
+      statusHtml = '&#9989; Meets OWASP Strongest Listed Single-Lane Profile (m&#8805;46 MiB, t&#8805;1, p=1)';
+      bgColor = 'rgba(15, 118, 110, 0.08)';
       textColor = 'var(--teal)';
       borderColor = 'var(--teal)';
-    } else if (memMiB >= 19 && timeVal >= 2) {
-      statusHtml = '&#9888; Meets OWASP Minimum Recommended Profile (m&#8805;19 MiB, t&#8805;2)';
-      bgColor = 'rgba(161, 76, 0, 0.08)'; // amber-wash
+    } else if (threadsVal === 1 && memMiB >= 19 && timeVal >= 2) {
+      statusHtml = '&#9888; Meets OWASP Minimum Recommended Single-Lane Profile (m&#8805;19 MiB, t&#8805;2, p=1)';
+      bgColor = 'rgba(161, 76, 0, 0.08)';
+      textColor = 'var(--amber)';
+      borderColor = 'var(--amber)';
+    } else if (threadsVal > 1 && memMiB >= 64 && timeVal >= 3) {
+      statusHtml = '&#9989; Meets RFC 9106 Recommended Multi-Threaded Profile (m&#8805;64 MiB, t&#8805;3, p&#8805;4)';
+      bgColor = 'rgba(15, 118, 110, 0.08)';
+      textColor = 'var(--teal)';
+      borderColor = 'var(--teal)';
+    } else if (memMiB >= 19) {
+      statusHtml = '&#9888; Custom Parameter Configuration (Note: OWASP single-lane profiles specify p=1)';
+      bgColor = 'rgba(161, 76, 0, 0.08)';
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
     } else {
-      statusHtml = '&#10060; Below OWASP Minimum Recommended Profile (Vulnerable to GPU/ASIC Cracking)';
-      bgColor = 'rgba(159, 18, 57, 0.08)'; // critical-wash
+      statusHtml = '&#10060; Below Minimum Recommended Memory Bound (Vulnerable to Parallel Cracking)';
+      bgColor = 'rgba(159, 18, 57, 0.08)';
       textColor = 'var(--critical)';
       borderColor = 'var(--critical)';
     }

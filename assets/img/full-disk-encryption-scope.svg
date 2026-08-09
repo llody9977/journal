@@ -25,7 +25,7 @@
   <text x="640" y="244" font-size="12" fill="#475569">• SQLi, path traversal, &amp; malware bypass FDE completely</text>
   <text x="640" y="264" font-size="12" fill="#475569">• Screen lock does NOT unmount or evict volume key</text>
   <rect x="640" y="285" width="485" height="40" rx="8" fill="#b45309"/>
-  <text x="882" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">UNPROTECTED: Requires App-Layer Field Encryption</text>
+  <text x="882" y="310" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">TRANSPARENT TO OS: Governed by OS Access Controls</text>
 
   <!-- Summary Footer -->
   <rect x="50" y="365" width="1100" height="40" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>

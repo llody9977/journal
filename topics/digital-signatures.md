@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # Digital Signatures & Non-Repudiation
 
-<p class="lede">Digital signatures provide mathematical proof of payload integrity, origin authenticity, and cryptographic non-repudiation over unauthenticated networks — proof that a valid signature could only have been produced by a specific private key. By signing a cryptographically secure hash of a payload using a private key, the key holder creates an unforgeable signature tag that any third party holding the matching public key can verify independently.</p>
+<p class="lede">Digital signatures provide verifiable cryptographic evidence of payload integrity and key control over unauthenticated networks—verifiable evidence that a valid signature tag could only have been produced using the corresponding private key. By signing a cryptographically secure hash of a payload using a private key, the key holder creates a signature tag that any third party holding the matching public key can verify independently.</p>
 
 ## The Digital Signature Pipeline
 
@@ -22,7 +22,7 @@ RSA-PSS and ECDSA sign a fixed-size digest rather than the raw payload: their si
 
 1. **Hashing Phase**: Compute a cryptographic hash digest **H(M)** over message **M** using SHA-256 or SHA3-256.
 2. **Signing Phase**: Compute signature tag **S** over digest **H(M)** using private key <b>K<sub>priv</sub></b>.
-3. **Verification Phase**: The verifier computes **H(M')** over received message **M'** and verifies **S** against public key <b>K<sub>pub</sub></b>. If the signature matches, origin identity and payload integrity are proven.
+3. **Verification Phase**: The verifier computes **H(M')** over received message **M'** and verifies **S** against public key <b>K<sub>pub</sub></b>. If the signature matches, key possession and payload integrity are verified.
 
 ## Signature Scheme Comparison Matrix
 
@@ -51,7 +51,7 @@ These are two distinct constructions, not one shared formula, though both elimin
 
 ## Hardware Key Custody: HSMs & Secure Enclaves
 
-Strong cryptographic non-repudiation requires guaranteeing that private keys cannot be exported or cloned. Production architectures store signing keys inside **Hardware Security Modules (HSMs)**, **AWS KMS**, or **TPM 2.0 / Secure Enclaves**. Applications request cryptographic sign operations over secure APIs without ever exposing private key bytes in application memory.
+Cryptographic key custody relies on reducing private key extraction and cloning risks. Production architectures store signing keys inside **Hardware Security Modules (HSMs)**, **AWS KMS**, or **TPM 2.0 / Secure Enclaves** to enforce non-exportable hardware boundaries. Applications request cryptographic sign operations over secure APIs without exposing private key bytes in application memory.
 
 <div class="callout warn">
   <span class="callout-title">Cryptographic Non-Repudiation Is Not Automatically Legal Non-Repudiation</span>

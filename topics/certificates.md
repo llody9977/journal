@@ -344,9 +344,9 @@ Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** 
 
 | Pinning Strategy | Target Object Pinned | Maintenance & Operational Risk | Primary Use Case |
 |---|---|---|---|
-| **Leaf Certificate Pinning** | Hashes full leaf X.509 certificate | **HIGH RISK**: Leaf cert expiration or emergency ACME renewal breaks app connectivity unless app update is deployed. | High-security ephemeral IoT sessions. |
-| **Intermediate / Root CA Pinning** | Hashes public key of issuing CA | **LOW RISK**: Leaf certs can rotate freely as long as issuing CA remains unchanged. | Enterprise mobile applications. |
-| **SPKI Public Key Pinning (Best Practice)** | Hashes `SubjectPublicKeyInfo` (SPKI) bit string | **OPTIMAL**: Re-issuing leaf certs using the *same key pair* maintains pin validity across renewals. | Production iOS and Android mobile apps. |
+| **Leaf Certificate Pinning** | Hashes full leaf X.509 certificate | **CRITICAL RISK**: Leaf cert expiration or emergency ACME renewal breaks app connectivity unless app update is deployed. | High-security ephemeral IoT sessions. |
+| **Intermediate / Root CA Pinning** | Hashes public key of issuing CA | **MODERATE RISK**: Leaf certs can rotate freely, but issuing CA key rotation or intermediate retirement breaks client connections. | Enterprise mobile applications. |
+| **SPKI Public Key Pinning** | Hashes `SubjectPublicKeyInfo` (SPKI) bit string | **HIGH RISK**: Re-issuing leaf certs using the *same key pair* maintains pin validity, but key compromise or emergency key rotation without a valid backup pin breaks connectivity. | Native mobile app transport security. |
 
 ### Pinning Scope: Public CA vs. Private CA Deployment
 
@@ -361,7 +361,7 @@ While pinning protects network transport against rogue CAs, it introduces signif
 
 | Security Risk / Threat Vector | Attack Mechanics & Impact | Engineering Mitigation |
 |---|---|---|
-| **Self-Inflicted Security DoS** | If an emergency key revocation occurs (e.g. private key leak) and no matching backup pin exists in the app binary, **100% of client instances lose security connectivity**, preventing over-the-air API security patches. | Always configure at least one **Backup SPKI Pin** derived from an offline, cold-storage key pair. |
+| **Self-Inflicted Security DoS** | If an emergency key revocation occurs (e.g. private key leak) and no matching backup pin exists in the app binary, deployed client instances lose API connectivity, preventing over-the-air API security patches. | Always configure at least one **Backup SPKI Pin** derived from an offline, cold-storage key pair. |
 | **Pin-Jacking / Hostage Attack** | An attacker who briefly compromises server header configurations can inject malicious pins, locking legitimate clients out of the legitimate service indefinitely. | Primary reason **HPKP was deprecated in browsers**. Restrict pinning configurations to signed native app code bundles. |
 | **Client-Side Bypass (Frida / Jailbreak)** | Attackers analyzing mobile apps on rooted/jailbroken devices easily bypass pinning using dynamic instrumentation tools (**Frida**, **Objection**) to hook TLS validation routines. | Treat pinning as a network-layer defense, not a client-side reverse engineering barrier. Combine with root/jailbreak detection and obfuscation. |
 | **CA Intermediate Migration Failure** | If an issuing CA retires an Intermediate certificate authority (e.g. Let's Encrypt R3 to R10), pinned clients that hardcoded the Intermediate CA key drop connection. | Pin **SubjectPublicKeyInfo (SPKI)** of your own key pair, or pin the **Root CA** key rather than transient Intermediate keys. |
@@ -373,8 +373,8 @@ While pinning protects network transport against rogue CAs, it introduces signif
     <p>Understanding where Certificate Pinning belongs prevents catastrophic self-inflicted Denial of Service (DoS):</p>
     <ul>
       <li><strong>Web Browsers (Deprecated)</strong>: <strong>HTTP Public Key Pinning (HPKP / RFC 7469)</strong> was officially <strong>deprecated and removed from web browsers</strong> (Chrome, Firefox, Safari) due to site-bricking hazards and malicious pin-jacking attacks. Web browsers rely on <strong>Certificate Transparency (CT)</strong> for rogue CA detection instead.</li>
-      <li><strong>Mobile &amp; Native Apps (Not a Default — Use Deliberately)</strong>: Certificate and SPKI pinning can add defense-in-depth for <strong>iOS and Android native applications</strong> against corporate TLS proxies, local MitM interception, and rogue CA issuance. However, both platform vendors now caution against reaching for it by default: <a href="https://developer.android.com/privacy-and-security/security-config">Android's official guidance</a> recommends most apps avoid certificate pinning given the bricking risk on key rotation, reserving it for apps with a specific, well-understood threat model and a tested pin-rotation process.</li>
-      <li><strong>Backup Pin Recommendation Rule</strong>: If you choose to deploy pinning, mobile app configurations are <strong>strongly recommended</strong> to specify at least one backup pin (a secondary public key hash held in cold storage) — and schema enforcement in Android Network Security Config requires specifying a backup pin within `<pin-set>` blocks — to allow key rotation without bricking deployed application instances.</li>
+      <li><strong>Mobile &amp; Native Apps (Situational — Use Deliberately)</strong>: Certificate and SPKI pinning can add defense-in-depth for <strong>iOS and Android native applications</strong> against corporate TLS proxies, local MitM interception, and rogue CA issuance. However, both platform vendors caution against reaching for static public key pinning by default: <a href="https://developer.android.com/privacy-and-security/security-config">Android's official guidance</a> and <a href="https://developer.apple.com/news/?id=g9ejcf8y">Apple's PKI guidance</a> advise that pinning carries high operational risk during key rotation, recommending it only for applications with a specific, well-understood threat model and a tested pin-rotation process.</li>
+      <li><strong>Backup Pin Recommendation Rule</strong>: If you choose to deploy pinning, mobile app configurations are <strong>strongly recommended</strong> to specify at least one backup pin (a secondary public key hash held in cold storage) to allow key rotation without bricking deployed application instances (Android's documentation advises including a backup pin, though schema validation itself does not block single-pin blocks).</li>
     </ul>
   </div>
 </div>
@@ -429,8 +429,8 @@ While pinning protects network transport against rogue CAs, it introduces signif
 
 As PKI migrates toward quantum safety, Certificate Authorities and standards groups (IETF LAMPS working group) are standardizing **Post-Quantum Hybrid Certificates**:
 
-- **Dual-Algorithm / Composite Certificates** (`draft-ietf-lamps-pq-composite-sigs`): Binds both a classical public key (e.g. RSA-3072 or ECDSA P-256) and a post-quantum public key (e.g. FIPS 204 ML-DSA) within a single X.509 certificate.
-- **Backwards Compatibility**: Classical legacy TLS clients verify only the classical signature component, while post-quantum aware clients verify both signatures, ensuring security during multi-year transition periods.
+- **Dual-Algorithm / Composite Certificates** ([draft-ietf-lamps-pq-composite-sigs](https://datatracker.ietf.org/doc/html/draft-ietf-lamps-pq-composite-sigs)): Binds both a classical public key (e.g. RSA-3072 or ECDSA P-256) and a post-quantum public key (e.g. FIPS 204 ML-DSA) under a single composite algorithm identifier.
+- **Interoperability & Transition Mechanics**: Non-upgraded legacy clients cannot parse or fall back to verifying only the classical signature component of a composite certificate, as they do not recognize the composite algorithm OID (the IETF draft explicitly notes that upgraded/non-upgraded interoperability is not directly provided by composite signatures). Upgraded/non-upgraded interoperability is therefore achieved through parallel certificates (dual X.509 certificate chains) or negotiated protocol parameters rather than in-place composite fallback.
 
 ## What I Need to Remember
 
@@ -441,7 +441,7 @@ As PKI migrates toward quantum safety, Certificate Authorities and standards gro
     <ul>
       <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
       <li><strong>Automated ACME &amp; ARI (RFC 9773)</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI (RFC 9773) is essential in practice.</li>
-      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning can protect mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted — Android's guidance recommends against it for most apps. HPKP is deprecated in web browsers.</li>
+      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning carries high operational risk during key rotation. Both Apple and Android guidance recommend against static public key pinning for general web traffic, reserving it for specific threat models with tested backup pins. HPKP is deprecated in web browsers.</li>
     </ul>
   </div>
 </div>
@@ -454,3 +454,5 @@ As PKI migrates toward quantum safety, Certificate Authorities and standards gro
 - **RFC 7469**: *Public Key Pinning Extension for HTTP (Deprecation Notice)* — [IETF RFC 7469](https://www.rfc-editor.org/rfc/rfc7469)
 - **CA/Browser Forum Baseline Requirements**: *Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates* — [CA/Browser Forum BRs](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
 - **Android Network Security Config**: *Network Security Configuration Pinning Guidance* — [Android Developer Security Config](https://developer.android.com/privacy-and-security/security-config)
+- **Apple PKI Guidance**: *Identity & Public Key Pinning Guidance* — [Apple Developer News](https://developer.apple.com/news/?id=g9ejcf8y)
+- **IETF Composite Signatures Draft**: *Composite Signatures For Use in X.509 Public Key Infrastructure* — [draft-ietf-lamps-pq-composite-sigs](https://datatracker.ietf.org/doc/html/draft-ietf-lamps-pq-composite-sigs)

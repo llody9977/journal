@@ -20,7 +20,7 @@ Quantum computing impacts symmetric and asymmetric primitives in fundamentally d
   <p class="diagram-caption">Grover's algorithm halves symmetric security (mitigated by doubling key sizes); Shor's algorithm completely breaks RSA/ECC</p>
 </div>
 
-1. **Grover's Algorithm (Symmetric Ciphers &amp; Hashes)**: Provides quadratic speedup for brute-force searches. Effective key strength is halved (**256-bit symmetric keys drop to 128-bit security**). Mitigated by deploying AES-256 and SHA-384/512.
+1. **Grover's Algorithm (Symmetric Ciphers & Hash Functions)**: Provides a quadratic speedup for unstructured brute-force search ($O(2^n) \to O(2^{n/2})$). For symmetric ciphers, 256-bit keys drop to 128-bit quantum security strength. For unkeyed cryptographic hash functions, Grover's algorithm provides a quadratic speedup against preimage search ($O(2^n) \to O(2^{n/2})$), while collision resistance remains governed by birthday attack bounds ($O(2^{n/2})$). Deploying AES-256 and SHA-384/512 maintains robust quantum-resistant margins.
 2. **Shor's Algorithm (Asymmetric Public Key Cryptography)**: Solves prime factorization and discrete logarithms in polynomial time (**O(n^3)**). **Completely breaks RSA, ECC, ECDSA, and Diffie-Hellman**. Mitigated by transitioning to NIST Post-Quantum Cryptography (PQC) standards.
 
 ## Cryptographic Standards Matrix: IETF Standards vs. NIST/FIPS Compliance
@@ -62,12 +62,12 @@ NIST finalized three quantum-resistant FIPS standards in August 2024, with a fou
 
 ## Regional Standards: Chinese ShangMi (SM) Algorithm Suite
 
-Under China's Cryptography Law (2020) and the **State Cryptography Administration (SCA)**'s commercial cryptography regime (the regulator formerly known as OSCCA, the Office of State Commercial Cryptography Administration), the ShangMi suite is mandatory only in specific regulated contexts — critical information infrastructure (CII) operators, government procurement, sector rules such as the People's Bank of China's requirements for banking/payment systems, and commercial cryptography products on China's certification catalogue. It is **not** a blanket requirement for all software or every multinational corporation operating in China; general commercial products outside these regulated categories may continue using AES/RSA/ECC.
+Under China's Cryptography Law (2020) and national standards (**GB/T 39786-2021** *Baseline for Cryptographic Application in Information Systems* and **GM/T 0054-2018** *Cryptographic Application Security Evaluation*), commercial cryptography compliance is governed by the State Cryptography Administration (SCA). The ShangMi suite is mandatory in specific regulated contexts—critical information infrastructure (CII) operators, government procurement, financial sector rules (PBOC banking requirements), and certified commercial cryptography products. General commercial software operating outside these statutory categories is not mandated to replace AES/RSA/ECC.
 
 | SM Algorithm | Cryptographic Primitive | Equivalent Western Primitive | Compliance Requirement |
 |---|---|---|---|
-| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Mandatory for public-key encryption and digital signatures within CII, government, and PBOC-regulated banking systems; not required for general commercial software. |
-| **SM3** | Cryptographic Hash | SHA-256 | Mandatory 256-bit hash digest for integrity checks and signatures within the same regulated sectors. |
+| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Mandatory for public-key encryption and digital signatures within CII, government, and PBOC-regulated banking systems (GB/T 39786-2021); not required for general commercial software. |
+| **SM3** | Cryptographic Hash | SHA-256 | Mandatory 256-bit hash digest for integrity checks and signatures within the same regulated sectors (GM/T 0054-2018). |
 | **SM4** | 128-bit Block Cipher | AES-128-GCM | Mandatory 128-bit block cipher for data at rest and network transit within the same regulated sectors; general deployments are not required to replace AES. |
 | **SM9** | Identity-Based Encryption | IBE / Identity PKI | Identity-based public-key algorithm using user ID as public key. |
 
@@ -81,7 +81,7 @@ Under China's Cryptography Law (2020) and the **State Cryptography Administratio
       <li><strong>IETF Standard vs. FIPS Approved</strong>: Algorithms can be cryptographically sound and IETF-standardized (X25519, AES-GCM-SIV) while <em>not</em> being FIPS 140-3 / NIST SP 800-56A approved. Always check regulatory context: FedRAMP requires a FIPS 140-validated module per <a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a>, which accepts <strong>either P-256 or P-384</strong> for TLS — P-384 is only mandatory for National Security Systems under NSA CNSA 2.0, not as a blanket FedRAMP-wide rule.</li>
       <li><strong>NIST Approval &amp; BSI Recommendation Are Not Interchangeable</strong>: A "NIST APPROVED" status in the matrix above is a U.S. federal (FIPS/SP 800-series) designation only. Germany's BSI sets independent criteria in TR-02102-1 and has historically favored Brainpool curves (brainpoolP256r1/P384r1) over the NIST P-curves for German government and critical-infrastructure use. Don't treat NIST approval as proof of BSI endorsement, or vice versa — verify each body's guidance separately for the relevant jurisdiction.</li>
       <li><strong>PQC Finalization</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) were <strong>finalized in August 2024</strong>. Draft FIPS 206 (FN-DSA) remains under development.</li>
-      <li><strong>Symmetric vs Asymmetric Quantum Impact</strong>: AES-256 and SHA-384/512 are quantum-safe today (Grover's algorithm only halves key bits). RSA/ECC must be replaced with PQC (Shor's algorithm breaks them).</li>
+      <li><strong>Symmetric vs Asymmetric Quantum Impact</strong>: AES-256 and SHA-384/512 maintain robust quantum-resistant margins today (Grover's algorithm halves symmetric key strength and provides a quadratic speedup for preimages). RSA/ECC must be replaced with PQC (Shor's algorithm breaks them).</li>
     </ul>
   </div>
 </div>
@@ -93,6 +93,6 @@ Under China's Cryptography Law (2020) and the **State Cryptography Administratio
 - **NIST SP 800-56A Rev. 3**: *Recommendation for Pair-Wise Key-Establishment Schemes Using Discrete Logarithm Cryptography* — [NIST CSRC SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)
 - **NIST SP 800-108 Rev. 1**: *Recommendation for Key Derivation Using Pseudorandom Functions* — [NIST CSRC SP 800-108 R1](https://csrc.nist.gov/pubs/sp/800/108/r1/final)
 - **BSI TR-02102-1**: *Cryptographic Mechanisms: Recommendations and Key Lengths* — [BSI Technical Guideline TR-02102-1](https://www.bsi.bund.de/EN/Topics/ElectrID-PKI/TR-02102/tr02102_node.html)
-- **China SCA Standards**: *State Cryptography Administration Commercial Cryptography Standards (GM/T series)* — [SCA Commercial Cryptography Regulations](http://www.sca.gov.cn/)
+- **Chinese SCA Standards**: *GB/T 39786-2021 Baseline for Cryptographic Application in Information Systems & GM/T 0054-2018 Cryptographic Application Security Evaluation* — [SCA Commercial Cryptography Standards](http://www.sca.gov.cn/)
 - **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [IETF RFC 8452](https://www.rfc-editor.org/rfc/rfc8452)
 - **RFC 7748**: *Elliptic Curves for Security (Curve25519 / Curve448)* — [IETF RFC 7748](https://www.rfc-editor.org/rfc/rfc7748)

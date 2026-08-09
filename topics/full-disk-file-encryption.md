@@ -22,7 +22,7 @@ Full-disk encryption protects data **only while its key is evicted from memory �
 
 1. **Powered-Off State (Protected)**: Storage blocks are encrypted under volume keys that may be bound to hardware elements such as a TPM 2.0 or Secure Enclave, or protected by user passphrases/keyfiles. Physical removal of the SSD yields unreadable ciphertext.
 2. **Active Booted Session (Transparent)**: Once the OS boots and unlocks the volume key, decryption occurs transparently at the block and file-system layer, though operating system access controls (user permissions, ACLs, process boundaries) still apply. Application-layer vulnerabilities (SQLi, path traversal) bypass FDE completely, requiring file-level or field-level encryption.
-3. **Screen-Locked, Still Mounted (Transparent, Not Protected)**: A locked screen is a separate security boundary from FDE — it does not, by itself, evict the volume key or unmount the disk. On iOS, only the narrower *Complete Protection* data class discards its keys at lock; the *After First Unlock* class (used by most app data) keeps its keys resident until reboot, and desktop FDE (FileVault, LUKS2) behaves the same way once mounted. Anyone with software or physical access to a locked-but-running machine can still read decrypted data; only evicting the key (power-off, or an explicit re-lock of the volume) restores protection.
+3. **Screen-Locked, Still Mounted (Transparent, Not Protected)**: A locked screen is a separate security boundary from FDE — it does not, by itself, evict the volume key or unmount the disk. On iOS, only the narrower *Complete Protection* data class discards its keys at lock; the *After First Unlock* class (used by most app data) keeps its keys resident until reboot, and desktop FDE (FileVault, LUKS2) behaves the same way once mounted. An adversary with physical or software access to a locked-running machine cannot read decrypted data without bypassing operating system access controls, exploiting an authorized session, obtaining privileged execution, or extracting keys from RAM; only evicting the key (power-off, or an explicit re-lock of the volume) restores physical data-at-rest protection.
 
 ## Block Cipher Mode for Disks: AES-XTS (IEEE 1619)
 
@@ -57,7 +57,7 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
     <p>To secure massive data stores efficiently, envelope encryption divides responsibilities between local fast data keys and centralized master key custody:</p>
     <ul>
       <li><strong>Data Encryption Key (DEK)</strong>: A 256-bit AES symmetric key generated in memory. It encrypts the raw file or database payload. The plaintext DEK is <strong>never written to disk</strong>; it encrypts the file, gets wrapped by the KEK into an <strong>Encrypted DEK (EDEK)</strong>, and the EDEK is stored alongside the payload file.</li>
-      <li><strong>Key Encryption Key (KEK) / CMEK</strong>: A master key stored inside a Hardware Security Module (HSM) or Cloud KMS (e.g. AWS KMS, GCP KMS). A <strong>Customer-Managed Encryption Key (CMEK)</strong> is a KEK where the customer controls access policies, rotation schedules, and revocation. The KEK <strong>never leaves the HSM</strong>; it is used solely to wrap and unwrap small 32-byte DEKs.</li>
+      <li><strong>Key Encryption Key (KEK) / CMEK</strong>: A master key stored inside a Hardware Security Module (HSM) or Cloud KMS (e.g. AWS KMS, GCP KMS). A <strong>Customer-Managed Encryption Key (CMEK)</strong> is a KEK where the customer controls access policies, rotation schedules, and revocation. In non-exportable HSM-backed architectures, the KEK remains within the HSM security boundary, used primarily to wrap and unwrap key material such as local DEKs.</li>
     </ul>
     <strong>What Key Is Actually Being Rotated?</strong>
     <p>When key rotation is triggered (e.g. annually), one common efficient strategy is rotating only the Master KEK/CMEK inside KMS — avoiding multi-terabyte bulk data re-encryption — though DEKs and bulk data can also be rotated or re-encrypted after a compromise or according to policy:</p>
@@ -86,7 +86,7 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
     <ul>
       <li><strong>IEEE 1619 AES-XTS</strong>: Standard sector block cipher mode preventing pattern leakage without altering sector size.</li>
       <li><strong>LUKS2 &amp; Argon2id</strong>: Linux disk encryption header format using Argon2id KDF to protect volume master keys.</li>
-      <li><strong>Envelope Key Rotation</strong>: Key rotation rotates the Master KEK/CMEK inside KMS—NOT the bulk data. Older data is decrypted seamlessly via key version headers.</li>
+      <li><strong>Envelope Key Rotation</strong>: Re-wrapping DEKs or rotating the Master KEK inside KMS avoids re-encrypting bulk data payloads, though full data re-encryption may still be performed for specific compliance policies.</li>
     </ul>
   </div>
 </div>

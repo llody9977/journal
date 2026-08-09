@@ -9,11 +9,11 @@ last_verified: 2026-08-09
 
 # Certificate Transparency (CT) & Merkle Audit Proofs
 
-<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework that forces Certificate Authorities (CAs) to log every issued public X.509 certificate into append-only, publicly verifiable Merkle hash trees. CT does not prevent a CA from misissuing a certificate; instead, by requiring Signed Certificate Timestamps (SCTs) before browsers will trust a TLS connection, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
+<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework that forces Certificate Authorities (CAs) to log publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. CT does not prevent a CA from misissuing a certificate; instead, by requiring Signed Certificate Timestamps (SCTs) before browsers will trust a publicly trusted TLS connection, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
 
 ## The Problem: Rogue CA Misissuance
 
-Historically, any trusted Root CA in an operating system trust store could issue a valid certificate for *any* domain on the internet without domain owner knowledge (*e.g., the 2011 DigiNotar compromise where rogue Google certificates were issued*). Certificate Transparency does not stop a CA from issuing a rogue certificate, but it makes all cert issuance public and cryptographically auditable, so a rogue certificate becomes discoverable by the legitimate domain owner or third-party monitors instead of remaining secret.
+Historically, any trusted Root CA in an operating system trust store could issue a valid certificate for *any* domain on the internet without domain owner knowledge (*e.g., the 2011 DigiNotar compromise where rogue Google certificates were issued*). Certificate Transparency does not stop a CA from issuing a rogue certificate, but it makes publicly trusted TLS server certificate issuance public and cryptographically auditable, so a rogue certificate becomes discoverable by the legitimate domain owner or third-party monitors instead of remaining secret.
 
 ## Merkle Tree Architecture in CT (RFC 6962 / RFC 9162)
 
@@ -53,7 +53,7 @@ For certificates evaluated under [Chrome's CT Policy](https://googlechrome.githu
 
 | Certificate Lifetime | Required Embedded SCT Count | Log Operator Diversity Rule |
 |---|---|---|
-| **Under 180 Days** | **Minimum 2 SCTs** | Must include SCTs from at least 2 distinct, independent CT log operators (*e.g., Google + Cloudflare*). |
+| **180 Days or Less** | **Minimum 2 SCTs** | Must include SCTs from at least 2 distinct, independent CT log operators (*e.g., Google + Cloudflare*). |
 | **Over 180 Days** | **Minimum 3 SCTs** | Must include SCTs from at least 2 distinct log operators to hedge against operator outage or compromise. |
 
 ### 2. Apple CT Policy Rules
@@ -67,7 +67,7 @@ Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trus
 
 SCTs can be delivered to the client browser via three distinct transport mechanisms:
 1. **Embedded X.509 v3 Extension** (OID `1.3.6.1.4.1.11129.2.4.2`): Pre-certificates are submitted to logs by the CA before final issuance, and the received SCTs are statically baked directly into the certificate. This is the overwhelmingly common pattern.
-2. **TLS Extension** (`signed_certificate_timestamp`, extension type 18): The web server requests SCTs dynamically or receives them out-of-band and transmits them inside the `ServerHello` handshake message.
+2. **TLS Extension** (`signed_certificate_timestamp`): The web server transmits SCTs during the TLS handshake—in TLS 1.3, carried within the `Certificate` message extensions for the target certificate entry; in TLS 1.2, delivered via `ServerHello` extension.
 3. **OCSP Stapling**: The web server includes SCTs wrapped inside a stapled OCSP response (`OCSPResponse`).
 
 ## What I Need to Remember
