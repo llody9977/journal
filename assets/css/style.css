@@ -810,7 +810,7 @@ hr {
 
 .image-pair-compact {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 2.5rem;
   align-items: flex-start;
   margin: 1.5rem 0;
