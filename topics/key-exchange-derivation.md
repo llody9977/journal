@@ -528,6 +528,8 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
           </div>
         </div>`;
       }
+      state.step = 5;
+      setStepOpacity(5);
     } catch (err) {
       outputArea.innerHTML += log(`❌ Decryption Error: ${err.message || err}`, 'error');
     }
