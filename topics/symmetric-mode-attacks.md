@@ -237,6 +237,9 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
   });
 
   runECBEncryption();
+})();
+</script>
+
 ### Chosen-Plaintext & Dictionary Cryptanalysis Attack (ECB Codebook Exploitation)
 
 When a server encrypts data using **AES-ECB** mode, an adversary possessing stolen target ciphertext does not need to guess the secret key $K$. If the adversary has access to an **Encryption Oracle** (such as a web portal or API endpoint that encrypts user inputs under the same key $K$), they can build a **Codebook / Dictionary Table** mapping candidate plaintexts to generated ciphertext blocks.
