@@ -1,54 +1,53 @@
-<svg viewBox="0 0 1200 345" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">HKDF: extract once, expand by purpose</title>
-  <desc id="description">HKDF converts input key material into independent, context-bound protocol keys.</desc>
-  <rect width="1200" height="345" fill="#ffffff"/>
+<svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="300" fill="#ffffff"/>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/>
+    </marker>
   </defs>
-  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">HKDF: extract once, expand by purpose</text>
-  <text x="50" y="88" font-size="15" fill="#475569">HKDF converts input key material into independent, context-bound protocol keys.</text>
-  
-    <g>
-      <rect x="50" y="135" width="233.75" height="205" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
-      <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">INPUT</text>
-      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Secret + salt</text>
-      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">possibly biased</text>
-<text x="75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">key material</text>
-    </g>
 
-    <g>
-      <rect x="338.75" y="135" width="233.75" height="205" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
-      <text x="363.75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">EXTRACT</text>
-      <text x="363.75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">HKDF-Extract</text>
-      <text x="363.75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">creates a strong</text>
-<text x="363.75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">pseudorandom key</text>
-    </g>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">HKDF Extract-and-Expand Architecture (RFC 5869)</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Two-stage Key Derivation Function: extracting uniform pseudorandom key (PRK) and expanding to target traffic keys</text>
 
-    <g>
-      <rect x="627.5" y="135" width="233.75" height="205" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
-      <text x="652.5" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">EXPAND</text>
-      <text x="652.5" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">HKDF-Expand</text>
-      <text x="652.5" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">uses an info label</text>
-<text x="652.5" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">for domain separation</text>
-    </g>
+  <!-- Box 1 -->
+  <rect x="50" y="115" width="234" height="155" rx="12" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+  <text x="65" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#475569">1. INPUT KEYMATTER (IKM)</text>
+  <text x="65" y="165" font-size="13" font-weight="800" fill="#0f172a">ECDH Shared Secret S</text>
+  <text x="65" y="185" font-size="11.5" fill="#475569">• Optional Salt input</text>
+  <text x="65" y="203" font-size="11.5" fill="#475569">• Variable entropy pool</text>
+  <rect x="65" y="222" width="204" height="32" rx="6" fill="#e2e8f0"/>
+  <text x="167" y="243" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">Input Entropy Source</text>
 
-    <g>
-      <rect x="916.25" y="135" width="233.75" height="205" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
-      <text x="941.25" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">OUTPUT</text>
-      <text x="941.25" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Purpose keys</text>
-      <text x="941.25" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">encryption key</text>
-<text x="941.25" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">MAC key · IV</text>
-    </g>
-    <path d="M291.75 237.5 L330.75 237.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="311.25" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">NORMALIZE</text>
-    <path d="M580.5 237.5 L619.5 237.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="600" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">PRK</text>
-    <path d="M869.25 237.5 L908.25 237.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="888.75" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">DERIVE</text>
+  <path d="M 292 192 L 331 192" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- Box 2 -->
+  <rect x="339" y="115" width="234" height="155" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="354" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">2. HKDF-EXTRACT PASS</text>
+  <text x="354" y="165" font-size="13" font-weight="800" fill="#1e40af">HMAC-Hash(Salt, IKM)</text>
+  <text x="354" y="185" font-size="11.5" fill="#475569">• Extracts uniform entropy</text>
+  <text x="354" y="203" font-size="11.5" fill="#475569">• Outputs fixed PRK</text>
+  <rect x="354" y="222" width="204" height="32" rx="6" fill="#1e40af"/>
+  <text x="456" y="243" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Pseudorandom Key (PRK)</text>
+
+  <path d="M 581 192 L 620 192" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- Box 3 -->
+  <rect x="628" y="115" width="234" height="155" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
+  <text x="643" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">3. HKDF-EXPAND PASS</text>
+  <text x="643" y="165" font-size="13" font-weight="800" fill="#0f766e">HMAC-Hash(PRK, info || i)</text>
+  <text x="643" y="185" font-size="11.5" fill="#475569">• Binds context string info</text>
+  <text x="643" y="203" font-size="11.5" fill="#475569">• Expands to target length</text>
+  <rect x="643" y="222" width="204" height="32" rx="6" fill="#0f766e"/>
+  <text x="745" y="243" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Key Expansion Stream</text>
+
+  <path d="M 870 192 L 909 192" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- Box 4 -->
+  <rect x="916" y="115" width="234" height="155" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="931" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">4. OUTPUT KEYMATERIAL</text>
+  <text x="931" y="165" font-size="13" font-weight="800" fill="#5b21b6">Derived Traffic Keys</text>
+  <text x="931" y="185" font-size="11.5" fill="#475569">• AES Client / Server Keys</text>
+  <text x="931" y="203" font-size="11.5" fill="#475569">• IVs &amp; MAC keys derived</text>
+  <rect x="931" y="222" width="204" height="32" rx="6" fill="#6d28d9"/>
+  <text x="1033" y="243" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Session Traffic Keys (OKM)</text>
 </svg>

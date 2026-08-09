@@ -1,60 +1,36 @@
-<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">Public TLS certificate lifetime reduction</title>
-  <desc id="description">Shorter lifetimes reduce the exposure window of a compromised or misissued certificate.</desc>
-  <rect width="1200" height="315" fill="#ffffff"/>
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
-  </defs>
-  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Public TLS certificate lifetime reduction</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Shorter lifetimes reduce the exposure window of a compromised or misissued</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">certificate.</text>
-  
-    <g>
-      <rect x="50" y="135" width="176" height="175" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
-      <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">BEFORE 2020</text>
-      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">825 days</text>
-      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">former maximum</text>
-    </g>
+<svg viewBox="0 0 1200 275" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="275" fill="#ffffff"/>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">X.509 Certificate Validity Lifetime Evolution</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Tightening maximum certificate validity periods under CA/Browser Forum Baseline Requirements</text>
 
-    <g>
-      <rect x="281" y="135" width="176" height="175" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
-      <text x="306" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">SEPTEMBER 2020</text>
-      <text x="306" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">398 days</text>
-      <text x="306" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">industry maximum</text>
-    </g>
+  <!-- 5 Cards -->
+  <rect x="50" y="115" width="176" height="135" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="138" y="140" font-size="11" font-weight="900" fill="#475569" text-anchor="middle">PRE-2015</text>
+  <text x="138" y="170" font-size="20" font-weight="800" fill="#0f172a" text-anchor="middle">825 Days</text>
+  <text x="138" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Multi-Year Static Certs</text>
+  <text x="138" y="228" font-size="10.5" font-weight="600" fill="#64748b" text-anchor="middle">Manual Renewal</text>
 
-    <g>
-      <rect x="512" y="135" width="176" height="175" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
-      <text x="537" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">MARCH 2026</text>
-      <text x="537" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">200 days</text>
-      <text x="537" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">current phase</text>
-    </g>
+  <rect x="281" y="115" width="176" height="135" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="369" y="140" font-size="11" font-weight="900" fill="#2563eb" text-anchor="middle">SEPT 2020</text>
+  <text x="369" y="170" font-size="20" font-weight="800" fill="#1e40af" text-anchor="middle">398 Days</text>
+  <text x="369" y="195" font-size="11.5" fill="#475569" text-anchor="middle">1-Year Standard Certs</text>
+  <text x="369" y="228" font-size="10.5" font-weight="600" fill="#2563eb" text-anchor="middle">Browser Standard</text>
 
-    <g>
-      <rect x="743" y="135" width="176" height="175" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
-      <text x="768" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">MARCH 2027</text>
-      <text x="768" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">100 days</text>
-      <text x="768" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">next phase</text>
-    </g>
+  <rect x="512" y="115" width="176" height="135" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="600" y="140" font-size="11" font-weight="900" fill="#0f766e" text-anchor="middle">CURRENT 2025</text>
+  <text x="600" y="170" font-size="20" font-weight="800" fill="#0f766e" text-anchor="middle">200 Days</text>
+  <text x="600" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Shortened Lifespan</text>
+  <text x="600" y="228" font-size="10.5" font-weight="600" fill="#0f766e" text-anchor="middle">ACME Recommended</text>
 
-    <g>
-      <rect x="974" y="135" width="176" height="175" rx="20" fill="#f0fdf4" stroke="#15803d" stroke-width="3"/>
-      <text x="999" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#15803d">MARCH 2029</text>
-      <text x="999" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">47 days</text>
-      <text x="999" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">planned final phase</text>
-    </g>
-    <path d="M234 222.5 L273 222.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="253.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">REDUCED</text>
-    <path d="M465 222.5 L504 222.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="484.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">REDUCED</text>
-    <path d="M696 222.5 L735 222.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="715.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">REDUCED</text>
-    <path d="M927 222.5 L966 222.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="946.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">REDUCES AGAIN</text>
+  <rect x="743" y="115" width="176" height="135" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+  <text x="831" y="140" font-size="11" font-weight="900" fill="#b45309" text-anchor="middle">MARCH 2027</text>
+  <text x="831" y="170" font-size="20" font-weight="800" fill="#b45309" text-anchor="middle">100 Days</text>
+  <text x="831" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Upcoming Requirement</text>
+  <text x="831" y="228" font-size="10.5" font-weight="600" fill="#b45309" text-anchor="middle">Automation Mandate</text>
+
+  <rect x="974" y="115" width="176" height="135" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="1062" y="140" font-size="11" font-weight="900" fill="#dc2626" text-anchor="middle">MARCH 2029</text>
+  <text x="1062" y="170" font-size="20" font-weight="800" fill="#991b1b" text-anchor="middle">47 Days</text>
+  <text x="1062" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Maximum Cap</text>
+  <text x="1062" y="228" font-size="10.5" font-weight="600" fill="#dc2626" text-anchor="middle">Fully Automated ACME</text>
 </svg>
