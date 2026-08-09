@@ -32,7 +32,215 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
   <p class="diagram-caption">AES-128-ECB block pattern leakage: four identical 16-byte plaintext blocks yield identical 16-byte hex ciphertext outputs (ecb_leak.py)</p>
 </div>
 
-### Python ECB Pattern Leakage Demonstration
+### Client-Side Executable ECB Cryptanalysis Playground
+
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Browser Demonstration</span>
+    <h3>AES-128-ECB Structural Pattern Leakage Playground</h3>
+    <p>Test plaintext block repetition and key conversion directly in your browser (Zero server calls / Executed locally via Web Crypto API).</p>
+  </div>
+
+  <div class="demo-body">
+    <div class="demo-form-group">
+      <label for="ecb-plaintext-input">Plaintext Payload Input:</label>
+      <textarea id="ecb-plaintext-input" rows="3" class="demo-textarea" placeholder="Enter plaintext message...">ATTACKATDAWN1234ATTACKATDAWN1234ATTACKATDAWN1234ATTACKATDAWN1234</textarea>
+      <small class="demo-help">Default input consists of four identical 16-byte blocks ("ATTACKATDAWN1234").</small>
+    </div>
+
+    <div class="demo-form-group">
+      <label for="ecb-key-input">Encryption Key / Passphrase:</label>
+      <input type="text" id="ecb-key-input" class="demo-input" value="000102030405060708090a0b0c0d0e0f" placeholder="e.g. 000102030405060708090a0b0c0d0e0f or 'ab'">
+      <small class="demo-help" id="key-conversion-info">Key format: 32-character Hex key (128 bits).</small>
+    </div>
+
+    <div class="demo-actions">
+      <button id="btn-encrypt-ecb" class="btn-primary" type="button">Encrypt with AES-ECB</button>
+      <button id="btn-reset-ecb" class="btn-secondary" type="button">Reset Default Inputs</button>
+    </div>
+
+    <div id="ecb-output-container" class="demo-output-area"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const plainInput = document.getElementById('ecb-plaintext-input');
+  const keyInput = document.getElementById('ecb-key-input');
+  const keyInfo = document.getElementById('key-conversion-info');
+  const btnEncrypt = document.getElementById('btn-encrypt-ecb');
+  const btnReset = document.getElementById('btn-reset-ecb');
+  const outputContainer = document.getElementById('ecb-output-container');
+
+  if (!plainInput || !keyInput || !btnEncrypt) return;
+
+  function hexToBytes(hex) {
+    hex = hex.replace(/\s+/g, '');
+    if (hex.length % 2 !== 0) hex = '0' + hex;
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return bytes;
+  }
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function processKey(inputStr) {
+    const trimmed = inputStr.trim();
+    if (/^[0-9a-fA-F]{32}$/.test(trimmed)) {
+      keyInfo.innerHTML = '<span style="color: #15803d; font-weight: 600;">✔ Exact 16-byte (128-bit) Hex key detected</span>';
+      return hexToBytes(trimmed);
+    }
+    
+    const encoder = new TextEncoder();
+    const rawBytes = encoder.encode(trimmed);
+    const keyBytes = new Uint8Array(16);
+    
+    if (rawBytes.length === 0) {
+      keyInfo.innerHTML = '<span style="color: #b91c1c; font-weight: 600;">⚠️ Empty key entered. Using 16-byte zero fallback key.</span>';
+    } else {
+      for (let i = 0; i < 16; i++) {
+        keyBytes[i] = i < rawBytes.length ? rawBytes[i] : 0;
+      }
+      keyInfo.innerHTML = `<span style="color: #0369a1; font-weight: 600;">ℹ️ Passphrase "${trimmed}" converted &amp; zero-padded to 16-byte key: <code>${bytesToHex(keyBytes)}</code></span>`;
+    }
+    return keyBytes;
+  }
+
+  function pkcs7Pad(bytes) {
+    const blockSize = 16;
+    const padLen = blockSize - (bytes.length % blockSize);
+    const padded = new Uint8Array(bytes.length + padLen);
+    padded.set(bytes);
+    for (let i = bytes.length; i < padded.length; i++) {
+      padded[i] = padLen;
+    }
+    return padded;
+  }
+
+  async function encryptECBBlock(keyBytes, blockBytes) {
+    const cryptoKey = await window.crypto.subtle.importKey(
+      "raw", keyBytes, { name: "AES-CBC" }, false, ["encrypt"]
+    );
+    const zeroIv = new Uint8Array(16);
+    const encrypted = await window.crypto.subtle.encrypt(
+      { name: "AES-CBC", iv: zeroIv }, cryptoKey, blockBytes
+    );
+    return new Uint8Array(encrypted.slice(0, 16));
+  }
+
+  async function runECBEncryption() {
+    try {
+      const textVal = plainInput.value;
+      const keyVal = keyInput.value;
+      
+      const keyBytes = processKey(keyVal);
+      const encoder = new TextEncoder();
+      let plainBytes = encoder.encode(textVal);
+      
+      if (plainBytes.length === 0) {
+        outputContainer.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please enter a non-empty plaintext message to encrypt.</div>';
+        return;
+      }
+      
+      const needsPadding = plainBytes.length % 16 !== 0;
+      if (needsPadding) {
+        plainBytes = pkcs7Pad(plainBytes);
+      }
+      
+      const totalBlocks = plainBytes.length / 16;
+      const ciphertextBlocks = [];
+      const blockHexMap = {};
+      
+      for (let i = 0; i < totalBlocks; i++) {
+        const blockSlice = plainBytes.slice(i * 16, (i + 1) * 16);
+        const cipherBlockBytes = await encryptECBBlock(keyBytes, blockSlice);
+        const hex = bytesToHex(cipherBlockBytes);
+        ciphertextBlocks.push(hex);
+        blockHexMap[hex] = (blockHexMap[hex] || 0) + 1;
+      }
+      
+      let html = '<div class="ecb-results-wrapper">';
+      html += `<div class="ecb-summary-banner">
+        <span>Ciphertext Output: ${totalBlocks} Blocks (${plainBytes.length} Bytes Total)</span>
+        ${needsPadding ? '<span class="badge-padded">(Auto PKCS#7 Padded to 16-byte boundary)</span>' : ''}
+      </div>`;
+      
+      html += '<div class="ecb-blocks-list">';
+      
+      let repeatCount = 0;
+      ciphertextBlocks.forEach((hex, idx) => {
+        const isRepeat = blockHexMap[hex] > 1;
+        if (isRepeat) repeatCount++;
+        
+        const plainSlice = plainBytes.slice(idx * 16, (idx + 1) * 16);
+        const plainTextSnippet = Array.from(plainSlice)
+          .map(b => (b >= 32 && b <= 126) ? String.fromCharCode(b) : '.')
+          .join('');
+          
+        html += `
+        <div class="ecb-block-item ${isRepeat ? 'is-repeat-block' : ''}">
+          <div class="block-meta">
+            <span class="block-num">Block ${idx + 1} (Bytes ${idx * 16}–${idx * 16 + 15})</span>
+            <span class="block-plain-preview">Plaintext: "<code>${plainTextSnippet}</code>"</span>
+          </div>
+          <div class="block-hex-val">
+            <code>${hex}</code>
+            ${isRepeat ? '<span class="repeat-tag">⚠️ IDENTICAL BLOCK MATCH</span>' : ''}
+          </div>
+        </div>`;
+      });
+      
+      html += '</div>';
+      
+      if (repeatCount > 0) {
+        html += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Structural Vulnerability Verified</div>
+          <div>
+            <strong>ECB Pattern Leakage Active!</strong>
+            <p style="margin-bottom:0;">Identical 16-byte plaintext blocks produced <strong>identical ciphertext blocks</strong>. An adversary observing this ciphertext stream instantly recovers structural boundaries without knowing the encryption key.</p>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Block Uniqueness</div>
+          <div>
+            <strong>Distinct Ciphertext Blocks</strong>
+            <p style="margin-bottom:0;">All 16-byte plaintext blocks were distinct, producing distinct ciphertext outputs. However, if any 16-byte block repeats in future payloads under ECB mode, identical ciphertext will leak.</p>
+          </div>
+        </div>`;
+      }
+      
+      html += '</div>';
+      outputContainer.innerHTML = html;
+      
+    } catch (err) {
+      outputContainer.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>Encryption Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  btnEncrypt.addEventListener('click', runECBEncryption);
+  plainInput.addEventListener('input', runECBEncryption);
+  keyInput.addEventListener('input', runECBEncryption);
+  
+  btnReset.addEventListener('click', function() {
+    plainInput.value = "ATTACKATDAWN1234ATTACKATDAWN1234ATTACKATDAWN1234ATTACKATDAWN1234";
+    keyInput.value = "000102030405060708090a0b0c0d0e0f";
+    runECBEncryption();
+  });
+
+  runECBEncryption();
+})();
+</script>
+
+### Python CLI Reference Demonstration
 
 ```python
 # ecb_leak.py: Demonstrating identical block pattern leakage in AES-ECB

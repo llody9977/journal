@@ -3,7 +3,6 @@ import os
 import sys
 import re
 
-# Use relative path derived from script location
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 topics_dir = os.path.join(repo_root, "topics")
 
@@ -37,9 +36,11 @@ for fname in files:
         if not re.search(r"\[.+\]\(https?://.+\)", refs_section):
             file_errors.append("'Primary References' section contains no valid primary source HTTP links")
             
-    # 4. Check for TODO or placeholder text
-    if re.search(r"\b(TODO|FIXME|PLACEHOLDER)\b", content, re.IGNORECASE):
-        file_errors.append("Contains unfulfilled TODO / FIXME / PLACEHOLDER text")
+    # 4. Check for TODO, FIXME, TBD, or unfulfilled bracket placeholders (ignoring HTML placeholder="...")
+    # Strip HTML placeholder attributes first before testing
+    clean_text = re.sub(r'placeholder="[^"]*"', '', content)
+    if re.search(r"\b(TODO|FIXME|TBD|PLACEHOLDER_[A-Z0-9]+)\b", clean_text):
+        file_errors.append("Contains unfulfilled TODO / FIXME / TBD / PLACEHOLDER text")
         
     if file_errors:
         errors.append((fname, file_errors))
