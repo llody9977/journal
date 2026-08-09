@@ -161,7 +161,7 @@ Before considering a page complete, check:
 5. Do examples and commands prove what the text claims?
 6. Are important limitations and failure cases included?
 7. Are US spelling and direct technical voice consistent throughout?
-8. Are material claims supported by primary references in the standardized ending section?
+8. Are material standards-dependent claims supported by a primary source, either inline or in the ending `Primary references` section?
 9. Have I overstated or understated what any source actually says?
 10. Are requirements, recommendations, working rules, assumptions, and examples clearly distinguishable?
 11. Could a reader mistakenly interpret my own synthesis as an official standard or framework?
