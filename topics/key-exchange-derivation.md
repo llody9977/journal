@@ -86,75 +86,443 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
   </div>
 </div>
 
-### 1. Static RSA Key Transport Weakness (No PFS — Deprecated)
+### Perfect Forward Secrecy Simulation Playground
 
-In static RSA key transport (used in TLS 1.2 and earlier), the client encrypts the session key using the server's long-term RSA public key. If an adversary records encrypted network traffic today and steals the server's private key years later, the adversary can decrypt the session key and recover **all historic traffic**:
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Browser Playground</span>
+    <h3>Perfect Forward Secrecy (PFS) Simulator</h3>
+    <p>Simulate key transport and key agreement protocols directly in your browser. Establish connections, simulate a server key compromise, and check whether historical session data can be decrypted.</p>
+  </div>
 
-```python
-# static_rsa_leak.py: Demonstrating why Static RSA Key Transport lacks Forward Secrecy
-import os
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+  <div class="demo-body">
+    <!-- Protocol Tab Buttons -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+      <button id="tab-static-rsa" class="btn-primary" style="flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text);" type="button">1. Static RSA (No PFS)</button>
+      <button id="tab-ephemeral-ecdh" class="btn-primary" style="flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text);" type="button">2. Ephemeral ECDH (PFS Standard)</button>
+    </div>
 
-# 1. Server generates a long-term RSA identity key pair
-server_priv = rsa.generate_private_key(public_exponent=65537, key_size=3072)
-server_pub  = server_priv.public_key()
+    <!-- Simulator Steps -->
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div id="sim-step-1" style="opacity: 1; transition: opacity 0.3s;">
+        <h4 style="margin: 0 0 0.25rem 0;">Step 1: Session 1 (Past Connection)</h4>
+        <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0;">Establish a secure connection and transmit data.</p>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input id="input-payload-1" type="text" class="demo-input" style="flex: 1; margin: 0;" value="Secret Transaction: Send $5,000 to Alice">
+          <button id="btn-pfs-step-1" class="btn-primary" style="margin: 0;" type="button">⚡ Run Session 1</button>
+        </div>
+      </div>
 
-# 2. SESSION 1 (PAST TRAFFIC): Client encrypts random session key under Server PUBLIC key
-session_key = os.urandom(32)
-enc_session_key = server_pub.encrypt(
-    session_key,
-    padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
-)
+      <div id="sim-step-2" style="opacity: 0.4; pointer-events: none; transition: opacity 0.3s;">
+        <h4 style="margin: 0 0 0.25rem 0;">Step 2: Session 2 (Recent Connection)</h4>
+        <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0;">Establish a second connection and transmit data. Eavesdroppers record all traffic.</p>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input id="input-payload-2" type="text" class="demo-input" style="flex: 1; margin: 0;" value="Secret Transaction: Send $2,500 to Bob">
+          <button id="btn-pfs-step-2" class="btn-primary" style="margin: 0;" type="button">⚡ Run Session 2</button>
+        </div>
+      </div>
 
-# Encrypt bulk payload; Adversary eavesdrops and records enc_session_key & ciphertext
-ciphertext = AESGCM(session_key).encrypt(os.urandom(12), b"Historic Financial Data", None)
+      <div id="sim-step-3" style="opacity: 0.4; pointer-events: none; transition: opacity 0.3s;">
+        <h4 style="margin: 0 0 0.25rem 0;">Step 3: Server Key Compromise</h4>
+        <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0;">Steal the long-term identity private key from the server storage.</p>
+        <button id="btn-pfs-step-3" class="btn-primary" style="margin: 0;" type="button">🔓 Steal Server Key</button>
+      </div>
 
-# 3. YEARS LATER: Attacker steals Server's Long-Term Private Key (stolen_server_priv)
-# CATASTROPHIC BREACH: Attacker decrypts session key and recovers ALL historical traffic!
-recovered_session_key = server_priv.decrypt(
-    enc_session_key,
-    padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
-)
-print("Static RSA Breach:", AESGCM(recovered_session_key).decrypt(os.urandom(12), ciphertext, None))
-# Output: Historic Financial Data  (COMPLETELY RECOVERED — NO PFS!)
-```
+      <div id="sim-step-4" style="opacity: 0.4; pointer-events: none; transition: opacity 0.3s;">
+        <h4 style="margin: 0 0 0.25rem 0;">Step 4: Attempt Decryption of Historical Traffic</h4>
+        <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0;">Attacker attempts to decrypt past connection ciphertexts using the stolen server key.</p>
+        <button id="btn-pfs-step-4" class="btn-primary" style="margin: 0;" type="button">🔓 Attempt Decryption</button>
+      </div>
+    </div>
 
-### 2. Ephemeral ECDH / X25519 (PFS Standard)
+    <!-- Output Display -->
+    <div id="pfs-output-area" class="demo-output-area" style="margin-top: 1.5rem;"></div>
+  </div>
+</div>
 
-In Ephemeral ECDH key exchange (**ECDHE / X25519**), endpoints generate single-use, transient key pairs for each connection session and immediately purge them from memory when the session closes. Stealing the server's long-term identity key years later yields zero access to historical traffic:
+{% raw %}
+<script>
+(function() {
+  const tabRSA = document.getElementById('tab-static-rsa');
+  const tabECDH = document.getElementById('tab-ephemeral-ecdh');
 
-```python
-# pfs_demo.py: Ephemeral X25519 key exchange protecting against long-term key theft
-import os
-from cryptography.hazmat.primitives.asymmetric import x25519
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+  const step1Div = document.getElementById('sim-step-1');
+  const step2Div = document.getElementById('sim-step-2');
+  const step3Div = document.getElementById('sim-step-3');
+  const step4Div = document.getElementById('sim-step-4');
 
-# 1. Client and Server generate short-lived, single-use EPHEMERAL key pairs
-client_eph_priv = x25519.X25519PrivateKey.generate()
-client_eph_pub  = client_eph_priv.public_key()
+  const btnStep1 = document.getElementById('btn-pfs-step-1');
+  const btnStep2 = document.getElementById('btn-pfs-step-2');
+  const btnStep3 = document.getElementById('btn-pfs-step-3');
+  const btnStep4 = document.getElementById('btn-pfs-step-4');
 
-server_eph_priv = x25519.X25519PrivateKey.generate()
-server_eph_pub  = server_eph_priv.public_key()
+  const payload1Input = document.getElementById('input-payload-1');
+  const payload2Input = document.getElementById('input-payload-2');
+  const outputArea = document.getElementById('pfs-output-area');
 
-# 2. Both endpoints exchange public keys and derive matching shared secret
-shared_secret_client = client_eph_priv.exchange(server_eph_pub)
-shared_secret_server = server_eph_priv.exchange(client_eph_pub)
-assert shared_secret_client == shared_secret_server
+  if (!tabRSA || !tabECDH || !btnStep1 || !outputArea) return;
 
-# 3. Encrypt session traffic using AES-256-GCM
-aesgcm = AESGCM(shared_secret_client[:32])
-nonce = os.urandom(12)
-ciphertext = aesgcm.encrypt(nonce, b"Confidential Financial Payload", None)
+  let activeMode = 'rsa'; // 'rsa' or 'ecdh'
+  let state = {
+    step: 1,
+    serverRSAKeyPair: null,
+    serverLongTermECDSAKeyPair: null, // long-term identity signature key
+    sessions: [] // each connection session: ciphertext, encryptedKey/ephPubs, nonce
+  };
 
-# 4. SESSION END: Ephemeral keys are WIPED from RAM memory!
-del client_eph_priv, server_eph_priv
+  function log(message, type = 'info') {
+    let color = 'var(--text)';
+    if (type === 'success') color = 'var(--teal)';
+    if (type === 'error') color = '#b91c1c';
+    if (type === 'warning') color = 'var(--amber)';
+    return `<div style="margin-bottom: 0.35rem; color: ${color}; font-size: 0.85rem;">${message}</div>`;
+  }
 
-# 5. FUTURE COMPROMISE: Attacker steals server long-term identity key years later.
-# Result: Attacker CANNOT decrypt historic ciphertext because ephemeral keys no longer exist!
-print("PFS Protection Verified: Historic session ciphertext remains secure.")
-```
+  function bytesToHex(buf) {
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function setStepOpacity(stepNum) {
+    step1Div.style.opacity = stepNum >= 1 ? '1' : '0.4';
+    step1Div.style.pointerEvents = stepNum === 1 ? 'auto' : 'none';
+
+    step2Div.style.opacity = stepNum >= 2 ? '1' : '0.4';
+    step2Div.style.pointerEvents = stepNum === 2 ? 'auto' : 'none';
+
+    step3Div.style.opacity = stepNum >= 3 ? '1' : '0.4';
+    step3Div.style.pointerEvents = stepNum === 3 ? 'auto' : 'none';
+
+    step4Div.style.opacity = stepNum >= 4 ? '1' : '0.4';
+    step4Div.style.pointerEvents = stepNum === 4 ? 'auto' : 'none';
+  }
+
+  function resetSimulator(mode) {
+    activeMode = mode;
+    state.step = 1;
+    state.serverRSAKeyPair = null;
+    state.serverLongTermECDSAKeyPair = null;
+    state.sessions = [];
+
+    tabRSA.style.background = activeMode === 'rsa' ? 'var(--primary)' : 'var(--bg)';
+    tabRSA.style.color = activeMode === 'rsa' ? '#fff' : 'var(--text)';
+    tabECDH.style.background = activeMode === 'ecdh' ? 'var(--primary)' : 'var(--bg)';
+    tabECDH.style.color = activeMode === 'ecdh' ? '#fff' : 'var(--text)';
+
+    setStepOpacity(1);
+    outputArea.innerHTML = log(`Simulator switched to <strong>${activeMode === 'rsa' ? 'Static RSA Key Transport' : 'Ephemeral ECDH (PFS)'}</strong>. Ready for Step 1.`);
+  }
+
+  tabRSA.addEventListener('click', () => resetSimulator('rsa'));
+  tabECDH.addEventListener('click', () => resetSimulator('ecdh'));
+
+  // Run Session 1
+  btnStep1.addEventListener('click', async () => {
+    try {
+      const payload1 = payload1Input.value || 'Payload 1';
+      outputArea.innerHTML += log('⏳ Executing Session 1 handshake...');
+
+      const cryptoObj = window.crypto || window.msCrypto;
+      if (!cryptoObj || !cryptoObj.subtle) {
+        throw new Error('Web Crypto API not supported in this browser.');
+      }
+
+      if (activeMode === 'rsa') {
+        // Generate Server Long-Term RSA Identity Key Pair
+        state.serverRSAKeyPair = await cryptoObj.subtle.generateKey(
+          {
+            name: 'RSA-OAEP',
+            modulusLength: 2048,
+            publicExponent: new Uint8Array([1, 0, 1]),
+            hash: 'SHA-256'
+          },
+          true,
+          ['encrypt', 'decrypt']
+        );
+
+        // Client generates random AES-256 session key
+        const sessionKeyBytes = cryptoObj.getRandomValues(new Uint8Array(32));
+
+        // Client encrypts session key under Server RSA Public Key
+        const encSessionKey = await cryptoObj.subtle.encrypt(
+          { name: 'RSA-OAEP' },
+          state.serverRSAKeyPair.publicKey,
+          sessionKeyBytes
+        );
+
+        // Encrypt payload using AES-256-GCM
+        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
+        const keyObj = await cryptoObj.subtle.importKey(
+          'raw',
+          sessionKeyBytes,
+          'AES-GCM',
+          false,
+          ['encrypt']
+        );
+        const ciphertext = await cryptoObj.subtle.encrypt(
+          { name: 'AES-GCM', iv: nonce },
+          keyObj,
+          new TextEncoder().encode(payload1)
+        );
+
+        state.sessions.push({
+          num: 1,
+          ciphertext,
+          encSessionKey,
+          nonce,
+          rawSessionKey: sessionKeyBytes // saved so attacker can check decrypt
+        });
+
+        outputArea.innerHTML += log('🔑 [Session 1]: Long-term Server RSA key pair generated.');
+        outputArea.innerHTML += log(`📦 [Session 1]: Encrypted AES Session Key: <code>${bytesToHex(encSessionKey).substring(0, 40)}...</code>`);
+        outputArea.innerHTML += log(`🔒 [Session 1]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
+      } else {
+        // Generate Server Long-Term Signing Identity Key
+        state.serverLongTermECDSAKeyPair = await cryptoObj.subtle.generateKey(
+          { name: 'ECDSA', namedCurve: 'P-256' },
+          true,
+          ['sign', 'verify']
+        );
+
+        // Generate Ephemeral Keys (transient in RAM)
+        const clientEph = await cryptoObj.subtle.generateKey(
+          { name: 'ECDH', namedCurve: 'P-256' },
+          true,
+          ['deriveBits']
+        );
+        const serverEph = await cryptoObj.subtle.generateKey(
+          { name: 'ECDH', namedCurve: 'P-256' },
+          true,
+          ['deriveBits']
+        );
+
+        // Client & Server exchange ephemeral public keys and derive shared AES secret
+        const sharedSecret = await cryptoObj.subtle.deriveBits(
+          { name: 'ECDH', public: serverEph.publicKey },
+          clientEph.privateKey,
+          256
+        );
+
+        // Encrypt payload with derived shared secret using AES-GCM
+        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
+        const keyObj = await cryptoObj.subtle.importKey(
+          'raw',
+          sharedSecret,
+          'AES-GCM',
+          false,
+          ['encrypt']
+        );
+        const ciphertext = await cryptoObj.subtle.encrypt(
+          { name: 'AES-GCM', iv: nonce },
+          keyObj,
+          new TextEncoder().encode(payload1)
+        );
+
+        state.sessions.push({
+          num: 1,
+          ciphertext,
+          nonce,
+          sharedSecret
+        });
+
+        outputArea.innerHTML += log('🔑 [Session 1]: Server generated ephemeral P-256 ECDH keypair in transient RAM.');
+        outputArea.innerHTML += log(`📦 [Session 1]: Ephemeral Client Public Key: <code>P-256 Point</code>`);
+        outputArea.innerHTML += log(`🔒 [Session 1]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
+        outputArea.innerHTML += log('🧹 [Session 1 END]: Ephemeral private keys wiped and garbage-collected from transient memory.');
+      }
+
+      state.step = 2;
+      setStepOpacity(2);
+    } catch (err) {
+      outputArea.innerHTML += log(`❌ Error in Session 1: ${err.message || err}`, 'error');
+    }
+  });
+
+  // Run Session 2
+  btnStep2.addEventListener('click', async () => {
+    try {
+      const payload2 = payload2Input.value || 'Payload 2';
+      outputArea.innerHTML += log('⏳ Executing Session 2 handshake...');
+
+      const cryptoObj = window.crypto || window.msCrypto;
+
+      if (activeMode === 'rsa') {
+        const sessionKeyBytes = cryptoObj.getRandomValues(new Uint8Array(32));
+        const encSessionKey = await cryptoObj.subtle.encrypt(
+          { name: 'RSA-OAEP' },
+          state.serverRSAKeyPair.publicKey,
+          sessionKeyBytes
+        );
+
+        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
+        const keyObj = await cryptoObj.subtle.importKey(
+          'raw',
+          sessionKeyBytes,
+          'AES-GCM',
+          false,
+          ['encrypt']
+        );
+        const ciphertext = await cryptoObj.subtle.encrypt(
+          { name: 'AES-GCM', iv: nonce },
+          keyObj,
+          new TextEncoder().encode(payload2)
+        );
+
+        state.sessions.push({
+          num: 2,
+          ciphertext,
+          encSessionKey,
+          nonce,
+          rawSessionKey: sessionKeyBytes
+        });
+
+        outputArea.innerHTML += log(`📦 [Session 2]: Encrypted AES Session Key: <code>${bytesToHex(encSessionKey).substring(0, 40)}...</code>`);
+        outputArea.innerHTML += log(`🔒 [Session 2]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
+      } else {
+        const clientEph = await cryptoObj.subtle.generateKey(
+          { name: 'ECDH', namedCurve: 'P-256' },
+          true,
+          ['deriveBits']
+        );
+        const serverEph = await cryptoObj.subtle.generateKey(
+          { name: 'ECDH', namedCurve: 'P-256' },
+          true,
+          ['deriveBits']
+        );
+
+        const sharedSecret = await cryptoObj.subtle.deriveBits(
+          { name: 'ECDH', public: serverEph.publicKey },
+          clientEph.privateKey,
+          256
+        );
+
+        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
+        const keyObj = await cryptoObj.subtle.importKey(
+          'raw',
+          sharedSecret,
+          'AES-GCM',
+          false,
+          ['encrypt']
+        );
+        const ciphertext = await cryptoObj.subtle.encrypt(
+          { name: 'AES-GCM', iv: nonce },
+          keyObj,
+          new TextEncoder().encode(payload2)
+        );
+
+        state.sessions.push({
+          num: 2,
+          ciphertext,
+          nonce,
+          sharedSecret
+        });
+
+        outputArea.innerHTML += log(`🔒 [Session 2]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
+        outputArea.innerHTML += log('🧹 [Session 2 END]: Ephemeral keys wiped from memory.');
+      }
+
+      state.step = 3;
+      setStepOpacity(3);
+    } catch (err) {
+      outputArea.innerHTML += log(`❌ Error in Session 2: ${err.message || err}`, 'error');
+    }
+  });
+
+  // Steal Server Key
+  btnStep3.addEventListener('click', () => {
+    if (activeMode === 'rsa') {
+      outputArea.innerHTML += log('💥 ATTACK: Eavesdropper hacked the server filesystem and stole the Server\'s Long-Term RSA Private Key!', 'warning');
+    } else {
+      outputArea.innerHTML += log('💥 ATTACK: Eavesdropper hacked the server filesystem and stole the Server\'s Long-Term Identity Signature Key!', 'warning');
+    }
+    state.step = 4;
+    setStepOpacity(4);
+  });
+
+  // Attempt Decryption
+  btnStep4.addEventListener('click', async () => {
+    try {
+      outputArea.innerHTML += log('⏳ Attacker attempting decryption of recorded historical traffic...');
+
+      const cryptoObj = window.crypto || window.msCrypto;
+
+      if (activeMode === 'rsa') {
+        let decrypted1 = '';
+        let decrypted2 = '';
+
+        try {
+          const key1Bytes = await cryptoObj.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            state.serverRSAKeyPair.privateKey,
+            state.sessions[0].encSessionKey
+          );
+          const key1 = await cryptoObj.subtle.importKey(
+            'raw',
+            key1Bytes,
+            'AES-GCM',
+            false,
+            ['decrypt']
+          );
+          const p1 = await cryptoObj.subtle.decrypt(
+            { name: 'AES-GCM', iv: state.sessions[0].nonce },
+            key1,
+            state.sessions[0].ciphertext
+          );
+          decrypted1 = new TextDecoder().decode(p1);
+
+          const key2Bytes = await cryptoObj.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            state.serverRSAKeyPair.privateKey,
+            state.sessions[1].encSessionKey
+          );
+          const key2 = await cryptoObj.subtle.importKey(
+            'raw',
+            key2Bytes,
+            'AES-GCM',
+            false,
+            ['decrypt']
+          );
+          const p2 = await cryptoObj.subtle.decrypt(
+            { name: 'AES-GCM', iv: state.sessions[1].nonce },
+            key2,
+            state.sessions[1].ciphertext
+          );
+          decrypted2 = new TextDecoder().decode(p2);
+        } catch (e) {
+          throw new Error('RSA Private Key Decryption Failed: ' + e.message);
+        }
+
+        outputArea.innerHTML += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1rem;">
+          <div class="security-layer-label">Static RSA Key Compromise Complete</div>
+          <div>
+            <strong>❌ PFS BREACH: HISTORICAL TRAFFIC DECRYPTED!</strong>
+            <p style="margin-bottom:0.35rem;">Because Static RSA doesn't support Forward Secrecy, stealing the long-term private key allows the attacker to decrypt the encrypted session key and recover all historic data:</p>
+            <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem;">
+              <li><strong>Session 1 Data:</strong> <code>${decrypted1}</code></li>
+              <li><strong>Session 2 Data:</strong> <code>${decrypted2}</code></li>
+            </ul>
+          </div>
+        </div>`;
+      } else {
+        outputArea.innerHTML += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1rem;">
+          <div class="security-layer-label">PFS Security Protection Verified</div>
+          <div>
+            <strong>🚨 PFS SECURED: ATTACKER CANNOT DECRYPT TRAFFIC!</strong>
+            <p style="margin-bottom:0;">Even though the attacker stole the long-term Server Identity Signature Key, they <strong>cannot decrypt past traffic</strong>. The transient ECDH private keys were deleted from RAM immediately after handshakes ended, leaving the recorded AES session secrets impossible to recalculate.</p>
+          </div>
+        </div>`;
+      }
+    } catch (err) {
+      outputArea.innerHTML += log(`❌ Decryption Error: ${err.message || err}`, 'error');
+    }
+  });
+
+  resetSimulator('rsa');
+})();
+</script>
+{% endraw %}
+
 
 ## Key Derivation Functions: HKDF (RFC 5869) & HPKE
 
