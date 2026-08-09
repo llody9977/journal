@@ -22,7 +22,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -40,7 +40,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
