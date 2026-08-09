@@ -393,18 +393,26 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
 ## Comparative Analysis: RSA vs Elliptic Curve Cryptography (ECC)
 
-| Dimension | RSA (Rivest–Shamir–Adleman) | ECC (Elliptic Curve Cryptography) | Target Engineering Guidance |
+To achieve a given **Symmetric Security Strength** (measured in bits of brute-force work), asymmetric algorithm key sizes scale at drastically different rates:
+
+| Target Security Strength (NIST SP 800-57) | Required RSA Key Size (Prime Factorization) | Required ECC Key Size (Elliptic Curve Discrete Log) | Key Size Efficiency &amp; Guidance |
 |---|---|---|---|
-| **Key Agreement Standards** | Static Key Exchange (**DEPRECATED**) | ECDHE / X25519 | Always use Ephemeral Elliptic Curve Diffie-Hellman for Forward Secrecy. |
-| **Mathematical Basis** | Prime Factorization (**N = p × q**) | Elliptic Curve Discrete Logarithm Problem (ECDLP) | ECC offers equivalent security at significantly smaller key sizes. |
-| **NIST 128-bit Security Key Size** | **3,072 bits** | **256 bits** (NIST P-256 or Curve25519) | 256-bit ECC provides equivalent security to 3072-bit RSA with 12x smaller keys. |
-| **NIST 256-bit Security Key Size** | **15,360 bits** | **512 bits** (NIST P-521) | RSA 15,360-bit keys are computationally unviable for high-throughput TLS. |
-| **Signature Standards** | RSA-PSS (FIPS 186-5), PKCS#1 v1.5 (Legacy) | ECDSA (secp256k1/P-256), EdDSA (Ed25519) | Prefer Ed25519 for signature performance and deterministic nonce safety. |
+| **112-bit Security** (Legacy Minimum) | **2,048 bits** | **224 bits** | ECC key is ~9x smaller than RSA. Legacy minimum strength. |
+| **128-bit Security** (Current Standard) | **3,072 bits** | **256 bits** (Curve25519 / P-256) | ECC key is **12x smaller** than RSA. Standard for web TLS/SSL. |
+| **192-bit Security** (High Security) | **7,680 bits** (Exponential Spike!) | **384 bits** (P-384) | ECC key is **20x smaller** than RSA. RSA-7680 causes severe CPU overhead. |
+| **256-bit Security** (Maximum Strength) | **15,360 bits** | **512 bits** (P-521) | ECC key is **30x smaller** than RSA. RSA-15360 is unviable for production TLS. |
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}" alt="Bar chart comparing RSA and ECC key sizes needed for equivalent security strength: 3072-bit RSA equals 256-bit ECC.">
-  <p class="diagram-caption">Key size growth: RSA key sizes scale exponentially, while ECC remains compact</p>
+  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Bar chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, and 192-bit security strengths. RSA-7680 spikes exponentially while ECC-384 remains compact.">
+  <p class="diagram-caption">Key size growth (Y-Axis: Key Length in Bits): RSA key sizes scale exponentially, whereas ECC key sizes scale linearly</p>
 </div>
+
+### Why the RSA-7680 Bar Spikes Exponentially
+
+1. **Y-Axis Unit**: The vertical height of the chart measures **Required Key Length in Bits**.
+2. **Sub-Exponential Attacks on RSA**: General Number Field Sieve (GNFS) algorithms allow attackers to factor RSA primes faster than pure brute-force. To counter this, increasing RSA's security strength requires **exponentially larger RSA key sizes** (2,048 bits → 3,072 bits → 7,680 bits → 15,360 bits).
+3. **Linear Scaling of ECC**: Elliptic Curve Discrete Logarithms (ECDLP) have no sub-exponential attack algorithm. Doubling ECC's security strength requires only doubling the curve key size (224 bits → 256 bits → 384 bits → 512 bits).
+4. **Engineering Consequence**: At 192-bit security, RSA requires a towering **7,680-bit key** (a 2.5x spike from 3,072 bits!), rendering RSA handshakes extremely slow and CPU-intensive compared to a compact **384-bit ECC key**.
 
 ### Why Ed25519 (EdDSA) is Preferred for Modern Applications
 
