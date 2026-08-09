@@ -31,7 +31,7 @@
   <!-- Box 1: Monitor (x=40, w=205) -->
   <rect x="40" y="280" width="205" height="105" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="2" />
   <text x="55" y="302" font-size="11" font-weight="900" fill="#64748b">1. MONITOR</text>
-  <text x="55" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Continuous Telemetry</text>
+  <text x="55" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Continuous &amp; Periodic Signals</text>
   <line x1="55" y1="330" x2="230" y2="330" stroke="#64748b" stroke-opacity="0.3" stroke-width="1" />
   <text x="55" y="348" font-size="10" font-weight="500" fill="#475569">• SIEM, eBPF, vuln scans</text>
   <text x="55" y="364" font-size="10" font-weight="500" fill="#475569">• Feeds the Detect stage</text>

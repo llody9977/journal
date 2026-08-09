@@ -36,7 +36,7 @@ Rather than treating security objectives as arbitrary choices, system architectu
 
 The High-Water Mark principle illustrates how FIPS 199 combines per-objective ratings: if a system processes data with Low Confidentiality needs but **High Integrity** requirements (*e.g., flight control software or financial ledgers*), the overall system category is governed by the highest individual rating, not an average—so it would be treated as a **High-Impact System** requiring the high-assurance FIPS 200 baseline—which spans management, operational, and technical controls, not technical safeguards alone—under the federal FIPS 199/200 scheme this section describes.
 
-System impact categorization establishes the minimum security baseline required for technical implementation. The architecture is designed to preserve these invariants under the assessed threat model—no control set eliminates residual risk entirely:
+System impact categorization establishes the minimum security baseline required for organizational and system implementation, spanning management, operational, and technical controls—not technical safeguards alone. The architecture is designed to preserve these invariants under the assessed threat model—no control set eliminates residual risk entirely:
 - **Confidentiality Invariant**: Restricts disclosure to authenticated, authorized identities across the evaluated impact baseline.
 - **Integrity Invariant**: Detects and rejects impermissible modification, deletion, or corruption of the accepted state.
 - **Availability Invariant**: Preserves reliable operational access for authorized callers under the adverse conditions the baseline was designed for.
@@ -76,7 +76,7 @@ Security mechanisms enforce specific properties. No single mechanism satisfies a
 | **Authenticated Encryption** *(AES-256-GCM)* | **Confidentiality, Integrity, Authenticity (under possession of the shared symmetric key)** | Data Origin Verification among key holders | Does not enforce Authorization permissions or Service Availability; does not identify *which* symmetric-key holder produced the ciphertext, so it does not provide non-repudiation. |
 | **Digital Signatures** *(Ed25519 / ECDSA)* | **Integrity, Authenticity, evidence supporting Non-Repudiation** | Payload Proof of Origin | Does not provide Confidentiality (plaintext visible) or legal intent proof; the signature is evidence toward non-repudiation, not a legal guarantee of it on its own. |
 | **Audit Logging** *(NIST SP 800-92)* | **Accountability** | Forensic Attribution | Does not block initial exploit execution; provides post-incident attribution. SP 800-92 covers log management generally—tamper-evidence or immutability requires additional mechanisms (e.g., cryptographic hash chaining, WORM storage, restricted write access), not something the standard mandates by itself. |
-| **Multi-Factor Authentication** *(WebAuthn / FIDO2)* | **High-Assurance Authentication** | Phishing Resistance (WebAuthn origin binding) | Does not grant Authorization privileges, perform Identity Proofing (a separate enrollment-time process, see IAL), or prevent post-login session hijacking. |
+| **Authenticator / MFA** *(WebAuthn / FIDO2)* | **High-Assurance Authentication (when configured for multi-factor & phishing resistance)** | Phishing Resistance (WebAuthn origin binding) | WebAuthn supports both single-factor passkeys and multi-factor authenticators; high assurance requires multi-factor verification. Does not grant Authorization privileges, perform Identity Proofing, or prevent post-login session hijacking. |
 | **Redundant Load Balancers & Auto-Scaling** | **Availability, System Resilience** | Failover Recovery | Does not prevent data exfiltration, injection attacks, or unauthorized reads. |
 
 ## From Objective to Verified Control: The Traceability Chain
@@ -124,6 +124,6 @@ When auditing a system architecture or API endpoint, evaluate these 8 diagnostic
 
 ## Primary References
 
-- **ISO/IEC 27000:2026**: *Overview and vocabulary for Information Security Management Systems* — [ISO 27000](https://www.iso.org/standard/27000)
+- **ISO/IEC 27000:2026**: *Information security management systems — Overview* — [ISO 27000](https://www.iso.org/standard/27000)
 - **NIST FIPS 199**: *Standards for Security Categorization* — [NIST CSRC FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)
 - **NIST SP 800-53B**: *Control Baselines for Information Systems and Organizations* — [NIST CSRC SP 800-53B](https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final)

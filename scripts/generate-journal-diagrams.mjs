@@ -1142,7 +1142,7 @@ rows({
     <text x="755" y="358" font-size="10.5" font-weight="500" fill="${colors.muted}">  Backups, DR failover</text>
     <line x1="755" y1="372" x2="945" y2="372" stroke="${colors.teal}" stroke-opacity="0.3" stroke-width="1" />
     <text x="755" y="394" font-size="11" font-weight="800" fill="${colors.teal}">LEAVES OUTCOME:</text>
-    <text x="755" y="412" font-size="11.5" font-weight="700" fill="${colors.ink}">Authorized Residual Risk</text>
+    <text x="755" y="412" font-size="11.5" font-weight="700" fill="${colors.ink}">Residual Risk Requiring a Recorded Response or Decision</text>
 
     <!-- Arrow 4 -> 5 -->
     ${arrow(960, 295, 980, 295)}
@@ -1233,7 +1233,7 @@ rows({
     <text x="442" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.teal}">INTEGRITY (NIST FIPS 199)</text>
     <text x="442" y="165" font-size="15" font-weight="800" fill="${colors.ink}">Guarding Against State Tampering</text>
     <line x1="442" y1="178" x2="757" y2="178" stroke="${colors.teal}" stroke-opacity="0.3" stroke-width="1" />
-    <text x="442" y="200" font-size="11.5" font-weight="600" fill="${colors.ink}">• Prevents unauthorized state alteration</text>
+    <text x="442" y="200" font-size="11.5" font-weight="600" fill="${colors.ink}">• Protects against and detects unauthorized state alteration</text>
     <text x="442" y="220" font-size="11.5" font-weight="500" fill="${colors.muted}">• HMAC-SHA256 &amp; Ed25519 signatures</text>
 
     <!-- Card 3: Availability (x=805, w=355) -->
@@ -1280,7 +1280,7 @@ rows({
     <!-- Bottom Bar: Mechanism Alignment (y=505, w=1120, h=45) -->
     <text x="600" y="525" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.blue}">TECHNICAL SAFEGUARD ALIGNMENT (NIST SP 800-53 REV. 5)</text>
     <text x="600" y="540" text-anchor="middle" font-size="10.5" font-weight="600" fill="${colors.ink}">Technical mechanisms enforce specific properties. No single mechanism satisfies all objectives in isolation.</text>`;
-  write("security-objectives-properties-matrix.svg", documentSvg("Security Objectives & System Properties Matrix", "Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical Safeguard Mechanisms.", 565, body));
+  write("security-objectives-properties-matrix.svg", documentSvg("Security Objectives & System Properties Matrix", "Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative & Physical Safeguards.", 565, body));
 }
 
 // Identity & Access Management Architecture Diagram (NIST SP 800-63 & 800-207 Zero Trust)
@@ -1467,7 +1467,7 @@ rows({
     <text x="825" y="165" font-size="14" font-weight="800" fill="${colors.ink}">Risk Exposure = Likelihood × Impact</text>
     <line x1="825" y1="176" x2="1140" y2="176" stroke="${colors.blue}" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="196" font-size="11.5" font-weight="500" fill="${colors.muted}">• Qualitative (Low/Med/High) &amp; Quantitative Loss ($)</text>
-    <text x="825" y="214" font-size="11.5" font-weight="500" fill="${colors.muted}">• Existing Security Control Efficacy Offset</text>
+    <text x="825" y="214" font-size="11.5" font-weight="500" fill="${colors.muted}">• Control effectiveness and context considered</text>
 
     <!-- Middle Stage: Risk Response Strategies (y=265, h=145) -->
     <!-- Option 1: Avoid (x=40, w=260) -->
@@ -1583,7 +1583,7 @@ rows({
     <text x="75" y="213" font-size="12" font-weight="800" fill="${colors.ink}">Identity Verification</text>
     <line x1="75" y1="222" x2="290" y2="222" stroke="${colors.green}" stroke-opacity="0.3" stroke-width="1" />
     <text x="75" y="240" font-size="10" font-weight="500" fill="${colors.muted}">• Client Certificate Auth</text>
-    <text x="75" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Transport Layer Isolation</text>
+    <text x="75" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Authenticated & Encrypted Transport</text>
 
     <!-- Arrow 1->2 -->
     <path d="M 305 224 L 330 224" fill="none" stroke="${colors.green}" stroke-width="2.5" marker-end="url(#arrow-teal)"/>

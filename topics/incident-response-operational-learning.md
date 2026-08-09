@@ -18,7 +18,7 @@ last_verified: 2026-08-09
 
 ## Continuous Monitoring: Feeding the Response Pipeline
 
-Incident response has nothing to respond to without monitoring that actually surfaces anomalies. This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
+Incident response is triggered when an anomaly or breach is surfaced—whether through automated security telemetry, or via reports from users, cloud service providers, external security researchers, business partners, or law enforcement authorities. This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
 
 | Monitoring Input | What It Surfaces | Where the Evidence Goes |
 |---|---|---|
@@ -31,7 +31,7 @@ A high volume of monitoring signal is not the same as effective detection—aler
 
 ## The Incident Response Lifecycle: Rev. 2's Phases vs. Rev. 3's Current Structure
 
-**NIST SP 800-61 Rev. 2** (2012) described a linear four-phase model: *Preparation → Detection & Analysis → Containment, Eradication & Recovery → Post-Incident Activity*. NIST withdrew Rev. 2 and published **[NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)** in April 2025—*Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile*—which replaces the standalone linear phases with incident response activities mapped onto all six of **[NIST CSF 2.0](https://www.nist.gov/cyberframework)**'s Functions: **Govern, Identify, Protect, Detect, Respond,** and **Recover**. In-incident activity concentrates in Detect, Respond, and Recover; continuous-improvement outcomes are captured specifically under Identify's **Improvement (ID.IM)** Category—CSF 2.0 has exactly six Functions, and "Improve" is not a seventh one. ID.IM is new in CSF 2.0 and explicitly consolidates the prior version's scattered improvement subcategories (PR.IP-7, DE.DP-5, RS.IM, RC.IM) into one place. The table below maps the historical phase names to the current structure—use the right-hand column as the current reference; the left-hand column is retained here because the phase vocabulary is still widely used in practice:
+**NIST SP 800-61 Rev. 2** (2012) described a four-phase model: *Preparation → Detection & Analysis → Containment, Eradication & Recovery → Post-Incident Activity*. NIST withdrew Rev. 2 and published **[NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)** in April 2025—*Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile*—which replaces those phases with incident response activities mapped onto all six of **[NIST CSF 2.0](https://www.nist.gov/cyberframework)**'s Functions: **Govern, Identify, Protect, Detect, Respond,** and **Recover**. In-incident activity concentrates in Detect, Respond, and Recover; continuous-improvement outcomes are captured specifically under Identify's **Improvement (ID.IM)** Category—CSF 2.0 has exactly six Functions, and "Improve" is not a seventh one. ID.IM is new in CSF 2.0 and explicitly consolidates the prior version's scattered improvement subcategories (PR.IP-7, DE.DP-5, RS.IM, RC.IM) into one place. The table below maps the historical phase names to the current structure—use the right-hand column as the current reference; the left-hand column is retained here because the phase vocabulary is still widely used in practice:
 
 | Historical Rev. 2 Phase (2012, withdrawn) | Current Rev. 3 / CSF 2.0 Mapping | What Happens |
 |---|---|---|
@@ -48,6 +48,15 @@ This journal still uses the practical operational sequence *detect → triage �
 4. **Eradicate**: Remove the root cause—patch the vulnerability, delete the malicious artifact, close the misconfiguration.
 5. **Recover**: Restore affected systems to normal operation, validated against defined recovery criteria with residual uncertainty documented rather than declared "clean" outright—see the caveat on automated recovery controls in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**: recovery is only as clean as what it restores from.
 6. **Learn**: Conduct a blameless postmortem and track corrective actions (below)—this journal stage maps to CSF 2.0's Identify/Improvement (ID.IM) Category, not a distinct CSF Function, and its outcomes feed back across all six Functions.
+
+## Operational Incident Readiness & Evidence Integrity
+
+Having an incident response plan on paper is distinct from being operationally prepared to execute it during an active crisis. High-assurance security programs validate four foundational readiness requirements prior to an incident:
+
+1. **Tabletop Exercises & Playbook Validation**: Regularly execute simulated threat scenarios (tabletop exercises and red/blue-team drills) to stress-test escalation paths, validate playbook accuracy, and identify operational friction under realistic time constraints.
+2. **Forensic Evidence Preservation & Chain of Custody**: Establish immutable, write-once-read-many (WORM) evidence vaults for raw disk images, memory dumps, and network PCAPs. Document a verifiable chain of custody (timestamp, hash, collector identity) to preserve evidence admissibility for legal or regulatory proceedings.
+3. **Notification & Escalation Decision Records**: Pre-define legal, regulatory (e.g., SEC 4-day, GDPR 72-hour), and customer notification criteria. Maintain documented decision logs whenever notification thresholds are evaluated during an incident—whether the decision is to notify or not.
+4. **Time Synchronization & Telemetry Integrity**: Enforce Network Time Protocol (NTP / IEEE 1588 PTP) synchronization across all servers, microservices, and network devices. Consistent, synchronized timestamps are essential for accurate cross-system log correlation and timeline reconstruction during forensic investigation.
 
 ## Incident Severity Classification (Journal Working Example)
 
@@ -90,7 +99,7 @@ When auditing an incident response program or reviewing a specific incident's ha
 
 | Diagnostic Focus Area | Key Evaluation Question | Target Verification & Audit Evidence |
 |---|---|---|
-| **Detection Coverage** | Would this incident's initial access vector have generated a monitored signal at all, or was detection incidental (e.g., a customer report)? | Detection engineering coverage maps against the incident's actual kill chain. |
+| **Detection Coverage** | Would this incident's initial access vector have generated a monitored signal at all, or was detection incidental (e.g., a customer report)? | Detection engineering coverage maps against the incident's actual event sequence. |
 | **Severity Accuracy** | Was the incident's severity assessed and escalated correctly given what was actually known at each point in time? | Timeline reconstruction comparing severity assigned vs. information available at that timestamp. |
 | **Containment Speed** | How much time elapsed between confirmed detection and effective containment? | Incident timeline with timestamped containment actions. |
 | **Recovery Verification** | Was the recovered state validated against defined recovery criteria (image/config/credential provenance checks), not just restored to "working," with any residual uncertainty documented rather than assumed away? | Recovery validation records—see the recovery-control caveat in Security Controls & Defense in Depth. |

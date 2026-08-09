@@ -26,7 +26,7 @@
     <text x="75" y="213" font-size="12" font-weight="800" fill="#0f172a">Identity Verification</text>
     <line x1="75" y1="222" x2="290" y2="222" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
     <text x="75" y="240" font-size="10" font-weight="500" fill="#475569">• Client Certificate Auth</text>
-    <text x="75" y="256" font-size="10" font-weight="500" fill="#475569">• Transport Layer Isolation</text>
+    <text x="75" y="256" font-size="10" font-weight="500" fill="#475569">• Authenticated & Encrypted Transport</text>
 
     <!-- Arrow 1->2 -->
     <path d="M 305 224 L 330 224" fill="none" stroke="#15803d" stroke-width="2.5" marker-end="url(#arrow-teal)"/>

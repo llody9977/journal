@@ -12,8 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Identity &amp; Access Management Architecture</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement (PEP/PDP),</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">and Lifecycle Revocation &amp; Audit (NIST SP 800-63 &amp; 800-207).</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement and &amp;</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">(PEP/PDP), Lifecycle Revocation Audit (NIST SP 800-63 &amp; 800-207).</text>
   
     <!-- Setup Stage: IAL, AAL, FAL (y=115, h=135) -->
     <!-- Card 1: IAL Identity Proofing (x=40, w=355) -->
@@ -21,33 +21,33 @@
     <text x="60" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">1. IDENTITY PROOFING (IAL1 - IAL3)</text>
     <text x="60" y="162" font-size="14" font-weight="800" fill="#0f172a">Applicant Identity Verification</text>
     <line x1="60" y1="174" x2="375" y2="174" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-    <text x="60" y="194" font-size="10.5" font-weight="500" fill="#475569">• Document &amp; biometric-comparison proofing (NIST 800-63A)</text>
-    <text x="60" y="212" font-size="10.5" font-weight="500" fill="#475569">• IAL1 (Self-asserted) → IAL2 (Verified) → IAL3 (In-Person)</text>
+    <text x="60" y="194" font-size="10.5" font-weight="500" fill="#475569">• Facial biometrics &amp; document proofing (NIST 800-63A)</text>
+    <text x="60" y="212" font-size="10.5" font-weight="500" fill="#475569">• IAL1 (Self-asserted) → IAL2 (Verified) → IAL3 (Biometric)</text>
 
     <!-- Card 2: AAL Authenticator Binding (x=422, w=355) -->
     <rect x="422" y="115" width="355" height="135" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
     <text x="442" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. AUTHENTICATOR BINDING (AAL1 - AAL3)</text>
-    <text x="442" y="162" font-size="14" font-weight="800" fill="#0f172a">Authenticator Strength &amp; Binding</text>
+    <text x="442" y="162" font-size="14" font-weight="800" fill="#0f172a">Phishing-Resistant Authenticator Pairing</text>
     <line x1="442" y1="174" x2="757" y2="174" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
     <text x="442" y="194" font-size="10.5" font-weight="500" fill="#475569">• WebAuthn / FIDO2 Passkeys &amp; PKI Keys (NIST 800-63B)</text>
-    <text x="442" y="212" font-size="10.5" font-weight="500" fill="#475569">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Non-Exportable Key)</text>
+    <text x="442" y="212" font-size="10.5" font-weight="500" fill="#475569">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Hardware Key)</text>
 
     <!-- Card 3: FAL Federation Assurance (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="135" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
     <text x="825" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">3. FEDERATION ASSURANCE (FAL1 - FAL3)</text>
     <text x="825" y="162" font-size="14" font-weight="800" fill="#0f172a">Secure Token &amp; Assertion Exchange</text>
     <line x1="825" y1="174" x2="1140" y2="174" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-    <text x="825" y="194" font-size="10.5" font-weight="500" fill="#475569">• OIDC = identity; OAuth = authZ delegation (800-63C)</text>
-    <text x="825" y="212" font-size="10.5" font-weight="500" fill="#475569">• FAL1 (Bearer) → FAL2 (Protected) → FAL3 (Holder-of-Key)</text>
+    <text x="825" y="194" font-size="10.5" font-weight="500" fill="#475569">• OpenID Connect (OIDC), OAuth 2.1 &amp; DPoP (NIST 800-63C)</text>
+    <text x="825" y="212" font-size="10.5" font-weight="500" fill="#475569">• FAL1 (Bearer) → FAL2 (Signed) → FAL3 (Holder-Bound)</text>
 
     <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=265, h=145) -->
     <!-- Card 1: PEP (x=40, w=355) -->
     <rect x="40" y="265" width="355" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
     <text x="60" y="290" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">4. POLICY ENFORCEMENT POINT (PEP)</text>
-    <text x="60" y="312" font-size="14" font-weight="800" fill="#0f172a">Gateway PLUS Owning Service</text>
+    <text x="60" y="312" font-size="14" font-weight="800" fill="#0f172a">API Gateway &amp; Ingress Proxy</text>
     <line x1="60" y1="324" x2="375" y2="324" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
-    <text x="60" y="344" font-size="10.5" font-weight="500" fill="#475569">• Gateway: coarse-grained request/token checks</text>
-    <text x="60" y="362" font-size="10.5" font-weight="500" fill="#475569">• Owning service: object/function-level checks too</text>
+    <text x="60" y="344" font-size="10.5" font-weight="500" fill="#475569">• Intercepts incoming client requests &amp; bearer tokens</text>
+    <text x="60" y="362" font-size="10.5" font-weight="500" fill="#475569">• Extracts mTLS certs, IP &amp; Device context</text>
     <text x="60" y="380" font-size="10.5" font-weight="500" fill="#475569">• Enforces PDP Allow / Deny decision rules</text>
 
     <!-- Card 2: PDP Engine (x=422, w=355) -->
@@ -57,7 +57,7 @@
     <line x1="442" y1="324" x2="757" y2="324" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1" />
     <text x="442" y="344" font-size="10.5" font-weight="500" fill="#475569">• Evaluates OPA / Rego &amp; OpenFGA policy rules</text>
     <text x="442" y="362" font-size="10.5" font-weight="500" fill="#475569">• Evaluates RBAC roles, ABAC attributes &amp; ReBAC</text>
-    <text x="442" y="380" font-size="10.5" font-weight="500" fill="#475569">• Risk telemetry inputs per NIST SP 800-207 ZTA tenets</text>
+    <text x="442" y="380" font-size="10.5" font-weight="500" fill="#475569">• NIST SP 800-207 Zero Trust risk scoring</text>
 
     <!-- Card 3: Protected Resource (x=805, w=355) -->
     <rect x="805" y="265" width="355" height="145" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2.5" />
@@ -66,7 +66,7 @@
     <line x1="825" y1="324" x2="1140" y2="324" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="344" font-size="10.5" font-weight="500" fill="#475569">• Executes authorized application logic</text>
     <text x="825" y="362" font-size="10.5" font-weight="500" fill="#475569">• Enforces fine-grained field level filters</text>
-    <text x="825" y="380" font-size="10.5" font-weight="500" fill="#475569">• Emits SIEM telemetry (not inherently tamper-evident)</text>
+    <text x="825" y="380" font-size="10.5" font-weight="500" fill="#475569">• Emits tamper-evident SIEM telemetry</text>
 
     <!-- Bottom Stage: Revocation & Governance (y=425, h=55) -->
     <!-- Left Box: Revocation (x=40, w=545) -->
@@ -77,5 +77,5 @@
     <!-- Right Box: Audit (x=615, w=545) -->
     <rect x="615" y="425" width="545" height="55" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
     <text x="635" y="445" font-size="10.5" font-weight="900" letter-spacing="1" fill="#2563eb">CROSS-CUTTING AUDIT &amp; ACCOUNTABILITY</text>
-    <text x="635" y="463" font-size="10.5" font-weight="600" fill="#475569">• Structured SIEM Audit Logging per NIST SP 800-92 guidance</text>
+    <text x="635" y="463" font-size="10.5" font-weight="600" fill="#475569">• Structured SIEM Audit Logging &amp; Immutable Hashes (NIST SP 800-92)</text>
 </svg>
