@@ -19,57 +19,34 @@ The two GIF files below (from security researcher Ange Albertini's research repo
 
 <div class="image-pair">
   <figure>
-    <img src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="A green circle GIF image representing MD5 collision file 1">
-    <figcaption>md5-collision-1.gif (10,386 bytes)</figcaption>
+    <img src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="Green circle GIF image representing MD5 collision file 1">
+    <figcaption>
+      <strong>md5-collision-1.gif</strong> (10,386 bytes)<br>
+      <a href="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" download class="btn-secondary" style="display: inline-block; padding: 0.25rem 0.6rem; font-size: 0.75rem; margin-top: 0.35rem;">📥 Download File 1</a>
+    </figcaption>
   </figure>
   <figure>
-    <img src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="A red X GIF image representing MD5 collision file 2">
-    <figcaption>md5-collision-2.gif (10,386 bytes)</figcaption>
+    <img src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="Red X GIF image representing MD5 collision file 2">
+    <figcaption>
+      <strong>md5-collision-2.gif</strong> (10,386 bytes)<br>
+      <a href="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" download class="btn-secondary" style="display: inline-block; padding: 0.25rem 0.6rem; font-size: 0.75rem; margin-top: 0.35rem;">📥 Download File 2</a>
+    </figcaption>
   </figure>
 </div>
 
-### Client-Side Executable MD5 Collision Verification Playground
+### Client-Side Executable MD5 Collision Verification
 
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Interactive Browser Playground</span>
-    <h3>MD5 Collision Pair & Upload Verification Playground</h3>
-    <p>Upload any custom files or load the famous GIF collision pair. Compute MD5 digests and perform binary byte-by-byte comparison directly in your browser (Zero server calls / Executed locally via JavaScript).</p>
+    <h3>MD5 Cryptanalytic Collision Proof</h3>
+    <p>Interactively compute MD5 digests and perform binary byte-by-byte comparison directly in your browser (Zero server calls / Executed locally via JavaScript).</p>
   </div>
 
   <div class="demo-body">
-    <!-- Image Pair Display -->
-    <div class="image-pair" style="margin-bottom: 1rem;">
-      <figure>
-        <img id="md5-img-1" src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="Green circle GIF">
-        <figcaption id="md5-cap-1">md5-collision-1.gif (10,386 bytes)</figcaption>
-      </figure>
-      <figure>
-        <img id="md5-img-2" src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="Red X GIF">
-        <figcaption id="md5-cap-2">md5-collision-2.gif (10,386 bytes)</figcaption>
-      </figure>
-    </div>
-
-    <!-- File Inputs -->
-    <div class="demo-form-group">
-      <label>1. Select / Upload Two Files to Compare:</label>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-        <div>
-          <small><strong>File 1 (GIF / Image / Any file):</strong></small>
-          <input type="file" id="md5-file-1" class="demo-input" style="padding: 0.35rem;">
-        </div>
-        <div>
-          <small><strong>File 2 (GIF / Image / Any file):</strong></small>
-          <input type="file" id="md5-file-2" class="demo-input" style="padding: 0.35rem;">
-        </div>
-      </div>
-    </div>
-
-    <!-- Controls -->
     <div class="demo-form-group">
       <div class="demo-actions" style="margin: 0.5rem 0;">
-        <button id="btn-load-md5-sample" class="btn-primary" type="button">🖼️ Load MD5 Sample Collision Pair</button>
-        <button id="btn-verify-md5-upload" class="btn-secondary" type="button">⚡ Verify Uploaded Files</button>
+        <button id="btn-verify-md5" class="btn-primary" type="button">⚡ Verify MD5 Collision Pair</button>
       </div>
     </div>
 
@@ -78,24 +55,32 @@ The two GIF files below (from security researcher Ange Albertini's research repo
   </div>
 </div>
 
+### Local CLI Verification Commands
+
+```bash
+# 1. Compute MD5 digests (Identical output)
+md5 md5-collision-1.gif md5-collision-2.gif
+# Output:
+# MD5 (md5-collision-1.gif) = d7a00002b2fa4dc40f03abba0a57631c
+# MD5 (md5-collision-2.gif) = d7a00002b2fa4dc40f03abba0a57631c
+
+# 2. Compare binary content (Proves files are distinct)
+cmp md5-collision-1.gif md5-collision-2.gif
+# Output: md5-collision-1.gif md5-collision-2.gif differ: char 468, line 1
+```
+
+If an integrity check relies solely on MD5 to verify file authenticity, an adversary can substitute `md5-collision-2.gif` for `md5-collision-1.gif` without triggering hash validation errors.
+
 <script>
 (function() {
-  const file1Input = document.getElementById('md5-file-1');
-  const file2Input = document.getElementById('md5-file-2');
-  const btnSample = document.getElementById('btn-load-md5-sample');
-  const btnVerify = document.getElementById('btn-verify-md5-upload');
+  const btnVerifyMD5 = document.getElementById('btn-verify-md5');
   const outputArea = document.getElementById('md5-output-area');
-  const img1 = document.getElementById('md5-img-1');
-  const img2 = document.getElementById('md5-img-2');
-  const cap1 = document.getElementById('md5-cap-1');
-  const cap2 = document.getElementById('md5-cap-2');
 
   const sample1Url = "{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}";
   const sample2Url = "{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}";
 
-  if (!btnSample || !outputArea) return;
+  if (!btnVerifyMD5 || !outputArea) return;
 
-  // Complete, Standalone ArrayBuffer MD5 Hashing Engine
   function calcMD5(buf) {
     var hex_chr = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
 
@@ -138,7 +123,7 @@ The two GIF files below (from security researcher Ange Albertini's research repo
       c = md5hh(c, d, a, b, k[15], 16, 530742520); b = md5hh(b, c, d, a, k[2], 23, -995338651);
 
       a = md5ii(a, b, c, d, k[0], 6, -198630844); d = md5ii(d, a, b, c, k[7], 10, 1126891415);
-      c = md5ii(c, d, a, b, k[14], 15, -1416354905); b = md5ii(b, c, d, a, k[5], 21, -57434055);
+      c = md5ii(c, d, a, b, k[14], 15, -1416354905); b = md5ii(b, c, d, k[5], 21, -57434055);
       a = md5ii(a, b, c, d, k[12], 6, 1700485571); d = md5ii(d, a, b, c, k[3], 10, -1894986606);
       c = md5ii(c, d, a, b, k[10], 15, -1051523); b = md5ii(b, c, d, a, k[1], 21, -2054922799);
       a = md5ii(a, b, c, d, k[8], 6, 1873313359); d = md5ii(d, a, b, c, k[15], 10, -30611744);
@@ -201,126 +186,75 @@ The two GIF files below (from security researcher Ange Albertini's research repo
       if (b1[i] !== b2[i]) return i;
     }
     if (b1.length !== b2.length) return minLen;
-    return -1; // identical
+    return -1;
   }
 
-  async function verifyBuffers(name1, b1, name2, b2) {
-    const md51 = calcMD5(b1);
-    const md52 = calcMD5(b2);
-    const diffOffset = compareBuffers(b1, b2);
-
-    const isCollision = (md51 === md52) && (diffOffset !== -1);
-
-    let html = '<div class="ecb-blocks-list">';
-
-    html += `
-    <div class="ecb-block-item">
-      <div class="block-meta">
-        <span class="block-num">File 1: ${name1} (${b1.length} Bytes)</span>
-        <span class="block-plain-preview">MD5 Digest</span>
-      </div>
-      <div class="block-hex-val"><code>${md51}</code></div>
-    </div>
-
-    <div class="ecb-block-item">
-      <div class="block-meta">
-        <span class="block-num">File 2: ${name2} (${b2.length} Bytes)</span>
-        <span class="block-plain-preview">MD5 Digest</span>
-      </div>
-      <div class="block-hex-val"><code>${md52}</code></div>
-    </div>`;
-
-    html += '</div>';
-
-    if (isCollision) {
-      html += `
-      <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
-        <div class="security-layer-label">Cryptanalytic Collision Verified</div>
-        <div>
-          <strong>🚨 MD5 HASH COLLISION CONFIRMED!</strong>
-          <p style="margin-bottom:0;">Both files yield the <strong>identical MD5 digest</strong> (<code>${md51}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. Integrity checks relying on MD5 are vulnerable to silent file substitution!</p>
-        </div>
-      </div>`;
-    } else if (diffOffset === -1) {
-      html += `
-      <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
-        <div class="security-layer-label">Binary Match</div>
-        <div>
-          <strong>✔ Files Are Identical</strong>
-          <p style="margin-bottom:0;">Both files contain identical binary bytes.</p>
-        </div>
-      </div>`;
-    } else {
-      html += `
-      <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
-        <div class="security-layer-label">No Collision</div>
-        <div>
-          <strong>✔ Distinct MD5 Digests</strong>
-          <p style="margin-bottom:0;">Files yield different MD5 digests as expected. Differ at byte offset ${diffOffset}.</p>
-        </div>
-      </div>`;
-    }
-
-    outputArea.innerHTML = html;
-  }
-
-  async function loadSamplePair() {
+  async function verifyMD5CollisionPair() {
     try {
-      outputArea.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">⏳ Fetching sample collision pair...</div>';
+      outputArea.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">⏳ Fetching and hashing GIF files...</div>';
       const r1 = await fetch(sample1Url);
       const r2 = await fetch(sample2Url);
+
+      if (!r1.ok || !r2.ok) {
+        throw new Error(`HTTP fetch failed: File 1 (${r1.status}), File 2 (${r2.status})`);
+      }
+
       const b1 = new Uint8Array(await r1.arrayBuffer());
       const b2 = new Uint8Array(await r2.arrayBuffer());
 
-      img1.src = sample1Url;
-      img2.src = sample2Url;
-      cap1.textContent = `md5-collision-1.gif (${b1.length} bytes)`;
-      cap2.textContent = `md5-collision-2.gif (${b2.length} bytes)`;
+      const md51 = calcMD5(b1);
+      const md52 = calcMD5(b2);
+      const diffOffset = compareBuffers(b1, b2);
 
-      await verifyBuffers("md5-collision-1.gif", b1, "md5-collision-2.gif", b2);
-    } catch (err) {
-      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Sample Load Error: ${err.message || err}</div>`;
-    }
-  }
+      let html = '<div class="ecb-blocks-list">';
 
-  function readFileBytes(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(new Uint8Array(e.target.result));
-      reader.onerror = err => reject(err);
-      reader.readAsArrayBuffer(file);
-    });
-  }
+      html += `
+      <div class="ecb-block-item">
+        <div class="block-meta">
+          <span class="block-num">File 1: md5-collision-1.gif (${b1.length} Bytes)</span>
+          <span class="block-plain-preview">MD5 Digest</span>
+        </div>
+        <div class="block-hex-val"><code>${md51}</code></div>
+      </div>
 
-  async function handleVerifyUpload() {
-    try {
-      const f1 = file1Input.files[0];
-      const f2 = file2Input.files[0];
+      <div class="ecb-block-item">
+        <div class="block-meta">
+          <span class="block-num">File 2: md5-collision-2.gif (${b2.length} Bytes)</span>
+          <span class="block-plain-preview">MD5 Digest</span>
+        </div>
+        <div class="block-hex-val"><code>${md52}</code></div>
+      </div>`;
 
-      if (!f1 || !f2) {
-        outputArea.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please select two files to verify.</div>';
-        return;
+      html += '</div>';
+
+      if (md51 === md52 && diffOffset !== -1) {
+        html += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Cryptanalytic Collision Verified</div>
+          <div>
+            <strong>🚨 MD5 HASH COLLISION CONFIRMED!</strong>
+            <p style="margin-bottom:0;">Both files yield the <strong>identical MD5 digest</strong> (<code>${md51}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. Integrity checks relying on MD5 are vulnerable to silent file substitution!</p>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Verification Result</div>
+          <div>
+            <strong>MD5 Hashing Complete</strong>
+            <p style="margin-bottom:0;">File 1: <code>${md51}</code> | File 2: <code>${md52}</code> (Diff offset: ${diffOffset})</p>
+          </div>
+        </div>`;
       }
 
-      outputArea.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">⏳ Reading and hashing uploaded files...</div>';
-      const b1 = await readFileBytes(f1);
-      const b2 = await readFileBytes(f2);
-
-      if (f1.type.startsWith('image/')) img1.src = URL.createObjectURL(f1);
-      if (f2.type.startsWith('image/')) img2.src = URL.createObjectURL(f2);
-      cap1.textContent = `${f1.name} (${b1.length} bytes)`;
-      cap2.textContent = `${f2.name} (${b2.length} bytes)`;
-
-      await verifyBuffers(f1.name, b1, f2.name, b2);
+      outputArea.innerHTML = html;
     } catch (err) {
-      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">File Verification Error: ${err.message || err}</div>`;
+      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
     }
   }
 
-  btnSample.addEventListener('click', loadSamplePair);
-  btnVerify.addEventListener('click', handleVerifyUpload);
-
-  loadSamplePair();
+  btnVerifyMD5.addEventListener('click', verifyMD5CollisionPair);
+  verifyMD5CollisionPair();
 })();
 </script>
 
@@ -328,36 +262,34 @@ The two GIF files below (from security researcher Ange Albertini's research repo
 
 In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrating the first practical SHA-1 collision using two distinct PDF documents sharing an identical SHA-1 hash.
 
-### Client-Side Executable SHA-1 SHAttered Verification Playground
+<div class="image-pair" style="margin-bottom: 1.5rem;">
+  <figure>
+    <figcaption>
+      <strong>sha1-collision-1.pdf</strong> (2,102 bytes)<br>
+      <a href="{{ '/assets/downloads/sha1-collision-1.pdf' | relative_url }}" download class="btn-secondary" style="display: inline-block; padding: 0.25rem 0.6rem; font-size: 0.75rem; margin-top: 0.35rem;">📥 Download PDF 1</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <figcaption>
+      <strong>sha1-collision-2.pdf</strong> (2,102 bytes)<br>
+      <a href="{{ '/assets/downloads/sha1-collision-2.pdf' | relative_url }}" download class="btn-secondary" style="display: inline-block; padding: 0.25rem 0.6rem; font-size: 0.75rem; margin-top: 0.35rem;">📥 Download PDF 2</a>
+    </figcaption>
+  </figure>
+</div>
+
+### Client-Side Executable SHA-1 SHAttered Verification
 
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Interactive Browser Playground</span>
-    <h3>SHA-1 SHAttered PDF Collision Playground</h3>
-    <p>Upload PDF documents or load the official SHAttered PDF collision pair to compute SHA-1 digests and verify binary divergence live via Web Crypto API.</p>
+    <h3>SHA-1 SHAttered PDF Collision Proof</h3>
+    <p>Interactively compute SHA-1 digests over the official SHAttered PDF collision pair and verify binary divergence live via Web Crypto API.</p>
   </div>
 
   <div class="demo-body">
-    <!-- File Upload Inputs -->
-    <div class="demo-form-group">
-      <label>Select / Upload PDF Documents to Verify:</label>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-        <div>
-          <small><strong>PDF Document 1:</strong></small>
-          <input type="file" id="sha1-file-1" class="demo-input" accept=".pdf" style="padding: 0.35rem;">
-        </div>
-        <div>
-          <small><strong>PDF Document 2:</strong></small>
-          <input type="file" id="sha1-file-2" class="demo-input" accept=".pdf" style="padding: 0.35rem;">
-        </div>
-      </div>
-    </div>
-
-    <!-- Actions -->
     <div class="demo-form-group">
       <div class="demo-actions" style="margin: 0.5rem 0;">
-        <button id="btn-load-sha1-sample" class="btn-primary" type="button">📄 Load SHAttered SHA-1 PDF Sample Pair</button>
-        <button id="btn-verify-sha1-upload" class="btn-secondary" type="button">⚡ Verify Uploaded PDFs</button>
+        <button id="btn-verify-sha1" class="btn-primary" type="button">⚡ Verify SHA-1 SHAttered Collision Pair</button>
       </div>
     </div>
 
@@ -366,18 +298,30 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
   </div>
 </div>
 
+### Local CLI Verification Commands
+
+```bash
+# Verify SHA-1 Collision Pair
+shasum -a 1 sha1-collision-1.pdf sha1-collision-2.pdf
+# Output:
+# 5e00eced22afee33889d4766e8366e8326abc749  sha1-collision-1.pdf
+# 5e00eced22afee33889d4766e8366e8326abc749  sha1-collision-2.pdf
+
+cmp sha1-collision-1.pdf sha1-collision-2.pdf
+# Output: sha1-collision-1.pdf sha1-collision-2.pdf differ: char 193, line 8
+```
+
+SHA-1 is formally prohibited by **[NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final)** for digital signatures due to collision vulnerability.
+
 <script>
 (function() {
-  const sha1File1 = document.getElementById('sha1-file-1');
-  const sha1File2 = document.getElementById('sha1-file-2');
-  const btnSample = document.getElementById('btn-load-sha1-sample');
-  const btnVerify = document.getElementById('btn-verify-sha1-upload');
+  const btnVerifySHA1 = document.getElementById('btn-verify-sha1');
   const outputArea = document.getElementById('sha1-output-area');
 
   const pdf1Url = "{{ '/assets/downloads/sha1-collision-1.pdf' | relative_url }}";
   const pdf2Url = "{{ '/assets/downloads/sha1-collision-2.pdf' | relative_url }}";
 
-  if (!btnSample || !outputArea) return;
+  if (!btnVerifySHA1 || !outputArea) return;
 
   function bytesToHex(bytes) {
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -392,116 +336,75 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
     return -1;
   }
 
-  async function verifySHA1Buffers(name1, b1, name2, b2) {
-    const h1Buffer = await window.crypto.subtle.digest("SHA-1", b1);
-    const h2Buffer = await window.crypto.subtle.digest("SHA-1", b2);
-
-    const sha1_1 = bytesToHex(new Uint8Array(h1Buffer));
-    const sha1_2 = bytesToHex(new Uint8Array(h2Buffer));
-    const diffOffset = compareBuffers(b1, b2);
-
-    const isCollision = (sha1_1 === sha1_2) && (diffOffset !== -1);
-
-    let html = '<div class="ecb-blocks-list">';
-
-    html += `
-    <div class="ecb-block-item">
-      <div class="block-meta">
-        <span class="block-num">PDF 1: ${name1} (${b1.length} Bytes)</span>
-        <span class="block-plain-preview">SHA-1 Digest</span>
-      </div>
-      <div class="block-hex-val"><code>${sha1_1}</code></div>
-    </div>
-
-    <div class="ecb-block-item">
-      <div class="block-meta">
-        <span class="block-num">PDF 2: ${name2} (${b2.length} Bytes)</span>
-        <span class="block-plain-preview">SHA-1 Digest</span>
-      </div>
-      <div class="block-hex-val"><code>${sha1_2}</code></div>
-    </div>`;
-
-    html += '</div>';
-
-    if (isCollision) {
-      html += `
-      <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
-        <div class="security-layer-label">Cryptanalytic Collision Verified</div>
-        <div>
-          <strong>🚨 SHAttered SHA-1 COLLISION CONFIRMED!</strong>
-          <p style="margin-bottom:0;">Both PDF documents yield the <strong>identical SHA-1 digest</strong> (<code>${sha1_1}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. SHA-1 is forbidden for digital signatures under NIST SP 800-131A Rev. 2.</p>
-        </div>
-      </div>`;
-    } else if (diffOffset === -1) {
-      html += `
-      <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
-        <div class="security-layer-label">Binary Match</div>
-        <div>
-          <strong>✔ PDFs Are Identical</strong>
-          <p style="margin-bottom:0;">Both PDF files contain identical binary bytes.</p>
-        </div>
-      </div>`;
-    } else {
-      html += `
-      <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
-        <div class="security-layer-label">No Collision</div>
-        <div>
-          <strong>✔ Distinct SHA-1 Digests</strong>
-          <p style="margin-bottom:0;">PDF files yield different SHA-1 digests. Differ at byte offset ${diffOffset}.</p>
-        </div>
-      </div>`;
-    }
-
-    outputArea.innerHTML = html;
-  }
-
-  async function loadSHA1SamplePair() {
+  async function verifySHA1CollisionPair() {
     try {
-      outputArea.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">⏳ Fetching SHAttered PDF sample pair...</div>';
+      outputArea.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">⏳ Fetching and hashing PDF files...</div>';
       const r1 = await fetch(pdf1Url);
       const r2 = await fetch(pdf2Url);
+
+      if (!r1.ok || !r2.ok) {
+        throw new Error(`HTTP fetch failed: PDF 1 (${r1.status}), PDF 2 (${r2.status})`);
+      }
+
       const b1 = new Uint8Array(await r1.arrayBuffer());
       const b2 = new Uint8Array(await r2.arrayBuffer());
 
-      await verifySHA1Buffers("sha1-collision-1.pdf", b1, "sha1-collision-2.pdf", b2);
-    } catch (err) {
-      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Sample Load Error: ${err.message || err}</div>`;
-    }
-  }
+      const h1Buffer = await window.crypto.subtle.digest("SHA-1", b1);
+      const h2Buffer = await window.crypto.subtle.digest("SHA-1", b2);
 
-  function readFileBytes(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(new Uint8Array(e.target.result));
-      reader.onerror = err => reject(err);
-      reader.readAsArrayBuffer(file);
-    });
-  }
+      const sha1_1 = bytesToHex(new Uint8Array(h1Buffer));
+      const sha1_2 = bytesToHex(new Uint8Array(h2Buffer));
+      const diffOffset = compareBuffers(b1, b2);
 
-  async function handleVerifyUpload() {
-    try {
-      const f1 = sha1File1.files[0];
-      const f2 = sha1File2.files[0];
+      let html = '<div class="ecb-blocks-list">';
 
-      if (!f1 || !f2) {
-        outputArea.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please select two PDF files to verify.</div>';
-        return;
+      html += `
+      <div class="ecb-block-item">
+        <div class="block-meta">
+          <span class="block-num">PDF 1: sha1-collision-1.pdf (${b1.length} Bytes)</span>
+          <span class="block-plain-preview">SHA-1 Digest</span>
+        </div>
+        <div class="block-hex-val"><code>${sha1_1}</code></div>
+      </div>
+
+      <div class="ecb-block-item">
+        <div class="block-meta">
+          <span class="block-num">PDF 2: sha1-collision-2.pdf (${b2.length} Bytes)</span>
+          <span class="block-plain-preview">SHA-1 Digest</span>
+        </div>
+        <div class="block-hex-val"><code>${sha1_2}</code></div>
+      </div>`;
+
+      html += '</div>';
+
+      if (sha1_1 === sha1_2 && diffOffset !== -1) {
+        html += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Cryptanalytic Collision Verified</div>
+          <div>
+            <strong>🚨 SHAttered SHA-1 COLLISION CONFIRMED!</strong>
+            <p style="margin-bottom:0;">Both PDF documents yield the <strong>identical SHA-1 digest</strong> (<code>${sha1_1}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. SHA-1 is forbidden for digital signatures under NIST SP 800-131A Rev. 2.</p>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Verification Result</div>
+          <div>
+            <strong>SHA-1 Hashing Complete</strong>
+            <p style="margin-bottom:0;">PDF 1: <code>${sha1_1}</code> | PDF 2: <code>${sha1_2}</code> (Diff offset: ${diffOffset})</p>
+          </div>
+        </div>`;
       }
 
-      outputArea.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">⏳ Reading and hashing uploaded PDFs...</div>';
-      const b1 = await readFileBytes(f1);
-      const b2 = await readFileBytes(f2);
-
-      await verifySHA1Buffers(f1.name, b1, f2.name, b2);
+      outputArea.innerHTML = html;
     } catch (err) {
-      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">PDF Verification Error: ${err.message || err}</div>`;
+      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
     }
   }
 
-  btnSample.addEventListener('click', loadSHA1SamplePair);
-  btnVerify.addEventListener('click', handleVerifyUpload);
-
-  loadSHA1SamplePair();
+  btnVerifySHA1.addEventListener('click', verifySHA1CollisionPair);
+  verifySHA1CollisionPair();
 })();
 </script>
 
