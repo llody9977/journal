@@ -12,7 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Threats, Vulnerabilities &amp; Risk Engine</text>
-  <text x="50" y="88" font-size="16" fill="#475569">Risk Management Architecture showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Risk Management Architecture showing Threat Event Evaluation (NIST SP 800-30), Risk</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">CVSS/EPSS Vulnerability Scoring, Response Options (NIST SP 800-39), and Residual Risk Governance.</text>
   
     <!-- Top Stage: Threat & Vulnerability Evaluation Pipeline (y=115, h=135) -->
     <!-- Card 1: Threat Source & Event (x=40, w=355) -->

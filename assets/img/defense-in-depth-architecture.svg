@@ -12,7 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Defense in Depth vs Duplicate Control Architecture</text>
-  <text x="50" y="88" font-size="16" fill="#475569">Architecture mapping True Defense-in-Depth (Diverse Complementary Gates), Valid Ingestion Point Layering across boundaries, versus Single-Boundary Duplicate Anti-Patterns.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Architecture mapping True Defense-in-Depth (Diverse Complementary Gates), Valid Point</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">Ingestion Layering across boundaries, versus Single-Boundary Duplicate Anti-Patterns.</text>
   
     <!-- PANEL 1: TRUE DEFENSE IN DEPTH (y=110, h=185) -->
     <rect x="40" y="110" width="1120" height="185" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2.5" />

@@ -12,7 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Security token exchange</text>
-  <text x="50" y="88" font-size="16" fill="#475569">An STS validates trusted identity evidence and issues a short-lived token limited to the target resource.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">An STS validates trusted identity evidence and issues a short-lived token limited to</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">the target resource.</text>
   
     <g>
       <rect x="50" y="135" width="330" height="235" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>

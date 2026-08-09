@@ -12,7 +12,7 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Choosing among OWASP Top 10, ASVS, and SAMM</text>
-  <text x="50" y="88" font-size="16" fill="#475569">Use the artifact that matches the question I am trying to answer.</text>
+  <text x="50" y="88" font-size="15" fill="#475569">Use the artifact that matches the question I am trying to answer.</text>
   
     <g>
       <rect x="50" y="135" width="330" height="235" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>

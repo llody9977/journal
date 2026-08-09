@@ -12,7 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">How security frameworks fit together</text>
-  <text x="50" y="88" font-size="16" fill="#475569">Start with strategy, select controls, add domain requirements, then collect assurance evidence.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Start with strategy, select controls, add domain requirements, then collect assurance</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">evidence.</text>
   
     <g>
       <rect x="80" y="130" width="1040" height="115" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>

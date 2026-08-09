@@ -79,6 +79,24 @@ function arrow(x1, y1, x2, y2, label = "", options = {}) {
 }
 
 function documentSvg(title, subtitle, height, body) {
+  const maxCharsPerLine = 85;
+  let subtitleMarkup = '';
+  if (subtitle.length > maxCharsPerLine) {
+    const words = subtitle.split(' ');
+    let line1 = '', line2 = '';
+    for (const w of words) {
+      if ((line1 + ' ' + w).length <= maxCharsPerLine) {
+        line1 += (line1 ? ' ' : '') + w;
+      } else {
+        line2 += (line2 ? ' ' : '') + w;
+      }
+    }
+    subtitleMarkup = `<text x="50" y="82" font-size="14.5" fill="${colors.muted}">${escapeXml(line1)}</text>
+  <text x="50" y="102" font-size="14.5" fill="${colors.muted}">${escapeXml(line2)}</text>`;
+  } else {
+    subtitleMarkup = `<text x="50" y="88" font-size="15" fill="${colors.muted}">${escapeXml(subtitle)}</text>`;
+  }
+
   return `<svg viewBox="0 0 1200 ${height}" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">${escapeXml(title)}</title>
   <desc id="description">${escapeXml(subtitle)}</desc>
@@ -93,7 +111,7 @@ function documentSvg(title, subtitle, height, body) {
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="${colors.red}"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="${colors.ink}">${escapeXml(title)}</text>
-  <text x="50" y="88" font-size="16" fill="${colors.muted}">${escapeXml(subtitle)}</text>
+  ${subtitleMarkup}
   ${body}
 </svg>\n`;
 }

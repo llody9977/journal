@@ -12,7 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Trust Boundaries &amp; Threat Modeling DFD Architecture</text>
-  <text x="50" y="88" font-size="16" fill="#475569">System Data Flow Diagram (DFD) showing External Untrusted Public Zone, DMZ Application Zone, High-Assurance Data Enclave, Trust Boundaries 1 &amp; 2, and STRIDE per Element Mapping.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">System Data Flow Diagram (DFD) showing External Untrusted Public Zone, DMZ Zone, Data</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">Application High-Assurance Enclave, Trust Boundaries 1 &amp; 2, and STRIDE per Element Mapping.</text>
   
     <!-- Z-LAYER 1: DOMAIN CONTAINER BOXES -->
     <!-- Domain 1: Untrusted External Zone (x=40, y=115, w=240, h=300) -->

@@ -12,7 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Hybrid encryption: asymmetric key transport, symmetric data encryption</text>
-  <text x="50" y="88" font-size="16" fill="#475569">The sender encrypts bulk data with a random DEK and protects only that DEK with the recipient's public key.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">The sender encrypts bulk data with a random DEK and protects only that DEK with the</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">recipient's public key.</text>
   <rect x="10" y="120" width="250" height="60" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/><text x="135" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Sender</text><path d="M135 180 V520" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/>
 <rect x="940" y="120" width="250" height="60" rx="18" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/><text x="1065" y="156" text-anchor="middle" font-size="17" font-weight="800" fill="#0f172a">Recipient</text><path d="M1065 180 V520" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"/><rect x="170" y="192" width="320" height="56" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/><text x="188" y="214" text-anchor="start" font-size="12" font-weight="800" fill="#0f172a">1. GENERATE RANDOM DEK</text><text x="188" y="235" text-anchor="start" font-size="12" font-weight="500" fill="#475569">AES-256 data key</text>
     <path d="M135 290 L1065 290" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
