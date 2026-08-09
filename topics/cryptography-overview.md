@@ -76,59 +76,163 @@ All cryptographic security ultimately depends on unpredictable randomness. Keys,
   </div>
 </div>
 
-### Executable Proof: Insecure PRNG (MT19937) State Reconstruction Attack
+### Client-Side Simulator: Insecure PRNG (MT19937) State Reconstruction Attack
 
-The Python script below demonstrates how an adversary observing 624 outputs from a non-cryptographic PRNG (Mersenne Twister `MT19937` used in standard `random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
+The interactive simulator below demonstrates how an adversary observing 624 outputs from a non-cryptographic PRNG (Mersenne Twister `MT19937` used in standard `Math.random` implementations or standard library `random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
 
-```python
-# prng_exploit.py: Reconstructing non-cryptographic PRNG internal state
-import random
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Exploit Simulator</span>
+    <h3>Insecure PRNG (MT19937) State Reconstruction Attack</h3>
+    <p>Demonstrates how an adversary observing 624 32-bit outputs from a non-cryptographic PRNG (Mersenne Twister MT19937) inverts the tempering operations, reconstructs the 624-word internal state, and predicts 100% of future password-reset tokens.</p>
+  </div>
 
-def un_right_shift(val, shift):
-    res = val
-    for _ in range(32 // shift):
-        res = val ^ (res >> shift)
-    return res
+  <div class="demo-body">
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
+      <button id="mt-btn-generate" class="btn-primary">1. Generate Target PRNG Tokens (624)</button>
+      <button id="mt-btn-reconstruct" class="btn-secondary" disabled>2. Reconstruct State &amp; Predict Next Token</button>
+    </div>
 
-def un_left_shift_mask(val, shift, mask):
-    res = val
-    for _ in range(32 // shift):
-        res = val ^ ((res << shift) & mask)
-    return res
+    <!-- Output Logs -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+      <div style="background: var(--paper); border: 1px solid var(--rule); padding: 0.85rem; border-radius: 6px;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Target PRNG (MT19937) Status</div>
+        <div id="mt-target-status" style="font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-top: 0.35rem;">Click "Generate Target PRNG Tokens" to begin.</div>
+        <div id="mt-target-tokens" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; max-height: 140px; overflow-y: auto; white-space: pre-wrap;"></div>
+      </div>
 
-def untemper(y):
-    y = un_right_shift(y, 18)
-    y = un_left_shift_mask(y, 15, 0xefc60000)
-    y = un_left_shift_mask(y, 7, 0x9d2c5680)
-    y = un_right_shift(y, 11)
-    return y
+      <div style="background: var(--paper); border: 1px solid var(--rule); padding: 0.85rem; border-radius: 6px;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Attacker Predictor Status</div>
+        <div id="mt-predictor-status" style="font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-top: 0.35rem;">Awaiting 624 target tokens...</div>
+        <div id="mt-predictor-result" style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); margin-top: 0.5rem; white-space: pre-wrap;"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-# 1. Target server generates tokens using standard Python random (MT19937 PRNG)
-target_server_rng = random.Random(42)
+{% raw %}
+<script>
+(function() {
+  class MersenneTwister {
+    constructor(seed) {
+      this.mt = new Array(624);
+      this.index = 624;
+      this.init(seed || 5489);
+    }
 
-# 2. Attacker observes 624 32-bit outputs from public reset requests
-observed_tokens = [target_server_rng.getrandbits(32) for _ in range(624)]
+    init(seed) {
+      this.mt[0] = seed >>> 0;
+      for (let i = 1; i < 624; i++) {
+        let s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
+        this.mt[i] = (((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + (s & 0x0000ffff) * 1812433253 + i) >>> 0;
+      }
+      this.index = 624;
+    }
 
-# 3. Attacker untempers outputs to reconstruct internal 624-word state array
-reconstructed_state = [untemper(x) for x in observed_tokens]
+    extractNumber() {
+      if (this.index >= 624) {
+        this.twist();
+      }
+      let y = this.mt[this.index++];
+      y = (y ^ (y >>> 11)) >>> 0;
+      y = (y ^ ((y << 7) & 0x9d2c5680)) >>> 0;
+      y = (y ^ ((y << 15) & 0xefc60000)) >>> 0;
+      y = (y ^ (y >>> 18)) >>> 0;
+      return y >>> 0;
+    }
 
-# 4. Attacker clones state into their own local predictor instance
-attacker_predictor_rng = random.Random()
-attacker_predictor_rng.setstate((3, tuple(reconstructed_state + [624]), None))
+    twist() {
+      for (let i = 0; i < 624; i++) {
+        let y = ((this.mt[i] & 0x80000000) + (this.mt[(i + 1) % 624] & 0x7fffffff)) >>> 0;
+        let next = (y >>> 1) ^ (y & 1 ? 0x9908b0df : 0);
+        this.mt[i] = (this.mt[(i + 397) % 624] ^ next) >>> 0;
+      }
+      this.index = 0;
+    }
+  }
 
-# 5. Target server generates the NEXT secret password-reset token for a victim
-target_secret_token = target_server_rng.getrandbits(32)
+  function unRightShift(val, shift) {
+    let res = val;
+    for (let i = 0; i < Math.floor(32 / shift); i++) {
+      res = val ^ (res >>> shift);
+    }
+    return res >>> 0;
+  }
 
-# 6. Attacker predicts the EXACT secret token!
-predicted_token = attacker_predictor_rng.getrandbits(32)
+  function unLeftShiftMask(val, shift, mask) {
+    let res = val;
+    for (let i = 0; i < Math.floor(32 / shift); i++) {
+      res = val ^ ((res << shift) & mask);
+    }
+    return res >>> 0;
+  }
 
-print("Target Next Secret Token :", target_secret_token)
-print("Attacker Predicted Token :", predicted_token)
-print("State Reconstruction    :", "SUCCESS (100% Match!)" if target_secret_token == predicted_token else "FAILED")
-# Output: Target Next Secret Token : 1071722055
-#         Attacker Predicted Token : 1071722055
-#         State Reconstruction    : SUCCESS (100% Match!)
-```
+  function untemper(y) {
+    y = unRightShift(y, 18);
+    y = unLeftShiftMask(y, 15, 0xefc60000);
+    y = unLeftShiftMask(y, 7, 0x9d2c5680);
+    y = unRightShift(y, 11);
+    return y >>> 0;
+  }
+
+  const btnGenerate = document.getElementById('mt-btn-generate');
+  const btnReconstruct = document.getElementById('mt-btn-reconstruct');
+  const targetStatus = document.getElementById('mt-target-status');
+  const targetTokens = document.getElementById('mt-target-tokens');
+  const predictorStatus = document.getElementById('mt-predictor-status');
+  const predictorResult = document.getElementById('mt-predictor-result');
+
+  if (!btnGenerate || !btnReconstruct || !targetStatus || !targetTokens || !predictorStatus || !predictorResult) return;
+
+  let targetRng = null;
+  let observedOutputs = [];
+
+  btnGenerate.addEventListener('click', function() {
+    const seed = Math.floor(Math.random() * 100000);
+    targetRng = new MersenneTwister(seed);
+    observedOutputs = [];
+
+    for (let i = 0; i < 624; i++) {
+      observedOutputs.push(targetRng.extractNumber());
+    }
+
+    targetStatus.textContent = `Generated 624 outputs (Seed: ${seed})`;
+    targetTokens.textContent = observedOutputs.slice(0, 20).join('
+') + '
+... (' + (observedOutputs.length - 20) + ' more tokens observed)';
+    predictorStatus.textContent = '624 tokens observed! Ready to untemper state.';
+    predictorResult.textContent = '';
+    btnReconstruct.disabled = false;
+  });
+
+  btnReconstruct.addEventListener('click', function() {
+    if (!targetRng || observedOutputs.length < 624) return;
+
+    // Reconstruct 624-word state
+    const reconstructedState = observedOutputs.map(untemper);
+
+    // Clone into predictor
+    const predictorRng = new MersenneTwister();
+    predictorRng.mt = reconstructedState;
+    predictorRng.index = 624;
+
+    // Generate next secret token from target
+    const targetSecretNext = targetRng.extractNumber();
+    const predictedNext = predictorRng.extractNumber();
+
+    const isMatch = targetSecretNext === predictedNext;
+
+    predictorStatus.textContent = isMatch ? '✅ State Reconstructed (100% Match!)' : '❌ State Reconstruction Failed';
+    predictorResult.textContent = [
+      `Target Next Secret Token : ${targetSecretNext}`,
+      `Attacker Predicted Token : ${predictedNext}`,
+      `Attack Result             : ${isMatch ? 'SUCCESS (100% Match!)' : 'FAILED'}`
+    ].join('
+');
+  });
+})();
+</script>
+{% endraw %}
 
 ## Practical Cryptographic Implementation Guidelines
 
