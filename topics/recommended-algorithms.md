@@ -2,14 +2,14 @@
 title: Recommended Cryptographic Algorithms & Standards
 description: Comprehensive compliance guide mapping NIST SP 800-57, NSA CNSA 2.0, NIST PQC Standards (FIPS 203/204/205/206), and Chinese ShangMi (SM2/3/4) algorithm suites.
 permalink: /topics/recommended-algorithms/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Standards</span>
 
 # Recommended Cryptographic Algorithms & Standards
 
-<p class="lede">Selecting cryptographic algorithms requires balancing mathematical security strength, computational overhead, and international regulatory compliance. Security architects must enforce standardized, peer-reviewed primitives approved by NIST, BSI, and NSA CNSA 2.0 guidelines while deprecating legacy ciphers vulnerable to cryptanalytic or quantum attacks.</p>
+<p class="lede">Selecting cryptographic algorithms requires balancing mathematical security strength, computational overhead, and international regulatory compliance. Security architects must enforce standardized, peer-reviewed primitives that satisfy the applicable governing body's own criteria — NIST FIPS/SP validation, Germany's BSI TR-02102 recommendations, or NSA CNSA 2.0 requirements — since these bodies do not always converge on the same algorithm, key size, or curve choice, while deprecating legacy ciphers vulnerable to cryptanalytic or quantum attacks.</p>
 
 ## Quantum Impact on Cryptographic Strength
 
@@ -61,13 +61,13 @@ NIST finalized three quantum-resistant FIPS standards in August 2024, with a fou
 
 ## Regional Standards: Chinese ShangMi (SM) Algorithm Suite
 
-Multinational corporations operating inside mainland China must support the **Commercial Code Administration Office (OSCCA)** ShangMi algorithm suite for compliance:
+Under China's Cryptography Law (2020) and the **State Cryptography Administration (SCA)**'s commercial cryptography regime (the regulator formerly known as OSCCA, the Office of State Commercial Cryptography Administration), the ShangMi suite is mandatory only in specific regulated contexts — critical information infrastructure (CII) operators, government procurement, sector rules such as the People's Bank of China's requirements for banking/payment systems, and commercial cryptography products on China's certification catalogue. It is **not** a blanket requirement for all software or every multinational corporation operating in China; general commercial products outside these regulated categories may continue using AES/RSA/ECC.
 
 | SM Algorithm | Cryptographic Primitive | Equivalent Western Primitive | Compliance Requirement |
 |---|---|---|---|
-| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Mandatory for public-key encryption and digital signatures in China banking. |
-| **SM3** | Cryptographic Hash | SHA-256 | Mandatory 256-bit hash digest for integrity checks and signatures. |
-| **SM4** | 128-bit Block Cipher | AES-128-GCM | Mandatory 128-bit block cipher for data at rest and network transit in China. |
+| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Mandatory for public-key encryption and digital signatures within CII, government, and PBOC-regulated banking systems; not required for general commercial software. |
+| **SM3** | Cryptographic Hash | SHA-256 | Mandatory 256-bit hash digest for integrity checks and signatures within the same regulated sectors. |
+| **SM4** | 128-bit Block Cipher | AES-128-GCM | Mandatory 128-bit block cipher for data at rest and network transit within the same regulated sectors; general deployments are not required to replace AES. |
 | **SM9** | Identity-Based Encryption | IBE / Identity PKI | Identity-based public-key algorithm using user ID as public key. |
 
 ## What I Need to Remember
@@ -77,7 +77,8 @@ Multinational corporations operating inside mainland China must support the **Co
   <div>
     <strong>Algorithm Selection &amp; Compliance Takeaways</strong>
     <ul>
-      <li><strong>IETF Standard vs. FIPS Approved</strong>: Algorithms can be cryptographically sound and IETF-standardized (X25519, AES-GCM-SIV) while <em>not</em> being FIPS 140-3 / NIST SP 800-56A approved. Always check regulatory context (FedRAMP requires NIST curves like P-384).</li>
+      <li><strong>IETF Standard vs. FIPS Approved</strong>: Algorithms can be cryptographically sound and IETF-standardized (X25519, AES-GCM-SIV) while <em>not</em> being FIPS 140-3 / NIST SP 800-56A approved. Always check regulatory context: FedRAMP requires a FIPS 140-validated module per <a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a>, which accepts <strong>either P-256 or P-384</strong> for TLS — P-384 is only mandatory for National Security Systems under NSA CNSA 2.0, not as a blanket FedRAMP-wide rule.</li>
+      <li><strong>NIST Approval &amp; BSI Recommendation Are Not Interchangeable</strong>: A "NIST APPROVED" status in the matrix above is a U.S. federal (FIPS/SP 800-series) designation only. Germany's BSI sets independent criteria in TR-02102-1 and has historically favored Brainpool curves (brainpoolP256r1/P384r1) over the NIST P-curves for German government and critical-infrastructure use. Don't treat NIST approval as proof of BSI endorsement, or vice versa — verify each body's guidance separately for the relevant jurisdiction.</li>
       <li><strong>PQC Finalization</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) were <strong>finalized in August 2024</strong>. Draft FIPS 206 (FN-DSA) remains under development.</li>
       <li><strong>Symmetric vs Asymmetric Quantum Impact</strong>: AES-256 and SHA-384/512 are quantum-safe today (Grover's algorithm only halves key bits). RSA/ECC must be replaced with PQC (Shor's algorithm breaks them).</li>
     </ul>

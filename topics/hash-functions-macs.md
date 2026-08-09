@@ -2,7 +2,7 @@
 title: Hash Functions & MACs
 description: Cryptographic hash properties (Preimage, 2nd-Preimage, Collision resistance), SHA-2/SHA-3 standards, HMAC-SHA256, KMAC, BLAKE3, and length-extension mitigation.
 permalink: /topics/hash-functions-macs/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -39,9 +39,9 @@ A secure cryptographic hash exhibits strong **avalanche diffusion**: modifying a
 
 | Algorithm | Digest Size | Current Security Status | Target Applications |
 |---|---|---|---|
-| **BLAKE3** | Variable (256-bit default) | **HIGH-SPEED APPROVED**: Tree-hashing design with extreme multi-core parallelism. | High-throughput file deduplication, supply chain hashing, tree proofs. |
-| **KMAC128 / KMAC256** | Variable ([NIST SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | **APPROVED NIST MAC**: Keccak-based PRF/MAC natively immune to length extension. | High-assurance message authentication without HMAC nested overhead. |
-| **MD5** | 128 bits | **CRITICALLY BROKEN**: Practical collisions demonstrated (Flame malware, 2004). | Legacy non-security checksums (*Do not use for security*). |
+| **BLAKE3** | Variable (256-bit default) | **NOT NIST-STANDARDIZED**: Fast, modern Merkle tree hash design with extreme multi-core parallelism; independently specified (not FIPS 180-4 / FIPS 202) — NIST's approved hash families remain SHA-2 and SHA-3. | High-throughput file deduplication, supply chain hashing, tree proofs (where FIPS validation is not required). |
+| **KMAC128 / KMAC256** | Variable ([NIST SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | **NIST-SPECIFIED KEYED HASH/PRF**: Built on cSHAKE (a SHA-3 derived function), distinct from HMAC rather than a variant of it. Natively immune to length extension. | High-assurance message authentication without HMAC's nested double-hashing overhead. |
+| **MD5** | 128 bits | **CRITICALLY BROKEN**: Practical collisions demonstrated (Flame malware, 2012). | Legacy non-security checksums (*Do not use for security*). |
 | **SHA-1** | 160 bits | **BROKEN**: Practical collision demonstrated ("SHAttered" attack, 2017). Prohibited by NIST SP 800-131A. | Deprecated (*Do not use for signatures or security*). |
 | **SHA-256 / SHA-512** (SHA-2) | 256 / 512 bits | **APPROVED &amp; STANDARD**: Primary federal and commercial hash standard. | Digital signatures, TLS 1.3, WebAuthn, block headers. |
 | **SHA3-256 / SHA3-512** (SHA-3) | 256 / 512 bits | **APPROVED ALTERNATIVE**: Based on Keccak sponge construction (FIPS 202). | High-assurance alternative hedging against SHA-2 cryptanalysis. |
@@ -63,7 +63,7 @@ Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, *
 
 Naive concatenation `H(key || message)` using Merkle–Damgård hashes (MD5, SHA-1, SHA-256) is vulnerable to **length-extension attacks**. An adversary observing `H(key || message)` can compute a valid digest for `key || message || padding || attacker_data` without learning `key`.
 
-HMAC's nested construction prevents length-extension attacks by wrapping the inner hash output inside an outer hash layer protected by `opad`. Modern sponge-based constructions (**SHA-3 / FIPS 202**, **KMAC / SP 800-185**, **BLAKE3**) are inherently immune to length extension by design.
+HMAC's nested construction prevents length-extension attacks by wrapping the inner hash output inside an outer hash layer protected by `opad`. Sponge-based constructions (**SHA-3 / FIPS 202**, **KMAC / SP 800-185**) are inherently immune to length extension by design; BLAKE3's Merkle tree structure gives it the same property, though BLAKE3 is a separately-specified design rather than a NIST standard.
 
 ### Client-Side Executable Hash Digest & HMAC-SHA256 Authentication Playground
 
@@ -206,7 +206,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
           <div class="security-layer-label">Authentication Status</div>
           <div>
             <strong>✔ AUTHENTICATION SUCCESSFUL!</strong>
-            <p style="margin-bottom:0;">The receiver verification key <code>"${verifyKeyStr}"</code> matches the sender key. Payload integrity and origin authenticity are 100% verified!</p>
+            <p style="margin-bottom:0;">The receiver verification key <code>"${verifyKeyStr}"</code> matches the sender key. The HMAC tag is consistent with payload integrity and origin authenticity under this key.</p>
           </div>
         </div>`;
       } else {
@@ -257,7 +257,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
     <ul>
       <li><strong>Three Security Properties</strong>: Preimage resistance (one-way), Second-preimage resistance (target substitution proof), Collision resistance (any match proof).</li>
       <li><strong>HMAC Construction</strong>: HMAC uses double-nested key hashing (<code>ipad</code> / <code>opad</code>) to prevent Merkle–Damgård length-extension attacks.</li>
-      <li><strong>Modern Sponge MACs</strong>: KMAC (SP 800-185) and BLAKE3 are inherently immune to length extension by design.</li>
+      <li><strong>Length-Extension Immunity</strong>: KMAC (SP 800-185, sponge-based) and BLAKE3 (Merkle tree-based, not a NIST standard) are both inherently immune to length extension by design.</li>
     </ul>
   </div>
 </div>

@@ -2,7 +2,7 @@
 title: Symmetric Cryptography
 description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), Grover's quantum search, and Node.js envelope encryption.
 permalink: /topics/symmetric-cryptography/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -36,7 +36,7 @@ Symmetric ciphers operate under two distinct mathematical paradigms:
 | Dimension | Block Ciphers (*e.g., AES*) | Stream Ciphers (*e.g., ChaCha20*) | Engineering Trade-off & Guidance |
 |---|---|---|---|
 | **Execution Mechanics** | Permutation-Substitution network per 128-bit block | Generates pseudo-random keystream XORed with plaintext | Block ciphers require complex S-Box substitutions; stream ciphers perform fast bitwise XOR. |
-| **Modern Standards** | **AES-256-GCM** ([FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) / [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | **ChaCha20-Poly1305** ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)) | Both are approved AEAD constructions enforcing confidentiality and origin authenticity. |
+| **Modern Standards** | **AES-256-GCM** ([FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) / [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | **ChaCha20-Poly1305** ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)) | AES-256-GCM is a NIST FIPS-approved AEAD construction. ChaCha20-Poly1305 is an IETF-standardized AEAD (RFC 8439) that is not itself a NIST-approved algorithm under FIPS 140, though it is widely permitted and deployed, e.g., as a TLS 1.3 cipher suite. |
 | **Operational Unit** | Fixed-size data blocks (128 bits / 16 bytes) | Continuous byte/bit stream | Stream ciphers accept arbitrary payload lengths without block alignment overhead. |
 | **Padding Requirements** | Required for block modes like CBC; not required for GCM/CTR | None required | Padding oracle attacks occur when unauthenticated block padding is parsed. |
 | **Primary Real-World Use Cases** | Database field encryption, cloud storage volumes (EBS/LUKS2 via AES-XTS), high-throughput server TLS 1.3 with hardware AES-NI instructions. | Real-time video/audio streaming, low-latency mobile apps, VPN tunnels (WireGuard), embedded IoT microcontrollers lacking AES-NI hardware. | Select AES-256-GCM for server hardware with AES-NI; select ChaCha20-Poly1305 for mobile/ARM CPUs without hardware AES. |
@@ -64,7 +64,7 @@ Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)*
 
 | AES Variation | Key Length | Processing Rounds (N) | Total Round Keys Required | Quantum Margin (Grover's Search) |
 |---|---|---|---|---|
-| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **64 bits effective security** (Vulnerable to quantum search) |
+| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **64 bits effective security** (Below the recommended 128-bit floor; still listed by NIST as an approved algorithm — see caveats below) |
 | **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | 96 bits effective security |
 | **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **128 bits effective security (Post-Quantum Recommended)** |
 
@@ -78,10 +78,10 @@ A common question in cryptographic engineering is: *"What does it mean that quan
 2. **Grover's Quantum Acceleration**: Grover's algorithm running on a Cryptographically Relevant Quantum Computer (CRQC) performs an unstructured search over a database of **N** possibilities in **O(sqrt(N))** quantum iterations.
 3. **Impact on Symmetric Keys**:
    - Taking the square root of **2^n** key combinations yields **sqrt(2^n) = 2^(n/2)**.
-   - **AES-128**: Grover's algorithm reduces search complexity from **2^128** down to **2^64** operations. A search space of **2^64** is within reach of quantum computing resources, rendering AES-128 vulnerable.
-   - **AES-256**: Grover's algorithm reduces search complexity from **2^256** down to **2^128** operations. A search space of **2^256** requires **3.4 × 10^38** quantum steps—a computational threshold that remains physically impossible to breach under known laws of thermodynamics.
+   - **AES-128**: Grover's algorithm reduces the theoretical search complexity from **2^128** down to **2^64** operations. In practice, Grover's algorithm is inherently sequential — unlike classical brute force, it cannot be efficiently split across many quantum processors without eroding its quadratic speedup — so a real attack against a 2^64 space would still demand an intractable runtime even on a future large-scale quantum computer. NIST continues to list AES-128 among its approved algorithms and uses its classical 128-bit strength as the baseline ("Category 1") for post-quantum security levels; AES-256 is nonetheless the recommended choice for new systems that want the largest available margin.
+   - **AES-256**: Grover's algorithm reduces search complexity from **2^256** down to **2^128** operations. That resulting **2^128** post-Grover search space still requires roughly **3.4 × 10^38** quantum steps — the same order of magnitude as a classical 2^128 brute-force search, and one that remains far beyond any foreseeable computational capability. (Note: 3.4 × 10^38 is the size of a 2^128 space, not a 2^256 space — the *original*, pre-Grover AES-256 keyspace of 2^256 is vastly larger still, at roughly 1.16 × 10^77.)
 
-Deploying **AES-256** preserves a 128-bit security threshold against Grover's algorithm, making symmetric AES-256 quantum-safe without needing to replace the cipher algorithm.
+Deploying **AES-256** preserves a 128-bit security threshold against Grover's algorithm, keeping symmetric AES-256 quantum-resistant without needing to replace the cipher algorithm.
 
 ## Cipher Modes of Operation: ECB vs CBC vs CTR vs GCM
 

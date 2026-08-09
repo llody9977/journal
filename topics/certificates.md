@@ -2,7 +2,7 @@
 title: Public Key Infrastructure (PKI) & X.509 Certificates
 description: X.509 v3 certificate structure, Certificate Authority (CA) hierarchies, automated ACME issuance (RFC 8555 / ARI), CRL/OCSP revocation, and PQC hybrid certificates.
 permalink: /topics/certificates/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
@@ -25,7 +25,7 @@ PKI relies on a hierarchical trust model where trusted Root CAs issue certificat
 | **Certificate Authority (CA)** | Trusted entity that validates identity and signs X.509 certificates | Private key custody inside HSM; protects root of trust. |
 | **Certificate Revocation List (CRL) / OCSP** | Revocation status mechanisms publishing invalid certificate serial numbers | Best-effort defense against compromised or misissued certificates — most browsers soft-fail (proceed with the connection) when a revocation check is unavailable, so it is not an absolute guarantee. |
 | **Registration Authority (RA)** | Verifies domain ownership or organizational identity prior to issuance | Enforces domain control validation (DNS-01, HTTP-01). |
-| **Trust Store** | Pre-installed list of trusted Root CA certificates embedded in OS / browser | Establishes local trust anchors for path validation algorithms. |
+| **Trust Store** | Pre-installed list of trusted Root CA certificates embedded in OS / browser | Establishes local trust anchors used during path validation (RFC 5280 §6): chain building to a trusted root, signature verification at each hop, validity-period and name-constraint checks, and — where enforced — revocation status. |
 
 ## Anatomy of an X.509 v3 Certificate (RFC 5280)
 
@@ -129,7 +129,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 
 | Field Name | Standard Function | Critical Security Check |
 |---|---|---|
-| **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must have `cA: FALSE` to prevent rogue CA certificate creation. |
+| **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must never assert `cA: TRUE`. Depending on the issuing CA's profile, they either omit this extension entirely (which defaults to non-CA per [RFC 5280 §4.2.1.9](https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.9)) or include it explicitly set to `cA: FALSE` — either form prevents the leaf key from minting further certificates. |
 | **Extended Key Usage (EKU)** | Specifies allowed certificate roles (*Server Auth, Client Auth, Code Signing*) | Prevents a TLS server certificate from signing executable software binaries. |
 | **Subject Alternative Name (SAN)** | Lists exact FQDN domain names bound to this certificate | Modern browsers validate SAN fields exclusively; commonName (CN) is ignored. |
 | **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | Enforces maximum validity periods per CA/Browser Forum Baseline Requirements: 200 days as of March 15, 2026; 100 days as of March 15, 2027; and 47 days as of March 15, 2029. |
@@ -187,7 +187,7 @@ X.509 certificates and private keys are distributed across four primary format e
         <option value="p7b2pem">5. Convert PKCS#7 (.p7b) to PEM</option>
         <option value="view-txt">6. View Certificate Details in Plain Text</option>
         <option value="gen-rsa">7. Generate New RSA Key Pair & CSR</option>
-        <option value="match-mod">8. Check if Private Key matches Certificate (Modulus SHA-256 check)</option>
+        <option value="match-mod">8. Check if Private Key matches Certificate (Public Key SHA-256 check)</option>
       </select>
     </div>
 
@@ -263,49 +263,49 @@ X.509 certificates and private keys are distributed across four primary format e
       groupOut.style.display = 'block'; labelOut.innerText = 'Output DER File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -in ${valIn} -outform DER -out ${valOut}`;
+      cmd = `openssl x509 -in "${valIn}" -outform DER -out "${valOut}"`;
     } else if (task === 'der2pem') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input DER File:';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -inform DER -in ${valIn} -outform PEM -out ${valOut}`;
+      cmd = `openssl x509 -inform DER -in "${valIn}" -outform PEM -out "${valOut}"`;
     } else if (task === 'bundle12') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input Certificate File (PEM):';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PKCS#12 Bundle (.p12/.pfx):';
       groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
       groupChain.style.display = 'block'; labelChain.innerText = 'CA Chain File (optional):';
-      cmd = `openssl pkcs12 -export -out ${valOut} -inkey ${valKey} -in ${valIn} -certfile ${valChain}`;
+      cmd = `openssl pkcs12 -export -out "${valOut}" -inkey "${valKey}" -in "${valIn}" -certfile "${valChain}"`;
     } else if (task === 'extract12') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#12 Bundle File:';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output Decoded PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl pkcs12 -in ${valIn} -out ${valOut} -nodes`;
+      cmd = `openssl pkcs12 -in "${valIn}" -out "${valOut}"`;
     } else if (task === 'p7b2pem') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#7 File (.p7b):';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl pkcs7 -print_certs -in ${valIn} -out ${valOut}`;
+      cmd = `openssl pkcs7 -print_certs -in "${valIn}" -out "${valOut}"`;
     } else if (task === 'view-txt') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File (PEM/DER):';
       groupOut.style.display = 'none';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -in ${valIn} -text -noout`;
+      cmd = `openssl x509 -in "${valIn}" -text -noout`;
     } else if (task === 'gen-rsa') {
       groupIn.style.display = 'none';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output CSR File:';
       groupKey.style.display = 'block'; labelKey.innerText = 'Output Private Key File:';
       groupChain.style.display = 'none';
-      cmd = `openssl req -newkey rsa:2048 -nodes -keyout ${valKey} -out ${valOut}`;
+      cmd = `openssl req -newkey rsa:2048 -keyout "${valKey}" -out "${valOut}"`;
     } else if (task === 'match-mod') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File:';
       groupOut.style.display = 'none';
       groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -noout -modulus -in ${valIn} | openssl sha256 && openssl rsa -noout -modulus -in ${valKey} | openssl sha256`;
+      cmd = `openssl x509 -noout -pubkey -in "${valIn}" | openssl sha256 && openssl pkey -pubout -in "${valKey}" | openssl sha256`;
     }
 
     codeArea.innerText = cmd;
@@ -369,12 +369,12 @@ While pinning protects network transport against rogue CAs, it introduces signif
 <div class="security-layer security-layer-direct">
   <div class="security-layer-label">Pinning Industry Guidance &amp; Deprecation Warning</div>
   <div>
-    <strong>Web Browsers (Deprecated) vs. Mobile Native Apps (Active)</strong>
+    <strong>Web Browsers (Deprecated) vs. Mobile Native Apps (Situational)</strong>
     <p>Understanding where Certificate Pinning belongs prevents catastrophic self-inflicted Denial of Service (DoS):</p>
     <ul>
       <li><strong>Web Browsers (Deprecated)</strong>: <strong>HTTP Public Key Pinning (HPKP / RFC 7469)</strong> was officially <strong>deprecated and removed from web browsers</strong> (Chrome, Firefox, Safari) due to site-bricking hazards and malicious pin-jacking attacks. Web browsers rely on <strong>Certificate Transparency (CT)</strong> for rogue CA detection instead.</li>
-      <li><strong>Mobile &amp; Native Apps (Active Standard)</strong>: Certificate and SPKI pinning remain vital defense-in-depth controls for <strong>iOS and Android native applications</strong> to defeat corporate TLS proxies, local MitM interception, and rogue CA issuance.</li>
-      <li><strong>Mandatory Backup Pin Rule</strong>: Mobile app configurations <strong>must specify at least one backup pin</strong> (a secondary public key hash held in cold storage) to allow key rotation without bricking deployed application instances.</li>
+      <li><strong>Mobile &amp; Native Apps (Not a Default — Use Deliberately)</strong>: Certificate and SPKI pinning can add defense-in-depth for <strong>iOS and Android native applications</strong> against corporate TLS proxies, local MitM interception, and rogue CA issuance. However, both platform vendors now caution against reaching for it by default: Android's official guidance recommends most apps avoid certificate pinning given the bricking risk on key rotation, reserving it for apps with a specific, well-understood threat model and a tested pin-rotation process.</li>
+      <li><strong>Mandatory Backup Pin Rule</strong>: If you do pin, mobile app configurations <strong>must specify at least one backup pin</strong> (a secondary public key hash held in cold storage) to allow key rotation without bricking deployed application instances.</li>
     </ul>
   </div>
 </div>
@@ -433,8 +433,8 @@ While pinning protects network transport against rogue CAs, it introduces signif
     <strong>Certificates &amp; PKI Summary</strong>
     <ul>
       <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
-      <li><strong>Automated ACME &amp; ARI</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029; automated renewal via ACME (RFC 8555) and ARI is mandatory.</li>
-      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning protects mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted. HPKP is deprecated in web browsers.</li>
+      <li><strong>Automated ACME &amp; ARI</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI is essential in practice, though neither is universally mandated — some CAs and internal PKI deployments still support longer-lived certs or manual issuance.</li>
+      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning can protect mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted — Android's own guidance now recommends against it for most apps for that reason. HPKP is deprecated in web browsers.</li>
     </ul>
   </div>
 </div>
@@ -444,3 +444,5 @@ While pinning protects network transport against rogue CAs, it introduces signif
 - **RFC 5280**: *Internet X.509 Public Key Infrastructure Certificate and CRL Profile* — [IETF RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)
 - **RFC 8555**: *Automatic Certificate Management Environment (ACME)* — [IETF RFC 8555](https://www.rfc-editor.org/rfc/rfc8555)
 - **RFC 7469**: *Public Key Pinning Extension for HTTP (Deprecation Notice)* — [IETF RFC 7469](https://www.rfc-editor.org/rfc/rfc7469)
+- **CA/Browser Forum Baseline Requirements**: *Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates* (source for the validity-period schedule above) — [CA/Browser Forum BRs](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
+- **ACME Renewal Information (ARI)**: *Draft: ACME Renewal Information Extension* — [IETF draft-ietf-acme-ari](https://datatracker.ietf.org/doc/draft-ietf-acme-ari/)

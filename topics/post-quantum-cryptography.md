@@ -2,14 +2,14 @@
 title: Post-Quantum Cryptography (PQC) Migration
 description: Architectural roadmap for migrating to NIST PQC standards (finalized FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA, and draft FIPS 206 FN-DSA), NSA CNSA 2.0 timelines, and hybrid key exchange.
 permalink: /topics/post-quantum-cryptography/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Emerging Topics</span>
 
 # Post-Quantum Cryptography (PQC) Migration
 
-<p class="lede">Post-Quantum Cryptography (PQC) prepares enterprise systems for the advent of Cryptographically Relevant Quantum Computers (CRQCs). Quantum computers running Shor's algorithm will break classical public-key cryptography (RSA, ECC, ECDSA, ECDH) in polynomial time. Security architects must execute a phased migration to finalized NIST PQC standards FIPS 203, 204 and 205, with FN-DSA/FIPS 206 under development and enforce NSA CNSA 2.0 migration deadlines.</p>
+<p class="lede">Post-Quantum Cryptography (PQC) prepares enterprise systems for the advent of Cryptographically Relevant Quantum Computers (CRQCs). No such machine exists yet, but a sufficiently large, fault-tolerant quantum computer running Shor's algorithm would break classical public-key cryptography (RSA, ECC, ECDSA, ECDH) in polynomial time — and given multi-year migration timelines, security architects must plan now. Execute a phased migration to finalized NIST PQC standards FIPS 203, 204 and 205, with FN-DSA/FIPS 206 under development, and track NSA CNSA 2.0 migration deadlines.</p>
 
 ## Quantum Threat Horizon: Shor's vs Grover's Algorithm
 
@@ -48,7 +48,7 @@ Adversaries are actively intercepting and storing encrypted high-value enterpris
   <div class="security-layer-label">Harvest Now, Decrypt Later Mitigation</div>
   <div>
     <strong>Immediate Action Required for Data with Long Lifespans</strong>
-    <p>Systems protecting data with confidentiality lifetimes exceeding 5–10 years must deploy <strong>hybrid post-quantum key exchange (X25519MLKEM768)</strong> immediately to prevent retroactive decryption of harvested traffic.</p>
+    <p>Systems protecting data with long confidentiality lifetimes (commonly cited as 5+ years, though the right threshold depends on which CRQC-timeline estimate you plan against) should prioritize deploying <strong>hybrid post-quantum key exchange (X25519MLKEM768)</strong> to reduce exposure to retroactive decryption of harvested traffic.</p>
   </div>
 </div>
 
@@ -77,8 +77,8 @@ For U.S. **National Security Systems (NSS)** subject to Commercial National Secu
 - **Software &amp; Firmware Signing**: Preference starting 2025; exclusive PQC use by **2030**.
 - **Traditional Networking Equipment**: Preference starting 2026; exclusive PQC use by **2030**.
 - **Web Browsers, Servers &amp; Cloud Services**: Preference starting 2025; exclusive PQC use by **2033**.
-- **Operating Systems**: Preference starting 2025; exclusive PQC use by **2033**.
-- **Niche Equipment &amp; Large PKI**: Preference starting 2027; exclusive PQC use by **2033**.
+- **Operating Systems**: Preference starting 2027; exclusive PQC use by **2033**.
+- **Niche Equipment &amp; Large PKI**: Preference starting 2030; exclusive PQC use by **2033**.
 - **Custom &amp; Legacy Equipment**: Update or replace by **2033** per [NSA CNSA 2.0 Advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF).
 
 ## Hybrid Cryptography Transition Pattern
@@ -110,5 +110,5 @@ In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA co
 - **NIST FIPS 203**: *Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)* — [NIST CSRC FIPS 203 Final](https://csrc.nist.gov/pubs/fips/203/final)
 - **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST CSRC FIPS 204 Final](https://csrc.nist.gov/pubs/fips/204/final)
 - **NIST FIPS 205**: *Stateless Hash-Based Digital Signature Standard (SLH-DSA)* — [NIST CSRC FIPS 205 Final](https://csrc.nist.gov/pubs/fips/205/final)
-- **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory (May 2025 update)* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)
+- **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory (Version 1.0, September 2022; current hosted copy)* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)
 - **IETF TLS 1.3 Hybrid Group**: *X25519MLKEM768 Key Exchange for TLS 1.3* — [RFC 10024](https://auth48-transition.rfc-editor.org/authors/rfc10024.html)

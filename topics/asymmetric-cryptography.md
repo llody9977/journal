@@ -1,8 +1,8 @@
 ---
 title: Asymmetric Cryptography & Public-Key Infrastructure
-description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and OpenSSL CLI demonstrations proving why private keys cannot encrypt data.
+description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and an interactive RSA-OAEP/RSA-PSS playground showing why private keys aren't used to encrypt data.
 permalink: /topics/asymmetric-cryptography/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -22,7 +22,7 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric ciphers g
 
 ### Three Distinct Operations
 
-1. **Public-Key Encryption (HPKE / RSA-OAEP)**: The sender encrypts a short payload using the recipient's public key; only the recipient's private key can decrypt it.
+1. **Public-Key Encryption (RSA-OAEP direct, or HPKE hybrid)**: With RSA-OAEP, the sender encrypts a short payload directly under the recipient's public key. HPKE (RFC 9180) instead uses the public key only to encapsulate a KEM-derived shared secret; a KDF expands that secret into keys for an AEAD cipher, which performs the actual (arbitrary-length) encryption. Either way, only the recipient's private key can recover the secret.
 2. **Digital Signatures (Ed25519 / RSA-PSS)**: The sender computes a signature over data using their private key; anyone holding the sender's public key can verify origin and integrity.
 3. **Key Agreement (ECDHE / X25519)**: Peer endpoints combine their own private keys with each other's public keys to derive a matching shared secret.
 
@@ -30,19 +30,19 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric ciphers g
 
 | Objective | Public Key Action | Private Key Action | Standard Protocol | Primary Output |
 |---|---|---|---|---|
-| **Confidentiality** (HPKE) | Encrypts payload / KEM encapsulation | Decrypts payload / KEM decapsulation | RFC 9180 (HPKE), RSA-OAEP | Unreadable ciphertext readable only by private key holder |
+| **Confidentiality** (RSA-OAEP direct; HPKE hybrid) | Encrypts payload (RSA-OAEP) / KEM encapsulation (HPKE) | Decrypts payload (RSA-OAEP) / KEM decapsulation (HPKE) | RSA-OAEP; RFC 9180 HPKE = KEM + KDF + AEAD | Unreadable ciphertext; in HPKE the public key only wraps a symmetric key, and an AEAD cipher encrypts the actual payload |
 | **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Non-repudiable proof of private key possession |
 | **Key Agreement** | Exchanged with peer | Combined with peer public key | Ephemeral ECDH (X25519 / NIST P-256) | Shared symmetric secret key for bulk AEAD encryption |
 
 ## Can I Use a Private Key to Encrypt Data?
 
-**No.** It is mathematically impossible to use a private key to encrypt data under any asymmetric algorithm.
+**Not in any standardized or secure sense.** No conforming asymmetric encryption scheme — RSA-OAEP, HPKE, ECIES — defines "encrypt with the private key" as an operation, and every mainstream crypto library refuses to run one.
 
-A **Private Key is used for Digital Signing** (and for decrypting incoming data locked under its matching public key). Describing a digital signature as *"encrypting data with a private key"* is cryptographically inaccurate for three technical reasons:
+A **Private Key is used for Digital Signing** (and for decrypting incoming data locked under its matching public key). The popular shorthand *"signing is encrypting with the private key"* is an understandable simplification: for raw/textbook RSA specifically, generating a signature (`m^d mod n`) and decrypting ciphertext (`c^d mod n`) really are the same modular-exponentiation primitive with the key roles swapped — PKCS#1 / RFC 8017 names these RSASP1 and RSADP, and they're defined identically. But treating a signature as "ciphertext" is still inaccurate for three reasons:
 
 1. **Signatures Leave Plaintext Intact**: Digital signing computes a separate signature tag file (*`payload.sig`*) over a message digest while leaving the original payload file (*`payload.txt`*) completely unencrypted and readable in cleartext.
-2. **Signature Algorithms Do Not Possess Encryption Functions**: Signature algorithms (*Ed25519, ECDSA, RSA-PSS, FIPS 204 ML-DSA*) operate strictly on mathematical signature equations. They do not contain encryption functions and cannot transform plaintext into ciphertext.
-3. **Asymmetric Encryption Standards Enforce Fixed Key Roles**: Asymmetric encryption standards (*RSA-OAEP, HPKE RFC 9180*) define encryption as locking data using a recipient's Public Key. Standardized padding routines (*RSA-OAEP*) cannot execute using a private key, and decryption APIs explicitly reject public keys.
+2. **Standardized Padding Differs and Isn't Interchangeable**: RSA-OAEP (encryption) and RSA-PSS / PKCS#1v1.5 (signing) wrap that shared modular-exponentiation primitive in different, non-interchangeable padding schemes. A valid signature is not a valid OAEP ciphertext, and OAEP padding cannot be produced or verified with a private key.
+3. **Most Modern Signature Schemes Have No Encryption Primitive at All**: Ed25519, ECDSA, and FIPS 204 ML-DSA are not built from an invertible trapdoor function the way RSA is — there is no "decrypt" operation that recovers anything from one of their signatures, so the RSA-specific shorthand doesn't generalize to them.
 
 ### Client-Side Executable RSA Asymmetric Encryption & Digital Signature Playground
 
@@ -167,10 +167,10 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         ["encrypt", "decrypt"]
       );
 
-      // 2. RSASSA-PKCS1-v1_5 Keys for Signature
+      // 2. RSA-PSS Keys for Signature
       signKeyPair = await window.crypto.subtle.generateKey(
         {
-          name: "RSASSA-PKCS1-v1_5",
+          name: "RSA-PSS",
           modulusLength: 2048,
           publicExponent: new Uint8Array([1, 0, 1]),
           hash: "SHA-256"
@@ -297,7 +297,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       const plainBytes = encoder.encode(textVal);
 
       const sigBuffer = await window.crypto.subtle.sign(
-        { name: "RSASSA-PKCS1-v1_5" },
+        { name: "RSA-PSS", saltLength: 32 },
         signKeyPair.privateKey,
         plainBytes
       );
@@ -319,7 +319,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
         <div class="ecb-block-item target-block-decrypted">
           <div class="block-meta">
-            <span class="block-num">RSASSA-PKCS1-v1_5 Digital Signature Tag (${currentSignatureBytes.length} Bytes)</span>
+            <span class="block-num">RSA-PSS Digital Signature Tag (${currentSignatureBytes.length} Bytes)</span>
             <span class="block-plain-preview">Signed via Private Key</span>
           </div>
           <div class="block-hex-val" style="word-break: break-all; font-size: 0.75rem;">
@@ -346,7 +346,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       const plainBytes = encoder.encode(textVal);
 
       const isValid = await window.crypto.subtle.verify(
-        { name: "RSASSA-PKCS1-v1_5" },
+        { name: "RSA-PSS", saltLength: 32 },
         signKeyPair.publicKey,
         currentSignatureBytes,
         plainBytes
@@ -427,7 +427,7 @@ Specified in **[RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)**, **Ed25519**
   <div>
     <strong>Asymmetric Cryptography Summary</strong>
     <ul>
-      <li><strong>Private Keys Cannot Encrypt Data</strong>: Private keys are used for Digital Signing. Asymmetric encryption locks data under a recipient's Public Key (HPKE / RSA-OAEP).</li>
+      <li><strong>Private Keys Aren't Used to Encrypt Data</strong>: Standardized asymmetric encryption (HPKE, RSA-OAEP) always locks data under a recipient's Public Key — private keys are used for Digital Signing and for decryption, not encryption.</li>
       <li><strong>RSA vs. ECC Efficiency</strong>: 256-bit Elliptic Curve keys (Curve25519 / P-256) provide equivalent security to 3072-bit RSA with 12× smaller key sizes.</li>
       <li><strong>HPKE (RFC 9180)</strong>: Standardized hybrid public-key encryption API combining KEM key exchange, HKDF expansion, and AEAD encryption.</li>
     </ul>

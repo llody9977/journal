@@ -1,15 +1,15 @@
 ---
 title: Hash Collisions & Length-Extension Attacks
-description: Executable cryptanalytic demonstrations of MD5 and SHA-1 collision pairs and a complete Python length-extension attack against naive hash MACs.
+description: Executable cryptanalytic demonstrations of MD5 and SHA-1 collision pairs and a complete JavaScript length-extension attack against naive hash MACs.
 permalink: /topics/hash-collisions-length-extension/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
 
 # Hash Collisions & Length-Extension Attacks
 
-<p class="lede">Evaluating cryptographic hash integrity requires distinguishing between theoretical weakness and practical cryptanalytic failure. This page provides executable cryptanalytic proofs: verifying real MD5 and SHA-1 collision pairs where distinct inputs yield identical digests, and executing a complete Python length-extension attack that forges valid authentication tags against naive hash constructions.</p>
+<p class="lede">Evaluating cryptographic hash integrity requires distinguishing between theoretical weakness and practical cryptanalytic failure. This page provides executable cryptanalytic proofs: verifying real MD5 and SHA-1 collision pairs where distinct inputs yield identical digests, and executing a complete JavaScript length-extension attack that forges valid authentication tags against naive hash constructions.</p>
 
 ## 1. MD5 Hash Collisions: Two Distinct Files, Identical Digest
 
@@ -654,7 +654,7 @@ Deploying **HMAC-SHA256** ([FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/fi
 
 **HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))**
 
-Furthermore, modern sponge-based hash functions (**SHA-3 / FIPS 202**, **KMAC / SP 800-185**, and **BLAKE3**) squeeze outputs through internal capacity states, rendering them inherently immune to length extension by design.
+Furthermore, modern sponge-based hash functions (**SHA-3** / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final), **KMAC** / [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final), and **BLAKE3**) squeeze outputs through internal capacity states, rendering them inherently immune to length extension by design.
 
 ## What I Need to Remember
 
@@ -663,7 +663,7 @@ Furthermore, modern sponge-based hash functions (**SHA-3 / FIPS 202**, **KMAC / 
   <div>
     <strong>Hash Attacks Summary</strong>
     <ul>
-      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance. Never use MD5 or SHA-1 for digital signatures or security integrity.</li>
+      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance and are prohibited for digital signatures and other collision-resistance-dependent uses (NIST SP 800-131A Rev. 2). This does not ban SHA-1 outright — HMAC-SHA1 remains acceptable in many protocols because HMAC's security does not rely on collision resistance the same way, and non-security uses (e.g., git's historical object hashing) are unaffected.</li>
       <li><strong>Length-Extension Vulnerability</strong>: Naive MACs like <code>H(key \|\| message)</code> allow attackers to append data and forge valid tags without learning the key.</li>
       <li><strong>Mitigation Standard</strong>: Deploy HMAC-SHA256, KMAC, or SHA-3 to guarantee resistance against length extension.</li>
     </ul>
@@ -674,3 +674,8 @@ Furthermore, modern sponge-based hash functions (**SHA-3 / FIPS 202**, **KMAC / 
 
 - **NIST SP 800-131A Rev. 2**: *Transitioning the Use of Cryptographic Algorithms and Key Lengths* — [NIST CSRC SP 800-131A](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final)
 - **SHAttered Attack**: *First Practical SHA-1 Collision Announcement* — [SHAttered Google/CWI Paper](https://shattered.io/)
+- **RFC 1321**: *The MD5 Message-Digest Algorithm* — [IETF RFC 1321](https://www.rfc-editor.org/rfc/rfc1321)
+- **FIPS 180-4**: *Secure Hash Standard (SHS)* — [NIST CSRC FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)
+- **FIPS 198-1**: *The Keyed-Hash Message Authentication Code (HMAC)* — [NIST CSRC FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)
+- **FIPS 202**: *SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions* — [NIST CSRC FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)
+- **SP 800-185**: *SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash, and ParallelHash* — [NIST CSRC SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)

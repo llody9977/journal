@@ -2,14 +2,14 @@
 title: Blockchain & Distributed Ledger Cryptography
 description: Cryptographic primitives in distributed ledgers, hash-linked block headers, Merkle trees, secp256k1 ECDSA, Schnorr signatures (BIP 340), BLS aggregation, and Zero-Knowledge Proofs (zk-SNARKs).
 permalink: /topics/blockchain-cryptography/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Distributed Systems</span>
 
 # Blockchain & Distributed Ledger Cryptography
 
-<p class="lede">Distributed ledgers eliminate central trust authorities by combining cryptographic primitives into immutability and authorization engines. Blockchains coordinate hash-linked data chains, Merkle-tree transaction inclusion proofs, public-key digital signatures (secp256k1 / Ed25519), BLS signature aggregation, and Zero-Knowledge Proofs (ZK-SNARKs) to enforce consensus across untrusted P2P nodes.</p>
+<p class="lede">Distributed ledgers don't eliminate trust — they redistribute it, replacing a single central authority with a different set of trust-minimized assumptions: honest-majority hashpower or validator stake, correctly implemented client software, and the security of the underlying cryptography. Blockchains coordinate hash-linked data chains, Merkle-tree transaction inclusion proofs, public-key digital signatures (secp256k1 / Ed25519), BLS signature aggregation, and Zero-Knowledge Proofs (ZK-SNARKs) into tamper-evidence and authorization engines that enforce consensus across P2P nodes without a central operator.</p>
 
 ## Cryptographic Layering in Blockchains
 
@@ -17,16 +17,18 @@ Distributed ledgers compose cryptographic primitives across four architectural l
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/blockchain-cryptography-layers.svg' | relative_url }}" alt="Blockchain cryptography layers: Hash chains, Merkle trees, digital signatures, and zero-knowledge proofs.">
-  <p class="diagram-caption">Blockchain Cryptography Layering: hash chains enforce immutability; Merkle trees enable light client proofs; signatures authorize state transitions</p>
+  <p class="diagram-caption">Blockchain Cryptography Layering: hash chains make tampering evident; Merkle trees enable light client proofs; signatures authorize state transitions</p>
 </div>
 
-## 1. Hash-Linked Chains: Immutability Enforcers
+## 1. Hash-Linked Chains: Tamper-Evident Ordering
 
 Blocks are linked together sequentially by embedding the 256-bit cryptographic hash digest of block **n-1** into the header of block **n**:
 
 <b>Block_Header<sub>n</sub> = H(Block_Header<sub>n-1</sub> ∥ Merkle_Root<sub>n</sub> ∥ Timestamp ∥ Nonce)</b>
 
 Altering a single transaction in block **n-10** alters <b>Block_Header<sub>n-10</sub></b>, invalidating the hash pointer stored in block **n-9** and breaking the hash chain up to the current tip.
+
+This makes silent tampering computationally impractical to conceal, but "immutability" here is probabilistic, not absolute: an attacker who controls a majority of hashpower (PoW) or bonded stake (PoS) can rebuild an alternative chain from that point forward — a 51% / majority attack — and communities have, in extreme cases, chosen to fork away from an already-published chain (e.g., Ethereum's 2016 DAO fork). Deeper confirmation depth raises the computational and economic cost of rewriting history; it does not make rewriting mathematically impossible.
 
 ## 2. Merkle Trees & Light Client Proofs (SPV)
 
@@ -41,10 +43,11 @@ Light clients (SPV nodes) download 80-byte block headers and verify transaction 
 | Blockchain Network | Signature Scheme | Elliptic Curve / Primitive | Primary Engineering Characteristics |
 |---|---|---|---|
 | **Bitcoin (Legacy)** | **ECDSA** | `secp256k1` | Requires DER encoding; strict deterministic nonce safety (**[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)**). |
-| **Bitcoin (Taproot / BIP 340)** | **Schnorr Signatures** | `secp256k1` | Linearly additive; enables signature aggregation and Taproot MAST privacy ([BIP 340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)). |
-| **Ethereum (Consensus Layer)** | **BLS Signatures** | `BLS12-381` | Supports aggregation of thousands of validator signatures into 1 signature. |
+| **Bitcoin (Taproot / BIP 340)** | **Schnorr Signatures** | `secp256k1` | [BIP 340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) specifies single-signer verification only; its linear algebra is what *enables* separate multi-signature aggregation protocols such as MuSig2 ([BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)), plus Taproot MAST privacy. |
+| **Ethereum (Consensus Layer)** | **BLS Signatures** | `BLS12-381` | Per-slot committee aggregators compress up to hundreds/thousands of validator attestation signatures into a single aggregate signature under Gasper (LMD-GHOST fork choice + Casper FFG finality). |
 | **Ethereum (EVM Execution)** | **ECDSA** | `secp256k1` | Recovers public key from signature via recovery parameter `v in {27, 28}`. |
-| **Solana &amp; Polkadot** | **Ed25519** | `Curve25519` | High-throughput signature verification with deterministic nonces. |
+| **Solana** | **Ed25519** | `Curve25519` | High-throughput signature verification with deterministic nonces. |
+| **Polkadot** | **sr25519** (primary; Ed25519 &amp; ECDSA also supported) | `Ristretto25519` (Curve25519-based) | Schnorr signatures over the Ristretto group (Schnorrkel); used for BABE block-production VRF + signing. GRANDPA finality voting uses a separate key type. |
 
 ## 4. Advanced Cryptography: Zero-Knowledge Proofs (zk-SNARKs / STARKs)
 
@@ -60,9 +63,9 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
   <div>
     <strong>Blockchain Cryptography Summary</strong>
     <ul>
-      <li><strong>Hash Chains &amp; Immutability</strong>: Embedding block header hashes <code>H(Block<sub>n-1</sub>)</code> creates an immutable sequential ledger.</li>
+      <li><strong>Hash Chains &amp; Tamper-Evidence</strong>: Embedding block header hashes <code>H(Block<sub>n-1</sub>)</code> makes silent history-rewriting computationally impractical to conceal — not impossible, since a majority-hashpower/stake attacker or a community hard fork can still alter it.</li>
       <li><strong>Merkle SPV Proofs</strong>: Light clients verify transaction inclusion in <code>O(log₂ N)</code> time without downloading full blocks.</li>
-      <li><strong>Signature Schemes</strong>: Bitcoin uses secp256k1 ECDSA and Schnorr (BIP 340); Ethereum consensus uses BLS12-381 signature aggregation.</li>
+      <li><strong>Signature Schemes</strong>: Bitcoin uses secp256k1 ECDSA and single-signer Schnorr (BIP 340), with aggregation added separately via MuSig2/BIP 327; Ethereum consensus uses BLS12-381 signature aggregation; Polkadot's primary scheme is sr25519, not Ed25519.</li>
     </ul>
   </div>
 </div>
@@ -70,4 +73,5 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
 ## Primary References
 
 - **Bitcoin BIP 340**: *Schnorr Signatures for secp256k1* — [Bitcoin BIP 340 Specification](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
+- **Bitcoin BIP 327**: *MuSig2 for BIP340-compatible Multi-Signatures* — [Bitcoin BIP 327 Specification](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)
 - **BLS Signatures Draft**: *BLS Signatures IETF Draft Standard* — [draft-irtf-cfrg-bls-signature-05](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)

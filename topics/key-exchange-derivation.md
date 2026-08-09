@@ -2,7 +2,7 @@
 title: Key Exchange & Key Derivation (KDF)
 description: Diffie-Hellman key exchange mechanics, Ephemeral ECDH (X25519), Perfect Forward Secrecy (PFS), HKDF extract-and-expand pipeline, and post-quantum KEMs.
 permalink: /topics/key-exchange-derivation/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -83,17 +83,17 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
 |---|---|---|
 | **Impact of Private Key Leak** | Adversary decrypts **ALL recorded historical traffic** encrypted under that server certificate. | Adversary **cannot derive past session keys from the leaked long-term key alone**; recorded sessions remain protected unless the ephemeral key material was independently compromised. |
 | **Key Agreement Mechanics** | RSA Key Transport or Static Diffie-Hellman | Ephemeral Elliptic Curve Diffie-Hellman (**ECDHE / X25519**) |
-| **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Mandatory requirement in **TLS 1.3** and **SSHv2**. |
+| **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Required for every full **TLS 1.3** handshake and mandatory in **SSHv2**. TLS 1.3 PSK-only resumption (without `psk_dhe_ke`) is still permitted and forgoes forward secrecy for that resumed session. |
 
 <div class="security-layer security-layer-protect">
   <div class="security-layer-label">Architectural Roles</div>
   <div>
-    <strong>Server Certificates (Disk) vs. Ephemeral ECDHE Keys (RAM)</strong>
+    <strong>Server Certificate Key (Disk/HSM/KMS) vs. Ephemeral ECDHE Keys (RAM)</strong>
     <p>Understanding key roles resolves common misconceptions between identity authentication and data encryption:</p>
     <ul>
-      <li><strong>Server Certificate Key (Stored on Server Disk)</strong>: Used exclusively for <strong>Identity Authentication</strong> (proving to the browser: <em>"I am really bank.com"</em>). The server uses its private key to <strong>sign</strong> the handshake parameters. It is <strong>never used to encrypt bulk data</strong>.</li>
-      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used exclusively for <strong>Data Confidentiality</strong>. Generated in transient RAM for a single connection session, it calculates the symmetric AES-256 session key (<code>0x8f3a91b2...</code>) and is <strong>purged from RAM</strong> when the session closes.</li>
-      <li><strong>Client Certificates</strong>: In 99% of web browsing, <strong>clients do not have certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to calculate the AES key and encrypt HTTP traffic.</li>
+      <li><strong>Server Certificate Key (Typically on Disk, an HSM, or a KMS)</strong>: Used exclusively for <strong>Identity Authentication</strong> (proving to the browser: <em>"I am really bank.com"</em>). The server uses its private key to <strong>sign</strong> the handshake parameters. It is <strong>never used to encrypt bulk data</strong>.</li>
+      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used exclusively for <strong>Data Confidentiality</strong>. Generated in transient RAM for a single connection session, it calculates the symmetric AES-256 session key (<code>0x8f3a91b2...</code>) and is discarded when the session closes.</li>
+      <li><strong>Client Certificates</strong>: In the vast majority of ordinary web browsing, <strong>clients do not present certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to calculate the AES key and encrypt HTTP traffic.</li>
     </ul>
   </div>
 </div>
@@ -104,7 +104,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
   <div class="demo-header">
     <span class="demo-badge">Interactive Browser Playground</span>
     <h3>Perfect Forward Secrecy (PFS) Simulator</h3>
-    <p>Simulate key transport and key agreement protocols directly in your browser. Establish connections, simulate a server key compromise, and check whether historical session data can be decrypted.</p>
+    <p>Simulate key transport and key agreement protocols directly in your browser. Establish connections, simulate a server key compromise, and check whether historical session data can be decrypted. <em>Simplified for illustration: the "Ephemeral ECDH" mode signs only the server's ephemeral key share against a freshly generated key, not the full handshake transcript against a CA-trusted certificate the way real TLS 1.3 does.</em></p>
   </div>
 
   <div class="demo-body">
@@ -326,7 +326,9 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
           ['deriveBits']
         );
 
-        // 3. Server signs its ephemeral key share with long-term identity key (Transcript Authentication)
+        // 3. Server signs its own ephemeral key share (simplified illustration — real TLS 1.3
+        //    signs the full handshake transcript, and validates against a CA-issued certificate,
+        //    not a freshly generated key as this demo does)
         const serverEphExported = new Uint8Array(await cryptoObj.subtle.exportKey('raw', serverEph.publicKey));
         const handshakeSig = await cryptoObj.subtle.sign(
           { name: 'ECDSA', hash: 'SHA-256' },
@@ -348,7 +350,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
         );
         const hkdfKey = await cryptoObj.subtle.importKey('raw', rawBits, { name: 'HKDF' }, false, ['deriveKey']);
         const derivedKey = await cryptoObj.subtle.deriveKey(
-          { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: new TextEncoder().encode('tls13-derived-key') },
+          { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: new TextEncoder().encode('pfs-demo-session-key') },
           hkdfKey,
           { name: 'AES-GCM', length: 256 },
           false,
@@ -370,7 +372,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
         });
 
         outputArea.innerHTML += log('🔑 [Session 1]: Server generated ephemeral P-256 ECDH keypair in transient RAM.');
-        outputArea.innerHTML += log(`🖊️ [Session 1]: Server signed its ephemeral key share with the long-term ECDSA identity key (transcript authentication) — signature valid: <code>${sigValid}</code>`);
+        outputArea.innerHTML += log(`🖊️ [Session 1]: Server signed its ephemeral key share with the long-term ECDSA identity key (simplified illustration, not full TLS transcript binding) — signature valid: <code>${sigValid}</code>`);
         outputArea.innerHTML += log(`📦 [Session 1]: Ephemeral Client Public Key: <code>P-256 Point</code>`);
         outputArea.innerHTML += log(`🔒 [Session 1]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
         outputArea.innerHTML += log('🧹 [Session 1 END]: Ephemeral key handles released for garbage collection. Note: JavaScript has no guaranteed secure-erase primitive — production TLS stacks explicitly zero this memory instead.');
@@ -455,7 +457,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
         );
         const hkdfKey2 = await cryptoObj.subtle.importKey('raw', rawBits2, { name: 'HKDF' }, false, ['deriveKey']);
         const derivedKey2 = await cryptoObj.subtle.deriveKey(
-          { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: new TextEncoder().encode('tls13-derived-key') },
+          { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: new TextEncoder().encode('pfs-demo-session-key') },
           hkdfKey2,
           { name: 'AES-GCM', length: 256 },
           false,
@@ -475,7 +477,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
           nonce
         });
 
-        outputArea.innerHTML += log(`🖊️ [Session 2]: Server signed its ephemeral key share with the long-term ECDSA identity key (transcript authentication) — signature valid: <code>${sigValid2}</code>`);
+        outputArea.innerHTML += log(`🖊️ [Session 2]: Server signed its ephemeral key share with the long-term ECDSA identity key (simplified illustration, not full TLS transcript binding) — signature valid: <code>${sigValid2}</code>`);
         outputArea.innerHTML += log(`🔒 [Session 2]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
         outputArea.innerHTML += log('🧹 [Session 2 END]: Ephemeral key handles released for garbage collection (no guaranteed secure-erase in JavaScript).');
       }

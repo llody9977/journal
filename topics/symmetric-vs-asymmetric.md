@@ -2,7 +2,7 @@
 title: Symmetric vs Asymmetric Cryptography
 description: Direct comparative decision guide between symmetric and asymmetric cryptography, hybrid encryption architectures (HPKE), and attribution limits.
 permalink: /topics/symmetric-vs-asymmetric/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Decision Guide</span>
@@ -15,9 +15,9 @@ last_verified: 2026-08-08
 
 | Dimension | Symmetric Cryptography | Asymmetric Cryptography | Primary Operational Trade-off |
 |---|---|---|---|
-| **Attribution Capability** | Identifies shared key holder; cannot prove *which* holder created it | Identifies unique private key holder (supports legal non-repudiation) | Symmetric MACs cannot provide non-repudiation against key partners. |
-| **Computational Throughput** | Extremely fast (Gigabytes/sec via hardware AES-NI) | Computationally expensive (~1,000× slower than symmetric) | Use asymmetric crypto to exchange keys, then symmetric ciphers for bulk data. |
-| **Data Size Limits** | Arbitrary message length | Restricted payload size (e.g., RSA-3072 encrypts &le; 245 bytes) | Asymmetric ciphers wrap symmetric keys rather than encrypting bulk files. |
+| **Attribution Capability** | Identifies shared key holder; cannot prove *which* holder created it | Identifies unique private key holder (technical non-repudiation; *legal* non-repudiation also depends on jurisdiction, evidentiary standards, and key-custody proof, e.g., under ESIGN/UETA or eIDAS) | Symmetric MACs cannot provide non-repudiation against key partners. |
+| **Computational Throughput** | Extremely fast (Gigabytes/sec via hardware AES-NI) | Computationally expensive (roughly 100&ndash;1,000&times; slower than symmetric, varying by algorithm, key size, and hardware acceleration) | Use asymmetric crypto to exchange keys, then symmetric ciphers for bulk data. |
+| **Data Size Limits** | Arbitrary message length | Restricted payload size (e.g., RSA-2048 with OAEP-SHA256 encrypts &le; 190 bytes: modulus_bytes &minus; 2&times;hashLen &minus; 2) | Asymmetric ciphers wrap symmetric keys rather than encrypting bulk files. |
 | **Key Architecture** | Single shared secret key (**K**) | Linked Key Pair: Public Key (<b>K<sub>pub</sub></b>) + Private Key (<b>K<sub>priv</sub></b>) | Symmetric keys require secure out-of-band distribution or key agreement. |
 | **Key Distribution Requirement** | Requires pre-shared secret key over secure channel | Public key can be distributed freely; binding requires authentication (PKI) | Public keys eliminate shared secret transport but require X.509 binding. |
 | **Post-Quantum Resilience** | **AES-256** retains 128-bit security under Grover's Algorithm | **RSA and ECC** are completely broken by Shor's Algorithm | Quantum computers break classical asymmetric keys; symmetric keys need doubling to 256 bits. |
@@ -62,7 +62,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
   <div>
     <strong>Symmetric vs. Asymmetric Summary</strong>
     <ul>
-      <li><strong>Performance Trade-off</strong>: Symmetric encryption (AES-256) is ~1000× faster than asymmetric algorithms (RSA/ECC) and processes arbitrary payload sizes.</li>
+      <li><strong>Performance Trade-off</strong>: Symmetric encryption (AES-256) is on the order of 100&ndash;1,000&times; faster than asymmetric algorithms (RSA/ECC), depending on algorithm, key size, and hardware acceleration (e.g., AES-NI), and processes arbitrary payload sizes.</li>
       <li><strong>Key Distribution Problem</strong>: Asymmetric cryptography solves secret key distribution without requiring an out-of-band secret channel.</li>
       <li><strong>Hybrid Architecture</strong>: Production systems use asymmetric keys to negotiate or wrap a single-use symmetric DEK, which encrypts bulk data.</li>
     </ul>

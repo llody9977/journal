@@ -2,14 +2,14 @@
 title: What Is Cryptography?
 description: Architectural overview of cryptographic primitives, core security properties (Confidentiality, Integrity, Authenticity, Non-Repudiation), and protocol composition.
 permalink: /topics/cryptography-overview/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # What Is Cryptography?
 
-<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit, at rest, and in execution over untrusted channels. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
+<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit, at rest, and in use over untrusted channels. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
 
 ## The Open Network Threat Problem
 
@@ -32,15 +32,15 @@ Cryptography provides mathematical primitives designed to withstand these attack
 | Property | Core Operational Goal | Primary Cryptographic Primitive | Failure Scenario Without Control |
 |---|---|---|---|
 | **Authenticity** | Verifies that data originated from an entity controlling a specific key | **Digital Signatures** (*Ed25519, FIPS 204 ML-DSA*) &amp; **Public Key Infrastructure (PKI)** | Man-in-the-middle impersonation and payload spoofing |
-| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-128-GCM / AES-256-GCM, ChaCha20-Poly1305*) &amp; **Hybrid KEMs** (*FIPS 203 ML-KEM, HPKE*) | Cleartext exfiltration of PII, passwords, or financial transactions |
+| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-128-GCM / AES-256-GCM, ChaCha20-Poly1305*) &amp; **Key Encapsulation Mechanisms (KEMs)** (*FIPS 203 ML-KEM, hybrid X25519MLKEM768, HPKE*) | Cleartext exfiltration of PII, passwords, or financial transactions |
 | **Integrity** | Ensures payload modification or bit-rot is detected and rejected | **Cryptographic Hashes** (*SHA-256, SHA3-256*) &amp; **MACs** (*HMAC-SHA256*) | Unauthorized alteration of database fields or transaction amounts |
-| **Non-Repudiation** | Generates unforgeable cryptographic evidence tying an action to a private key | **Asymmetric Digital Signatures** (*Ed25519, FIPS 205 SLH-DSA*) with timestamping and key custody logs | Disavowal of financial commitments or administrative actions |
+| **Non-Repudiation** | Generates cryptographic evidence, computationally unforgeable under the signature scheme, tying an action to a private key—supporting but not by itself constituting legal non-repudiation | **Asymmetric Digital Signatures** (*Ed25519, FIPS 205 SLH-DSA*) with timestamping and key custody logs | Disavowal of financial commitments or administrative actions |
 
 ## Real-World Protocol Composition: How TLS 1.3 Combines Primitives
 
 Production security protocols rarely rely on a single cryptographic primitive. Instead, they combine primitives into a cohesive architecture.
 
-For example, **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) coordinates primitives across four phases:
+For example, **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) coordinates primitives across three phases:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/tls-cryptography-layers.svg' | relative_url }}" alt="TLS cryptographic layers for server authentication, shared-secret establishment, and authenticated encryption of application data.">
@@ -60,7 +60,7 @@ All cryptographic security ultimately depends on unpredictable randomness. Keys,
 | Generator Class | Internal Mechanics | Security Properties | Target Application Use Case |
 |---|---|---|---|
 | **Non-Cryptographic PRNG** | Fast deterministic algorithms (*Linear Congruential Generators, Mersenne Twister*). | **INSECURE**: Observing a few outputs exposes internal state, allowing attackers to predict all future values. | Game physics, Monte Carlo simulations, UI shuffling. (*Do NOT use for security*). |
-| **CSPRNG** (Cryptographically Secure PRNG) | OS entropy pool expanded via SHA-256 / AES-CTR-DRBG ([NIST SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)). | **SECURE**: Satisfies **Next-Bit Unpredictability** and **Backtracking Resistance** (state compromise cannot reveal past keys). | Generating AES keys, RSA/ECC key pairs, IVs, salts, and API tokens. |
+| **CSPRNG** (Cryptographically Secure PRNG) | OS entropy pool expanded via SHA-256 / AES-CTR-DRBG ([NIST SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)). | **SECURE when properly seeded**: Satisfies **Next-Bit Unpredictability** and **Backtracking Resistance** (state compromise cannot reveal past keys), provided the entropy source supplies sufficient min-entropy at initialization. | Generating AES keys, RSA/ECC key pairs, IVs, salts, and API tokens. |
 
 <div class="security-layer security-layer-direct">
   <div class="security-layer-label">Randomness Pitfalls &amp; Language API Guide</div>

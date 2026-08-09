@@ -2,7 +2,7 @@
 title: "Symmetric Mode Attacks: ECB, CBC & CTR"
 description: Practical cryptanalysis and runnable CLI demonstrations of ECB pattern leakage, CBC bit-flipping malleability, and CTR two-time pad nonce reuse attacks.
 permalink: /topics/symmetric-mode-attacks/
-last_verified: 2026-08-08
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
@@ -16,7 +16,7 @@ last_verified: 2026-08-08
 | Cipher Mode | Vulnerability / Failure Mode | Root Cause | Impact | Defensive Countermeasure |
 |---|---|---|---|---|
 | **AES-CBC** | Bit-Flipping Malleability &amp; Padding Oracles | Ciphertext block **N** XORed into plaintext block **N+1** during decryption | Attacker flips arbitrary bits in block **N+1** without knowing the key | **Use AEAD (AES-GCM)** or apply Encrypt-then-MAC (HMAC-SHA256). |
-| **AES-CTR** | Two-Time Pad Keystream Reuse | Identical nonce/counter generates duplicate keystream | **C<sub>1</sub> &oplus; C<sub>2</sub> = P<sub>1</sub> &oplus; P<sub>2</sub>**; recovers plaintext without knowing key | **Never Reuse Nonces**; deploy CSPRNG 96-bit nonces or **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. |
+| **AES-CTR** | Two-Time Pad Keystream Reuse | Same counter value reused under the same key generates duplicate keystream | **C<sub>1</sub> &oplus; C<sub>2</sub> = P<sub>1</sub> &oplus; P<sub>2</sub>**; recovers plaintext without knowing key | **Never Reuse a (Key, Nonce) Pair**; use a non-repeating 96-bit nonce per key or **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. |
 | **AES-ECB** | Structural Pattern Leakage | Independent block encryption (**C<sub>i</sub> = E<sub>K</sub>(P<sub>i</sub>)**) | Plaintext patterns and duplicate blocks remain visible in ciphertext | **Do Not Use ECB**; deploy AES-GCM or ChaCha20-Poly1305. |
 
 ## 1. ECB Mode: Structural Pattern Leakage
@@ -88,6 +88,15 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   function processKey(inputStr) {
     const trimmed = inputStr.trim();
     if (/^[0-9a-fA-F]{32}$/.test(trimmed)) {
@@ -105,7 +114,7 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
       for (let i = 0; i < 16; i++) {
         keyBytes[i] = i < rawBytes.length ? rawBytes[i] : 0;
       }
-      keyInfo.innerHTML = `<span style="color: #0369a1; font-weight: 600;">ℹ️ Passphrase "${trimmed}" converted &amp; zero-padded to 16-byte key: <code>${bytesToHex(keyBytes)}</code></span>`;
+      keyInfo.innerHTML = `<span style="color: #0369a1; font-weight: 600;">ℹ️ Passphrase "${escapeHtml(trimmed)}" converted &amp; zero-padded to 16-byte key: <code>${bytesToHex(keyBytes)}</code></span>`;
     }
     return keyBytes;
   }
@@ -185,7 +194,7 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
         <div class="ecb-block-item ${isRepeat ? 'is-repeat-block' : ''}">
           <div class="block-meta">
             <span class="block-num">Block ${idx + 1} (Bytes ${idx * 16}–${idx * 16 + 15})</span>
-            <span class="block-plain-preview">Plaintext: "<code>${plainTextSnippet}</code>"</span>
+            <span class="block-plain-preview">Plaintext: "<code>${escapeHtml(plainTextSnippet)}</code>"</span>
           </div>
           <div class="block-hex-val">
             <code>${hex}</code>
@@ -346,6 +355,15 @@ Once a generated ciphertext block matches a block in the stolen target file, the
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   async function encryptOracleBlock(plainText) {
     const keyBytes = hexToBytes(oracleKeyHex);
     const encoder = new TextEncoder();
@@ -387,7 +405,7 @@ Once a generated ciphertext block matches a block in the stolen target file, the
         <div class="block-hex-val">
           <code>Ciphertext: ${tb.hex}</code>
           ${isDecrypted 
-            ? `<span class="matched-tag">Plaintext: "<strong>${matchPlain}</strong>"</span>` 
+            ? `<span class="matched-tag">Plaintext: "<strong>${escapeHtml(matchPlain)}</strong>"</span>` 
             : '<span class="unmatched-tag">Query Oracle to Decrypt</span>'}
         </div>
       </div>`;
@@ -413,7 +431,7 @@ Once a generated ciphertext block matches a block in the stolen target file, the
 
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><code>${res.plainStr}</code></td>
+      <td><code>${escapeHtml(res.plainStr)}</code></td>
       <td><code>${res.hex}</code></td>
       <td>${matchedTarget.length > 0 
         ? `<span class="matched-tag">🎯 MATCHED TARGET BLOCK ${matchedTarget.map(t => t.num).join(', ')}</span>` 
@@ -431,7 +449,7 @@ Once a generated ciphertext block matches a block in the stolen target file, the
     dictionaryMap[res.hex] = res.plainStr;
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><code>${res.plainStr}</code></td>
+      <td><code>${escapeHtml(res.plainStr)}</code></td>
       <td><code>${res.hex}</code></td>
       <td><span class="matched-tag">🎯 MATCHED TARGET BLOCK 1</span></td>
     `;
@@ -658,6 +676,19 @@ Because **C<sub>i-1</sub>** is XORed directly into decrypted plaintext **P<sub>i
 
 Because unauthenticated CBC mode lacks an authentication tag (AEAD), decryption succeeds without raising an integrity exception, granting unauthorized administrative privileges.
 
+### Padding Oracle Attack Mechanics (Vaudenay's Attack)
+
+A **padding oracle** is any endpoint that decrypts CBC ciphertext and leaks — via a distinct error message, HTTP status code, or timing difference — whether the resulting **PKCS#7 padding** was valid. PKCS#7 padding fills the final block so its last **n** bytes each equal the value **n** (one padding byte of `0x01`, or two bytes of `0x02 0x02`, and so on).
+
+Because decryption computes **P<sub>i</sub> = D<sub>K</sub>(C<sub>i</sub>) &oplus; C<sub>i-1</sub>**, an attacker who controls **C<sub>i-1</sub>** controls **P<sub>i</sub>** byte-for-byte without ever learning **K**. The attack recovers a target block **C<sub>i</sub>** working backward from its last byte:
+
+1. Replace the last byte of **C<sub>i-1</sub>** with each of the 256 possible values and resend the (unmodified) **C<sub>i</sub>** to the oracle.
+2. The guess that yields a **valid-padding** response reveals the decryption engine's intermediate value: **I<sub>i</sub>[15] = guessed_byte &oplus; 0x01** (a single `0x01` pad byte is the simplest valid case).
+3. XOR **I<sub>i</sub>[15]** with the *original* **C<sub>i-1</sub>[15]** to recover the real plaintext byte **P<sub>i</sub>[15]**.
+4. Fix byte 15 so it forces padding `0x02 0x02`, then brute-force byte 14 the same way, and continue leftward through the block.
+
+Each byte costs at most 256 oracle queries, so a full 16-byte block falls in roughly 4,096 requests — without ever touching **K**. This is Vaudenay's 2002 CBC-padding attack, later automated against real deployments by tools such as **PadBuster**. The fix is to never let padding validity leak as a distinguishable signal: return a generic error for both MAC and padding failures, keep error handling constant-time, or (preferably) verify a MAC over the ciphertext *before* attempting decryption (Encrypt-then-MAC), so a tampered ciphertext never reaches the padding check at all.
+
 ## 3. CTR Mode: Nonce Reuse Two-Time Pad Attack
 
 In **CTR (Counter)** mode, AES operates as a stream cipher, encrypting a counter value to generate a pseudo-random keystream **KS**:
@@ -677,7 +708,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   <div class="demo-header">
     <span class="demo-badge">Interactive CTR Playground</span>
     <h3>AES-128-CTR Nonce Reuse Two-Time Pad Playground</h3>
-    <p>Demonstrate how encrypting any two arbitrary messages with the same Nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2). Type any text in Message 1 and Message 2, then guess a snippet of either message to recover the other!</p>
+    <p>Demonstrate how encrypting any two arbitrary messages under the same key and nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2). Type any text in Message 1 and Message 2, then guess a snippet of either message to recover the other!</p>
   </div>
 
   <div class="demo-body">
@@ -743,6 +774,15 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
   function bytesToHex(bytes) {
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   async function runCTRReuseAttack() {
@@ -821,7 +861,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
           <span class="block-plain-preview">${isTargetFound ? '✔ RECOVERED WITHOUT KEY' : 'Enter Snippet'}</span>
         </div>
         <div class="block-hex-val">
-          <code>"<strong>${recoveredStr}</strong>"</code>
+          <code>"<strong>${escapeHtml(recoveredStr)}</strong>"</code>
           ${isTargetFound ? `<span class="matched-tag">🎯 ${targetLabel} RECOVERED (${recoveredBytes.length} Bytes)</span>` : ''}
         </div>
       </div>`;
@@ -834,7 +874,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
           <div class="security-layer-label">Keystream Reuse Vulnerability Verified</div>
           <div>
             <strong>${targetLabel} Plaintext Extracted!</strong>
-            <p style="margin-bottom:0;">Because the server reused the AES-CTR nonce, the keystream cancelled out completely. Entering guessed snippet <code>"${guessStr}"</code> instantly extracted ${targetLabel} bytes <code>"${recoveredStr}"</code> without knowing secret key K.</p>
+            <p style="margin-bottom:0;">Because the server reused the same AES-CTR key and nonce, the keystream cancelled out completely. Entering guessed snippet <code>"${escapeHtml(guessStr)}"</code> instantly extracted ${targetLabel} bytes <code>"${escapeHtml(recoveredStr)}"</code> without knowing secret key K.</p>
           </div>
         </div>`;
       }
@@ -866,7 +906,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
     <ul>
       <li><strong>ECB Block Leakage</strong>: Identical plaintext blocks produce identical ciphertext blocks. Never use ECB for multi-block payloads.</li>
       <li><strong>CBC Bit-Flipping</strong>: Modifying ciphertext block <em>C₁</em> flips corresponding bits in decrypted plaintext block <em>P₂</em>. Always enforce AEAD or HMAC.</li>
-      <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em>, allowing adversaries to recover cleartext payloads.</li>
+      <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce under the same key exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em>, allowing adversaries to recover cleartext payloads.</li>
     </ul>
   </div>
 </div>
@@ -875,3 +915,4 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
 - **NIST SP 800-38A**: *Recommendation for Block Cipher Modes of Operation* — [NIST CSRC SP 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
 - **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [IETF RFC 8452](https://www.rfc-editor.org/rfc/rfc8452)
+- **OWASP WSTG**: *Testing for Padding Oracle* (Vaudenay's CBC padding attack) — [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/02-Testing_for_Padding_Oracle)
