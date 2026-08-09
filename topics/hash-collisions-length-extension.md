@@ -89,7 +89,7 @@ var SparkMD5 = (function(undefined){"use strict";var add32=function(a,b){return 
 
   async function verifyMD5CollisionPair() {
     try {
-      outputAreaMD5.textContent = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">&#8987; Hashing GIF files...</div>';
+      outputAreaMD5.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">&#8987; Hashing GIF files...</div>';
       let b1, b2;
       try {
         const r1 = await fetch(sample1Url);
@@ -155,7 +155,7 @@ var SparkMD5 = (function(undefined){"use strict";var add32=function(a,b){return 
 
       outputAreaMD5.innerHTML = html;
     } catch (err) {
-      outputAreaMD5.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
+      outputAreaMD5.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
     }
   }
 
@@ -247,7 +247,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
 
   async function verifySHA1CollisionPair() {
     try {
-      outputAreaSHA1.textContent = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">&#8987; Hashing PDF files via Web Crypto API...</div>';
+      outputAreaSHA1.innerHTML = '<div style="color: var(--amber); font-weight: 600; padding: 0.5rem;">&#8987; Hashing PDF files via Web Crypto API...</div>';
       let b1, b2;
       try {
         const r1 = await fetch(pdf1Url);
@@ -313,7 +313,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
 
       outputAreaSHA1.innerHTML = html;
     } catch (err) {
-      outputAreaSHA1.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
+      outputAreaSHA1.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
     }
   }
 
@@ -635,7 +635,7 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
 
       outputArea.innerHTML = html;
     } catch (err) {
-      outputArea.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Execution Error: ${err.message || err}</div>`;
+      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Execution Error: ${err.message || err}</div>`;
     }
   }
 
