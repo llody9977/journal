@@ -13,7 +13,7 @@ last_verified: 2026-08-09
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/risk-fundamentals-engine.svg' | relative_url }}" alt="Threats, Vulnerabilities & Risk Engine diagram showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.">
-  <p class="diagram-caption">Threats, Vulnerabilities &amp; Risk Engine: Threat Scenario &amp; CVSS/EPSS Evaluation → Risk Treatment Options (Avoid, Reduce, Transfer, Accept) → Residual Risk Governance (NIST SP 800-30 / SP 800-39)</p>
+  <p class="diagram-caption">Threats, Vulnerabilities &amp; Risk Engine: Threat Scenario &amp; CVSS/EPSS Evaluation → Risk Treatment Options (Avoid, Mitigate, Share/Transfer, Accept — Share and Transfer are grouped here only for compact presentation) → Residual Risk Governance (NIST SP 800-30 / SP 800-39)</p>
 </div>
 
 ## The NIST SP 800-30 & SP 800-39 Risk Taxonomy
@@ -58,14 +58,16 @@ Determining whether a vulnerability creates actionable risk requires conducting 
 
 ## Composite Vulnerability Risk Scoring Models & Standards
 
-Relying solely on CVSS severity leads to patch fatigue. Modern security standards combine **CVSS**, **EPSS**, **CISA KEV**, **Reachability**, and **Asset Criticality** into multi-parameter decision models:
+Relying solely on CVSS severity leads to patch fatigue. Modern vulnerability-management programs commonly combine **CVSS**, **EPSS**, **CISA KEV**, **Reachability**, and **Asset Criticality** into multi-parameter decision models—this is common practice, not a single mandated standard:
 
 | Composite Scoring Framework | Governing Body / Origin | Core Decision Input Vectors | Actionable Output &amp; Remediation SLA |
 |---|---|---|---|
 | **CISA &amp; CMU SSVC (Stakeholder-Specific Vulnerability Categorization)** | Carnegie Mellon University SEI &amp; CISA (**[CISA SSVC Guide](https://www.cisa.gov/stakeholder-specific-vulnerability-categorization-ssvc)**). | Decision tree evaluating **Exploitation** (*KEV/EPSS*), **Exposure** (*Reachability*), **Automatable** (*Wormable*), and **Mission &amp; Well-Being Impact**. | Decision Categories: **Track** (De-prioritized), **Track\***, **Attend**, or **Act**. SSVC's own documentation does not attach a fixed 24–72 hour SLA to "Act"—remediation timing is set by the adopting organization's own policy on top of the SSVC decision. |
-| **CVSS v4.0 BTE (Base + Threat + Environmental)** | FIRST.org (**[CVSS v4.0 Spec](https://www.first.org/cvss/v4.0/specification-document)**). | Combines Base Flaw Severity + the **Threat metric group** (CVSS v4.0 defines a single Threat metric, **Exploit Maturity (E)**; EPSS and CISA KEV are external threat-intelligence sources that can *inform* how an assessor sets E, but are not themselves CVSS metrics) + **Environmental Metrics** (*Modified reachability &amp; mTLS controls*). | Composite score (0.0 to 10.0) reflecting real-world environment risk rather than theoretical severity. |
+| **CVSS v4.0 BTE (Base + Threat + Environmental)** | FIRST.org (**[CVSS v4.0 Spec](https://www.first.org/cvss/v4.0/specification-document)**). | Combines Base Flaw Severity + the **Threat metric group** (CVSS v4.0 defines a single Threat metric, **Exploit Maturity (E)**; EPSS and CISA KEV are external threat-intelligence sources that can *inform* how an assessor sets E, but are not themselves CVSS metrics) + the **Environmental metric group** (Base metrics re-scored for the local environment, plus Confidentiality/Integrity/Availability Requirements; a compensating control such as mTLS can *inform* how an assessor re-scores a Modified metric, but "mTLS" is not itself a CVSS metric). | Composite score (0.0 to 10.0) reflecting real-world environment risk rather than theoretical severity. |
 | **EPSS + CVSS Triage Matrix** *(journal working model)* | Not an official FIRST or CISA-published matrix—this is a locally defined triage heuristic built from EPSS and CVSS, useful for illustration only. | Dual-axis matrix mapping **CVSS Base Score** (≥ 7.0) against **EPSS Exploit Probability** (> 10%) and **CISA KEV** active attack status. | Illustrative categorization into **Emergency Patch** (CVSS ≥ 7 + EPSS > 10% + KEV), **Scheduled Patch**, or **Monitor**—thresholds are locally chosen, not standardized. |
-| **Risk-Based Vulnerability Management (RBVM / VPR)** | Gartner &amp; Enterprise Vulnerability Vendors (*Tenable VPR / Qualys TruRisk*). | Dynamic algorithm weighting **CVE Flaw Severity** × **Exploit Threat Telemetry** × **Asset Criticality** × **Network Reachability**. | Dynamic Risk Score (1 to 1000) driving automated ticket escalation in CI/CD and ITSM workflows. |
+| **Risk-Based Vulnerability Management (RBVM)** | Gartner analyst category describing this class of tooling. | Dynamic algorithm weighting **CVE Flaw Severity** × **Exploit Threat Telemetry** × **Asset Criticality** × **Network Reachability**. | Dynamic, vendor-specific risk score driving automated ticket escalation in CI/CD and ITSM workflows—see specific vendor scales below. |
+| ↳ **Tenable Vulnerability Priority Rating (VPR)** | Tenable proprietary scoring model. | Combines a CVSS-like technical severity component with Tenable's own threat intelligence feed. | Score range **0.1 to 10.0** (distinct scale from Base CVSS despite the similar range). |
+| ↳ **Qualys TruRisk** | Qualys proprietary scoring model. | Combines vulnerability severity, threat intelligence, and asset criticality into a single index. | Score range **0 to 1000**—not directly comparable to Tenable VPR's 0.1–10.0 scale. |
 
 ## Vulnerability vs Actual Risk Exposure Matrix
 
@@ -120,3 +122,8 @@ When evaluating an enterprise risk assessment or vulnerability management pipeli
 
 - **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
 - **ISO 31000:2018**: *Risk management — Guidelines* — [ISO 31000](https://www.iso.org/standard/65694.html)
+- **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
+- **FIRST CVSS v4.0 Specification** — [FIRST CVSS v4.0](https://www.first.org/cvss/v4.0/specification-document)
+- **FIRST EPSS** — [FIRST EPSS](https://www.first.org/epss/)
+- **CISA Known Exploited Vulnerabilities Catalog** — [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+- **CISA / CMU SEI SSVC Guide** — [CISA SSVC](https://www.cisa.gov/stakeholder-specific-vulnerability-categorization-ssvc)

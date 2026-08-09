@@ -30,7 +30,7 @@
     <text x="442" y="162" font-size="14" font-weight="800" fill="#0f172a">Phishing-Resistant Authenticator Pairing</text>
     <line x1="442" y1="174" x2="757" y2="174" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
     <text x="442" y="194" font-size="10.5" font-weight="500" fill="#475569">• WebAuthn / FIDO2 Passkeys &amp; PKI Keys (NIST 800-63B)</text>
-    <text x="442" y="212" font-size="10.5" font-weight="500" fill="#475569">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Hardware Key)</text>
+    <text x="442" y="212" font-size="10.5" font-weight="500" fill="#475569">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Non-Exportable Key)</text>
 
     <!-- Card 3: FAL Federation Assurance (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="135" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />

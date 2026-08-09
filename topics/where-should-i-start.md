@@ -17,7 +17,7 @@ The following is a practical organizing model—not a formally standardized hier
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/security-program-implementation-roadmap.svg' | relative_url }}" alt="Security Program Implementation Architecture diagram showing SECURITY PROGRAM translating into GOVERNANCE (GOVERN) and TECHNICAL SAFEGUARDS (TECHNICAL) with Top-Down and Bottom-Up operational feedback arrows.">
-  <p class="diagram-caption">Security Program Implementation Architecture: SECURITY PROGRAM strategy leading to GOVERNANCE (GOVERN) and TECHNICAL SAFEGUARDS (TECHNICAL) connected by Top-Down Policy Mandates (↓) and Bottom-Up Telemetry Proof (↑)</p>
+  <p class="diagram-caption">Security Program Implementation Architecture: SECURITY PROGRAM strategy leading to GOVERNANCE (GOVERN) and TECHNICAL SAFEGUARDS (TECHNICAL) connected by Top-Down Policy Mandates (↓) and Bottom-Up Telemetry &amp; Evidence (↑)</p>
 </div>
 
 ## Two Operational Entry Pathways
@@ -50,7 +50,7 @@ The operational connection between **GOVERN** and **TECHNICAL** functions as a c
 
 ### 1. Top-Down Flow: Policy Mandates & Risk Tolerances (↓)
 
-- **Operational Action**: Governance policies, regulatory compliance requirements (ISO 27001, SOC 2, GDPR, Singapore PDPA), and organizational risk appetite established in **GOVERN** are pushed down into **TECHNICAL** execution.
+- **Operational Action**: Governance policies, governance standards and assurance requirements (ISO 27001, SOC 2), statutory regulatory obligations (GDPR, Singapore PDPA), and organizational risk appetite established in **GOVERN** are pushed down into **TECHNICAL** execution.
 - **System Impact**: Establishes the outcomes and requirements technical teams must meet; teams then translate them into specific controls—commonly threat modeling, mTLS, firewall configuration, encryption at rest, and secure build pipelines (SLSA / SSDF)—though the specific control choice is an engineering decision, not something the policy itself mandates.
 
 ### 2. Bottom-Up Flow: Safeguard Telemetry & Audit Evidence (↑)
@@ -93,3 +93,5 @@ The full catalog of NIST/FIPS publication mappings, application/supply-chain sta
 
 - **NIST Cybersecurity Framework 2.0**: *Framework for Improving Critical Infrastructure Cybersecurity* — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
 - **OWASP Top 10:2021**: *The Ten Most Critical Web Application Security Risks* — [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
+- **CIS Controls v8.1** — [CIS Controls](https://www.cisecurity.org/controls)

@@ -101,3 +101,7 @@ When evaluating the security posture of any new feature or system architecture, 
 
 - **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/final)
 - **ISO/IEC 27001:2022**: *Information security, cybersecurity and privacy protection — Information security management systems* — [ISO 27001 Overview](https://www.iso.org/standard/27001)
+- **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
+- **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
+- **NIST FIPS 199**: *Standards for Security Categorization of Federal Information and Information Systems* — [NIST CSRC FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)
+- **NIST Cybersecurity Framework 2.0** — [NIST CSF 2.0](https://www.nist.gov/cyberframework)

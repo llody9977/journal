@@ -112,3 +112,5 @@ When auditing a system architecture or API endpoint, evaluate these 8 diagnostic
 
 - **NIST SP 800-33**: *Underlying Technical Models for Information Technology Security* — [NIST CSRC SP 800-33](https://csrc.nist.gov/pubs/sp/800/33/final)
 - **ISO/IEC 27000:2020**: *Overview and vocabulary for Information Security Management Systems* — [ISO 27000](https://www.iso.org/standard/73906.html)
+- **NIST FIPS 199**: *Standards for Security Categorization* — [NIST CSRC FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)
+- **NIST SP 800-53B**: *Control Baselines for Information Systems and Organizations* — [NIST CSRC SP 800-53B](https://csrc.nist.gov/pubs/sp/800/53/b/final)

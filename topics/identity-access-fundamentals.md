@@ -43,7 +43,7 @@ Confusing authentication proof with authorization permission grants creates crit
 
 | Vulnerability & Risk Boundary | Vulnerability Root Cause | Real-World Attack Scenario | Correct Engineering Safeguard |
 |---|---|---|---|
-| **Broken Authentication** | Weak credential validation, missing MFA, or flaw in authenticator binding (**NIST SP 800-63B**). | Attacker executes credential stuffing or SIM-swaps SMS OTP to hijack account access. | Enforce phishing-resistant **WebAuthn / FIDO2 Passkeys** (AAL2/AAL3) and eliminate SMS/password-only logins. |
+| **Broken Authentication** | Weak credential validation, missing MFA, or flaw in authenticator binding (**NIST SP 800-63B**). | Attacker executes credential stuffing or SIM-swaps SMS OTP to hijack account access. | Enforce phishing-resistant **WebAuthn / FIDO2 Passkeys**—typically AAL2, or AAL3 only with a non-exportable, hardware-bound key—and eliminate SMS/password-only logins. |
 | **Broken Function-Level Authorization (BFLA)** | API gateway fails to restrict administrative endpoints (`POST /api/v1/admin/delete`) to admin roles. | Standard user crafts HTTP request to administrative API routes and executes privileged operations. | Enforce centralized **ABAC / OPA policy checks** at the API Gateway before routing requests to microservices. |
 | **Broken Object-Level Authorization (BOLA / IDOR)** | API endpoint validates authentication token but fails to verify if identity owns target object ID. | Authenticated user changes `/api/v1/users/102/invoice` to `/103` and reads another user's invoice. | Enforce object-level resource ownership validation at the Policy Enforcement Point (PEP) on every API request. |
 | **Broken Session Security** | Unbound, long-lived, or un-encrypted session tokens returned after authentication. | Attacker steals opaque session cookie or JWT via XSS and replays it from a hostile IP. | Set `HttpOnly`, `Secure`, `SameSite=Strict` cookies; bind OAuth tokens with **DPoP (RFC 9449)** or **mTLS**. |
@@ -92,3 +92,5 @@ When auditing an identity perimeters, microservice API, or SSO federation flow, 
 
 - **NIST SP 800-207**: *Zero Trust Architecture* — [NIST CSRC SP 800-207](https://csrc.nist.gov/pubs/sp/800/207/final)
 - **NIST SP 800-63-4**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-4](https://pages.nist.gov/800-63-4/)
+- **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)* — [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449)
+- **RFC 7009**: *OAuth 2.0 Token Revocation* — [RFC 7009](https://datatracker.ietf.org/doc/html/rfc7009)
