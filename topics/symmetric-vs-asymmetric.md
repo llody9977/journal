@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # Symmetric vs Asymmetric Cryptography
 
-<p class="lede">Symmetric and asymmetric cryptography are complementary mechanisms serving distinct architectural roles. Symmetric ciphers provide high-throughput bulk encryption using a single shared secret key, whereas asymmetric cryptography uses public/private key pairs for unauthenticated key distribution, digital signatures, and identity verification.</p>
+<p class="lede">Symmetric and asymmetric cryptography are complementary mechanisms serving distinct architectural roles. Symmetric ciphers provide high-throughput bulk encryption using a single shared secret key, whereas asymmetric cryptography uses public/private key pairs for open public-key distribution whose identity binding must be authenticated (e.g., via a certificate or out-of-band verification), and for digital signatures that prove control of a private key rather than a signer's real-world identity.</p>
 
 ## Direct Comparison Matrix
 
@@ -47,7 +47,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 | **Key Encapsulation to Single Receiver** | Asymmetric HPKE | HPKE (RFC 9180) | Sender uses receiver's public key to wrap data encryption key. |
 | **Network Transit Confidentiality** | Hybrid Encryption | TLS 1.3 (ECDHE + AES-GCM) | Ephemeral key agreement establishes shared secret for symmetric transport. |
 | **Payload Integrity &amp; Authentication** | Symmetric MAC | HMAC-SHA256 | Both endpoints share secret key; verifier checks HMAC tag over message. |
-| **Unforgeable Signature Evidence** | Asymmetric Digital Signature | Ed25519 (RFC 8032) / RSA-PSS | Signer uses private key; verifier uses public key to prove non-repudiation. |
+| **Unforgeable Signature Evidence** | Asymmetric Digital Signature | Ed25519 (RFC 8032) / RSA-PSS | Signer uses private key; verifier uses public key to verify control of the signing key and payload integrity. |
 
 ## Critical Cryptographic Boundary Rules
 

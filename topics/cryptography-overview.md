@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # What Is Cryptography?
 
-<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit, at rest, and in use over untrusted channels. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
+<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit, at rest, and in processing or storage over untrusted networks and storage environments. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
 
 ## The Open Network Threat Problem
 
@@ -32,7 +32,7 @@ Cryptography provides mathematical primitives designed to withstand these attack
 | Property | Core Operational Goal | Primary Cryptographic Primitive | Failure Scenario Without Control |
 |---|---|---|---|
 | **Authenticity** | Verifies that data originated from an entity controlling a specific key | **Digital Signatures** (*Ed25519, FIPS 204 ML-DSA*) &amp; **Public Key Infrastructure (PKI)** | Man-in-the-middle impersonation and payload spoofing |
-| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-128-GCM / AES-256-GCM, ChaCha20-Poly1305*) &amp; **Key Encapsulation Mechanisms (KEMs)** (*FIPS 203 ML-KEM, hybrid X25519MLKEM768, HPKE*) | Cleartext exfiltration of PII, passwords, or financial transactions |
+| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-128-GCM / AES-256-GCM, ChaCha20-Poly1305*), **Key Encapsulation Mechanisms (KEMs)** (*FIPS 203 ML-KEM, hybrid X25519MLKEM768*), &amp; **Hybrid Frameworks** (*RFC 9180 HPKE combining KEM, KDF, and AEAD*) | Cleartext exfiltration of PII, passwords, or financial transactions |
 | **Integrity** | Ensures payload modification or bit-rot is detected and rejected | **Cryptographic Hashes** (*SHA-256, SHA3-256*) &amp; **MACs** (*HMAC-SHA256*) | Unauthorized alteration of database fields or transaction amounts |
 | **Non-Repudiation** | Generates cryptographic evidence, computationally unforgeable under the signature scheme, tying an action to a private key—supporting but not by itself constituting legal non-repudiation | **Asymmetric Digital Signatures** (*Ed25519, FIPS 205 SLH-DSA*) with timestamping and key custody logs | Disavowal of financial commitments or administrative actions |
 
@@ -261,7 +261,7 @@ This simulator specifically models **MT19937**, as used by Python’s `random`. 
 - **Enforce Authenticated Encryption (AEAD)**: Unauthenticated symmetric ciphers (e.g., AES-CBC without MAC) are vulnerable to padding oracle attacks.
 - **Enforce CSPRNG for Key Material**: Generate all keys, nonces, and salts using OS CSPRNG APIs. Never use PRNG functions.
 - **Ensure Cryptographic Agility**: Design software protocols to support key and algorithm rotation as cryptanalytic capabilities advance.
-- **Account for Long-Term Data Lifetimes**: Data encrypted today must remain secure for the duration of its confidentiality lifetime, incorporating post-quantum migration planning (**[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**, **[NIST FIPS 204 ML-DSA](https://csrc.nist.gov/pubs/fips/204/final)** per **[NIST SP 800-175B Rev. 1](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final)**).
+- **Account for Long-Term Data Lifetimes**: Data encrypted today must remain secure for the duration of its confidentiality lifetime, incorporating post-quantum migration planning (**[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**, **[NIST FIPS 204 ML-DSA](https://csrc.nist.gov/pubs/fips/204/final)**; general key management guidance is provided by **[NIST SP 800-175B Rev. 1](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final)**).
 
 ## What I Need to Remember
 

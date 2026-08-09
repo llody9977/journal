@@ -1,7 +1,7 @@
-<svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+<svg viewBox="0 0 1200 415" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Signed Certificate Timestamps (SCT) Workflow &amp; CT Log Auditing</title>
   <desc id="description">Submitting pre-certificates to independent CT logs, receiving SCTs, and verifying inclusion via browser policies</desc>
-  <rect width="1200" height="440" fill="#ffffff"/>
+  <rect width="1200" height="415" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
     <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
@@ -48,8 +48,8 @@
       <rect x="920" y="110" width="230" height="100" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
       <text x="935" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">STEP 4: CLIENT BROWSER</text>
       <text x="935" y="158" font-size="14" font-weight="800" fill="#0f172a">Enforce CT Policy</text>
-      <text x="935" y="180" font-size="12" font-weight="500" fill="#475569">Browser verifies ≥ 2 SCTs</text>
-      <text x="935" y="196" font-size="12" font-weight="700" fill="#2563eb">From Diverse Log Operators</text>
+      <text x="935" y="180" font-size="12" font-weight="500" fill="#475569">Verifies SCT Count &amp; Diversity</text>
+      <text x="935" y="196" font-size="12" font-weight="700" fill="#2563eb">Per Chrome/Apple CT Policy</text>
 
       <!-- Bottom Card: Delivery Methods & Protection -->
       <rect x="50" y="240" width="1100" height="170" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>

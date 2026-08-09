@@ -42,17 +42,33 @@ When a domain owner or automated ACME agent requests a certificate, the CA submi
 
 CT enforcement is set independently by each browser vendor, rolled out on different dates, and scoped differently:
 
-- **Google Chrome**: enforces CT for publicly-trusted TLS certificates issued after April 30, 2018 (enforcement shipped in Chrome 68, July 2018).
-- **Apple Safari / macOS / iOS**: enforces CT platform-wide (not just in Safari) for publicly-trusted certificates issued after October 15, 2018.
+- **Google Chrome**: enforces CT for publicly-trusted TLS certificates issued after April 30, 2018 per [Chrome Certificate Transparency Policy](https://googlechrome.github.io/CertificateTransparency/ct_policy.html).
+- **Apple Safari / macOS / iOS**: enforces CT platform-wide for publicly-trusted certificates issued after October 15, 2018 per [Apple Certificate Transparency Policy](https://support.apple.com/en-us/103214).
 - **Mozilla Firefox**: added CT enforcement on desktop platforms starting with Firefox 135 (February 2025), scoped to certificates chaining to a CA in Mozilla's Root CA Program.
 - **Microsoft Edge**: as a Chromium-based browser, inherits Chrome's enforcement by default; administrators can disable it for specific CAs or URLs via Edge policy.
 
-Where enforced, the required SCT count and log operator diversity rule are:
+### 1. Chrome Embedded-SCT Policy
 
-| Certificate Lifetime | Required SCT Count | Log Operator Diversity Rule |
+For certificates evaluated under [Chrome's CT Policy](https://googlechrome.github.io/CertificateTransparency/ct_policy.html) using embedded SCTs:
+
+| Certificate Lifetime | Required Embedded SCT Count | Log Operator Diversity Rule |
 |---|---|---|
 | **Under 180 Days** | **Minimum 2 SCTs** | Must include SCTs from at least 2 distinct, independent CT log operators (*e.g., Google + Cloudflare*). |
 | **Over 180 Days** | **Minimum 3 SCTs** | Must include SCTs from at least 2 distinct log operators to hedge against operator outage or compromise. |
+
+### 2. Apple CT Policy Rules
+
+Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trusted server certificates must present SCTs depending on certificate validity period:
+- **Lifetime $\le$ 180 days**: At least 2 SCTs from distinct log operators.
+- **Lifetime > 180 days up to 398 days**: At least 3 SCTs from distinct log operators.
+- **Operator Diversity Requirement**: At least 1 SCT must come from an Apple-recognized log operator, and at least 1 from a different log operator.
+
+### 3. TLS-Delivered SCTs vs. X.509 Embedded SCTs
+
+SCTs can be delivered to the client browser via three distinct transport mechanisms:
+1. **Embedded X.509 v3 Extension** (OID `1.3.6.1.4.1.11129.2.4.2`): Pre-certificates are submitted to logs by the CA before final issuance, and the received SCTs are statically baked directly into the certificate. This is the overwhelmingly common pattern.
+2. **TLS Extension** (`signed_certificate_timestamp`, extension type 18): The web server requests SCTs dynamically or receives them out-of-band and transmits them inside the `ServerHello` handshake message.
+3. **OCSP Stapling**: The web server includes SCTs wrapped inside a stapled OCSP response (`OCSPResponse`).
 
 ## What I Need to Remember
 
@@ -64,7 +80,7 @@ Where enforced, the required SCT count and log operator diversity rule are:
       <li><strong>Detection, Not Prevention</strong>: CT does not stop a CA from misissuing a certificate — it makes misissuance publicly loggable and discoverable after the fact, so it enables accountability rather than blocking the act itself.</li>
       <li><strong>Public Append-Only Logs</strong>: CAs must log pre-certificates to public Merkle tree logs before issuing certificates.</li>
       <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling.</li>
-      <li><strong>Browser Enforcement</strong>: Chrome (since 2018) and Apple platforms (since 2018) enforce CT broadly; Firefox added desktop-only enforcement in version 135 (Feb 2025). Where enforced, policy generally requires SCTs from at least 2 independent log operators, but exact scope and rollout dates differ by vendor.</li>
+      <li><strong>Browser Enforcement Policies</strong>: Chrome and Apple enforce distinct CT policies requiring specific SCT counts and log operator diversity rules based on certificate lifetime.</li>
     </ul>
   </div>
 </div>
@@ -73,3 +89,5 @@ Where enforced, the required SCT count and log operator diversity rule are:
 
 - **RFC 6962**: *Certificate Transparency* — [IETF RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)
 - **RFC 9162**: *Certificate Transparency Version 2.0* — [IETF RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)
+- **Chrome CT Policy**: *Chrome Certificate Transparency Policy* — [Google Chrome CT Policy](https://googlechrome.github.io/CertificateTransparency/ct_policy.html)
+- **Apple CT Policy**: *Apple's Certificate Transparency Policy* — [Apple Support HT209249 / 103214](https://support.apple.com/en-us/103214)

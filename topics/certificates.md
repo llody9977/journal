@@ -150,9 +150,9 @@ Managing short-lived certificates at scale requires automated enrollment via the
   <p class="diagram-caption">X.509 lifetime evolution: transition from multi-year (825-day) static certificates to automated short-lived certificates, tightening from 200 days today to a 47-day maximum by March 2029</p>
 </div>
 
-### ACME Renewal Information (ARI)
+### ACME Renewal Information (ARI, RFC 9773)
 
-To support these shrinking (200-day today, 47-day by 2029) certificate lifetimes without outages, **ACME Renewal Information (ARI)** allows CAs to suggest optimal renewal windows to automated agents dynamically before expiration.
+To support these shrinking (200-day today, 47-day by 2029) certificate lifetimes without outages, **ACME Renewal Information (ARI)** ([RFC 9773](https://www.rfc-editor.org/info/rfc9773), published as a Proposed Standard in 2025) allows CAs to suggest optimal renewal windows to automated agents dynamically before expiration.
 
 ## Certificate Formats & OpenSSL Encoding Conversions
 
@@ -373,8 +373,8 @@ While pinning protects network transport against rogue CAs, it introduces signif
     <p>Understanding where Certificate Pinning belongs prevents catastrophic self-inflicted Denial of Service (DoS):</p>
     <ul>
       <li><strong>Web Browsers (Deprecated)</strong>: <strong>HTTP Public Key Pinning (HPKP / RFC 7469)</strong> was officially <strong>deprecated and removed from web browsers</strong> (Chrome, Firefox, Safari) due to site-bricking hazards and malicious pin-jacking attacks. Web browsers rely on <strong>Certificate Transparency (CT)</strong> for rogue CA detection instead.</li>
-      <li><strong>Mobile &amp; Native Apps (Not a Default — Use Deliberately)</strong>: Certificate and SPKI pinning can add defense-in-depth for <strong>iOS and Android native applications</strong> against corporate TLS proxies, local MitM interception, and rogue CA issuance. However, both platform vendors now caution against reaching for it by default: Android's official guidance recommends most apps avoid certificate pinning given the bricking risk on key rotation, reserving it for apps with a specific, well-understood threat model and a tested pin-rotation process.</li>
-      <li><strong>Mandatory Backup Pin Rule</strong>: If you do pin, mobile app configurations <strong>must specify at least one backup pin</strong> (a secondary public key hash held in cold storage) to allow key rotation without bricking deployed application instances.</li>
+      <li><strong>Mobile &amp; Native Apps (Not a Default — Use Deliberately)</strong>: Certificate and SPKI pinning can add defense-in-depth for <strong>iOS and Android native applications</strong> against corporate TLS proxies, local MitM interception, and rogue CA issuance. However, both platform vendors now caution against reaching for it by default: <a href="https://developer.android.com/privacy-and-security/security-config">Android's official guidance</a> recommends most apps avoid certificate pinning given the bricking risk on key rotation, reserving it for apps with a specific, well-understood threat model and a tested pin-rotation process.</li>
+      <li><strong>Backup Pin Recommendation Rule</strong>: If you choose to deploy pinning, mobile app configurations are <strong>strongly recommended</strong> to specify at least one backup pin (a secondary public key hash held in cold storage) — and schema enforcement in Android Network Security Config requires specifying a backup pin within `<pin-set>` blocks — to allow key rotation without bricking deployed application instances.</li>
     </ul>
   </div>
 </div>
@@ -425,6 +425,13 @@ While pinning protects network transport against rogue CAs, it introduces signif
 </dict>
 ```
 
+## Post-Quantum Hybrid Certificates
+
+As PKI migrates toward quantum safety, Certificate Authorities and standards groups (IETF LAMPS working group) are standardizing **Post-Quantum Hybrid Certificates**:
+
+- **Dual-Algorithm / Composite Certificates** (`draft-ietf-lamps-pq-composite-sigs`): Binds both a classical public key (e.g. RSA-3072 or ECDSA P-256) and a post-quantum public key (e.g. FIPS 204 ML-DSA) within a single X.509 certificate.
+- **Backwards Compatibility**: Classical legacy TLS clients verify only the classical signature component, while post-quantum aware clients verify both signatures, ensuring security during multi-year transition periods.
+
 ## What I Need to Remember
 
 <div class="security-layer security-layer-direct">
@@ -433,8 +440,8 @@ While pinning protects network transport against rogue CAs, it introduces signif
     <strong>Certificates &amp; PKI Summary</strong>
     <ul>
       <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
-      <li><strong>Automated ACME &amp; ARI</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI is essential in practice, though neither is universally mandated — some CAs and internal PKI deployments still support longer-lived certs or manual issuance.</li>
-      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning can protect mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted — Android's own guidance now recommends against it for most apps for that reason. HPKP is deprecated in web browsers.</li>
+      <li><strong>Automated ACME &amp; ARI (RFC 9773)</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI (RFC 9773) is essential in practice.</li>
+      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning can protect mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted — Android's guidance recommends against it for most apps. HPKP is deprecated in web browsers.</li>
     </ul>
   </div>
 </div>
@@ -443,6 +450,7 @@ While pinning protects network transport against rogue CAs, it introduces signif
 
 - **RFC 5280**: *Internet X.509 Public Key Infrastructure Certificate and CRL Profile* — [IETF RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)
 - **RFC 8555**: *Automatic Certificate Management Environment (ACME)* — [IETF RFC 8555](https://www.rfc-editor.org/rfc/rfc8555)
+- **RFC 9773**: *ACME Renewal Information (ARI) Extension* — [IETF RFC 9773](https://www.rfc-editor.org/info/rfc9773)
 - **RFC 7469**: *Public Key Pinning Extension for HTTP (Deprecation Notice)* — [IETF RFC 7469](https://www.rfc-editor.org/rfc/rfc7469)
-- **CA/Browser Forum Baseline Requirements**: *Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates* (source for the validity-period schedule above) — [CA/Browser Forum BRs](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
-- **ACME Renewal Information (ARI)**: *Draft: ACME Renewal Information Extension* — [IETF draft-ietf-acme-ari](https://datatracker.ietf.org/doc/draft-ietf-acme-ari/)
+- **CA/Browser Forum Baseline Requirements**: *Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates* — [CA/Browser Forum BRs](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
+- **Android Network Security Config**: *Network Security Configuration Pinning Guidance* — [Android Developer Security Config](https://developer.android.com/privacy-and-security/security-config)

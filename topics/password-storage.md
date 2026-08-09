@@ -27,7 +27,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 ### NIST SP 800-63B Core Authentication Requirements
 
 1. **Length-Based Security**:
-   * Enforce a **minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA)** (14+ characters recommended for administrative or privileged accounts).
+   * Enforce a minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA; 14+ characters recommended for administrative or privileged accounts).
    * Allow maximum lengths of at least **64 characters** to support easy-to-remember, high-entropy **passphrases** (e.g., `correct horse battery staple`).
 2. **Eliminate Arbitrary Complexity Rules**:
    * Deprecate rules requiring specific character mixes (uppercase, numbers, symbols) to improve user adoption and key diversity.
@@ -137,29 +137,29 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     const E = len * (Math.log(R) / Math.log(2));
     bitsVal.innerText = `${E.toFixed(1)} bits`;
 
-    // Qualitative Rating
+    // Qualitative Idealized Entropy Tier
     let rating = '';
     let bgColor = '';
     let textColor = '';
     let borderColor = '';
 
     if (E < 28) {
-      rating = '&#10060; Very Weak (Vulnerable to instant offline brute-forcing)';
+      rating = '&#10060; Low Search-Space Entropy (< 28 bits)';
       bgColor = 'rgba(159, 18, 57, 0.08)'; // critical-wash
       textColor = 'var(--critical)';
       borderColor = 'var(--critical)';
     } else if (E < 60) {
-      rating = '&#9888; Weak (Vulnerable to targeted GPU guessing clusters)';
+      rating = '&#9888; Moderate Search-Space Entropy (28-59 bits)';
       bgColor = 'rgba(161, 76, 0, 0.08)'; // amber-wash
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
     } else if (E < 80) {
-      rating = '&#128309; Moderate Strength (Safe for ordinary consumer applications)';
+      rating = '&#128309; High Search-Space Entropy (60-79 bits)';
       bgColor = 'rgba(36, 87, 214, 0.08)'; // accent-wash
       textColor = 'var(--accent)';
       borderColor = 'var(--accent)';
     } else {
-      rating = '&#9989; Strong (Extremely secure passphrase - resistant to GPU cracking)';
+      rating = '&#9989; Very High Search-Space Entropy (80+ bits)';
       bgColor = 'rgba(15, 118, 110, 0.08)'; // teal-wash
       textColor = 'var(--teal)';
       borderColor = 'var(--teal)';
@@ -206,9 +206,9 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
 ## Specialized Password Hashing Functions Matrix
 
-| Algorithm | Memory Hardness | GPU / ASIC Resistance | OWASP &amp; NIST Recommendation Status |
+| Algorithm | Memory Hardness | GPU / ASIC Resistance | Specification &amp; Recommended Status |
 |---|---|---|---|
-| **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **MAXIMUM**: Hybrid memory-hard design resists GPU and side-channel attacks. | **PRIMARY RECOMMENDATION**: First-choice algorithm for all modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
+| **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **MAXIMUM**: Hybrid memory-hard design resists GPU and side-channel attacks. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
 | **bcrypt** | None (CPU-Hard) | **MODERATE**: Blowfish key schedule resists GPUs; vulnerable to custom ASICs. | **APPROVED LEGACY**: Acceptable legacy default; watch out for 72-byte truncation limit. |
 | **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **LOW**: High iteration count (600,000+) but easily parallelized on GPUs. | **FIPS COMPLIANCE OPTION**: Use only when strict FIPS 140-3 compliance mandates it. |
 | **scrypt** (RFC 7914) | **MODERATE** | **HIGH**: Early memory-hard function; superseded by Argon2id. | **APPROVED ALTERNATIVE**: Acceptable when Argon2id is unavailable. |
@@ -402,5 +402,5 @@ async function hashUserPassword(password) {
 ## Primary References
 
 - **RFC 9106**: *Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work Applications* — [IETF RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)
-- **NIST SP 800-63B**: *Digital Identity Guidelines: Authentication and Lifecycle Management* — [NIST CSRC SP 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html)
+- **NIST SP 800-63B-4**: *Digital Identity Guidelines: Authentication and Lifecycle Management* — [NIST CSRC SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)
 - **OWASP Password Storage Cheat Sheet**: *Current Argon2id, bcrypt, and PBKDF2 parameter recommendations* — [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)

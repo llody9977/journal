@@ -20,8 +20,8 @@ Full-disk encryption protects data **only while its key is evicted from memory �
   <p class="diagram-caption">FDE Threat Scope: protects against physical disk theft when powered off; OS transparently decrypts blocks while running</p>
 </div>
 
-1. **Powered-Off State (Protected)**: Storage blocks are encrypted under hardware keys bound to TPM 2.0 / Secure Enclave. Physical removal of the SSD yields unreadable ciphertext.
-2. **Active Booted Session (Transparent)**: Once the OS boots and unlocks the volume key, disk decryption is transparent to all processes. Application-layer vulnerabilities (SQLi, path traversal) bypass FDE completely, requiring file-level or field-level encryption.
+1. **Powered-Off State (Protected)**: Storage blocks are encrypted under volume keys that may be bound to hardware elements such as a TPM 2.0 or Secure Enclave, or protected by user passphrases/keyfiles. Physical removal of the SSD yields unreadable ciphertext.
+2. **Active Booted Session (Transparent)**: Once the OS boots and unlocks the volume key, decryption occurs transparently at the block and file-system layer, though operating system access controls (user permissions, ACLs, process boundaries) still apply. Application-layer vulnerabilities (SQLi, path traversal) bypass FDE completely, requiring file-level or field-level encryption.
 3. **Screen-Locked, Still Mounted (Transparent, Not Protected)**: A locked screen is a separate security boundary from FDE — it does not, by itself, evict the volume key or unmount the disk. On iOS, only the narrower *Complete Protection* data class discards its keys at lock; the *After First Unlock* class (used by most app data) keeps its keys resident until reboot, and desktop FDE (FileVault, LUKS2) behaves the same way once mounted. Anyone with software or physical access to a locked-but-running machine can still read decrypted data; only evicting the key (power-off, or an explicit re-lock of the volume) restores protection.
 
 ## Block Cipher Mode for Disks: AES-XTS (IEEE 1619)
@@ -60,7 +60,7 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
       <li><strong>Key Encryption Key (KEK) / CMEK</strong>: A master key stored inside a Hardware Security Module (HSM) or Cloud KMS (e.g. AWS KMS, GCP KMS). A <strong>Customer-Managed Encryption Key (CMEK)</strong> is a KEK where the customer controls access policies, rotation schedules, and revocation. The KEK <strong>never leaves the HSM</strong>; it is used solely to wrap and unwrap small 32-byte DEKs.</li>
     </ul>
     <strong>What Key Is Actually Being Rotated?</strong>
-    <p>When key rotation is triggered (e.g. annually), <strong>only the Master KEK/CMEK in KMS is rotated—NOT the bulk data or DEKs!</strong></p>
+    <p>When key rotation is triggered (e.g. annually), one common efficient strategy is rotating only the Master KEK/CMEK inside KMS — avoiding multi-terabyte bulk data re-encryption — though DEKs and bulk data can also be rotated or re-encrypted after a compromise or according to policy:</p>
     <ul>
       <li><strong>Version Creation</strong>: KMS generates <code>KEK_v2</code> and marks it active for <em>new</em> encryptions. <code>KEK_v1</code> is retained inside KMS as <em>decrypt-only</em>.</li>
       <li><strong>Older Data Decryption</strong>: When reading older data, the application sends <code>EDEK_v1</code> to KMS. KMS inspects the key version header, uses <code>KEK_v1</code> to unwrap the DEK, and returns the plaintext DEK to RAM. <strong>No bulk data re-encryption is required!</strong></li>
@@ -96,3 +96,6 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
 - **IEEE 1619-2018**: *IEEE Standard for Cryptographic Protection of Data on Block-Oriented Storage Devices* — [IEEE 1619 Standard](https://standards.ieee.org/ieee/1619/6966/)
 - **NIST SP 800-38E**: *Recommendation for Block Cipher Modes of Operation: The XTS-AES Mode for Confidentiality on Storage Devices* — [NIST CSRC SP 800-38E](https://csrc.nist.gov/pubs/sp/800/38/e/final)
 - **RFC 3394**: *Advanced Encryption Standard (AES) Key Wrap Algorithm* — [IETF RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)
+- **AWS KMS Key Management**: *AWS Key Management Service Cryptographic Details* — [AWS KMS Security Documentation](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html)
+- **Google Cloud KMS**: *Google Cloud Key Management Service Architecture* — [GCP Cloud KMS Docs](https://cloud.google.com/kms/docs/architecture-overview)
+- **Azure Key Vault**: *Microsoft Azure Key Vault Security Guidelines* — [Azure Key Vault Documentation](https://learn.microsoft.com/en-us/azure/key-vault/general/overview)

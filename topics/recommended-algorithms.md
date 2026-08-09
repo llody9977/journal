@@ -32,21 +32,22 @@ A critical discipline in security architecture is distinguishing between **IETF 
 | **AES-256-GCM** | [RFC 5288](https://www.rfc-editor.org/rfc/rfc5288) | **NIST APPROVED** ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | Universal AEAD standard for TLS 1.3, IPsec, and cloud data at rest. |
 | **AES-GCM-SIV** | [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) | **NOT FIPS/NIST APPROVED** (IETF Standard) | Nonce-misuse-resistant AEAD mode preventing catastrophic plaintext leak on IV reuse. |
 | **ECDHE-X25519** | [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) / [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) | **NOT SP 800-56A APPROVED** (IETF Standard) | Modern, high-speed Ephemeral ECDH key agreement used across TLS 1.3 and SSHv2. |
-| **ECDHE (NIST P-384 / P-256)** | [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) | **NIST APPROVED** ([NIST SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)) | Mandatory Ephemeral ECDH key agreement for strict FIPS 140-3 and FedRAMP boundaries. |
+| **ECDHE (NIST P-384 / P-256)** | [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) | **NIST APPROVED** ([NIST SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)) | NIST-approved options for FIPS 140-3 and FedRAMP boundaries, subject to the applicable profile (SP 800-52 Rev. 2 accepts either P-256 or P-384; CNSA 2.0 requires P-384). |
 | **Ed25519 / Ed448** | [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) | **NIST APPROVED** ([FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)) | Modern fast digital signature scheme for SSH, WebAuthn, and software signing. |
 | **RSA-PSS (3072-bit+)** | [RFC 8017](https://www.rfc-editor.org/rfc/rfc8017) | **NIST APPROVED** ([FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)) | Recommended classical RSA signature padding scheme; deprecate PKCS#1 v1.5. |
 | **SHA-256 / SHA-512 / SHA3-256** | [RFC 6234](https://www.rfc-editor.org/rfc/rfc6234) | **NIST APPROVED** ([FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final) / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)) | Standard cryptographic hash digest algorithms for digital signatures and TLS. |
-| **HKDF-SHA256 / KMAC256** | [RFC 5869](https://www.rfc-editor.org/rfc/rfc5869) | **NIST APPROVED** ([SP 800-56C R2](https://csrc.nist.gov/pubs/sp/800/56/c/r2/final) / [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | Standard key derivation function for key extraction and expansion. |
+| **HKDF-SHA256** | [RFC 5869](https://www.rfc-editor.org/rfc/rfc5869) | **NIST APPROVED** ([NIST SP 800-56C R2](https://csrc.nist.gov/pubs/sp/800/56/c/r2/final)) | Standard Extract-and-Expand key derivation function for key extraction and expansion. |
+| **KMAC256 / KMAC128** | [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final) | **NIST APPROVED** ([NIST SP 800-108 R1](https://csrc.nist.gov/pubs/sp/800/108/r1/final) / [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | NIST-approved KDF construction built on KMAC (SP 800-108 Rev. 1 KDF / SP 800-185). |
 
 ## Disallowed & Legacy Cryptographic Algorithms
 
 | Algorithm | Legacy Specification | Status &amp; Vulnerability | Migration Action |
 |---|---|---|---|
-| **3DES / TDEA** | 64-bit Block Cipher | **DISALLOWED**: Vulnerable to Sweet32 birthday collisions after 2^32 blocks. | Migrate immediately to **AES-256-GCM**. |
-| **MD5** | 128-bit Hash Function | **CRITICALLY BROKEN**: Practical collisions demonstrated in under 1 second. | Replace with **SHA-256** or **SHA3-256**. |
-| **RC4** | Stream Cipher | **DISALLOWED**: Biased keystream bytes allow TLS plaintext recovery. | Replace with **AES-256-GCM** or **ChaCha20-Poly1305**. |
-| **RSA-1024** | Public Key Cipher | **DISALLOWED**: Inadequate security strength (&lt; 80 bits). | Replace with **Ed25519** or **3072-bit RSA-PSS**. |
-| **SHA-1** | 160-bit Hash Function | **BROKEN**: Practical collision demonstrated (SHAttered, 2017). Prohibited by [NIST SP 800-131A](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final). | Replace with **SHA-256**. |
+| **3DES / TDEA** | 64-bit Block Cipher | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for encryption after Dec 31, 2023; vulnerable to Sweet32 birthday collisions after 2^32 blocks. | Migrate immediately to **AES-256-GCM**. |
+| **MD5** | 128-bit Hash Function | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for digital signatures &amp; certificates; practical collisions demonstrated in under 1 second. | Replace with **SHA-256** or **SHA3-256**. |
+| **RC4** | Stream Cipher | **DISALLOWED**: Prohibited by IETF RFC 7465 and NIST SP 800-52 Rev. 2 for TLS; biased keystream bytes allow plaintext recovery. | Replace with **AES-256-GCM** or **ChaCha20-Poly1305**. |
+| **RSA-1024** | Public Key Cipher | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for key transport &amp; digital signatures after Dec 31, 2013 (&lt; 112 bits security strength). | Replace with **Ed25519** or **3072-bit RSA-PSS**. |
+| **SHA-1** | 160-bit Hash Function | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for digital signatures &amp; certificates after Dec 31, 2013; practical collision demonstrated (SHAttered, 2017). | Replace with **SHA-256**. |
 
 ## NIST Post-Quantum Cryptography (PQC) Standards (FIPS 203, 204, 205 & Draft 206)
 
@@ -90,5 +91,8 @@ Under China's Cryptography Law (2020) and the **State Cryptography Administratio
 - **NIST SP 800-57 Part 1 Rev. 5**: *Recommendation for Key Management: General* — [NIST CSRC SP 800-57](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)
 - **NIST FIPS 140-3 IG**: *Implementation Guidance for FIPS 140-3* — [NIST CSRC FIPS 140-3 IG](https://csrc.nist.gov/projects/cryptographic-module-validation-program/fips-140-3-ig)
 - **NIST SP 800-56A Rev. 3**: *Recommendation for Pair-Wise Key-Establishment Schemes Using Discrete Logarithm Cryptography* — [NIST CSRC SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)
+- **NIST SP 800-108 Rev. 1**: *Recommendation for Key Derivation Using Pseudorandom Functions* — [NIST CSRC SP 800-108 R1](https://csrc.nist.gov/pubs/sp/800/108/r1/final)
+- **BSI TR-02102-1**: *Cryptographic Mechanisms: Recommendations and Key Lengths* — [BSI Technical Guideline TR-02102-1](https://www.bsi.bund.de/EN/Topics/ElectrID-PKI/TR-02102/tr02102_node.html)
+- **China SCA Standards**: *State Cryptography Administration Commercial Cryptography Standards (GM/T series)* — [SCA Commercial Cryptography Regulations](http://www.sca.gov.cn/)
 - **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [IETF RFC 8452](https://www.rfc-editor.org/rfc/rfc8452)
 - **RFC 7748**: *Elliptic Curves for Security (Curve25519 / Curve448)* — [IETF RFC 7748](https://www.rfc-editor.org/rfc/rfc7748)

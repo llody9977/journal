@@ -126,6 +126,15 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   async function runHmacCalculation() {
     try {
       const payloadStr = payloadInput.value;
@@ -191,7 +200,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
       <div class="ecb-block-item ${isValid ? 'target-block-decrypted' : 'is-repeat-block'}">
         <div class="block-meta">
           <span class="block-num">Keyed HMAC-SHA256 Authentication Tag</span>
-          <span class="block-plain-preview">Key: "${keyStr}"</span>
+          <span class="block-plain-preview">Key: "${escapeHtml(keyStr)}"</span>
         </div>
         <div class="block-hex-val" style="word-break: break-all; font-size: 0.78rem;">
           <code>${hmacHex}</code>
@@ -206,7 +215,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
           <div class="security-layer-label">Authentication Status</div>
           <div>
             <strong>✔ AUTHENTICATION SUCCESSFUL!</strong>
-            <p style="margin-bottom:0;">The receiver verification key <code>"${verifyKeyStr}"</code> matches the sender key. The HMAC tag is consistent with payload integrity and origin authenticity under this key.</p>
+            <p style="margin-bottom:0;">The receiver verification key <code>"${escapeHtml(verifyKeyStr)}"</code> matches the sender key. The HMAC tag is consistent with payload integrity and origin authenticity under this key.</p>
           </div>
         </div>`;
       } else {
@@ -215,7 +224,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
           <div class="security-layer-label">Authentication Status</div>
           <div>
             <strong>❌ AUTHENTICATION FAILED! (Invalid Secret Key)</strong>
-            <p style="margin-bottom:0;">The receiver verification key <code>"${verifyKeyStr}"</code> does not match the sender key. The HMAC authentication tag was rejected!</p>
+            <p style="margin-bottom:0;">The receiver verification key <code>"${escapeHtml(verifyKeyStr)}"</code> does not match the sender key. The HMAC authentication tag was rejected!</p>
           </div>
         </div>`;
       }
@@ -224,7 +233,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
 
     } catch (err) {
       outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
-        <strong>HMAC Error:</strong> ${err.message || err}
+        <strong>HMAC Error:</strong> ${escapeHtml(err.message || String(err))}
       </div>`;
     }
   }
@@ -267,3 +276,4 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
 - **NIST FIPS 180-4**: *Secure Hash Standard (SHS)* — [NIST CSRC FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)
 - **NIST FIPS 198-1**: *The Keyed-Hash Message Authentication Code (HMAC)* — [NIST CSRC FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)
 - **NIST SP 800-185**: *SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash, and ParallelHash* — [NIST CSRC SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)
+- **BLAKE3**: *BLAKE3 Cryptographic Hash Function Specification* — [BLAKE3 Specification](https://github.com/BLAKE3-team/BLAKE3-specs)

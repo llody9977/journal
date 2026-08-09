@@ -21,7 +21,8 @@ Quantum computing impacts symmetric and asymmetric primitives in fundamentally d
 </div>
 
 1. **Asymmetric Cryptography (RSA, ECC, ECDSA, ECDH)**: **Completely broken** by **Shor's Algorithm** running on a CRQC. Shor's algorithm solves prime factorization and discrete logarithms in polynomial time (**O(n^3)**).
-2. **Symmetric Cryptography (AES-256, SHA-384/512)**: Effective security bits are **halved** by **Grover's Algorithm**. **AES-256 retains 128-bit quantum security**, rendering it quantum-resistant without requiring algorithm replacement.
+2. **Symmetric Ciphers (AES-256)**: Effective key-search security is **halved** by **Grover's Algorithm**. **AES-256 retains 128-bit quantum security**, rendering it quantum-resistant without requiring algorithm replacement.
+3. **Hash Functions (SHA-384/512)**: Grover's Algorithm halves **preimage resistance** (an n-bit hash drops from ~n bits to **~n/2 bits**, e.g., SHA-256's 256-bit preimage resistance falls to ~128 bits). **Collision resistance** degrades differently: it is already ~n/2 bits classically (the birthday bound), and the best known quantum collision attack (the **BHT algorithm**) brings it down further to roughly **~n/3 bits** — a smaller reduction than a naive halving, and one whose practicality is limited by BHT's very large quantum-memory (QRAM) requirements.
 
 ### Symmetric vs. Asymmetric Post-Quantum Migration Strategy
 
@@ -42,7 +43,7 @@ Understanding the difference between symmetric and asymmetric post-quantum secur
 
 ## The "Harvest Now, Decrypt Later" Attack Threat
 
-Adversaries are actively intercepting and storing encrypted high-value enterprise traffic today (<strong>"Harvest Now, Decrypt Later"</strong>). When a CRQC becomes operational in the future, recorded traffic encrypted under classical RSA or ECDHE key exchanges will be decrypted retroactively.
+Adversaries may be collecting and storing encrypted high-value enterprise traffic today (<strong>"Harvest Now, Decrypt Later"</strong>). If a suitable CRQC becomes available in the future, recorded traffic encrypted under classical RSA or ECDHE key exchanges could be decrypted retroactively.
 
 <div class="security-layer security-layer-direct">
   <div class="security-layer-label">Harvest Now, Decrypt Later Mitigation</div>

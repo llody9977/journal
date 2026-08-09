@@ -1,7 +1,7 @@
-<svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+<svg viewBox="0 0 1200 425" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">CTR Nonce-Reuse Two-Time Pad Attack Mechanics</title>
   <desc id="description">Reusing a 96-bit nonce under the same key generates identical keystream (KS₁ = KS₂), enabling XOR cancellation</desc>
-  <rect width="1200" height="440" fill="#ffffff"/>
+  <rect width="1200" height="425" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
     <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>

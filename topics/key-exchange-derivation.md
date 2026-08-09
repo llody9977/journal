@@ -42,7 +42,7 @@ To understand how two computers arrive at the exact same secret key without ever
   <div>
     <strong>How Software Handshakes Execute Without Transmitting Keys</strong>
     <p>A common point of confusion is asking <em>"how does the secret key get passed to the client?"</em></p>
-    <p><strong>The secret key is NEVER transmitted across the network.</strong> Neither endpoint sends the secret key. Instead, both software engines exchange public parameters and compute the matching 256-bit symmetric key <strong>independently in CPU RAM</strong>:</p>
+    <p><strong>The secret key is NEVER transmitted across the network.</strong> Neither endpoint sends the secret key. Instead, both software engines exchange public parameters and compute the same shared secret <strong>independently in CPU RAM</strong>:</p>
     <ol>
       <li><strong>Client Exchange (`ClientHello`)</strong>: Client's crypto engine generates an ephemeral private key <strong>a</strong> in RAM and sends public key <b>A = a × G</b> over the wire.</li>
       <li><strong>Server Exchange (`ServerHello`)</strong>: Server's crypto engine generates an ephemeral private key <strong>b</strong> in RAM and sends public key <b>B = b × G</b> over the wire.</li>
@@ -52,7 +52,7 @@ To understand how two computers arrive at the exact same secret key without ever
           <li>Server calculates: <b>S = b × A = b × (a × G) = a × b × G</b></li>
         </ul>
       </li>
-      <li><strong>Identical Key Output &amp; Memory Purge</strong>: Both sides arrive at the exact same 32-byte AES key (e.g. <code>0x8f3a91b2...</code>). Once the TLS session closes, both sides wipe the ephemeral keys from RAM.</li>
+      <li><strong>Identical Shared Secret &amp; Memory Purge</strong>: Both sides arrive at the exact same shared secret <b>S</b>. Neither side uses <b>S</b> directly as a key — each passes it through HKDF (RFC 5869) to derive the actual AES traffic key (e.g. <code>0x8f3a91b2...</code>) and IVs. Once the TLS session closes, both sides wipe the ephemeral keys from RAM.</li>
     </ol>
   </div>
 </div>
@@ -92,8 +92,8 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
     <p>Understanding key roles resolves common misconceptions between identity authentication and data encryption:</p>
     <ul>
       <li><strong>Server Certificate Key (Typically on Disk, an HSM, or a KMS)</strong>: Used exclusively for <strong>Identity Authentication</strong> (proving to the browser: <em>"I am really bank.com"</em>). The server uses its private key to <strong>sign</strong> the handshake parameters. It is <strong>never used to encrypt bulk data</strong>.</li>
-      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used exclusively for <strong>Data Confidentiality</strong>. Generated in transient RAM for a single connection session, it calculates the symmetric AES-256 session key (<code>0x8f3a91b2...</code>) and is discarded when the session closes.</li>
-      <li><strong>Client Certificates</strong>: In the vast majority of ordinary web browsing, <strong>clients do not present certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to calculate the AES key and encrypt HTTP traffic.</li>
+      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used exclusively for <strong>Data Confidentiality</strong>. Generated in transient RAM for a single connection session, both endpoints combine key shares to derive the ECDH shared secret, which is passed through HKDF to derive symmetric AES traffic keys (<code>0x8f3a91b2...</code>) and IVs, and is discarded when the session closes.</li>
+      <li><strong>Client Certificates</strong>: In the vast majority of ordinary web browsing, <strong>clients do not present certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to derive the shared secret and expanded HKDF traffic keys to encrypt HTTP traffic.</li>
     </ul>
   </div>
 </div>
@@ -571,7 +571,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
           <div class="security-layer-label">PFS Security Protection Verified</div>
           <div>
             <strong>✅ PFS HOLDS: LONG-TERM KEY LEAK DOESN'T EXPOSE PAST TRAFFIC</strong>
-            <p style="margin-bottom:0;">The stolen key only ever signed the handshake — it was never used to encrypt data, so it cannot decrypt anything by itself. Recomputing either session's AES key would require the client and server's ephemeral ECDH private keys, which this demo never persisted anywhere the attacker's stolen key can reach. (Note: real TLS stacks additionally take care to explicitly zero that ephemeral key memory; JavaScript itself offers no guaranteed secure-erase primitive.)</p>
+            <p style="margin-bottom:0;">The stolen key only ever signed the handshake — it was never used to encrypt data, so it cannot decrypt anything by itself. Recomputing either session's symmetric traffic key would require the client and server's ephemeral ECDH private keys, which this demo never persisted anywhere the attacker's stolen key can reach. (Note: real TLS stacks additionally take care to explicitly zero that ephemeral key memory; JavaScript itself offers no guaranteed secure-erase primitive.)</p>
           </div>
         </div>`;
       }

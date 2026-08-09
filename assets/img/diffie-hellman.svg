@@ -1,72 +1,43 @@
-<svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
-  <!-- Background -->
-  <rect x="0" y="0" width="800" height="480" fill="#ffffff" />
-
+<svg viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="480" fill="#ffffff"/>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#64748b" />
-    </marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#0f766e" />
-    </marker>
-    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#9f1239" />
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10Z" fill="#b45309"/>
     </marker>
   </defs>
 
-  <!-- Top Stage: Public Parameters -->
-  <rect x="230" y="16" width="340" height="38" rx="8" fill="#a14c00" />
-  <text x="400" y="40" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">Public Parameters: Base (g) &amp; Modulus (p)</text>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Diffie-Hellman Key Agreement Architecture</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Endpoints exchange public key shares over an insecure channel to independently compute the same shared secret S</text>
 
-  <!-- Connectors from Public Parameters -->
-  <path d="M 330 54 L 160 82" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
-  <path d="M 470 54 L 640 82" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+  <!-- Public Domain Parameters Header (y=110, h=50) -->
+  <rect x="40" y="110" width="1120" height="50" rx="10" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="600" y="140" font-size="13" font-weight="800" fill="#92400e" text-anchor="middle">PUBLIC DOMAIN PARAMETERS: Prime modulus p, Generator g (Known to all, including eavesdroppers)</text>
 
-  <!-- Column Headers -->
-  <text x="160" y="80" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Alice (Client)</text>
-  <text x="640" y="80" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Bob (Server)</text>
+  <!-- Left: Alice (x=40, y=175, w=530, h=275) -->
+  <rect x="40" y="175" width="530" height="275" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="60" y="202" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">PARTY A (ALICE)</text>
+  <text x="60" y="228" font-size="13" font-weight="800" fill="#0f172a">1. Generate Ephemeral Private Key: <tspan fill="#dc2626">a</tspan> (Secret RAM)</text>
+  <text x="60" y="255" font-size="13" font-weight="800" fill="#0f172a">2. Compute Public Key Share: <tspan fill="#2563eb">A = g<sup>a</sup> mod p</tspan></text>
+  <text x="60" y="282" font-size="12" fill="#475569">3. Transmit A across network to Bob --&gt;</text>
+  
+  <rect x="60" y="305" width="490" height="125" rx="10" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="75" y="330" font-size="11" font-weight="900" fill="#1e40af">4. SHARED SECRET CALCULATION (ALICE)</text>
+  <text x="75" y="356" font-size="14" font-weight="800" fill="#1e40af">S = B<sup>a</sup> mod p = (g<sup>b</sup>)<sup>a</sup> mod p = g<sup>ab</sup> mod p</text>
+  <line x1="75" y1="368" x2="535" y2="368" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="75" y="392" font-size="12" font-weight="700" fill="#16a34a">Result: Shared Secret S derived in Alice's RAM</text>
+  <text x="75" y="412" font-size="11" fill="#475569">Passed through HKDF to derive AES-256 session traffic keys</text>
 
-  <!-- Secret Private Keys -->
-  <rect x="70" y="92" width="180" height="36" rx="6" fill="#0f766e" />
-  <text x="160" y="115" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Private Key: a (Secret)</text>
+  <!-- Right: Bob (x=630, y=175, w=530, h=275) -->
+  <rect x="630" y="175" width="530" height="275" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="650" y="202" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">PARTY B (BOB)</text>
+  <text x="650" y="228" font-size="13" font-weight="800" fill="#0f172a">1. Generate Ephemeral Private Key: <tspan fill="#dc2626">b</tspan> (Secret RAM)</text>
+  <text x="650" y="255" font-size="13" font-weight="800" fill="#0f172a">2. Compute Public Key Share: <tspan fill="#16a34a">B = g<sup>b</sup> mod p</tspan></text>
+  <text x="650" y="282" font-size="12" fill="#475569">&lt;-- 3. Transmit B across network to Alice</text>
 
-  <rect x="550" y="92" width="180" height="36" rx="6" fill="#9f1239" />
-  <text x="640" y="115" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Private Key: b (Secret)</text>
-
-  <path d="M 160 128 L 160 152" stroke="#0f766e" stroke-width="2" fill="none" marker-end="url(#arrow-teal)" />
-  <path d="M 640 128 L 640 152" stroke="#9f1239" stroke-width="2" fill="none" marker-end="url(#arrow-rose)" />
-
-  <!-- Public Key Computation & Sent Values -->
-  <rect x="60" y="156" width="200" height="42" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="1.5" />
-  <text x="160" y="174" font-size="11" font-weight="600" fill="#166534" text-anchor="middle">Computes &amp; Sends Public Key A:</text>
-  <text x="160" y="191" font-size="13" font-weight="800" fill="#15803d" text-anchor="middle">A = g^a mod p</text>
-
-  <rect x="540" y="156" width="200" height="42" rx="6" fill="#fff1f2" stroke="#be123c" stroke-width="1.5" />
-  <text x="640" y="174" font-size="11" font-weight="600" fill="#9f1239" text-anchor="middle">Computes &amp; Sends Public Key B:</text>
-  <text x="640" y="191" font-size="13" font-weight="800" fill="#be123c" text-anchor="middle">B = g^b mod p</text>
-
-  <!-- Crossing Public Exchange Arrows -->
-  <path d="M 260 177 L 530 255" stroke="#15803d" stroke-width="2" fill="none" marker-end="url(#arrow-teal)" />
-  <path d="M 540 177 L 270 255" stroke="#be123c" stroke-width="2" fill="none" marker-end="url(#arrow-rose)" />
-
-  <!-- Eavesdropper Pill Box (Center Network Channel) -->
-  <rect x="270" y="200" width="260" height="44" rx="22" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
-  <text x="400" y="218" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">Public Channel (Adversary Sees):</text>
-  <text x="400" y="235" font-size="11.5" font-weight="600" fill="#78350f" text-anchor="middle">g, p, Public Key A, Public Key B</text>
-
-  <!-- Shared Secret Computation -->
-  <rect x="50" y="262" width="220" height="46" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" />
-  <text x="160" y="280" font-size="11" font-weight="600" fill="#1e40af" text-anchor="middle">Derives Shared Secret S:</text>
-  <text x="160" y="298" font-size="13" font-weight="800" fill="#1d4ed8" text-anchor="middle">S = B^a mod p = (g^b)^a mod p</text>
-
-  <rect x="530" y="262" width="220" height="46" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" />
-  <text x="640" y="280" font-size="11" font-weight="600" fill="#1e40af" text-anchor="middle">Derives Shared Secret S:</text>
-  <text x="640" y="298" font-size="13" font-weight="800" fill="#1d4ed8" text-anchor="middle">S = A^b mod p = (g^a)^b mod p</text>
-
-  <!-- Bottom Result Summary Banner -->
-  <rect x="60" y="340" width="680" height="120" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
-  <text x="400" y="368" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Unauthenticated DH Mechanics: Identical Shared Secret Derived (S = g^(ab) mod p)</text>
-  <text x="400" y="394" font-size="12" font-weight="500" fill="#334155" text-anchor="middle">Unauthenticated DH mechanics—authentication (digital signatures / certificates) is required to prevent active MITM attacks.</text>
-  <text x="400" y="416" font-size="11.5" font-weight="500" fill="#475569" text-anchor="middle">Shared secret S is passed through HKDF (RFC 5869) to derive symmetric AEAD keys.</text>
-  <text x="400" y="438" font-size="11" font-style="italic" fill="#64748b" text-anchor="middle">ECDH / X25519 (RFC 7748): Same key agreement principle using scalar multiplication on elliptic curves.</text>
+  <rect x="650" y="305" width="490" height="125" rx="10" fill="#ffffff" stroke="#86efac" stroke-width="1.5"/>
+  <text x="665" y="330" font-size="11" font-weight="900" fill="#15803d">4. SHARED SECRET CALCULATION (BOB)</text>
+  <text x="665" y="356" font-size="14" font-weight="800" fill="#15803d">S = A<sup>b</sup> mod p = (g<sup>a</sup>)<sup>b</sup> mod p = g<sup>ab</sup> mod p</text>
+  <line x1="665" y1="368" x2="1125" y2="368" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="665" y="392" font-size="12" font-weight="700" fill="#16a34a">Result: Identical Shared Secret S derived in Bob's RAM!</text>
+  <text x="665" y="412" font-size="11" fill="#475569">Eavesdropper seeing A and B cannot compute S without solving discrete log</text>
 </svg>

@@ -46,7 +46,7 @@ TLS 1.3 allows returning clients to resume sessions and send data in the very fi
   <div class="security-layer-label">0-RTT Security Guidance</div>
   <div>
     <strong>0-RTT Early Data Replay Protection</strong>
-    <p>Per <a href="https://www.rfc-editor.org/rfc/rfc8446.html#section-8">RFC 8446 §8</a>, 0-RTT data carries no non-replay guarantee, so it should only be used for requests that are safe to replay — in HTTP terms, <strong>idempotent</strong> requests. This is broader than "GET": <code>GET</code> is the common case, but not every <code>GET</code> is side-effect-free, and some non-<code>GET</code> requests (e.g., a <code>PUT</code> keyed by a request-scoped idempotency token) are also safe to replay. Non-idempotent, state-modifying requests (a typical <code>POST</code>) must be restricted to 1-RTT transport to prevent transaction replay attacks.</p>
+    <p>Per <a href="https://www.rfc-editor.org/rfc/rfc8446.html#section-8">RFC 8446 §8</a>, 0-RTT data carries no non-replay guarantee, so it should only be used for application-defined replay-safe operations. While HTTP idempotence (e.g., standard <code>GET</code> or <code>PUT</code> with idempotency headers) is a primary guideline, HTTP idempotence alone is not always sufficient if backend application logic processes the request non-atomically. State-modifying or non-replay-safe operations must be restricted to 1-RTT transport to prevent transaction replay attacks.</p>
   </div>
 </div>
 
@@ -62,8 +62,8 @@ In standard TLS 1.3, the Server Name Indication (SNI) header in `ClientHello` re
     <strong>TLS Handshake Summary</strong>
     <ul>
       <li><strong>TLS 1.3 1-RTT Speed</strong>: Reduces handshake latency to 1 round-trip time; mandates AEAD ciphers and requires ephemeral key exchange (ECDHE) for the full handshake — PSK-only resumption is a permitted mode but forgoes forward secrecy for that session.</li>
-      <li><strong>Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))</strong>: Wraps the real SNI and other sensitive fields inside an encrypted inner <code>ClientHello</code>, carried inside an unencrypted outer one, to defeat network surveillance.</li>
-      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to requests that are safe to replay (idempotent methods, per RFC 8446 §8 — a broader category than just <code>GET</code>).</li>
+      <li><strong>Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))</strong>: Wraps the real SNI and other sensitive fields inside an encrypted inner <code>ClientHello</code>, carried inside an unencrypted outer one, to hide target server destinations from network eavesdroppers.</li>
+      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to application-defined replay-safe operations (per RFC 8446 §8; HTTP idempotence alone is not always sufficient).</li>
     </ul>
   </div>
 </div>

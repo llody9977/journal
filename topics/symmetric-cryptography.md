@@ -22,7 +22,7 @@ Symmetric encryption transforms readable plaintext into unreadable ciphertext us
 
 ### Advantages & Limitations
 
-- **High Speed & Low Overhead**: Hardware-accelerated CPU instructions (AES-NI) enable gigabytes-per-second encryption throughput.
+- **High Speed & Low Overhead**: Hardware-accelerated CPU instructions (Intel/AMD AES-NI, ARMv8 Cryptography Extensions) enable gigabytes-per-second encryption throughput.
 - **Key Distribution Problem**: Peer endpoints must securely share key **K** prior to communication. If the transit channel is untrusted, asymmetric key exchange (**[ECDHE]({{ '/topics/key-exchange-derivation/' | relative_url }})**) is required.
 - **No Per-Party Non-Repudiation**: Because both parties hold key **K**, either party could have generated a specific MAC tag. Symmetric MACs provide origin authenticity between key holders, but not legal non-repudiation.
 
@@ -39,7 +39,7 @@ Symmetric ciphers operate under two distinct mathematical paradigms:
 | **Modern Standards** | **AES-256-GCM** ([FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) / [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | **ChaCha20-Poly1305** ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)) | AES-256-GCM is a NIST FIPS-approved AEAD construction. ChaCha20-Poly1305 is an IETF-standardized AEAD (RFC 8439) that is not itself a NIST-approved algorithm under FIPS 140, though it is widely permitted and deployed, e.g., as a TLS 1.3 cipher suite. |
 | **Operational Unit** | Fixed-size data blocks (128 bits / 16 bytes) | Continuous byte/bit stream | Stream ciphers accept arbitrary payload lengths without block alignment overhead. |
 | **Padding Requirements** | Required for block modes like CBC; not required for GCM/CTR | None required | Padding oracle attacks occur when unauthenticated block padding is parsed. |
-| **Primary Real-World Use Cases** | Database field encryption, cloud storage volumes (EBS/LUKS2 via AES-XTS), high-throughput server TLS 1.3 with hardware AES-NI instructions. | Real-time video/audio streaming, low-latency mobile apps, VPN tunnels (WireGuard), embedded IoT microcontrollers lacking AES-NI hardware. | Select AES-256-GCM for server hardware with AES-NI; select ChaCha20-Poly1305 for mobile/ARM CPUs without hardware AES. |
+| **Primary Real-World Use Cases** | Database field encryption, cloud storage volumes (EBS/LUKS2 via AES-XTS), high-throughput server TLS 1.3 with hardware AES acceleration (AES-NI / ARMv8 Crypto Extensions). | Real-time video/audio streaming, low-latency mobile apps, VPN tunnels (WireGuard), embedded IoT microcontrollers lacking hardware AES acceleration. | Select AES-256-GCM on hardware with AES acceleration (Intel/AMD AES-NI or ARMv8 Cryptography Extensions — present in most modern server and mobile CPUs, including Apple Silicon and AWS Graviton); select ChaCha20-Poly1305 for CPUs without hardware AES support (e.g., budget or embedded cores). |
 
 ## AES Architecture & Round Transformation Pipeline (FIPS 197)
 
@@ -91,8 +91,8 @@ AES alone only encrypts a single 128-bit block. Modes of operation chain multipl
 |---|---|---|---|
 | **CBC (Cipher Block Chaining)** | XORs plaintext block with previous ciphertext block | **LEGACY / HIGH RISK**: Requires unpredictable IV. Vulnerable to padding oracle attacks unless combined with HMAC. | Replace with AES-GCM or AES-GCM-SIV. |
 | **CTR (Counter Mode)** | Encrypts incrementing counter to generate keystream | **STREAM MODE**: Fast, parallelizable. Nonce reuse completely breaks confidentiality. | Do not use plain CTR without an authentication tag (HMAC). |
-| **ECB (Electronic Codebook)** | Encrypts each block independently | **CRITICAL FAILURE**: Identical plaintext blocks produce identical ciphertext blocks, leaking structural patterns. | **DO NOT USE**: Never deploy ECB mode under any circumstances. |
-| **GCM (Galois/Counter Mode)** | CTR encryption + GHASH Galois authentication tag | **RECOMMENDED AEAD**: Provides confidentiality, integrity, and authenticity in one pass. | Standard default for TLS 1.3, SSH, and cloud database encryption. |
+| **ECB (Electronic Codebook)** | Encrypts each block independently | **CRITICAL FAILURE FOR GENERAL DATA**: Identical plaintext blocks produce identical ciphertext blocks, leaking structural patterns whenever a payload spans more than one block with repeating or predictable content — the overwhelmingly common case. | **AVOID FOR GENERAL-PURPOSE ENCRYPTION**: Do not use ECB to encrypt structured, multi-block, or patterned data; prefer AES-GCM or AES-GCM-SIV. Narrow exceptions exist in specialist constructions (e.g., single-block encryption of already-random/high-entropy values, certain key-wrapping schemes), but these are not general-purpose use and should not be treated as license to use ECB elsewhere. |
+| **GCM (Galois/Counter Mode)** | CTR encryption + GHASH Galois authentication tag | **RECOMMENDED AEAD**: Provides confidentiality, integrity, and authenticity in one pass. | Standard default for TLS 1.3 and cloud database encryption. Widely supported and commonly negotiated in SSH ([RFC 5647](https://www.rfc-editor.org/rfc/rfc5647)), but not universally SSH's default — e.g., OpenSSH's own default cipher preference list places `chacha20-poly1305@openssh.com` ahead of the AES-GCM variants, and the effective default varies by implementation, version, and negotiated order. |
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/ecb-pattern-leak.svg' | relative_url }}" alt="ECB pattern leak comparison showing how ECB mode leaks image structure while CTR/GCM output appears completely random.">
@@ -118,7 +118,7 @@ Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but 
     <ul>
       <li><strong>AES-256-GCM Standard</strong>: Primary AEAD Recommendation cipher for data in transit and at rest. Provides 128-bit quantum security against Grover's algorithm.</li>
       <li><strong>Nonce Uniqueness Rule</strong>: Reusing a 96-bit GCM nonce under the same key destroys authenticity and allows plaintext recovery.</li>
-      <li><strong>ChaCha20-Poly1305 Alternative</strong>: Software-optimized AEAD stream cipher providing exceptional speed on hardware lacking AES-NI acceleration.</li>
+      <li><strong>ChaCha20-Poly1305 Alternative</strong>: Software-optimized AEAD stream cipher providing exceptional speed on hardware lacking dedicated AES acceleration (e.g., AES-NI or ARMv8 Crypto Extensions).</li>
     </ul>
   </div>
 </div>

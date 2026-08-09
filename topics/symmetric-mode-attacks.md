@@ -251,15 +251,15 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
 
 ### Chosen-Plaintext & Dictionary Cryptanalysis Attack (ECB Codebook Exploitation)
 
-When a server encrypts data using **AES-ECB** mode, an adversary possessing stolen target ciphertext does not need to guess the secret key **K**. If the adversary has access to an **Encryption Oracle** (such as a web portal or API endpoint that encrypts user inputs under the same key **K**), they can build a **Codebook / Dictionary Table** mapping candidate plaintexts to generated ciphertext blocks.
+When a server encrypts data using **AES-ECB** mode and also exposes an **Encryption Oracle** (such as a web portal or API endpoint that encrypts attacker-chosen input under the same key **K**), an adversary can build a **Codebook / Dictionary Table** mapping candidate plaintexts to their resulting ciphertext blocks — without ever learning **K** itself.
 
-Once a generated ciphertext block matches a block in the stolen target file, the target block is **instantly decrypted**:
+This is a **known-plaintext / chosen-plaintext matching technique**, not a general decryption method: a target block is only recovered when the adversary has already guessed its *exact* 16-byte plaintext and submitted that guess to the oracle. Once a generated ciphertext block matches a block in the stolen target file, that specific block is **decrypted by lookup**; a block whose true plaintext was never guessed stays opaque no matter how many other candidates are queried:
 
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Chosen-Plaintext Attack Playground</span>
     <h3>ECB Codebook Dictionary Cryptanalysis Playground</h3>
-    <p>Simulate an attacker using an Encryption Oracle portal to build a Codebook / Dictionary mapping candidate plaintexts to ciphertexts, decrypting stolen target data block-by-block without key K.</p>
+    <p>Simulate an attacker using an Encryption Oracle portal to build a Codebook / Dictionary mapping candidate plaintexts to ciphertexts. Only target blocks whose exact plaintext has already been guessed and submitted will match &mdash; this recovers guessed content by lookup, without key K, rather than decrypting arbitrary stolen data.</p>
   </div>
 
   <div class="demo-body">
@@ -460,7 +460,7 @@ Once a generated ciphertext block matches a block in the stolen target file, the
 })();
 </script>
 
-
+Because this attack succeeds purely on ciphertext equality, it never decrypts a block outright — it only confirms that a block's plaintext equals whatever the attacker already guessed and queried through the oracle. A target block encoding an unguessable value (a random session token, for example) will never appear in the codebook and therefore never gets recovered by this method.
 
 ## 2. CBC Mode: Bit-Flipping Malleability & Padding Oracle Attacks
 

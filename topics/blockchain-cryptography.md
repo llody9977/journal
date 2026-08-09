@@ -45,7 +45,7 @@ Light clients (SPV nodes) download 80-byte block headers and verify transaction 
 | **Bitcoin (Legacy)** | **ECDSA** | `secp256k1` | Requires DER encoding; strict deterministic nonce safety (**[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)**). |
 | **Bitcoin (Taproot / BIP 340)** | **Schnorr Signatures** | `secp256k1` | [BIP 340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) specifies single-signer verification only; its linear algebra is what *enables* separate multi-signature aggregation protocols such as MuSig2 ([BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)), plus Taproot MAST privacy. |
 | **Ethereum (Consensus Layer)** | **BLS Signatures** | `BLS12-381` | Per-slot committee aggregators compress up to hundreds/thousands of validator attestation signatures into a single aggregate signature under Gasper (LMD-GHOST fork choice + Casper FFG finality). |
-| **Ethereum (EVM Execution)** | **ECDSA** | `secp256k1` | Recovers public key from signature via recovery parameter `v in {27, 28}`. |
+| **Ethereum (EVM Execution)** | **ECDSA** | `secp256k1` | Recovers public key from signature via recovery parameter `v`. Supports legacy `v in {27, 28}`, EIP-155 chain-id-encoded `v = chainId * 2 + 35` or `36`, and EIP-2718 / EIP-1559 typed transaction parity `yParity in {0, 1}` ([EIP-155](https://eips.ethereum.org/EIPS/eip-155)). |
 | **Solana** | **Ed25519** | `Curve25519` | High-throughput signature verification with deterministic nonces. |
 | **Polkadot** | **sr25519** (primary; Ed25519 &amp; ECDSA also supported) | `Ristretto25519` (Curve25519-based) | Schnorr signatures over the Ristretto group (Schnorrkel); used for BABE block-production VRF + signing. GRANDPA finality voting uses a separate key type. |
 
@@ -54,7 +54,7 @@ Light clients (SPV nodes) download 80-byte block headers and verify transaction 
 Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowledge Proofs**:
 
 1. **zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge)**: Enables a prover to demonstrate to a verifier that a computational statement is true (*e.g., "I know a private key that owns this UTXO and has sufficient balance"*) without revealing any private inputs.
-2. **zk-STARKs (Zero-Knowledge Scalable Transparent Arguments of Knowledge)**: Quantum-resistant zero-knowledge proofs relying purely on hash functions without requiring a trusted setup ceremony.
+2. **zk-STARKs (Zero-Knowledge Scalable Transparent Arguments of Knowledge)**: Zero-knowledge proofs relying on hash-based collision-resistant assumptions generally considered post-quantum candidate constructions without requiring a trusted setup ceremony.
 
 ## What I Need to Remember
 
@@ -74,4 +74,7 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
 
 - **Bitcoin BIP 340**: *Schnorr Signatures for secp256k1* — [Bitcoin BIP 340 Specification](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
 - **Bitcoin BIP 327**: *MuSig2 for BIP340-compatible Multi-Signatures* — [Bitcoin BIP 327 Specification](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)
-- **BLS Signatures Draft**: *BLS Signatures IETF Draft Standard* — [draft-irtf-cfrg-bls-signature-05](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)
+- **Ethereum EIP-155**: *Simple Replay Attack Protection* — [EIP-155 Specification](https://eips.ethereum.org/EIPS/eip-155)
+- **Polkadot Cryptography**: *Schnorrkel sr25519 Signatures over Ristretto25519* — [Polkadot Host Specification](https://spec.polkadot.network/#sect-cryptography)
+- **STARKs Specification**: *Scalable, Transparent, and Post-Quantum Secure Computational Integrity* — [IACR Cryptology ePrint 2018/046](https://eprint.iacr.org/2018/046)
+- **BLS Signatures Draft**: *BLS Signatures IETF CFRG Draft (Work in Progress — Not an IETF Standard)* — [draft-irtf-cfrg-bls-signature-07](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)

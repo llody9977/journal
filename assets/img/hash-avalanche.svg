@@ -1,42 +1,37 @@
-<svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
-  <rect x="0" y="0" width="720" height="260" fill="#ffffff" />
-
+<svg viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="340" fill="#ffffff"/>
   <defs>
-    <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/>
     </marker>
   </defs>
 
-  <!-- Row 1 -->
-  <rect x="10" y="35" width="230" height="40" rx="8" fill="#e9efff" stroke="#2457d6" stroke-width="1.5" />
-  <text x="125" y="60" font-size="13" fill="#193e9f" text-anchor="middle" font-family="ui-monospace,monospace">"The quick brown fox"</text>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Cryptographic Hash Avalanche Effect</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Flipping a single input bit causes ~50% of output digest bits to change unpredictably</text>
 
-  <path d="M245 55 L285 55" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+  <rect x="40" y="110" width="1120" height="205" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
-  <rect x="290" y="35" width="90" height="40" rx="8" fill="#193e9f" />
-  <text x="335" y="60" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">SHA-256</text>
+  <!-- Input A -->
+  <rect x="70" y="140" width="300" height="60" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="90" y="165" font-size="11" font-weight="900" fill="#2563eb">INPUT STRING A</text>
+  <text x="90" y="186" font-size="14" font-weight="800" fill="#0f172a">"The quick brown fox..."</text>
 
-  <path d="M385 55 L425 55" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+  <path d="M 375 170 L 455 170" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
-  <rect x="430" y="35" width="280" height="40" rx="8" fill="#e6f4f1" stroke="#0f766e" stroke-width="1.5" />
-  <text x="570" y="53" font-size="10.5" fill="#0f766e" text-anchor="middle" font-family="ui-monospace,monospace">5cac4f980fedc3d3f1f99b4be3472c9b</text>
-  <text x="570" y="67" font-size="10.5" fill="#0f766e" text-anchor="middle" font-family="ui-monospace,monospace">30d56523e632d151237ec9309048bda9</text>
+  <!-- Digest A -->
+  <rect x="460" y="140" width="670" height="60" rx="8" fill="#1e40af"/>
+  <text x="480" y="163" font-size="11" font-weight="900" fill="#bfdbfe">SHA-256 DIGEST A</text>
+  <text x="480" y="186" font-size="13" font-family="monospace" font-weight="700" fill="#ffffff">5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8</text>
 
-  <!-- Row 2 -->
-  <rect x="10" y="140" width="230" height="40" rx="8" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
-  <text x="118" y="165" font-size="13" fill="#a14c00" text-anchor="middle" font-family="ui-monospace,monospace">"The quick brown fox<tspan font-weight="700" fill="#9f1239">.</tspan>"</text>
+  <!-- Input B (1 bit modified) -->
+  <rect x="70" y="225" width="300" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="90" y="250" font-size="11" font-weight="900" fill="#dc2626">INPUT STRING B (1 BIT FLIPPED)</text>
+  <text x="90" y="271" font-size="14" font-weight="800" fill="#0f172a">"The quick brown fox<tspan fill="#dc2626" font-weight="900">!</tspan>"</text>
 
-  <path d="M245 160 L285 160" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
+  <path d="M 375 255 L 455 255" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
-  <rect x="290" y="140" width="90" height="40" rx="8" fill="#193e9f" />
-  <text x="335" y="165" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">SHA-256</text>
-
-  <path d="M385 160 L425 160" stroke="#8491a3" stroke-width="2.5" fill="none" marker-end="url(#ah2)" />
-
-  <rect x="430" y="140" width="280" height="40" rx="8" fill="#fde8ea" stroke="#9f1239" stroke-width="1.5" />
-  <text x="570" y="158" font-size="10.5" fill="#9f1239" text-anchor="middle" font-family="ui-monospace,monospace">42e25dd386eb55b56db34af535fab523</text>
-  <text x="570" y="172" font-size="10.5" fill="#9f1239" text-anchor="middle" font-family="ui-monospace,monospace">1db8cf1b588af95bc9c32ef849507fc5</text>
-
-  <text x="360" y="225" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">One extra character changes the entire output — unpredictably</text>
-  <text x="360" y="245" font-size="11.5" fill="#475569" text-anchor="middle">real SHA-256 output shown above — try it yourself: echo -n "..." | shasum -a 256</text>
+  <!-- Digest B -->
+  <rect x="460" y="225" width="670" height="60" rx="8" fill="#991b1b"/>
+  <text x="480" y="248" font-size="11" font-weight="900" fill="#fca5a5">SHA-256 DIGEST B (~50% BITS CHANGED)</text>
+  <text x="480" y="271" font-size="13" font-family="monospace" font-weight="700" fill="#ffffff">17a1023a1a6b0c439281f6209e7c3b11823901cf8432a1982b12fe9012cd38f1</text>
 </svg>

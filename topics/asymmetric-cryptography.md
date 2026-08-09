@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # Asymmetric Cryptography & Public-Key Infrastructure
 
-<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives solve the key-distribution problem, enable digital signatures for non-repudiation, and establish ephemeral keys for transport security.</p>
+<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives solve the key-distribution problem, enable digital signatures for verifiable evidence of origin and integrity, and establish ephemeral keys for transport security.</p>
 
 ## Asymmetric Paradigm: Linked Key Pairs
 
@@ -31,12 +31,12 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric ciphers g
 | Objective | Public Key Action | Private Key Action | Standard Protocol | Primary Output |
 |---|---|---|---|---|
 | **Confidentiality** (RSA-OAEP direct; HPKE hybrid) | Encrypts payload (RSA-OAEP) / KEM encapsulation (HPKE) | Decrypts payload (RSA-OAEP) / KEM decapsulation (HPKE) | RSA-OAEP; RFC 9180 HPKE = KEM + KDF + AEAD | Unreadable ciphertext; in HPKE the public key only wraps a symmetric key, and an AEAD cipher encrypts the actual payload |
-| **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Non-repudiable proof of private key possession |
+| **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Verifiable evidence that the signing key was used |
 | **Key Agreement** | Exchanged with peer | Combined with peer public key | Ephemeral ECDH (X25519 / NIST P-256) | Shared symmetric secret key for bulk AEAD encryption |
 
 ## Can I Use a Private Key to Encrypt Data?
 
-**Not in any standardized or secure sense.** No conforming asymmetric encryption scheme — RSA-OAEP, HPKE, ECIES — defines "encrypt with the private key" as an operation, and every mainstream crypto library refuses to run one.
+**Not in any standardized or secure sense.** No conforming asymmetric encryption scheme — RSA-OAEP, HPKE, ECIES — defines "encrypt with the private key" as an operation at all; standardized encryption APIs simply don't expose a private-key-encryption call to make.
 
 A **Private Key is used for Digital Signing** (and for decrypting incoming data locked under its matching public key). The popular shorthand *"signing is encrypting with the private key"* is an understandable simplification: for raw/textbook RSA specifically, generating a signature (`m^d mod n`) and decrypting ciphertext (`c^d mod n`) really are the same modular-exponentiation primitive with the key roles swapped — PKCS#1 / RFC 8017 names these RSASP1 and RSADP, and they're defined identically. But treating a signature as "ciphertext" is still inaccurate for three reasons:
 
@@ -151,6 +151,10 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
     return `-----BEGIN ${type}-----\n${lines.join('\n')}\n-----END ${type}-----`;
   }
 
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   async function generateRSAKeys() {
     try {
       keyStatus.innerHTML = '<span style="color: var(--amber); font-weight: 600;">⏳ Generating 2048-bit RSA keys...</span>';
@@ -191,7 +195,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
       keyStatus.innerHTML = '<span style="color: #15803d; font-weight: 600;">✔ 2048-bit RSA Keypair Generated Successfully!</span>';
     } catch (err) {
-      keyStatus.innerHTML = `<span style="color: #b91c1c;">Key Generation Error: ${err.message || err}</span>`;
+      keyStatus.innerHTML = `<span style="color: #b91c1c;">Key Generation Error: ${escapeHtml(err.message || String(err))}</span>`;
     }
   }
 
@@ -225,7 +229,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       </div>`;
     } catch (err) {
       encOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
-        <strong>Encryption Error:</strong> ${err.message || err}
+        <strong>Encryption Error:</strong> ${escapeHtml(err.message || String(err))}
       </div>`;
     }
   }
@@ -253,14 +257,14 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
             <span class="block-plain-preview">✔ Decrypted via Private Key</span>
           </div>
           <div class="block-hex-val">
-            <code>"<strong>${decText}</strong>"</code>
+            <code>"<strong>${escapeHtml(decText)}</strong>"</code>
             <span class="matched-tag">✔ RECOVERED OK</span>
           </div>
         </div>
       </div>`;
     } catch (err) {
       encOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
-        <strong>Decryption Error:</strong> ${err.message || err}
+        <strong>Decryption Error:</strong> ${escapeHtml(err.message || String(err))}
       </div>`;
     }
   }
@@ -283,7 +287,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         <div class="security-layer-label">API Contract Rejection Confirmed</div>
         <div>
           <strong>Public Key Decryption Rejected by Web Crypto API!</strong>
-          <p style="margin-bottom:0;">Error Message: <code>${err.message || err}</code>. Asymmetric cryptography standards explicitly prohibit using Public Keys for decryption!</p>
+          <p style="margin-bottom:0;">Error Message: <code>${escapeHtml(err.message || String(err))}</code>. Asymmetric cryptography standards explicitly prohibit using Public Keys for decryption!</p>
         </div>
       </div>`;
     }
@@ -313,7 +317,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
             <span class="block-plain-preview">NOT ENCRYPTED!</span>
           </div>
           <div class="block-hex-val">
-            <code>"<strong>${textVal}</strong>"</code>
+            <code>"<strong>${escapeHtml(textVal)}</strong>"</code>
           </div>
         </div>
 
@@ -329,7 +333,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       </div>`;
     } catch (err) {
       sigOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
-        <strong>Signature Error:</strong> ${err.message || err}
+        <strong>Signature Error:</strong> ${escapeHtml(err.message || String(err))}
       </div>`;
     }
   }
@@ -373,7 +377,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       }
     } catch (err) {
       sigOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
-        <strong>Verification Error:</strong> ${err.message || err}
+        <strong>Verification Error:</strong> ${escapeHtml(err.message || String(err))}
       </div>`;
     }
   }
