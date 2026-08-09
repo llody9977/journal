@@ -46,7 +46,7 @@ This journal still uses the practical operational sequence *detect → triage �
 2. **Triage**: Confirm the event is real, assess scope, and assign severity (see below).
 3. **Contain**: Limit the incident's ability to spread further (isolate a workload, revoke a credential, block an IP) without necessarily removing the root cause yet.
 4. **Eradicate**: Remove the root cause—patch the vulnerability, delete the malicious artifact, close the misconfiguration.
-5. **Recover**: Restore affected systems to verified-clean, normal operation—see the caveat on automated recovery controls in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**: recovery is only as clean as what it restores from.
+5. **Recover**: Restore affected systems to normal operation, validated against defined recovery criteria with residual uncertainty documented rather than declared "clean" outright—see the caveat on automated recovery controls in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**: recovery is only as clean as what it restores from.
 6. **Learn**: Conduct a blameless postmortem and track corrective actions (below)—this journal stage maps to CSF 2.0's Identify/Improvement (ID.IM) Category, not a distinct CSF Function, and its outcomes feed back across all six Functions.
 
 ## Incident Severity Classification (Journal Working Example)
@@ -62,7 +62,7 @@ Severity classification determines escalation speed, staffing, and communication
 
 ## Roles During an Incident (Common Practice, Not a NIST-Defined Structure)
 
-Many organizations running structured incident response adapt role concepts from the **Incident Command System (ICS)**—a command structure originally developed for emergency services and formalized in the US under FEMA's National Incident Management System—rather than a security-specific standard; this pattern is visible in widely cited incident-command write-ups from practitioners such as Google's SRE book and PagerDuty's incident response documentation. The roles below are common industry practice, not a scheme NIST SP 800-61 itself defines:
+Many organizations running structured incident response adapt role concepts from the **[Incident Command System (ICS)](https://training.fema.gov/is/courseoverview.aspx?code=IS-100.C)**—a command structure originally developed for emergency services and formalized in the US under FEMA's National Incident Management System—rather than a security-specific standard; this pattern is visible in widely cited incident-command write-ups from practitioners such as Google's SRE book's [chapter on managing incidents](https://sre.google/sre-book/managing-incidents/) and [PagerDuty's incident response documentation](https://response.pagerduty.com/). The roles below are common industry practice, not a scheme NIST SP 800-61 itself defines:
 
 | Role | Responsibility | Explicitly Not Responsible For |
 |---|---|---|
@@ -93,7 +93,7 @@ When auditing an incident response program or reviewing a specific incident's ha
 | **Detection Coverage** | Would this incident's initial access vector have generated a monitored signal at all, or was detection incidental (e.g., a customer report)? | Detection engineering coverage maps against the incident's actual kill chain. |
 | **Severity Accuracy** | Was the incident's severity assessed and escalated correctly given what was actually known at each point in time? | Timeline reconstruction comparing severity assigned vs. information available at that timestamp. |
 | **Containment Speed** | How much time elapsed between confirmed detection and effective containment? | Incident timeline with timestamped containment actions. |
-| **Recovery Verification** | Was the recovered state verified as clean (uncompromised image/config/credentials), not just restored to "working"? | Recovery validation records—see the recovery-control caveat in Security Controls & Defense in Depth. |
+| **Recovery Verification** | Was the recovered state validated against defined recovery criteria (image/config/credential provenance checks), not just restored to "working," with any residual uncertainty documented rather than assumed away? | Recovery validation records—see the recovery-control caveat in Security Controls & Defense in Depth. |
 | **Corrective Action Closure** | Are postmortem action items tracked to a named owner and closed, not left open indefinitely? | Corrective action tracker with owner, due date, and closure status. |
 | **Feedback Loop Completion** | Did this incident's findings actually reach the risk register, control effectiveness review, and threat model—not just the postmortem document? | Cross-references from the postmortem to updated risk register entries, control reviews, and threat model revisions. |
 

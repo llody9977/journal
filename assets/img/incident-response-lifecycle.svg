@@ -10,7 +10,7 @@
     <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Incident Response &amp; Operational Learning Loop</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Continuous Monitoring feeds Detect, Respond, Recover and Improve; Improve feeds</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Continuous Monitoring feeds Detect, Respond, and Recover; Learn &amp; Improve feeds</text>
   <text x="50" y="102" font-size="14.5" fill="#475569">back into Govern-level risk &amp; control decisions, closing a continuous loop.</text>
 
   <!-- GOVERN banner (x=40, y=115, w=1120, h=75) -->

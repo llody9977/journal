@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # Threats, Vulnerabilities & Risk
 
-<p class="lede">Risk connects high-value enterprise assets to plausible threat scenarios. Engineering effective defenses requires distinguishing software vulnerabilities from actual risk exposure: evaluating adversary capability, reachability, potential magnitude of impact, existing control efficacy, and residual risk governance approved by authorized executive risk owners.</p>
+<p class="lede">Risk connects high-value enterprise assets to plausible threat scenarios—adversarial and non-adversarial alike. Engineering effective defenses requires distinguishing software vulnerabilities from actual risk exposure: evaluating threat-source conditions, reachability, potential magnitude of impact, existing control efficacy, and residual risk governance approved by whichever acceptance authority organizational policy and severity thresholds assign.</p>
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/risk-fundamentals-engine.svg' | relative_url }}" alt="Threats, Vulnerabilities & Risk Engine diagram showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.">
@@ -41,10 +41,10 @@ The same risk scenario carries a different exposure level depending on which poi
 
 | Risk State | What It Measures | Relationship to Controls |
 |---|---|---|
-| **Inherent Risk** | Exposure assuming no controls exist at all—the raw combination of asset, threat, and vulnerability. | A theoretical ceiling (the maximum plausible exposure), not a floor; rarely the actual state of a running system, but useful for showing how much a control program is worth by comparison against Current Risk. |
+| **Inherent Risk** | Exposure assuming no controls exist at all—the raw combination of asset, threat, and vulnerability. | An estimated uncontrolled baseline, not a floor—typically the higher end of the exposure range, though not strictly guaranteed to be the maximum possible (a poorly implemented control can occasionally introduce its own new exposure). Rarely the actual state of a running system, but useful for showing how much a control program is worth by comparison against Current Risk. |
 | **Current Risk** | Exposure given the controls actually operating today. | A snapshot—this is what "residual risk" (below) usually refers to at the present moment, before any further planned mitigation. |
 | **Target Risk** | The exposure level the organization intends to reach, set by its risk appetite and tolerance (below). | The gap between Current and Target risk defines the mitigation backlog and its priority. |
-| **Residual Risk** | Exposure remaining after a specific set of controls—existing or newly deployed—operate (**NIST SP 800-39**). | Functionally the same measurement as Current Risk, but the term specifically implies the controls under discussion are considered final for this scenario, pending an explicit response. |
+| **Residual Risk** | Exposure remaining after a defined set of controls—existing or newly deployed—operate, evaluated at a stated point in time (**NIST SP 800-39**). | Functionally the same measurement as Current Risk, but the term specifically frames it as the input to an explicit response decision—not a closed, permanent state; further treatment may still follow. |
 
 ### Risk Appetite, Tolerance & Time Horizon
 
