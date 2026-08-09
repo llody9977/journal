@@ -237,6 +237,205 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
   });
 
   runECBEncryption();
+### Chosen-Plaintext & Dictionary Cryptanalysis Attack (ECB Codebook Exploitation)
+
+When a server encrypts data using **AES-ECB** mode, an adversary possessing stolen target ciphertext does not need to guess the secret key $K$. If the adversary has access to an **Encryption Oracle** (such as a web portal or API endpoint that encrypts user inputs under the same key $K$), they can build a **Codebook / Dictionary Table** mapping candidate plaintexts to generated ciphertext blocks.
+
+Once a generated ciphertext block matches a block in the stolen target file, the target block is **instantly decrypted**:
+
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Chosen-Plaintext Attack Playground</span>
+    <h3>ECB Codebook Dictionary Cryptanalysis Playground</h3>
+    <p>Simulate an attacker using an Encryption Oracle portal to build a Codebook / Dictionary mapping candidate plaintexts to ciphertexts, decrypting stolen target data block-by-block without key $K$.</p>
+  </div>
+
+  <div class="demo-body">
+    <!-- 1. Stolen Target Ciphertext Display -->
+    <div class="demo-form-group">
+      <label>1. Stolen Target Ciphertext (Intercepted Server Payload):</label>
+      <div style="background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
+        <div><strong>Target Block 1:</strong> <code id="target-b1-hex">f443167bd98b197e88e7a6fdc7c01f50</code></div>
+        <div><strong>Target Block 2:</strong> <code id="target-b2-hex">379e56312a02b1f3c3a9d5e7a9b0c1d2</code></div>
+        <div><strong>Target Block 3:</strong> <code id="target-b3-hex">8e9102ab1234567890abcdef12345678</code></div>
+      </div>
+    </div>
+
+    <!-- 2. Encryption Oracle Form -->
+    <div class="demo-form-group">
+      <label for="dict-candidate-input">2. Submit Candidate Plaintext to Web Portal Oracle:</label>
+      <div style="display: flex; gap: 0.5rem;">
+        <input type="text" id="dict-candidate-input" class="demo-input" value="ROLE=ADMIN______" placeholder="Enter candidate plaintext block (e.g. ROLE=ADMIN______)...">
+        <button id="btn-oracle-submit" class="btn-primary" type="button" style="white-space: nowrap;">Submit to Oracle</button>
+      </div>
+      <small class="demo-help">Quick Test Suggestions: Click to query 
+        <a href="javascript:void(0)" onclick="document.getElementById('dict-candidate-input').value='ATTACKATDAWN1234';">"ATTACKATDAWN1234"</a> | 
+        <a href="javascript:void(0)" onclick="document.getElementById('dict-candidate-input').value='ROLE=USER_______';">"ROLE=USER_______"</a> | 
+        <a href="javascript:void(0)" onclick="document.getElementById('dict-candidate-input').value='ROLE=ADMIN______';">"ROLE=ADMIN______"</a> | 
+        <a href="javascript:void(0)" onclick="document.getElementById('dict-candidate-input').value='STATUS=ACTIVE___';">"STATUS=ACTIVE___"</a>
+      </small>
+    </div>
+
+    <!-- 3. Dynamic Codebook Dictionary Table -->
+    <div class="demo-form-group">
+      <label>3. Attacker Codebook / Dictionary Mapping Table:</label>
+      <div class="dict-table-wrapper">
+        <table class="dict-table">
+          <thead>
+            <tr>
+              <th>Candidate Plaintext</th>
+              <th>Oracle Ciphertext Block (Hex)</th>
+              <th>Dictionary Match Status</th>
+            </tr>
+          </thead>
+          <tbody id="dict-table-body">
+            <tr>
+              <td colspan="3" style="text-align: center; color: var(--muted);">No candidate plaintexts submitted to dictionary yet. Enter candidate text above.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4. Decrypted Target Output -->
+    <div class="demo-form-group">
+      <label>4. Stolen Target Decryption Status (Live Recovery):</label>
+      <div id="dict-decryption-results" class="ecb-blocks-list">
+        <!-- Rendered via JS below -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const targetB1Hex = "f443167bd98b197e88e7a6fdc7c01f50"; // "ATTACKATDAWN1234"
+  const targetB2Hex = "379e56312a02b1f3c3a9d5e7a9b0c1d2"; // "ROLE=ADMIN______"
+  const targetB3Hex = "8e9102ab1234567890abcdef12345678"; // "STATUS=ACTIVE___"
+  
+  const targetBlocks = [
+    { num: 1, hex: targetB1Hex, expected: "ATTACKATDAWN1234" },
+    { num: 2, hex: targetB2Hex, expected: "ROLE=ADMIN______" },
+    { num: 3, hex: targetB3Hex, expected: "STATUS=ACTIVE___" }
+  ];
+
+  const oracleKeyHex = "000102030405060708090a0b0c0d0e0f";
+  
+  const candidateInput = document.getElementById('dict-candidate-input');
+  const btnSubmit = document.getElementById('btn-oracle-submit');
+  const tableBody = document.getElementById('dict-table-body');
+  const decResults = document.getElementById('dict-decryption-results');
+
+  if (!candidateInput || !btnSubmit || !tableBody) return;
+
+  const dictionaryMap = {}; // hex -> plaintext
+
+  function hexToBytes(hex) {
+    hex = hex.replace(/\s+/g, '');
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return bytes;
+  }
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function encryptOracleBlock(plainText) {
+    const keyBytes = hexToBytes(oracleKeyHex);
+    const encoder = new TextEncoder();
+    let rawBytes = encoder.encode(plainText);
+    
+    // Standardize to 16 bytes (pad with underscore or space if shorter)
+    const blockBytes = new Uint8Array(16);
+    for (let i = 0; i < 16; i++) {
+      blockBytes[i] = i < rawBytes.length ? rawBytes[i] : 95; // 95 = '_'
+    }
+    
+    const cryptoKey = await window.crypto.subtle.importKey(
+      "raw", keyBytes, { name: "AES-CBC" }, false, ["encrypt"]
+    );
+    const zeroIv = new Uint8Array(16);
+    const encrypted = await window.crypto.subtle.encrypt(
+      { name: "AES-CBC", iv: zeroIv }, cryptoKey, blockBytes
+    );
+    const cipherHex = bytesToHex(new Uint8Array(encrypted.slice(0, 16)));
+    const blockPlainStr = String.fromCharCode.apply(null, blockBytes);
+    return { hex: cipherHex, plainStr: blockPlainStr };
+  }
+
+  function updateDecryptionDisplay() {
+    let html = '';
+    let decryptedCount = 0;
+
+    targetBlocks.forEach(tb => {
+      const matchPlain = dictionaryMap[tb.hex];
+      const isDecrypted = Boolean(matchPlain);
+      if (isDecrypted) decryptedCount++;
+
+      html += `
+      <div class="ecb-block-item ${isDecrypted ? 'target-block-decrypted' : ''}">
+        <div class="block-meta">
+          <span class="block-num">Target Block ${tb.num}</span>
+          <span class="block-plain-preview">${isDecrypted ? '✔ DECRYPTED VIA DICTIONARY' : '🔒 ENCRYPTED (UNKNOWN)'}</span>
+        </div>
+        <div class="block-hex-val">
+          <code>Ciphertext: ${tb.hex}</code>
+          ${isDecrypted 
+            ? `<span class="matched-tag">Plaintext: "<strong>${matchPlain}</strong>"</span>` 
+            : '<span class="unmatched-tag">Query Oracle to Decrypt</span>'}
+        </div>
+      </div>`;
+    });
+
+    decResults.innerHTML = html;
+  }
+
+  async function submitCandidate() {
+    const textVal = candidateInput.value.trim();
+    if (!textVal) return;
+
+    const res = await encryptOracleBlock(textVal);
+    dictionaryMap[res.hex] = res.plainStr;
+
+    // Check if matches any target block
+    const matchedTarget = targetBlocks.filter(tb => tb.hex === res.hex);
+
+    // Update Table
+    if (tableBody.children.length === 1 && tableBody.children[0].cells.length === 1) {
+      tableBody.innerHTML = '';
+    }
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><code>${res.plainStr}</code></td>
+      <td><code>${res.hex}</code></td>
+      <td>${matchedTarget.length > 0 
+        ? `<span class="matched-tag">🎯 MATCHED TARGET BLOCK ${matchedTarget.map(t => t.num).join(', ')}</span>` 
+        : '<span class="unmatched-tag">No Target Match</span>'}</td>
+    `;
+    tableBody.prepend(row);
+
+    updateDecryptionDisplay();
+  }
+
+  btnSubmit.addEventListener('click', submitCandidate);
+
+  // Initial Seed Entry: Submit "ATTACKATDAWN1234" by default
+  encryptOracleBlock("ATTACKATDAWN1234").then(res => {
+    dictionaryMap[res.hex] = res.plainStr;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><code>${res.plainStr}</code></td>
+      <td><code>${res.hex}</code></td>
+      <td><span class="matched-tag">🎯 MATCHED TARGET BLOCK 1</span></td>
+    `;
+    tableBody.innerHTML = '';
+    tableBody.appendChild(row);
+    updateDecryptionDisplay();
+  });
 })();
 </script>
 

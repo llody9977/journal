@@ -516,6 +516,60 @@ a:hover { text-decoration: underline; }
   border-radius: 4px;
 }
 
+/* ---------------- Dictionary Attack Playground ---------------- */
+
+.dict-table-wrapper {
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.dict-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dict-table th, .dict-table td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--rule);
+  text-align: left;
+}
+
+.dict-table th {
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.matched-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #15803d;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.unmatched-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.target-block-decrypted {
+  border-color: #bbf7d0 !important;
+  background: #f0fdf4 !important;
+}
+
 .content h1 {
   font-size: 2.4rem;
   font-weight: 600;
