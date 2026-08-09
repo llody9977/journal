@@ -72,11 +72,14 @@ On August 13, 2024, NIST officially published the **finalized Federal Informatio
 
 ## NSA CNSA 2.0 Timeline & Transition Strategy (National Security Systems)
 
-For U.S. **National Security Systems (NSS)** subject to Commercial National Security Algorithm Suite 2.0 (**[NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071833/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)**) guidance, the NSA outlines target adoption timelines and Commercial Solutions for Classified (CSfC) capability package milestones:
+For U.S. **National Security Systems (NSS)** subject to Commercial National Security Algorithm Suite 2.0 (**[NSA CNSA 2.0](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)**) guidance, the NSA outlines target adoption timelines and Commercial Solutions for Classified (CSfC) capability package milestones:
 
-1. **Software &amp; Web Browsers (NSS)**: Prefer hybrid post-quantum key exchange (X25519MLKEM768) starting in 2025/2026; transition to exclusive PQC by 2030.
-2. **Network Equipment &amp; Enterprise VPNs (NSS)**: Deploy PQC capabilities starting in 2026; mandate exclusive PQC by 2030.
-3. **PKI, Operating Systems &amp; Firmware (NSS)**: Begin initial PQC deployment by 2027; enforce full exclusive PQC across NSS by 2033.
+- **Software &amp; Firmware Signing**: Preference starting 2025; exclusive PQC use by **2030**.
+- **Traditional Networking Equipment**: Preference starting 2026; exclusive PQC use by **2030**.
+- **Web Browsers, Servers &amp; Cloud Services**: Preference starting 2025; exclusive PQC use by **2033**.
+- **Operating Systems**: Preference starting 2025; exclusive PQC use by **2033**.
+- **Niche Equipment &amp; Large PKI**: Preference starting 2027; exclusive PQC use by **2033**.
+- **Custom &amp; Legacy Equipment**: Update or replace by **2033** per [NSA CNSA 2.0 Advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF).
 
 ## Hybrid Cryptography Transition Pattern
 
@@ -107,5 +110,5 @@ In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA co
 - **NIST FIPS 203**: *Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)* — [NIST CSRC FIPS 203 Final](https://csrc.nist.gov/pubs/fips/203/final)
 - **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST CSRC FIPS 204 Final](https://csrc.nist.gov/pubs/fips/204/final)
 - **NIST FIPS 205**: *Stateless Hash-Based Digital Signature Standard (SLH-DSA)* — [NIST CSRC FIPS 205 Final](https://csrc.nist.gov/pubs/fips/205/final)
-- **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2022/Sep/07/2003071833/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
+- **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory (May 2025 update)* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)
 - **IETF TLS 1.3 Hybrid Group**: *X25519MLKEM768 Key Exchange for TLS 1.3* — [RFC 10024](https://auth48-transition.rfc-editor.org/authors/rfc10024.html)

@@ -73,15 +73,15 @@ To prevent MITM key substitution, key exchange protocols MUST be authenticated:
 - **Pre-Shared Keys (PSK)**: Both parties share a pre-configured high-entropy secret used to authenticate the key exchange.
 - **Mutual TLS (mTLS)**: Both client and server present X.509 certificates and verify digital signatures over the handshake transcript.
 
-Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve, which has non-uniform bit distribution. Applications MUST pass the raw shared secret through a Key Derivation Function (**HKDF / RFC 5869**) to extract and expand uniform symmetric keys for AEAD ciphers.
+Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to-use key. Applications should pass that value through a protocol-defined Key Derivation Function (**HKDF / RFC 5869**) to derive independent, context-bound traffic keys rather than using it directly as an AEAD key.
 
 ## Perfect Forward Secrecy (PFS)
 
-**Perfect Forward Secrecy (PFS)** guarantees that compromising a long-term server private key today does NOT allow an adversary to decrypt past recorded session traffic.
+**Perfect Forward Secrecy (PFS)** ensures that, provided the per-session ephemeral key material was not itself separately compromised, an adversary who later obtains a long-term server private key cannot use it to decrypt previously recorded session traffic.
 
 | Protocol Property | Static Key Exchange (Deprecated) | Ephemeral Key Exchange (PFS Standard) |
 |---|---|---|
-| **Impact of Private Key Leak** | Adversary decrypts **ALL recorded historical traffic** encrypted under that server certificate. | Adversary **CANNOT decrypt past traffic**; recorded sessions remain protected. |
+| **Impact of Private Key Leak** | Adversary decrypts **ALL recorded historical traffic** encrypted under that server certificate. | Adversary **cannot derive past session keys from the leaked long-term key alone**; recorded sessions remain protected unless the ephemeral key material was independently compromised. |
 | **Key Agreement Mechanics** | RSA Key Transport or Static Diffie-Hellman | Ephemeral Elliptic Curve Diffie-Hellman (**ECDHE / X25519**) |
 | **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Mandatory requirement in **TLS 1.3** and **SSHv2**. |
 
@@ -198,6 +198,10 @@ Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   function setStepOpacity(stepNum) {
     step1Div.style.opacity = stepNum >= 1 ? '1' : '0.4';
     step1Div.style.pointerEvents = stepNum === 1 ? 'auto' : 'none';
@@ -303,14 +307,14 @@ Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve
         outputArea.innerHTML += log(`📦 [Session 1]: Encrypted AES Session Key: <code>${bytesToHex(encSessionKey).substring(0, 40)}...</code>`);
         outputArea.innerHTML += log(`🔒 [Session 1]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
       } else {
-        // Generate Server Long-Term Signing Identity Key
+        // 1. Generate Server Long-Term ECDSA Signing Identity Key
         state.serverLongTermECDSAKeyPair = await cryptoObj.subtle.generateKey(
           { name: 'ECDSA', namedCurve: 'P-256' },
           true,
           ['sign', 'verify']
         );
 
-        // Generate Ephemeral Keys (transient in RAM)
+        // 2. Generate Ephemeral Keys (transient in application state)
         const clientEph = await cryptoObj.subtle.generateKey(
           { name: 'ECDH', namedCurve: 'P-256' },
           true,
@@ -322,39 +326,54 @@ Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve
           ['deriveBits']
         );
 
-        // Client & Server exchange ephemeral public keys and derive shared AES secret
-        const sharedSecret = await cryptoObj.subtle.deriveBits(
+        // 3. Server signs its ephemeral key share with long-term identity key (Transcript Authentication)
+        const serverEphExported = new Uint8Array(await cryptoObj.subtle.exportKey('raw', serverEph.publicKey));
+        const handshakeSig = await cryptoObj.subtle.sign(
+          { name: 'ECDSA', hash: 'SHA-256' },
+          state.serverLongTermECDSAKeyPair.privateKey,
+          serverEphExported
+        );
+        const sigValid = await cryptoObj.subtle.verify(
+          { name: 'ECDSA', hash: 'SHA-256' },
+          state.serverLongTermECDSAKeyPair.publicKey,
+          handshakeSig,
+          serverEphExported
+        );
+
+        // 4. Derive shared secret bits and pass through HKDF (RFC 5869)
+        const rawBits = await cryptoObj.subtle.deriveBits(
           { name: 'ECDH', public: serverEph.publicKey },
           clientEph.privateKey,
           256
         );
-
-        // Encrypt payload with derived shared secret using AES-GCM
-        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
-        const keyObj = await cryptoObj.subtle.importKey(
-          'raw',
-          sharedSecret,
-          'AES-GCM',
+        const hkdfKey = await cryptoObj.subtle.importKey('raw', rawBits, { name: 'HKDF' }, false, ['deriveKey']);
+        const derivedKey = await cryptoObj.subtle.deriveKey(
+          { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: new TextEncoder().encode('tls13-derived-key') },
+          hkdfKey,
+          { name: 'AES-GCM', length: 256 },
           false,
           ['encrypt']
         );
+
+        // 5. Encrypt payload using HKDF-derived AES-256-GCM key
+        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
         const ciphertext = await cryptoObj.subtle.encrypt(
           { name: 'AES-GCM', iv: nonce },
-          keyObj,
+          derivedKey,
           new TextEncoder().encode(payload1)
         );
 
         state.sessions.push({
           num: 1,
           ciphertext,
-          nonce,
-          sharedSecret
+          nonce
         });
 
         outputArea.innerHTML += log('🔑 [Session 1]: Server generated ephemeral P-256 ECDH keypair in transient RAM.');
+        outputArea.innerHTML += log(`🖊️ [Session 1]: Server signed its ephemeral key share with the long-term ECDSA identity key (transcript authentication) — signature valid: <code>${sigValid}</code>`);
         outputArea.innerHTML += log(`📦 [Session 1]: Ephemeral Client Public Key: <code>P-256 Point</code>`);
         outputArea.innerHTML += log(`🔒 [Session 1]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
-        outputArea.innerHTML += log('🧹 [Session 1 END]: Ephemeral private keys wiped and garbage-collected from transient memory.');
+        outputArea.innerHTML += log('🧹 [Session 1 END]: Ephemeral key handles released for garbage collection. Note: JavaScript has no guaranteed secure-erase primitive — production TLS stacks explicitly zero this memory instead.');
       }
 
       state.step = 2;
@@ -416,35 +435,49 @@ Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve
           ['deriveBits']
         );
 
-        const sharedSecret = await cryptoObj.subtle.deriveBits(
+        const serverEphExported2 = new Uint8Array(await cryptoObj.subtle.exportKey('raw', serverEph.publicKey));
+        const handshakeSig2 = await cryptoObj.subtle.sign(
+          { name: 'ECDSA', hash: 'SHA-256' },
+          state.serverLongTermECDSAKeyPair.privateKey,
+          serverEphExported2
+        );
+        const sigValid2 = await cryptoObj.subtle.verify(
+          { name: 'ECDSA', hash: 'SHA-256' },
+          state.serverLongTermECDSAKeyPair.publicKey,
+          handshakeSig2,
+          serverEphExported2
+        );
+
+        const rawBits2 = await cryptoObj.subtle.deriveBits(
           { name: 'ECDH', public: serverEph.publicKey },
           clientEph.privateKey,
           256
         );
-
-        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
-        const keyObj = await cryptoObj.subtle.importKey(
-          'raw',
-          sharedSecret,
-          'AES-GCM',
+        const hkdfKey2 = await cryptoObj.subtle.importKey('raw', rawBits2, { name: 'HKDF' }, false, ['deriveKey']);
+        const derivedKey2 = await cryptoObj.subtle.deriveKey(
+          { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: new TextEncoder().encode('tls13-derived-key') },
+          hkdfKey2,
+          { name: 'AES-GCM', length: 256 },
           false,
           ['encrypt']
         );
+
+        const nonce = cryptoObj.getRandomValues(new Uint8Array(12));
         const ciphertext = await cryptoObj.subtle.encrypt(
           { name: 'AES-GCM', iv: nonce },
-          keyObj,
+          derivedKey2,
           new TextEncoder().encode(payload2)
         );
 
         state.sessions.push({
           num: 2,
           ciphertext,
-          nonce,
-          sharedSecret
+          nonce
         });
 
+        outputArea.innerHTML += log(`🖊️ [Session 2]: Server signed its ephemeral key share with the long-term ECDSA identity key (transcript authentication) — signature valid: <code>${sigValid2}</code>`);
         outputArea.innerHTML += log(`🔒 [Session 2]: Transmitted Ciphertext: <code>${bytesToHex(ciphertext)}</code>`, 'success');
-        outputArea.innerHTML += log('🧹 [Session 2 END]: Ephemeral keys wiped from memory.');
+        outputArea.innerHTML += log('🧹 [Session 2 END]: Ephemeral key handles released for garbage collection (no guaranteed secure-erase in JavaScript).');
       }
 
       state.step = 3;
@@ -525,8 +558,8 @@ Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve
             <strong>❌ PFS BREACH: HISTORICAL TRAFFIC DECRYPTED!</strong>
             <p style="margin-bottom:0.35rem;">Because Static RSA doesn't support Forward Secrecy, stealing the long-term private key allows the attacker to decrypt the encrypted session key and recover all historic data:</p>
             <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem;">
-              <li><strong>Session 1 Data:</strong> <code>${decrypted1}</code></li>
-              <li><strong>Session 2 Data:</strong> <code>${decrypted2}</code></li>
+              <li><strong>Session 1 Data:</strong> <code>${escapeHtml(decrypted1)}</code></li>
+              <li><strong>Session 2 Data:</strong> <code>${escapeHtml(decrypted2)}</code></li>
             </ul>
           </div>
         </div>`;
@@ -535,8 +568,8 @@ Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve
         <div class="security-layer security-layer-direct" style="margin-top: 1rem;">
           <div class="security-layer-label">PFS Security Protection Verified</div>
           <div>
-            <strong>🚨 PFS SECURED: ATTACKER CANNOT DECRYPT TRAFFIC!</strong>
-            <p style="margin-bottom:0;">Even though the attacker stole the long-term Server Identity Signature Key, they <strong>cannot decrypt past traffic</strong>. The transient ECDH private keys were deleted from RAM immediately after handshakes ended, leaving the recorded AES session secrets impossible to recalculate.</p>
+            <strong>✅ PFS HOLDS: LONG-TERM KEY LEAK DOESN'T EXPOSE PAST TRAFFIC</strong>
+            <p style="margin-bottom:0;">The stolen key only ever signed the handshake — it was never used to encrypt data, so it cannot decrypt anything by itself. Recomputing either session's AES key would require the client and server's ephemeral ECDH private keys, which this demo never persisted anywhere the attacker's stolen key can reach. (Note: real TLS stacks additionally take care to explicitly zero that ephemeral key memory; JavaScript itself offers no guaranteed secure-erase primitive.)</p>
           </div>
         </div>`;
       }
@@ -594,7 +627,7 @@ Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Modern
     <strong>Key Exchange &amp; PFS Summary</strong>
     <ul>
       <li><strong>No Key Transmitted</strong>: Diffie-Hellman math derives matching shared secrets locally in RAM; no secret key ever crosses the network.</li>
-      <li><strong>Perfect Forward Secrecy (PFS)</strong>: Ephemeral keys (ECDHE / X25519) are generated in RAM per connection and erased when done. Stealing a server disk key later cannot decrypt past recorded sessions.</li>
+      <li><strong>Perfect Forward Secrecy (PFS)</strong>: Ephemeral keys (ECDHE / X25519) are generated in RAM per connection and discarded when done. A later leak of the server's long-term disk key cannot, by itself, decrypt past recorded sessions.</li>
       <li><strong>HKDF Pipeline (RFC 5869)</strong>: Extracts raw Diffie-Hellman secrets into a master key (Extract) and expands independent sub-keys for client/server encryption (Expand).</li>
     </ul>
   </div>

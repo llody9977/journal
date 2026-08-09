@@ -23,7 +23,7 @@ PKI relies on a hierarchical trust model where trusted Root CAs issue certificat
 | PKI Component | Operational Role | Primary Security Property |
 |---|---|---|
 | **Certificate Authority (CA)** | Trusted entity that validates identity and signs X.509 certificates | Private key custody inside HSM; protects root of trust. |
-| **Certificate Revocation List (CRL) / OCSP** | Revocation status mechanisms publishing invalid certificate serial numbers | Prevents compromised or misissued certificates from being trusted. |
+| **Certificate Revocation List (CRL) / OCSP** | Revocation status mechanisms publishing invalid certificate serial numbers | Best-effort defense against compromised or misissued certificates — most browsers soft-fail (proceed with the connection) when a revocation check is unavailable, so it is not an absolute guarantee. |
 | **Registration Authority (RA)** | Verifies domain ownership or organizational identity prior to issuance | Enforces domain control validation (DNS-01, HTTP-01). |
 | **Trust Store** | Pre-installed list of trusted Root CA certificates embedded in OS / browser | Establishes local trust anchors for path validation algorithms. |
 
@@ -33,7 +33,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 
 <div class="interactive-demo-card">
   <div class="demo-header">
-    <span class="demo-badge">Live Certificate Inspector</span>
+    <span class="demo-badge">Live CT Issuance Inspector</span>
     <h3>Domain CT Log Issuance Inspector</h3>
     <p>Enter any public domain name (e.g. google.com, github.com) to query its Certificate Transparency (CT) log issuance records via CertSpotter API.</p>
   </div>
@@ -105,7 +105,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 
       let rfcText = `Certificate Transparency Log Entry:
   Data:
-    Log Certificate Hash (SHA-256): ${cert.cert_sha256}
+    Certificate SHA-256 Fingerprint: ${cert.cert_sha256}
     Issuer: ${cert.issuer.name}
     Validity Window:
         Not Before: ${formatDate(cert.not_before)}
@@ -115,7 +115,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
     Subject Public Key SPKI SHA-256 Pin (Base64):
         ${pinBase64}`;
 
-      outputArea.innerHTML = rfcText;
+      outputArea.textContent = rfcText;
     } catch (err) {
       outputArea.innerHTML = `<div style="color: #b91c1c; font-family: var(--font-sans); padding: 0.5rem; border: 1px solid #fca5a5; border-radius: 4px; background: #fef2f2;"><strong>Query Failure:</strong> ${err.message}</div>`;
     }
@@ -132,7 +132,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 | **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must have `cA: FALSE` to prevent rogue CA certificate creation. |
 | **Extended Key Usage (EKU)** | Specifies allowed certificate roles (*Server Auth, Client Auth, Code Signing*) | Prevents a TLS server certificate from signing executable software binaries. |
 | **Subject Alternative Name (SAN)** | Lists exact FQDN domain names bound to this certificate | Modern browsers validate SAN fields exclusively; commonName (CN) is ignored. |
-| **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | Enforces maximum 200-day validity period as of March 15, 2026 per CA/Browser Forum Baseline Requirements (progressing toward a 90-day maximum limit). |
+| **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | Enforces maximum validity periods per CA/Browser Forum Baseline Requirements: 200 days as of March 15, 2026; 100 days as of March 15, 2027; and 47 days as of March 15, 2029. |
 
 ## Certificate Lifecycle & Automated Issuance (ACME & ARI)
 
@@ -147,12 +147,12 @@ Managing short-lived certificates at scale requires automated enrollment via the
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/certificate-lifetime-timeline.svg' | relative_url }}" alt="Timeline showing X.509 certificate maximum lifetimes shrinking from 825 days down to 47 days.">
-  <p class="diagram-caption">X.509 lifetime evolution: transition from multi-year static certificates to automated 47–90 day lifespans</p>
+  <p class="diagram-caption">X.509 lifetime evolution: transition from multi-year (825-day) static certificates to automated short-lived certificates, tightening from 200 days today to a 47-day maximum by March 2029</p>
 </div>
 
 ### ACME Renewal Information (ARI)
 
-To support short 47-to-90-day certificate lifetimes without outages, **ACME Renewal Information (ARI)** allows CAs to suggest optimal renewal windows to automated agents dynamically before expiration.
+To support these shrinking (200-day today, 47-day by 2029) certificate lifetimes without outages, **ACME Renewal Information (ARI)** allows CAs to suggest optimal renewal windows to automated agents dynamically before expiration.
 
 ## Certificate Formats & OpenSSL Encoding Conversions
 
@@ -160,8 +160,9 @@ X.509 certificates and private keys are distributed across four primary format e
 
 | Format Extension | Encoding Type | Typical Content | Target Application Use Case |
 |---|---|---|---|
-| **.crt / .pem** | Base64 ASCII with `-----BEGIN CERTIFICATE-----` | Certificates, Private Keys, CA Chains | Standard default for Linux, NGINX, Apache, and OpenSSL. |
-| **.der / .cer** | Binary ASN.1 encoding | Single Certificate or Private Key | Java KeyStores, Windows OS binary certs, smart cards. |
+| **.pem** | Base64 ASCII with `-----BEGIN ... -----` armor | Certificates, Private Keys, CSRs, CA Chains | Standard default for Linux, NGINX, Apache, and OpenSSL. |
+| **.der** | Binary ASN.1 encoding | Single Certificate or Private Key | Java KeyStores, Windows OS binary certs, smart cards. |
+| **.crt / .cer** | **Ambiguous** — either Base64 PEM or binary DER, depending on platform/tool | Single Certificate (rarely a private key) | The extension alone does not tell you the encoding; inspect the file (`file cert.crt` or look for a `-----BEGIN` header) before assuming a format. |
 | **.p7b / .p7c** | PKCS#7 Base64 or binary | Certificate Bundles & CRLs (No Private Keys) | Windows IIS, S/MIME email signature verification. |
 | **.pfx / .p12** | PKCS#12 password-protected binary archive | Bundles Leaf Cert + Private Key + CA Chain | Windows IIS, Tomcat, macOS Keychain, Android system certs. |
 
@@ -186,7 +187,7 @@ X.509 certificates and private keys are distributed across four primary format e
         <option value="p7b2pem">5. Convert PKCS#7 (.p7b) to PEM</option>
         <option value="view-txt">6. View Certificate Details in Plain Text</option>
         <option value="gen-rsa">7. Generate New RSA Key Pair & CSR</option>
-        <option value="match-mod">8. Check if Private Key matches Certificate (Modulus MD5 check)</option>
+        <option value="match-mod">8. Check if Private Key matches Certificate (Modulus SHA-256 check)</option>
       </select>
     </div>
 
@@ -304,7 +305,7 @@ X.509 certificates and private keys are distributed across four primary format e
       groupOut.style.display = 'none';
       groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -noout -modulus -in ${valIn} | openssl md5 && openssl rsa -noout -modulus -in ${valKey} | openssl md5`;
+      cmd = `openssl x509 -noout -modulus -in ${valIn} | openssl sha256 && openssl rsa -noout -modulus -in ${valKey} | openssl sha256`;
     }
 
     codeArea.innerText = cmd;
@@ -432,7 +433,7 @@ While pinning protects network transport against rogue CAs, it introduces signif
     <strong>Certificates &amp; PKI Summary</strong>
     <ul>
       <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
-      <li><strong>Automated ACME &amp; ARI</strong>: Cert lifespans are shrinking to 47–90 days; automated renewal via ACME (RFC 8555) and ARI is mandatory.</li>
+      <li><strong>Automated ACME &amp; ARI</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029; automated renewal via ACME (RFC 8555) and ARI is mandatory.</li>
       <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning protects mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted. HPKP is deprecated in web browsers.</li>
     </ul>
   </div>
