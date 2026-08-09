@@ -677,7 +677,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   <div class="demo-header">
     <span class="demo-badge">Interactive CTR Playground</span>
     <h3>AES-128-CTR Nonce Reuse Two-Time Pad Playground</h3>
-    <p>Demonstrate how encrypting any two arbitrary messages with the same Nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2), allowing an adversary to extract Plaintext 2 by guessing a snippet of Plaintext 1 without key K.</p>
+    <p>Demonstrate how encrypting any two arbitrary messages with the same Nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2). Type any text in Message 1 and Message 2, then guess a snippet of either message to recover the other!</p>
   </div>
 
   <div class="demo-body">
@@ -695,12 +695,16 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
     <!-- 2. Attacker Guess Input -->
     <div class="demo-form-group">
-      <label for="ctr-guess-input">3. Attacker Known-Plaintext Guess Snippet for P1:</label>
+      <label for="ctr-guess-mode">3. Attacker Recovery Mode:</label>
+      <select id="ctr-guess-mode" class="demo-input" style="margin-bottom: 0.5rem;">
+        <option value="guess_p1" selected>Guess P1 snippet → Recover P2 Plaintext</option>
+        <option value="guess_p2">Guess P2 snippet → Recover P1 Plaintext</option>
+      </select>
       <div style="display: flex; gap: 0.5rem;">
-        <input type="text" id="ctr-guess-input" class="demo-input" value="Transfer $100 to" placeholder="Enter guessed snippet of P1 (e.g. 'Transfer $100 to')...">
-        <button id="btn-recover-ctr" class="btn-primary" type="button" style="white-space: nowrap;">Extract P2 Bytes</button>
+        <input type="text" id="ctr-guess-input" class="demo-input" value="Transfer $100 to" placeholder="Enter guessed snippet...">
+        <button id="btn-recover-ctr" class="btn-primary" type="button" style="white-space: nowrap;">Extract Bytes</button>
       </div>
-      <small class="demo-help">The attacker XORs the two ciphertexts (C1 ⊕ C2) with the guessed P1 snippet to recover P2.</small>
+      <small class="demo-help" id="ctr-mode-help">The attacker XORs (C1 ⊕ C2) with the guessed P1 snippet to recover P2.</small>
     </div>
 
     <!-- 3. Decryption Result -->
@@ -717,14 +721,16 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 (function() {
   const p1Input = document.getElementById('ctr-p1-input');
   const p2Input = document.getElementById('ctr-p2-input');
+  const modeSelect = document.getElementById('ctr-guess-mode');
   const guessInput = document.getElementById('ctr-guess-input');
   const btnRecover = document.getElementById('btn-recover-ctr');
   const outputContainer = document.getElementById('ctr-extraction-output');
+  const modeHelp = document.getElementById('ctr-mode-help');
 
   const keyHex = "000102030405060708090a0b0c0d0e0f";
   const nonceHex = "000000000000000000000001";
 
-  if (!p1Input || !p2Input || !guessInput || !btnRecover || !outputContainer) return;
+  if (!p1Input || !p2Input || !modeSelect || !guessInput || !btnRecover || !outputContainer) return;
 
   function hexToBytes(hex) {
     hex = hex.replace(/\s+/g, '');
@@ -743,6 +749,13 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
     try {
       const p1Text = p1Input.value;
       const p2Text = p2Input.value;
+      const mode = modeSelect.value;
+
+      if (mode === 'guess_p1') {
+        modeHelp.textContent = 'The attacker XORs (C1 ⊕ C2) with the guessed P1 snippet to recover P2.';
+      } else {
+        modeHelp.textContent = 'The attacker XORs (C1 ⊕ C2) with the guessed P2 snippet to recover P1.';
+      }
 
       const keyBytes = hexToBytes(keyHex);
       const counterBytes = new Uint8Array(16);
@@ -794,16 +807,17 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
         </div>
       </div>`;
 
+      const targetLabel = (mode === 'guess_p1') ? 'P2' : 'P1';
       const isTargetFound = recoveredStr.length > 0;
       html += `
       <div class="ecb-block-item ${isTargetFound ? 'target-block-decrypted' : ''}">
         <div class="block-meta">
-          <span class="block-num">Recovered P2 Plaintext Snippet</span>
-          <span class="block-plain-preview">${isTargetFound ? '✔ RECOVERED WITHOUT KEY' : 'Enter P1 Snippet'}</span>
+          <span class="block-num">Recovered ${targetLabel} Plaintext Snippet</span>
+          <span class="block-plain-preview">${isTargetFound ? '✔ RECOVERED WITHOUT KEY' : 'Enter Snippet'}</span>
         </div>
         <div class="block-hex-val">
           <code>"<strong>${recoveredStr}</strong>"</code>
-          ${isTargetFound ? `<span class="matched-tag">🎯 P2 RECOVERED (${recoveredBytes.length} Bytes)</span>` : ''}
+          ${isTargetFound ? `<span class="matched-tag">🎯 ${targetLabel} RECOVERED (${recoveredBytes.length} Bytes)</span>` : ''}
         </div>
       </div>`;
 
@@ -814,8 +828,8 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
         <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
           <div class="security-layer-label">Keystream Reuse Vulnerability Verified</div>
           <div>
-            <strong>P2 Plaintext Extracted!</strong>
-            <p style="margin-bottom:0;">Because the server reused the AES-CTR nonce, the keystream cancelled out completely. Entering the guessed P1 snippet <code>"${guessStr}"</code> instantly extracted P2 bytes <code>"${recoveredStr}"</code> without knowing secret key K.</p>
+            <strong>${targetLabel} Plaintext Extracted!</strong>
+            <p style="margin-bottom:0;">Because the server reused the AES-CTR nonce, the keystream cancelled out completely. Entering guessed snippet <code>"${guessStr}"</code> instantly extracted ${targetLabel} bytes <code>"${recoveredStr}"</code> without knowing secret key K.</p>
           </div>
         </div>`;
       }
@@ -833,6 +847,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   p1Input.addEventListener('input', runCTRReuseAttack);
   p2Input.addEventListener('input', runCTRReuseAttack);
   guessInput.addEventListener('input', runCTRReuseAttack);
+  modeSelect.addEventListener('change', runCTRReuseAttack);
 
   runCTRReuseAttack();
 })();
