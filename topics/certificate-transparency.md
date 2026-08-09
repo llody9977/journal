@@ -59,7 +59,7 @@ For certificates evaluated under [Chrome's CT Policy](https://googlechrome.githu
 ### 2. Apple CT Policy Rules
 
 Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trusted server certificates must present SCTs depending on certificate validity period:
-- **Lifetime $\le$ 180 days**: At least 2 SCTs from distinct log operators.
+- **Lifetime ≤ 180 days**: At least 2 SCTs from distinct log operators.
 - **Lifetime > 180 days up to 398 days**: At least 3 SCTs from distinct log operators.
 - **Operator Diversity Requirement**: At least 1 SCT must come from an Apple-recognized log operator, and at least 1 from a different log operator.
 
