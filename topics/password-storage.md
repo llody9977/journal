@@ -50,20 +50,146 @@ A **Pepper** is a 32-byte secret key stored outside the primary user database (*
 
 Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST SP 800-63B Rev. 4](https://csrc.nist.gov/pubs/sp/800/63/b/r4/final)**, **Argon2id** provides optimal protection against both side-channel and GPU attacks:
 
-```javascript
-// Recommended Argon2id Production Configuration
-const argon2 = require('argon2');
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Parameter Tuner</span>
+    <h3>Argon2id Cost Estimator & Parameter Tuner</h3>
+    <p>Adjust memory, time, and thread parameters to generate and copy the optimal Node.js Argon2 config conforming to OWASP and NIST guidelines.</p>
+  </div>
+
+  <div class="demo-body">
+    <!-- Parameters -->
+    <div class="demo-form-group">
+      <div style="display: flex; justify-content: space-between;">
+        <label for="argon-mem">Memory Cost (m): <span id="label-argon-mem-val" style="font-weight: 700;">64 MiB</span></label>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">65,536 KiB</span>
+      </div>
+      <input id="argon-mem" type="range" class="demo-input" style="width: 100%;" min="8" max="256" step="8" value="64">
+    </div>
+
+    <div class="demo-form-group">
+      <div style="display: flex; justify-content: space-between;">
+        <label for="argon-time">Time Cost (t - Iterations): <span id="label-argon-time-val" style="font-weight: 700;">3</span></label>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Passes over memory</span>
+      </div>
+      <input id="argon-time" type="range" class="demo-input" style="width: 100%;" min="1" max="10" step="1" value="3">
+    </div>
+
+    <div class="demo-form-group">
+      <div style="display: flex; justify-content: space-between;">
+        <label for="argon-threads">Parallelism (p - Threads): <span id="label-argon-threads-val" style="font-weight: 700;">4</span></label>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Parallel CPU cores</span>
+      </div>
+      <input id="argon-threads" type="range" class="demo-input" style="width: 100%;" min="1" max="8" step="1" value="4">
+    </div>
+
+    <!-- Live Compliance Status Indicator -->
+    <div id="argon-status-indicator" style="margin-top: 1rem; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;"></div>
+
+    <!-- Code Block with Copy Button -->
+    <div class="demo-form-group" style="margin-top: 1.5rem;">
+      <label>Node.js Argon2 Configuration Code:</label>
+      <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+        <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; word-break: break-all; white-space: pre-wrap; display: flex; align-items: center;" id="argon-code-block"></div>
+        <button id="btn-copy-argon-code" class="btn-primary" style="margin: 0; display: flex; align-items: center; justify-content: center; padding: 0 1.25rem;" type="button">&#128203; Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% raw %}
+<script>
+(function() {
+  const memSlider = document.getElementById('argon-mem');
+  const timeSlider = document.getElementById('argon-time');
+  const threadsSlider = document.getElementById('argon-threads');
+
+  const memValLabel = document.getElementById('label-argon-mem-val');
+  const timeValLabel = document.getElementById('label-argon-time-val');
+  const threadsValLabel = document.getElementById('label-argon-threads-val');
+
+  const statusIndicator = document.getElementById('argon-status-indicator');
+  const codeBlock = document.getElementById('argon-code-block');
+  const btnCopy = document.getElementById('btn-copy-argon-code');
+
+  if (!memSlider || !timeSlider || !threadsSlider || !statusIndicator || !codeBlock || !btnCopy) return;
+
+  function updateArgonTuner() {
+    const memMiB = parseInt(memSlider.value, 10);
+    const memKiB = memMiB * 1024;
+    const timeVal = parseInt(timeSlider.value, 10);
+    const threadsVal = parseInt(threadsSlider.value, 10);
+
+    // Update value labels
+    memValLabel.innerText = `${memMiB} MiB`;
+    timeValLabel.innerText = timeVal;
+    threadsValLabel.innerText = threadsVal;
+
+    // Check compliance status
+    let statusHtml = '';
+    let bgColor = '';
+    let textColor = '';
+    let borderColor = '';
+
+    if (memMiB >= 64 && timeVal >= 3 && threadsVal >= 4) {
+      statusHtml = '&#9989; Meets OWASP Recommended Profile (High Security Standard)';
+      bgColor = 'rgba(15, 118, 110, 0.08)'; // teal-wash
+      textColor = 'var(--teal)';
+      borderColor = 'var(--teal)';
+    } else if (memMiB >= 32 && timeVal >= 1) {
+      statusHtml = '&#9888; Meets RFC 9106 Minimal Safe Profile (Acceptable)';
+      bgColor = 'rgba(161, 76, 0, 0.08)'; // amber-wash
+      textColor = 'var(--amber)';
+      borderColor = 'var(--amber)';
+    } else {
+      statusHtml = '&#10060; Weak Configuration (Vulnerable to GPU Cracking)';
+      bgColor = 'rgba(159, 18, 57, 0.08)'; // critical-wash
+      textColor = 'var(--critical)';
+      borderColor = 'var(--critical)';
+    }
+
+    statusIndicator.innerHTML = statusHtml;
+    statusIndicator.style.background = bgColor;
+    statusIndicator.style.color = textColor;
+    statusIndicator.style.border = `1px solid ${borderColor}`;
+
+    // Update code block
+    const code = `const argon2 = require('argon2');
 
 async function hashUserPassword(password) {
   const hash = await argon2.hash(password, {
     type: argon2.argon2id,
-    memoryCost: 65536, // 64 MiB RAM
-    timeCost: 3,        // 3 iterations
-    parallelism: 4      // 4 parallel threads
+    memoryCost: ${memKiB}, // ${memMiB} MiB RAM
+    timeCost: ${timeVal},        // ${timeVal} iterations
+    parallelism: ${threadsVal}      // ${threadsVal} parallel threads
   });
   return hash;
-}
-```
+}`;
+
+    codeBlock.innerText = code;
+  }
+
+  btnCopy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(codeBlock.innerText);
+      const oldText = btnCopy.innerHTML;
+      btnCopy.innerHTML = '&#9989; Copied!';
+      setTimeout(() => {
+        btnCopy.innerHTML = oldText;
+      }, 1500);
+    } catch (e) {
+      alert("Failed to copy configuration: " + e.message);
+    }
+  });
+
+  memSlider.addEventListener('input', updateArgonTuner);
+  timeSlider.addEventListener('input', updateArgonTuner);
+  threadsSlider.addEventListener('input', updateArgonTuner);
+
+  updateArgonTuner();
+})();
+</script>
+{% endraw %}
 
 ## The Bcrypt 72-Byte Truncation Limit Pitfall
 
