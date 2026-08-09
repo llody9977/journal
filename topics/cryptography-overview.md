@@ -197,9 +197,7 @@ The interactive simulator below demonstrates how an adversary observing 624 outp
     }
 
     targetStatus.textContent = `Generated 624 outputs (Seed: ${seed})`;
-    targetTokens.textContent = observedOutputs.slice(0, 20).join('
-') + '
-... (' + (observedOutputs.length - 20) + ' more tokens observed)';
+    targetTokens.textContent = observedOutputs.slice(0, 20).join('\n') + '\n... (' + (observedOutputs.length - 20) + ' more tokens observed)';
     predictorStatus.textContent = '624 tokens observed! Ready to untemper state.';
     predictorResult.textContent = '';
     btnReconstruct.disabled = false;
@@ -227,8 +225,7 @@ The interactive simulator below demonstrates how an adversary observing 624 outp
       `Target Next Secret Token : ${targetSecretNext}`,
       `Attacker Predicted Token : ${predictedNext}`,
       `Attack Result             : ${isMatch ? 'SUCCESS (100% Match!)' : 'FAILED'}`
-    ].join('
-');
+    ].join('\n');
   });
 })();
 </script>
