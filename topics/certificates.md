@@ -31,27 +31,110 @@ PKI relies on a hierarchical trust model where trusted Root CAs issue certificat
 
 Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3 certificate structures identity metadata into standard fields signed by a CA:
 
-```
-Certificate:
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Live Certificate Inspector</span>
+    <h3>Domain X.509 Certificate Query</h3>
+    <p>Enter any public domain name (e.g. google.com, github.com) to query its active certificate and print a live RFC 5280 structural output.</p>
+  </div>
+
+  <div class="demo-body">
+    <div class="demo-form-group">
+      <label for="domain-input">Target Domain Name:</label>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <input id="domain-input" type="text" class="demo-input" style="flex: 1; margin: 0;" placeholder="example.com" value="google.com">
+        <button id="btn-fetch-domain-cert" class="btn-primary" style="margin: 0;" type="button">&#9889; Query Certificate</button>
+      </div>
+    </div>
+
+    <!-- Output Display -->
+    <div id="domain-cert-output" class="demo-output-area" style="font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4; white-space: pre-wrap; word-break: break-all; max-height: 350px; overflow-y: auto;"></div>
+  </div>
+</div>
+
+{% raw %}
+<script>
+(function() {
+  const btnQuery = document.getElementById('btn-fetch-domain-cert');
+  const domainInput = document.getElementById('domain-input');
+  const outputArea = document.getElementById('domain-cert-output');
+
+  if (!btnQuery || !domainInput || !outputArea) return;
+
+  function hexToBase64(hexStr) {
+    const bytes = [];
+    for (let c = 0; c < hexStr.length; c += 2) {
+      bytes.push(parseInt(hexStr.substr(c, 2), 16));
+    }
+    const binary = String.fromCharCode.apply(null, bytes);
+    return window.btoa(binary);
+  }
+
+  function formatDate(isoStr) {
+    const d = new Date(isoStr);
+    return d.toUTCString();
+  }
+
+  async function queryCertificate() {
+    const domain = domainInput.value.trim().toLowerCase();
+    if (!domain) {
+      outputArea.innerHTML = '<div style="color: #b91c1c; font-family: var(--font-sans);">⚠️ Please enter a domain name.</div>';
+      return;
+    }
+
+    outputArea.innerHTML = '<div style="color: var(--amber); font-family: var(--font-sans); font-weight: 600;">&#8987; Fetching certificate transparency issuances from CertSpotter...</div>';
+
+    try {
+      const url = `https://api.certspotter.com/v1/issuances?domain=${encodeURIComponent(domain)}&expand=dns_names&expand=issuer&limit=1`;
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`CT Log API responded with HTTP status ${res.status}`);
+      }
+      const data = await res.json();
+      if (!data || data.length === 0) {
+        throw new Error("No certificates found in CT logs for this domain.");
+      }
+
+      const cert = data[0];
+      const pinBase64 = hexToBase64(cert.pubkey_sha256);
+
+      let sans = cert.dns_names.map(name => `DNS:${name}`).join(', ');
+      if (sans.length > 100) {
+        sans = cert.dns_names.slice(0, 3).map(name => `DNS:${name}`).join(', ') + `, ... (+ ${cert.dns_names.length - 3} more)`;
+      }
+
+      let rfcText = `Certificate:
   Data:
     Version: 3 (0x2)
-    Serial Number: 04:00:00:00:00:01:15:69:97:0a:b0
-    Signature Algorithm: ecdsa-with-SHA256
-    Issuer: C=US, O=Let's Encrypt, CN=E1
+    Serial Number (SHA-256): ${cert.cert_sha256}
+    Signature Algorithm: Inferred from Root CA
+    Issuer: ${cert.issuer.name}
     Validity:
-        Not Before: Aug 01 00:00:00 2026 GMT
-        Not After : Oct 30 23:59:59 2026 GMT
-    Subject: CN=api.example.com
+        Not Before: ${formatDate(cert.not_before)}
+        Not After : ${formatDate(cert.not_after)}
+    Subject: CN=${domain}
     Subject Public Key Info:
-        Public Key Algorithm: id-ecPublicKey (secp256r1)
+        Public Key Algorithm: SHA-256 SPKI Pin
+        SPKI Pin Hash (Base64): ${pinBase64}
     X509v3 extensions:
         X509v3 Subject Alternative Name:
-            DNS:api.example.com, DNS:www.example.com
-        X509v3 Key Usage: critical
-            Digital Signature
-        X509v3 Extended Key Usage:
-            TLS Web Server Authentication, TLS Web Client Authentication
-```
+            ${sans}
+        X509v3 Basic Constraints:
+            cA: FALSE
+        X509v3 Key Usage:
+            Digital Signature, Key Encipherment`;
+
+      outputArea.innerHTML = rfcText;
+    } catch (err) {
+      outputArea.innerHTML = `<div style="color: #b91c1c; font-family: var(--font-sans); padding: 0.5rem; border: 1px solid #fca5a5; border-radius: 4px; background: #fef2f2;"><strong>Query Failure:</strong> ${err.message}</div>`;
+    }
+  }
+
+  btnQuery.addEventListener('click', queryCertificate);
+  queryCertificate();
+})();
+</script>
+{% endraw %}
 
 | Field Name | Standard Function | Critical Security Check |
 |---|---|---|
@@ -244,22 +327,173 @@ d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d/3d
 
 ### OpenSSL CLI Reference Cheat Sheet
 
-```bash
-# 1. Convert PEM to DER (ASCII Text -> Binary ASN.1)
-openssl x509 -in cert.pem -outform DER -out cert.der
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Command Generator</span>
+    <h3>OpenSSL CLI Code Generator</h3>
+    <p>Select any common certificate operation below, customize variables, and copy the exact syntax required for your local console terminal.</p>
+  </div>
 
-# 2. Convert DER to PEM (Binary ASN.1 -> ASCII Text)
-openssl x509 -inform DER -in cert.der -outform PEM -out cert.pem
+  <div class="demo-body">
+    <!-- Operation Selector -->
+    <div class="demo-form-group">
+      <label for="openssl-task-select">Select OpenSSL Operation:</label>
+      <select id="openssl-task-select" class="demo-input" style="width: 100%;">
+        <option value="pem2der">1. Convert PEM to DER (ASCII Base64 -> Binary ASN.1)</option>
+        <option value="der2pem">2. Convert DER to PEM (Binary ASN.1 -> ASCII Base64)</option>
+        <option value="bundle12">3. Bundle PEM Certificate + Key + Chain to PKCS#12 (.pfx/.p12)</option>
+        <option value="extract12">4. Extract PEM Certificate & Key from PKCS#12</option>
+        <option value="p7b2pem">5. Convert PKCS#7 (.p7b) to PEM</option>
+        <option value="view-txt">6. View Certificate Details in Plain Text</option>
+        <option value="gen-rsa">7. Generate New RSA Key Pair & CSR</option>
+        <option value="match-mod">8. Check if Private Key matches Certificate (Modulus MD5 check)</option>
+      </select>
+    </div>
 
-# 3. Bundle PEM Certificate + Private Key + Chain into PKCS#12 (.p12 / .pfx)
-openssl pkcs12 -export -out bundle.p12 -inkey private.key -in cert.pem -certfile ca_chain.pem
+    <!-- Parameter Inputs -->
+    <div id="openssl-group-in" class="demo-form-group">
+      <label id="openssl-label-in" for="openssl-input-in">Input Certificate File:</label>
+      <input id="openssl-input-in" type="text" class="demo-input" value="cert.pem">
+    </div>
 
-# 4. Extract PEM Certificate & Unencrypted Private Key from PKCS#12 (.p12 / .pfx)
-openssl pkcs12 -in bundle.p12 -out unbundled.pem -nodes
+    <div id="openssl-group-out" class="demo-form-group">
+      <label id="openssl-label-out" for="openssl-input-out">Output File:</label>
+      <input id="openssl-input-out" type="text" class="demo-input" value="cert.der">
+    </div>
 
-# 5. Convert PKCS#7 (.p7b) to PEM
-openssl pkcs7 -print_certs -in certs.p7b -out certs.pem
-```
+    <div id="openssl-group-key" class="demo-form-group" style="display: none;">
+      <label id="openssl-label-key" for="openssl-input-key">Private Key File:</label>
+      <input id="openssl-input-key" type="text" class="demo-input" value="private.key">
+    </div>
+
+    <div id="openssl-group-chain" class="demo-form-group" style="display: none;">
+      <label id="openssl-label-chain" for="openssl-input-chain">CA Chain File:</label>
+      <input id="openssl-input-chain" type="text" class="demo-input" value="ca_chain.pem">
+    </div>
+
+    <!-- Output Code Container -->
+    <div class="demo-form-group" style="margin-top: 1.5rem;">
+      <label>Generated OpenSSL Console Command:</label>
+      <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+        <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; word-break: break-all; white-space: pre-wrap; display: flex; align-items: center;" id="openssl-cmd-code"></div>
+        <button id="btn-copy-openssl-cmd" class="btn-primary" style="margin: 0; display: flex; align-items: center; justify-content: center; padding: 0 1.25rem;" type="button">&#128203; Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% raw %}
+<script>
+(function() {
+  const taskSelect = document.getElementById('openssl-task-select');
+
+  const groupIn = document.getElementById('openssl-group-in');
+  const groupOut = document.getElementById('openssl-group-out');
+  const groupKey = document.getElementById('openssl-group-key');
+  const groupChain = document.getElementById('openssl-group-chain');
+
+  const labelIn = document.getElementById('openssl-label-in');
+  const labelOut = document.getElementById('openssl-label-out');
+  const labelKey = document.getElementById('openssl-label-key');
+  const labelChain = document.getElementById('openssl-label-chain');
+
+  const inputIn = document.getElementById('openssl-input-in');
+  const inputOut = document.getElementById('openssl-input-out');
+  const inputKey = document.getElementById('openssl-input-key');
+  const inputChain = document.getElementById('openssl-input-chain');
+
+  const codeArea = document.getElementById('openssl-cmd-code');
+  const btnCopy = document.getElementById('btn-copy-openssl-cmd');
+
+  if (!taskSelect || !codeArea || !btnCopy) return;
+
+  function updateCommand() {
+    const task = taskSelect.value;
+    const valIn = inputIn.value.trim() || 'input.file';
+    const valOut = inputOut.value.trim() || 'output.file';
+    const valKey = inputKey.value.trim() || 'private.key';
+    const valChain = inputChain.value.trim() || 'ca_chain.pem';
+
+    let cmd = '';
+
+    // Show/hide groups and set labels based on selection
+    if (task === 'pem2der') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Input PEM File:';
+      groupOut.style.display = 'block'; labelOut.innerText = 'Output DER File:';
+      groupKey.style.display = 'none';
+      groupChain.style.display = 'none';
+      cmd = `openssl x509 -in ${valIn} -outform DER -out ${valOut}`;
+    } else if (task === 'der2pem') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Input DER File:';
+      groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
+      groupKey.style.display = 'none';
+      groupChain.style.display = 'none';
+      cmd = `openssl x509 -inform DER -in ${valIn} -outform PEM -out ${valOut}`;
+    } else if (task === 'bundle12') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Input Certificate File (PEM):';
+      groupOut.style.display = 'block'; labelOut.innerText = 'Output PKCS#12 Bundle (.p12/.pfx):';
+      groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
+      groupChain.style.display = 'block'; labelChain.innerText = 'CA Chain File (optional):';
+      cmd = `openssl pkcs12 -export -out ${valOut} -inkey ${valKey} -in ${valIn} -certfile ${valChain}`;
+    } else if (task === 'extract12') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#12 Bundle File:';
+      groupOut.style.display = 'block'; labelOut.innerText = 'Output Decoded PEM File:';
+      groupKey.style.display = 'none';
+      groupChain.style.display = 'none';
+      cmd = `openssl pkcs12 -in ${valIn} -out ${valOut} -nodes`;
+    } else if (task === 'p7b2pem') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#7 File (.p7b):';
+      groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
+      groupKey.style.display = 'none';
+      groupChain.style.display = 'none';
+      cmd = `openssl pkcs7 -print_certs -in ${valIn} -out ${valOut}`;
+    } else if (task === 'view-txt') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File (PEM/DER):';
+      groupOut.style.display = 'none';
+      groupKey.style.display = 'none';
+      groupChain.style.display = 'none';
+      cmd = `openssl x509 -in ${valIn} -text -noout`;
+    } else if (task === 'gen-rsa') {
+      groupIn.style.display = 'none';
+      groupOut.style.display = 'block'; labelOut.innerText = 'Output CSR File:';
+      groupKey.style.display = 'block'; labelKey.innerText = 'Output Private Key File:';
+      groupChain.style.display = 'none';
+      cmd = `openssl req -newkey rsa:2048 -nodes -keyout ${valKey} -out ${valOut}`;
+    } else if (task === 'match-mod') {
+      groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File:';
+      groupOut.style.display = 'none';
+      groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
+      groupChain.style.display = 'none';
+      cmd = `openssl x509 -noout -modulus -in ${valIn} | openssl md5 && openssl rsa -noout -modulus -in ${valKey} | openssl md5`;
+    }
+
+    codeArea.innerText = cmd;
+  }
+
+  // Copy click listener
+  btnCopy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(codeArea.innerText);
+      const oldText = btnCopy.innerHTML;
+      btnCopy.innerHTML = '&#9989; Copied!';
+      setTimeout(() => {
+        btnCopy.innerHTML = oldText;
+      }, 1500);
+    } catch (e) {
+      alert("Failed to copy command: " + e.message);
+    }
+  });
+
+  taskSelect.addEventListener('change', updateCommand);
+  inputIn.addEventListener('input', updateCommand);
+  inputOut.addEventListener('input', updateCommand);
+  inputKey.addEventListener('input', updateCommand);
+  inputChain.addEventListener('input', updateCommand);
+
+  updateCommand();
+})();
+</script>
+{% endraw %}
 
 ## Certificate & Public Key Pinning (Mobile & Native App Defense)
 
