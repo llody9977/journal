@@ -596,8 +596,8 @@ a:hover { text-decoration: underline; }
   margin: 1.75rem 0 0.6rem;
 }
 
-.content p { margin: 0 0 1rem; max-width: 90ch; }
-.content ul, .content ol { margin: 0 0 1.1rem; padding-left: 1.3rem; max-width: 90ch; }
+.content p { margin: 0 0 1rem; max-width: 100%; }
+.content ul, .content ol { margin: 0 0 1.1rem; padding-left: 1.3rem; max-width: 100%; }
 .content li { margin-bottom: 0.35rem; }
 .content li > ul, .content li > ol { margin-top: 0.35rem; }
 
@@ -614,7 +614,7 @@ a:hover { text-decoration: underline; }
 .lede {
   font-size: 1.1rem;
   color: var(--ink-2);
-  max-width: 80ch;
+  max-width: 100%;
 }
 
 code, pre, kbd {
