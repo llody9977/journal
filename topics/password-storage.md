@@ -13,7 +13,7 @@ last_verified: 2026-08-09
 
 ## Why Plain Cryptographic Hashes Fail for Passwords
 
-Fast general-purpose hash functions (SHA-256, MD5) are engineered for high throughput on general-purpose hardware. Multi-GPU cracking clusters can compute billions to tens of billions of un-salted SHA-256 hashes per second, allowing offline brute-force recovery of weak passwords in minutes. Specialized password hashes (Argon2id, bcrypt) force memory accesses and CPU iterations to slow down execution to an example deployment target of ~250ms per verification.
+Fast general-purpose hash functions such as SHA-256 and MD5 can be evaluated massively in parallel, making weak passwords vulnerable to rapid offline guessing. Password-hashing functions deliberately impose computational cost, while memory-hard functions such as Argon2id additionally impose substantial memory requirements.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/password-hash-comparison.svg' | relative_url }}" alt="Execution throughput comparison across SHA-256, bcrypt, scrypt, and Argon2id.">
