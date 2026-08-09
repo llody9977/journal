@@ -34,7 +34,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Live Certificate Inspector</span>
-    <h3>Domain X.509 Certificate Query</h3>
+    <h3>Domain CT Log Issuance Inspector</h3>
     <p>Enter any public domain name (e.g. google.com, github.com) to query its active certificate and print a live RFC 5280 structural output.</p>
   </div>
 

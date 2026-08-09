@@ -1,6 +1,6 @@
 ---
 title: TLS 1.3 Handshake & Network Encryption
-description: Detailed protocol breakdown of the TLS 1.3 1-RTT handshake, ECDHE key exchange, AEAD transport protection, 0-RTT early data replay risks, and Encrypted Client Hello (ECH).
+description: Detailed protocol breakdown of the TLS 1.3 1-RTT handshake, ECDHE key exchange, AEAD transport protection, 0-RTT early data replay risks, and Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html)).
 permalink: /topics/tls-ssl-handshake/
 last_verified: 2026-08-08
 ---
@@ -9,7 +9,7 @@ last_verified: 2026-08-08
 
 # TLS 1.3 Handshake & Network Encryption
 
-<p class="lede">Transport Layer Security (TLS) 1.3 is the foundational security protocol of the internet, providing confidentiality, integrity, server authentication, and Perfect Forward Secrecy over TCP networks. Standardized in RFC 8446, TLS 1.3 streamlines the handshake phase to 1-RTT by combining key exchange with initial parameters and deprecating legacy, insecure ciphers.</p>
+<p class="lede">Transport Layer Security (TLS) 1.3 is the foundational security protocol of the internet, providing confidentiality, integrity, server authentication, and Perfect Forward Secrecy over TCP networks. Standardized in [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html) / [RFC 9846](https://www.rfc-editor.org/info/rfc9846/), TLS 1.3 streamlines the handshake phase to 1-RTT by combining key exchange with initial parameters and deprecating legacy, insecure ciphers.</p>
 
 ## TLS 1.3 Handshake Architecture (1-RTT)
 
@@ -34,7 +34,7 @@ Unlike TLS 1.2 which required 2 full round-trips (2-RTT) before transmitting enc
 | **SSL 2.0 / SSL 3.0** | 2-RTT | **CRITICALLY BROKEN**: Vulnerable to POODLE, DROWN, and weak MACs. | **PROHIBITED**: Must be disabled across all servers. |
 | **TLS 1.0 / TLS 1.1** | 2-RTT | **DEPRECATED ([RFC 8996](https://www.rfc-editor.org/rfc/rfc8996))**: Lacks modern AEAD ciphers; vulnerable to BEAST and Lucky13. | **PROHIBITED**: Disable per PCI-DSS and [NIST SP 800-52 Rev. 2](https://csrc.nist.gov/pubs/sp/800/52/r2/final). |
 | **TLS 1.2** | 2-RTT | **LEGACY APPROVED**: Secure when restricted to ECDHE + AES-GCM cipher suites. | **MAINTAIN FOR COMPATIBILITY**: Phase out in favor of TLS 1.3. |
-| **TLS 1.3** | **1-RTT** | **RECOMMENDED STANDARD**: Mandatory AEAD, mandatory PFS, zero static RSA key exchange ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | **STANDARD DEFAULT**: Mandate across all production systems. |
+| **TLS 1.3** | **1-RTT** | **RECOMMENDED STANDARD**: Mandatory AEAD, mandatory PFS, zero static RSA key exchange ([[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html) / [RFC 9846](https://www.rfc-editor.org/info/rfc9846/)](https://www.rfc-editor.org/rfc/rfc8446)). | **STANDARD DEFAULT**: Mandate across all production systems. |
 
 ## Advanced TLS 1.3 Features & Security Trade-offs
 
@@ -50,7 +50,7 @@ TLS 1.3 allows returning clients to resume sessions and send data in the very fi
   </div>
 </div>
 
-### 2. Encrypted Client Hello (ECH)
+### 2. Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))
 
 In standard TLS 1.3, the Server Name Indication (SNI) header in `ClientHello` remains unencrypted, allowing network observers to monitor target domain destinations. **Encrypted Client Hello (ECH / draft-ietf-tls-esni)** encrypts the entire `ClientHello` payload under a public key published via DNS HTTPS records, preventing network SNI eavesdropping.
 
@@ -62,7 +62,7 @@ In standard TLS 1.3, the Server Name Indication (SNI) header in `ClientHello` re
     <strong>TLS Handshake Summary</strong>
     <ul>
       <li><strong>TLS 1.3 1-RTT Speed</strong>: Reduces handshake latency to 1 round-trip time; mandates AEAD ciphers and ephemeral key exchange (ECDHE).</li>
-      <li><strong>Encrypted Client Hello (ECH)</strong>: Encrypts the SNI domain name header in <code>ClientHello</code> to defeat network surveillance.</li>
+      <li><strong>Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))</strong>: Encrypts the SNI domain name header in <code>ClientHello</code> to defeat network surveillance.</li>
       <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict 0-RTT strictly to idempotent <code>GET</code> requests.</li>
     </ul>
   </div>
@@ -70,5 +70,5 @@ In standard TLS 1.3, the Server Name Indication (SNI) header in `ClientHello` re
 
 ## Primary References
 
-- **RFC 8446**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)
+- **[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html) / [RFC 9846](https://www.rfc-editor.org/info/rfc9846/)**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html) / [RFC 9846](https://www.rfc-editor.org/info/rfc9846/)](https://www.rfc-editor.org/rfc/rfc8446)
 - **RFC 8996**: *Deprecating TLS 1.0 and TLS 1.1* — [IETF RFC 8996](https://www.rfc-editor.org/rfc/rfc8996)

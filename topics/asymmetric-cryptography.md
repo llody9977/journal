@@ -153,7 +153,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
   async function generateRSAKeys() {
     try {
-      keyStatus.innerHTML = '<span style="color: var(--amber); font-weight: 600;">⏳ Generating 2048-bit RSA keys...</span>';
+      keyStatus.textContent = '<span style="color: var(--amber); font-weight: 600;">⏳ Generating 2048-bit RSA keys...</span>';
 
       // 1. RSA-OAEP Keys for Encryption
       encKeyPair = await window.crypto.subtle.generateKey(
@@ -189,9 +189,9 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       const privB64 = arrayBufferToBase64(privPkcs8);
       privPemText.value = formatPEM(privB64, "PRIVATE KEY");
 
-      keyStatus.innerHTML = '<span style="color: #15803d; font-weight: 600;">✔ 2048-bit RSA Keypair Generated Successfully!</span>';
+      keyStatus.textContent = '<span style="color: #15803d; font-weight: 600;">✔ 2048-bit RSA Keypair Generated Successfully!</span>';
     } catch (err) {
-      keyStatus.innerHTML = `<span style="color: #b91c1c;">Key Generation Error: ${err.message || err}</span>`;
+      keyStatus.textContent = `<span style="color: #b91c1c;">Key Generation Error: ${err.message || err}</span>`;
     }
   }
 
@@ -211,7 +211,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       currentCipherBytes = new Uint8Array(encrypted);
       const hexStr = bytesToHex(currentCipherBytes);
 
-      encOutput.innerHTML = `
+      encOutput.textContent = `
       <div class="ecb-blocks-list">
         <div class="ecb-block-item target-block-decrypted">
           <div class="block-meta">
@@ -224,7 +224,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         </div>
       </div>`;
     } catch (err) {
-      encOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+      encOutput.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
         <strong>Encryption Error:</strong> ${err.message || err}
       </div>`;
     }
@@ -233,7 +233,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
   async function handleDecrypt() {
     try {
       if (!currentCipherBytes) {
-        encOutput.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please encrypt a message first before decrypting.</div>';
+        encOutput.textContent = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please encrypt a message first before decrypting.</div>';
         return;
       }
 
@@ -245,7 +245,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
       const decText = new TextDecoder().decode(decrypted);
 
-      encOutput.innerHTML = `
+      encOutput.textContent = `
       <div class="ecb-blocks-list">
         <div class="ecb-block-item target-block-decrypted">
           <div class="block-meta">
@@ -259,7 +259,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         </div>
       </div>`;
     } catch (err) {
-      encOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+      encOutput.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
         <strong>Decryption Error:</strong> ${err.message || err}
       </div>`;
     }
@@ -268,7 +268,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
   async function handleFailDecrypt() {
     try {
       if (!currentCipherBytes) {
-        encOutput.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please encrypt a message first.</div>';
+        encOutput.textContent = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please encrypt a message first.</div>';
         return;
       }
       // Intentionally pass Public Key to decrypt API (Key Usage rejection)
@@ -278,7 +278,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         currentCipherBytes
       );
     } catch (err) {
-      encOutput.innerHTML = `
+      encOutput.textContent = `
       <div class="security-layer security-layer-direct" style="margin-top: 1rem;">
         <div class="security-layer-label">API Contract Rejection Confirmed</div>
         <div>
@@ -305,7 +305,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       currentSignatureBytes = new Uint8Array(sigBuffer);
       const sigHex = bytesToHex(currentSignatureBytes);
 
-      sigOutput.innerHTML = `
+      sigOutput.textContent = `
       <div class="ecb-blocks-list">
         <div class="ecb-block-item">
           <div class="block-meta">
@@ -328,7 +328,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         </div>
       </div>`;
     } catch (err) {
-      sigOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+      sigOutput.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
         <strong>Signature Error:</strong> ${err.message || err}
       </div>`;
     }
@@ -337,7 +337,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
   async function handleVerify() {
     try {
       if (!currentSignatureBytes) {
-        sigOutput.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please generate a signature first.</div>';
+        sigOutput.textContent = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please generate a signature first.</div>';
         return;
       }
 
@@ -372,7 +372,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         </div>`;
       }
     } catch (err) {
-      sigOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+      sigOutput.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
         <strong>Verification Error:</strong> ${err.message || err}
       </div>`;
     }

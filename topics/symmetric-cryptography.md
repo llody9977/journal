@@ -66,7 +66,7 @@ Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)*
 |---|---|---|---|---|
 | **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **64 bits effective security** (Vulnerable to quantum search) |
 | **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | 96 bits effective security |
-| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **128 bits effective security (Post-Quantum Safe)** |
+| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **128 bits effective security (Post-Quantum Recommended)** |
 
 ## Grover's Quantum Algorithm Impact: Why AES-256 is Quantum-Safe
 
@@ -116,7 +116,7 @@ Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but 
   <div>
     <strong>Symmetric Cryptography Summary</strong>
     <ul>
-      <li><strong>AES-256-GCM Standard</strong>: Universal AEAD cipher for data in transit and at rest. Provides 128-bit quantum security against Grover's algorithm.</li>
+      <li><strong>AES-256-GCM Standard</strong>: Primary AEAD Recommendation cipher for data in transit and at rest. Provides 128-bit quantum security against Grover's algorithm.</li>
       <li><strong>Nonce Uniqueness Rule</strong>: Reusing a 96-bit GCM nonce under the same key destroys authenticity and allows plaintext recovery.</li>
       <li><strong>ChaCha20-Poly1305 Alternative</strong>: Software-optimized AEAD stream cipher providing exceptional speed on hardware lacking AES-NI acceleration.</li>
     </ul>

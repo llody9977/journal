@@ -224,7 +224,7 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
     }
 
     setStepOpacity(1);
-    outputArea.innerHTML = log(`Simulator switched to <strong>${activeMode === 'rsa' ? 'Static RSA Key Transport' : 'Ephemeral ECDH (PFS)'}</strong>. Ready for Step 1.`);
+    outputArea.textContent = log(`Simulator switched to <strong>${activeMode === 'rsa' ? 'Static RSA Key Transport' : 'Ephemeral ECDH (PFS)'}</strong>. Ready for Step 1.`);
   }
 
   tabRSA.addEventListener('click', () => resetSimulator('rsa'));

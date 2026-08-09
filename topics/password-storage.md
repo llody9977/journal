@@ -27,7 +27,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 ### NIST SP 800-63B Core Authentication Requirements
 
 1. **Length-Based Security**:
-   * Enforce a **minimum length of at least 8 characters** (14+ characters recommended for administrative or privileged accounts).
+   * Enforce a **minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA)** (14+ characters recommended for administrative or privileged accounts).
    * Allow maximum lengths of at least **64 characters** to support easy-to-remember, high-entropy **passphrases** (e.g., `correct horse battery staple`).
 2. **Eliminate Arbitrary Complexity Rules**:
    * Deprecate rules requiring specific character mixes (uppercase, numbers, symbols) to improve user adoption and key diversity.
@@ -42,7 +42,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
   <div class="demo-header">
     <span class="demo-badge">Interactive Strength Meter</span>
     <h3>Password Entropy &amp; Strength Estimator</h3>
-    <p>Type any password or passphrase below to calculate its Shannon entropy (bits of security) and estimate the time required for a modern GPU cluster to crack it offline.</p>
+    <p>Type any password or passphrase below to calculate its idealized character-set upper bound entropy (bits of security). Real human-chosen passwords have significantly lower empirical entropy due to predictable language patterns and estimate the time required for a modern GPU cluster to crack it offline.</p>
   </div>
 
   <div class="demo-body">
@@ -75,7 +75,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--ink-2); background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px;">
       <strong>Attacker Brute-Force Time Estimate:</strong>
       <div style="margin: 0.25rem 0 0 0; font-size: 0.8rem; line-height: 1.4;">
-        Assuming a modern GPU cluster attempting <strong>100 billion guesses/sec</strong> (SHA-256 rate):
+        Assuming a dedicated GPU cluster attempting <strong>100,000 guesses/sec</strong> (reflecting the memory-hard stretching cost of Argon2id / bcrypt):
         <span id="entropy-crack-time" style="font-weight: 700; display: block; margin-top: 0.25rem; font-size: 0.9rem;"></span>
       </div>
     </div>
@@ -172,7 +172,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     // Crack time estimation: T = (2^(E-1)) / 10^11 seconds
     const totalPossibilities = Math.pow(2, E);
     const avgGuesses = totalPossibilities / 2;
-    const guessesPerSec = 100000000000; // 100 Billion
+    const guessesPerSec = 100000; // 100,000 guesses/sec (Argon2id/bcrypt memory-hard rate)
     const seconds = avgGuesses / guessesPerSec;
 
     let timeText = '';

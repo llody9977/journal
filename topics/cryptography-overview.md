@@ -32,7 +32,7 @@ Cryptography provides mathematical primitives designed to withstand these attack
 | Property | Core Operational Goal | Primary Cryptographic Primitive | Failure Scenario Without Control |
 |---|---|---|---|
 | **Authenticity** | Verifies that data originated from an entity controlling a specific key | **Digital Signatures** (*Ed25519, FIPS 204 ML-DSA*) &amp; **Public Key Infrastructure (PKI)** | Man-in-the-middle impersonation and payload spoofing |
-| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-256-GCM, ChaCha20-Poly1305*) &amp; **Hybrid KEMs** (*FIPS 203 ML-KEM, HPKE*) | Cleartext exfiltration of PII, passwords, or financial transactions |
+| **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-128-GCM / AES-256-GCM, ChaCha20-Poly1305*) &amp; **Hybrid KEMs** (*FIPS 203 ML-KEM, HPKE*) | Cleartext exfiltration of PII, passwords, or financial transactions |
 | **Integrity** | Ensures payload modification or bit-rot is detected and rejected | **Cryptographic Hashes** (*SHA-256, SHA3-256*) &amp; **MACs** (*HMAC-SHA256*) | Unauthorized alteration of database fields or transaction amounts |
 | **Non-Repudiation** | Generates unforgeable cryptographic evidence tying an action to a private key | **Asymmetric Digital Signatures** (*Ed25519, FIPS 205 SLH-DSA*) with timestamping and key custody logs | Disavowal of financial commitments or administrative actions |
 
@@ -49,7 +49,7 @@ For example, **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) co
 
 1. **Authentication**: The server proves ownership of a public key bound to a domain via an X.509 Certificate issued by a trusted CA.
 2. **Ephemeral Key Agreement**: Peer endpoints execute **X25519 / ECDHE** (or hybrid **X25519MLKEM768**) to derive a transient shared secret without transmitting private keys.
-3. **AEAD Bulk Encryption**: All application data is encrypted and authenticated using **AES-256-GCM** or **ChaCha20-Poly1305**.
+3. **AEAD Bulk Encryption**: All application data is encrypted and authenticated using **AES-128-GCM / AES-256-GCM** or **ChaCha20-Poly1305**.
 
 ## Cryptographic Randomness: PRNG vs. CSPRNG
 

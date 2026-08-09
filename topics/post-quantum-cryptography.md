@@ -103,12 +103,9 @@ In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA co
 
 ## Primary References
 
+
 - **NIST FIPS 203**: *Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)* — [NIST CSRC FIPS 203 Final](https://csrc.nist.gov/pubs/fips/203/final)
 - **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST CSRC FIPS 204 Final](https://csrc.nist.gov/pubs/fips/204/final)
 - **NIST FIPS 205**: *Stateless Hash-Based Digital Signature Standard (SLH-DSA)* — [NIST CSRC FIPS 205 Final](https://csrc.nist.gov/pubs/fips/205/final)
 - **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2022/Sep/07/2003071833/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
 - **IETF TLS 1.3 Hybrid Group**: *X25519MLKEM768 Key Exchange for TLS 1.3* — [draft-ietf-tls-westerbaan-xyber768d00](https://datatracker.ietf.org/doc/draft-ietf-tls-westerbaan-xyber768d00/)
-
-To hedge against implementation flaws in early PQC code while protecting against classical attacks, systems deploy **Hybrid Cryptography**: combining classical primitives (**X25519** or **ECDSA**) with PQC primitives (**ML-KEM-768** or **ML-DSA-65**) in a single protocol pass.
-
-For example, TLS 1.3 deploys the **`X25519MLKEM768`** hybrid group (IANA codepoint `0x11EC`), concatenating shared secrets from both X25519 and ML-KEM-768. The connection remains secure as long as at least one of the underlying algorithms remains unbroken.
