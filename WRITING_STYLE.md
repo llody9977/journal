@@ -6,7 +6,7 @@ This is my personal technical field journal. I am writing for my future self, no
 
 ## Voice and language
 
-- **Direct Technical Voice (Objective, 3rd person)**: Write in a clean, authoritative engineering style (similar to AWS architecture docs or Stripe technical references).
+- **Direct Technical Voice (Objective, 3rd person)**: Write in a clean, precise engineering style (similar to AWS architecture docs or Stripe technical references). Be confident where the evidence is strong, but never imply authority, certainty, or scope beyond what the supporting evidence establishes.
 - Avoid repetitive or self-conscious first-person framing (do NOT use "My mental model is...", "My takeaway is...", "When I design..."). Keep the focus strictly on the engineering subject, mechanisms, and trade-offs.
 - Use clear, natural Singapore English with **US spelling**: `authorize`, `categorize`, `organization`, `behavior`, `color`, and `center`.
 - Keep the tone practical, calm, direct, crisp, and technically precise.
@@ -118,10 +118,37 @@ Use a secondary framework only when it materially improves clarity.
 
 - Verify security-sensitive or time-sensitive claims against current primary sources.
 - Prefer standards bodies, specifications, vendor documentation, and original research over secondary summaries.
-- Place references next to the claims they support and summarize them in the ending `## Primary references` section.
+- Place references next to the claims they support and summarize them in the ending `## Primary references` section. The ending references do not need to repeat every incidental link, but collectively they must cover **every material standards-dependent claim or major framework discussed on the page**.
 - Distinguish a standard requirement from my own recommendation or working rule.
 - Label legacy, deprecated, restricted, or unsafe examples clearly.
 - Keep runnable code and displayed output consistent. If values are random, explain the invariant behavior rather than promising identical bytes.
+
+### Claim discipline and evidence boundaries
+
+- Check every material statement for both **overclaim and underclaim**. Do not make a source say more or less than it actually establishes.
+- Distinguish clearly between:
+  - a normative standard or legal requirement;
+  - official guidance or recommendation;
+  - established engineering practice;
+  - a journal working model or recommendation;
+  - an illustrative example or heuristic;
+  - an assumption that still requires validation.
+- Words such as **must, shall, mandatory, prohibited, approved, compliant, guarantees, always, never, 100%, required**, and **standard** must only be used when the stated scope and supporting source justify that strength.
+- An author-created synthesis may combine ideas from multiple standards, but it must not be presented as an official model, lifecycle, taxonomy, formula, or requirement of those standards. Label it clearly as a practical model or journal working model.
+- Simplified formulas, scores, thresholds, multipliers, SLAs, maturity levels, and decision rules must either be supported by a cited specification or clearly labelled as illustrative or locally defined.
+- Verify the applicability of a claim, not only whether the source contains related information. Check jurisdiction, system scope, assurance level, implementation context, version, status, and effective date where relevant.
+- Assumptions are acceptable when necessary. State material assumptions explicitly and verify them where authoritative evidence is available. If they cannot be verified, preserve the uncertainty rather than converting the assumption into a fact.
+- Never invent or infer citations, standard requirements, legal obligations, algorithm status, numerical thresholds, technical behavior, test results, or implementation guarantees.
+
+### Cross-format accuracy
+
+The same accuracy rules apply to all forms of journal content, including prose, tables, diagrams, images, captions, alt text, screenshots, animations, video, narration, code, scripts, commands, and displayed output.
+
+- A visual must not make a stronger or broader claim than the accompanying text.
+- Clearly label author-created diagrams and models as conceptual or practical models when they are not defined by the cited standard.
+- When a factual or standards-related statement changes, update every table, diagram, caption, example, and summary that repeats it.
+- Code and scripts must demonstrate only what the surrounding explanation claims they demonstrate.
+- Illustrative values and hypothetical outputs must be identified as such when a reader could reasonably mistake them for measured or standardized values.
 
 ## Final self-review
 
@@ -135,4 +162,11 @@ Before considering a page complete, check:
 6. Are important limitations and failure cases included?
 7. Are US spelling and direct technical voice consistent throughout?
 8. Are material claims supported by primary references in the standardized ending section?
+9. Have I overstated or understated what any source actually says?
+10. Are requirements, recommendations, working rules, assumptions, and examples clearly distinguishable?
+11. Could a reader mistakenly interpret my own synthesis as an official standard or framework?
+12. Are versions, publication status, jurisdictions, and applicability current and correctly scoped?
+13. Are numerical scores, thresholds, SLAs, formulas, and performance claims sourced or clearly labelled as illustrative?
+14. Do tables, diagrams, images, captions, code, scripts, video, and summaries preserve the same qualifications as the main text?
+15. Does each cited source directly support the claim beside it rather than merely discussing the same general topic?
 

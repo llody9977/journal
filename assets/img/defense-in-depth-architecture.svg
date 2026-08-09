@@ -44,7 +44,7 @@
 
     <!-- Box 3: Application Gate (x=600, y=172, w=245, h=105) -->
     <rect x="600" y="172" width="245" height="105" rx="10" fill="#ffffff" stroke="#15803d" stroke-width="1.5" />
-    <text x="615" y="195" font-size="10.5" font-weight="900" fill="#15803d">3. CODE GATE (SAST / OPA)</text>
+    <text x="615" y="195" font-size="10.5" font-weight="900" fill="#15803d">3. CODE GATE (RUNTIME CHECKS)</text>
     <text x="615" y="213" font-size="12" font-weight="800" fill="#0f172a">Input Sanitization</text>
     <line x1="615" y1="222" x2="830" y2="222" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
     <text x="615" y="240" font-size="10" font-weight="500" fill="#475569">• Parameterized SQL Queries</text>
@@ -56,7 +56,7 @@
     <!-- Box 4: Data Gate (x=870, y=172, w=270, h=105) -->
     <rect x="870" y="172" width="270" height="105" rx="10" fill="#ffffff" stroke="#15803d" stroke-width="1.5" />
     <text x="885" y="195" font-size="10.5" font-weight="900" fill="#15803d">4. DATA GATE (ENCRYPTION)</text>
-    <text x="885" y="213" font-size="12" font-weight="800" fill="#0f172a">Exfiltration Protection</text>
+    <text x="885" y="213" font-size="12" font-weight="800" fill="#0f172a">Data-at-Rest Protection</text>
     <line x1="885" y1="222" x2="1125" y2="222" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
     <text x="885" y="240" font-size="10" font-weight="500" fill="#475569">• AES-256 Envelope Keys</text>
     <text x="885" y="256" font-size="10" font-weight="500" fill="#475569">• HSM Key Isolation</text>

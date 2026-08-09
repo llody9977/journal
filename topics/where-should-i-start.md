@@ -2,7 +2,7 @@
 title: Where Should I Start?
 description: Practical architectural roadmap for security engineering, choosing implementation pathways (system threat modeling vs enterprise ISMS governance), and selecting standards.
 permalink: /topics/where-should-i-start/
-last_verified: 2026-08-07
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Security / Starting Map</span>
@@ -13,7 +13,7 @@ last_verified: 2026-08-07
 
 ## Security Program Implementation Architecture
 
-Security engineering operates across a 3-tier vertical hierarchy (**SECURITY PROGRAM → GOVERN → TECHNICAL**) connected by dual-directional operational feedback loops:
+The following is a practical organizing model—not a formally standardized hierarchy—for how a security program's strategy connects governance (**GOVERN**) and technical execution (**TECHNICAL**) through dual-directional operational feedback loops:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/security-program-implementation-roadmap.svg' | relative_url }}" alt="Security Program Implementation Architecture diagram showing SECURITY PROGRAM translating into GOVERNANCE (GOVERN) and TECHNICAL SAFEGUARDS (TECHNICAL) with Top-Down and Bottom-Up operational feedback arrows.">
@@ -30,8 +30,8 @@ When evaluating a specific application, cloud infrastructure workload, or API se
 
 1. **Map Architecture & Boundaries**: Document data flow diagrams, system entry points, external dependencies, and trust transitions (**[Trust Boundaries & Threat Modeling]({{ '/topics/trust-boundaries-threat-modeling/' | relative_url }})**).
 2. **Identify Threat Scenarios**: Analyze potential threat vectors, abuse cases, injection flaws, and authorization bypasses using a threat modeling methodology tailored to project trade-offs (*e.g., STRIDE, PASTA, VAST*) (**[Threat Frameworks]({{ '/topics/threat-frameworks/' | relative_url }})**).
-3. **Deploy Technical Safeguards**: Implement technical controls—OAuth 2.0 authentication, database encryption, rate limiting, and Web Application Firewall (WAF) rules (**[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**).
-4. **Validate Control Enforcement**: Validate implementation efficacy using static application security testing (SAST), dynamic application security testing (DAST), CI/CD pipeline scanning, and automated penetration testing.
+3. **Deploy Technical Safeguards**: Implement technical controls—OpenID Connect (OIDC) authentication and OAuth 2.0 delegated authorization, database encryption, rate limiting, and Web Application Firewall (WAF) rules (**[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**).
+4. **Validate Control Enforcement**: Validate implementation efficacy using static application security testing (SAST), dynamic application security testing (DAST), automated CI/CD pipeline security scanning, and periodic manual penetration testing (manual pentesting is not itself an automatable activity).
 
 ### Pathway B: Governance Entry (Enterprise ISMS & Compliance)
 
@@ -41,7 +41,7 @@ When building or auditing an organizational security program, governance teams f
 2. **Catalog Assets & Threats**: Inventory critical data repositories, production workloads, key personnel, and third-party vendor dependencies.
 3. **Adopt Standard Frameworks**: Implement an industry standard framework (**[NIST CSF 2.0](https://www.nist.gov/cyberframework)** for outcome-driven cybersecurity, **[ISO/IEC 27001](https://www.iso.org/standard/27001)** for certifiable InfoSec governance).
 4. **Audit Baseline Controls**: Assess existing safeguards against prioritized baselines such as **[CIS Controls IG1](https://www.cisecurity.org/controls/implementation-groups)**.
-5. **Prioritize Remediation**: Prioritize security engineering gaps based on evaluated risk severity (**Risk = Likelihood × Impact**) per **NIST SP 800-30 Rev. 1**.
+5. **Prioritize Remediation**: Prioritize security engineering gaps based on evaluated risk severity (likelihood and impact, per **NIST SP 800-30 Rev. 1**).
 6. **Deploy & Assure Controls**: Implement administrative and technical controls, configure continuous monitoring (**NIST SP 800-137**), and collect audit compliance evidence.
 
 ## Top-Down & Bottom-Up Operational Feedback Loops
@@ -51,12 +51,12 @@ The operational connection between **GOVERN** and **TECHNICAL** functions as a c
 ### 1. Top-Down Flow: Policy Mandates & Risk Tolerances (↓)
 
 - **Operational Action**: Governance policies, regulatory compliance requirements (ISO 27001, SOC 2, GDPR, Singapore PDPA), and organizational risk appetite established in **GOVERN** are pushed down into **TECHNICAL** execution.
-- **System Impact**: Forces technical engineering teams to execute threat modeling, enforce mTLS, configure firewalls, implement encryption at rest, and maintain secure build pipelines (SLSA / SSDF).
+- **System Impact**: Establishes the outcomes and requirements technical teams must meet; teams then translate them into specific controls—commonly threat modeling, mTLS, firewall configuration, encryption at rest, and secure build pipelines (SLSA / SSDF)—though the specific control choice is an engineering decision, not something the policy itself mandates.
 
 ### 2. Bottom-Up Flow: Safeguard Telemetry & Audit Evidence (↑)
 
 - **Operational Action**: Automated vulnerability scan metrics, SIEM log telemetry, SAST/DAST results, and penetration test reports generated in **TECHNICAL** flow up to **GOVERN**.
-- **Governance Impact**: Provides objective evidence proving control effectiveness to CISOs, executive boards, external auditors, and regulatory compliance authorities.
+- **Governance Impact**: Provides evidence toward demonstrating control effectiveness to CISOs, executive boards, external auditors, and regulatory compliance authorities—telemetry supports the case for effectiveness, it does not on its own prove it.
 
 ## Standard Framework & Compliance Selection Guide
 
@@ -82,15 +82,15 @@ Engineering teams often navigate multiple NIST 800-series publications and Feder
 | **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** / **FIPS 200** | Security Categorization | Categorizing system impact (*Low, Moderate, High*) across CIA triad properties | **Risk Assessment & System Categorization**: Defining baseline security requirements based on potential harm severity. |
 | **[NIST SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** / **SP 800-37** / **SP 800-39** | Risk Management Lifecycle | Risk Assessment (800-30), Risk Management Framework (800-37), Risk Governance (800-39) | **Universal Risk Engine**: The continuous decision engine connecting threat inputs, risk responses, and control monitoring. |
 | **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | Control Catalog & Safeguards | Catalog of 20 control families (*Access Control, Audit, Cryptography, Incident Response*) | **Enterprise Governance & Control Execution**: The primary baseline catalog for FedRAMP, DoD, and enterprise risk controls. |
-| **[NIST SP 800-63-3 / 4](https://csrc.nist.gov/pubs/sp/800/63/3/final)** | Digital Identity & Authentication | Guidelines for Identity (IAL), Authenticator (AAL), and Federation (FAL) assurance | **Identity & Access Management (IAM)**: Standardizing WebAuthn, FIDO2 passkeys, MFA, and OAuth 2.0 / OIDC federation. |
+| **[NIST SP 800-63-4](https://pages.nist.gov/800-63-4/)** (current; supersedes Rev. 3) | Digital Identity & Authentication | Guidelines for Identity (IAL), Authenticator (AAL), and Federation (FAL) assurance | **Identity & Access Management (IAM)**: Standardizing WebAuthn, FIDO2 passkeys, MFA, and OAuth 2.0 / OIDC federation. |
 | **[NIST SP 800-160 Vol. 1 & 2](https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final)** | System Security Engineering | Engineering trustworthy systems, OS kernels, and resilient hardware roots of trust | **System Security Engineering**: Building hardware, software, and firmware that function predictably under hostile attack conditions. |
 
 ### Application, CI/CD & Supply Chain Standards
 
 | Standard / Framework | Focus Area | Primary Function | Best Used For |
 |---|---|---|---|
-| **[NIST SP 800-218 (SSDF)](https://csrc.nist.gov/pubs/sp/800/218/final)** & **SLSA v1.0** | Software Supply Chain | Secure development & build provenance | Hardening software supply chains, dependency integrity, and artifact provenance. |
-| **[OWASP ASVS 4.0](https://owasp.org/www-project-application-security-verification-standard/)** | Application Security | Testable application requirements | Designing, coding, and auditing secure web applications and API endpoints. |
+| **[NIST SP 800-218 (SSDF)](https://csrc.nist.gov/pubs/sp/800/218/final)** & **[SLSA v1.2](https://slsa.dev/spec/v1.2/)** | Software Supply Chain | Secure development & build provenance | Hardening software supply chains, dependency integrity, and artifact provenance. |
+| **[OWASP ASVS 5.0.0](https://owasp.org/www-project-application-security-verification-standard/)** | Application Security | Testable application requirements | Designing, coding, and auditing secure web applications and API endpoints. |
 | **[OWASP CI/CD Top 10](https://owasp.org/www-project-top-10-ci-cd-security-risks/)** | Pipeline Security | CI/CD build hardening | Mitigating build pipeline manipulation, runner compromise, and un-gated deployments. |
 | **Threat Modeling** *(STRIDE / PASTA)* | Architecture | Structured threat identification | Evaluating misuse cases and trust transitions tailored to project trade-offs. |
 
@@ -110,11 +110,12 @@ Mandatory legal laws enacted by legislative bodies that enforce statutory data p
 
 | Regulatory Law / Mandate | Jurisdiction | Statutory Scope | Primary Legal Focus |
 |---|---|---|---|
-| **[DOJ ECCP](https://www.justice.gov/criminal-fraud/page/file/937501/dl)** / **Civil Cyber-Fraud** | United States (Federal Prosecutorial) | Corporate Compliance & Cyber Fraud Enforcement | Prosecutorial criteria evaluating corporate compliance program efficacy and penalizing federal contractors concealing security breaches. |
 | **[EU DORA](https://www.eiopa.europa.eu/digital-operational-resilience-act-dora_en)** / **NIS 2 Directive** | European Union | Financial & Critical Infrastructure Law | Mandatory digital operational resilience, ICT risk management, and incident reporting for financial institutions and critical infrastructure. |
 | **[GDPR](https://gdpr.eu/) / CCPA** | European Union / California | Statutory Data Privacy Law | Mandatory legal rules governing personal data collection, user consent, processing limits, and data subject access rights. |
 | **[HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/index.html)** | United States (Federal) | Statutory Healthcare Law | Mandatory administrative, physical, and technical safeguards for protecting electronic Protected Health Information (ePHI). |
 | **[Singapore PDPA](https://www.pdpc.gov.sg/Overview-of-PDPA/The-American-and-European-Context/Personal-Data-Protection-Act)** | Singapore | Statutory Data Protection Act | Mandatory rules for collecting, processing, storing, and protecting personal data in Singapore (enforced by PDPC). |
+
+Separately, the **[DOJ Evaluation of Corporate Compliance Programs (ECCP)](https://www.justice.gov/criminal-fraud/page/file/937501/dl)** is **prosecutorial guidance**, not a statute—it is the criteria US federal prosecutors use to judge whether a corporate compliance program (including cybersecurity) was adequate when deciding charges or penalties after an incident. It carries real enforcement weight but sits in a different legal category from the statutory laws above.
 
 ### Commercial & Industry Compliance Standards (COMPLIANCE)
 
@@ -135,7 +136,7 @@ Contractual, certifiable, and industry audit frameworks required for enterprise 
     <strong>Practitioner Roadmap Summary</strong>
     <ul>
       <li><strong>Start with Threat Modeling</strong>: Map assets, data flows, and trust boundaries before choosing security controls.</li>
-      <li><strong>Enforce Standardized Controls</strong>: Rely on peer-reviewed frameworks (NIST CSF 2.0, OWASP Top 10) rather than custom solutions.</li>
+      <li><strong>Use Frameworks to Set Requirements, Not to Replace Engineering</strong>: Peer-reviewed frameworks (NIST CSF 2.0, OWASP Top 10) define required outcomes and known risk categories; engineering teams still design and select the specific controls that satisfy them.</li>
       <li><strong>Measure Security Maturity</strong>: Track progress using established maturity models (CMMI, OWASP SAMM, CIS Implementation Groups).</li>
     </ul>
   </div>

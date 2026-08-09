@@ -2,7 +2,7 @@
 title: What Is Security?
 description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and the universal risk management lifecycle.
 permalink: /topics/security-fundamentals/
-last_verified: 2026-08-07
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Security / Overview</span>
@@ -13,18 +13,18 @@ last_verified: 2026-08-07
 
 ## Defining Security Domains: Security vs InfoSec vs Cybersecurity
 
-While the term "Security" is used casually as a general heading, technical engineering standards enforce explicit domain boundaries:
+While the term "Security" is used casually as a general heading, technical engineering standards provide useful distinctions between these domains, each defined within its own standard's specific scope rather than as one universally enforced boundary:
 
-| Security Domain | Governing Standard / Law | Primary Scope & Focus |
+| Security Domain | Representative Standard / Law | Primary Scope & Focus |
 |---|---|---|
-| **Security** (Generic) | **NIST SP 800-37** / **CNSSI 4009** | The universal condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
+| **Security** (Generic) | No single standard defines generic "Security" universally; **CNSSI 4009** and **NIST SP 800-37** (an RMF-specific publication) each use working definitions within their own scope, used here as a practical starting point. | The general condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
 | **Information Security** (InfoSec) | **FISMA (44 U.S.C. § 3542)** / **ISO/IEC 27001** | Protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to preserve **Confidentiality, Integrity, and Availability (CIA)**. |
 | **Cybersecurity** | **NIST CSF 2.0** / **ISO/IEC 27032** | Protecting digital infrastructure, software applications, cloud services, and network data streams connected to cyberspace against cyber threats. |
 | **System Security Engineering** | **NIST SP 800-160 Vol. 1** | The engineering discipline of building resilient hardware, kernel, software, and cryptographic architectures that function predictably under hostile conditions. |
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" alt="Security Architecture and Domain Scopes showing Core Security Objectives, Information Security and Cybersecurity Scopes, Universal Risk Management Engine, and Security Controls Execution.">
-  <p class="diagram-caption">Security domain architecture: Core CIA Objectives → Information Security & Cybersecurity Scopes → Universal Risk Engine → Technical Controls Execution</p>
+  <img src="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" alt="Conceptual model of security domain scopes showing Core Security Objectives, Information Security and Cybersecurity Scopes, a common Risk Management approach, and Security Controls Execution.">
+  <p class="diagram-caption">Conceptual model (journal working model, not a normative standard diagram): Core CIA Objectives → Information Security &amp; Cybersecurity Scopes → Common Risk Management Approach → Technical Controls Execution</p>
 </div>
 
 ## Core Security Objectives: The CIA Triad & System Properties
@@ -49,13 +49,13 @@ Comprehensive security engineering expands beyond the CIA triad to address addit
 
 ## The Universal Engine: Continuous Risk Management
 
-Whether protecting a physical paper archive (**Information Security**) or a cloud-native microservice (**Cybersecurity**), security protection is never arbitrary. Both domains fall back to preserving the core **CIA Triad**, and both rely on the exact same decision engine: **Risk Management ([NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final) / [ISO/IEC 27005](https://www.iso.org/standard/75281.html))**.
+Whether protecting a physical paper archive (**Information Security**) or a cloud-native microservice (**Cybersecurity**), security protection is never arbitrary. Both domains aim to preserve the core **CIA Triad**, and both commonly rely on **Risk Management ([NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final) / [ISO/IEC 27005](https://www.iso.org/standard/75281.html))** to connect objectives, threats, and controls—though the specific process each domain follows can differ in detail.
 
-Risk Management provides the structural engine connecting abstract security objectives to concrete technical controls across five continuous operational stages:
+The five-stage breakdown below is a practical synthesis for this journal, informed by NIST SP 800-39 and SP 800-37 rather than a direct restatement of either publication's formal process steps. It connects abstract security objectives to concrete technical controls across five continuous operational stages:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/risk-management-lifecycle.svg' | relative_url }}" alt="The Continuous Risk Management Lifecycle diagram showing Stage 1 Problem Inputs, Stage 2 Risk Assessment, Stage 3 Risk Responses, Stage 4 Security Controls Execution, and Stage 5 Continuous Monitoring Feedback Loop.">
-  <p class="diagram-caption">The Continuous Risk Management Lifecycle (NIST SP 800-39 / SP 800-37): Inputs → Assessment → Strategic Response Selection → Controls Execution → Continuous Monitoring Feedback Loop</p>
+  <p class="diagram-caption">A practical risk-management workflow informed by NIST SP 800-39 / SP 800-37, not a literal reproduction of either lifecycle: Inputs → Assessment → Strategic Response Selection → Controls Execution → Continuous Monitoring Feedback Loop</p>
 </div>
 
 ### Operational Lifecycle Breakdown
@@ -63,9 +63,9 @@ Risk Management provides the structural engine connecting abstract security obje
 | Lifecycle Stage | Primary Operational Actions & Mechanics | System Scenario Example |
 |---|---|---|
 | **Stage 1: Inputs**<br>*(Problem Domain)* | Gathers inputs from **Threat Modeling**, **CVSS Vulnerability Scans**, **Threat Intel**, Asset Inventories, and Gap Audits to construct scenario components (*Asset, Threat, Vulnerability, Impact*). | Unauthenticated public API route exposing customer database queries without rate limiting. |
-| **Stage 2: Evaluation**<br>*(Risk Assessment)* | Calculates exposure severity (**Risk = Likelihood × Impact**) per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** by rating threat plausibility and harm consequence. | Rating data exfiltration likelihood as **High** and financial harm as **Critical**. |
-| **Stage 3: Strategy**<br>*(Response Selection)* | Selects one of four formal responses per **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)**: **Avoid** (redesign feature), **Reduce** (deploy controls), **Transfer** (insurance/SLAs), or **Accept** (authorize exposure). | Selecting **Reduce (Mitigate)** to deploy technical security controls. |
-| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards per **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/final)** across 4 functions: **Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*). | Deploying OAuth 2.0 JWT verification, Web Application Firewall (WAF), and mTLS. |
+| **Stage 2: Evaluation**<br>*(Risk Assessment)* | Calculates exposure severity per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** by rating threat plausibility and harm consequence—commonly approximated as a simplified working model, `Risk ≈ Likelihood × Impact`, though SP 800-30 itself does not mandate multiplication. | Rating data exfiltration likelihood as **High** and financial harm as **Critical**. |
+| **Stage 3: Strategy**<br>*(Response Selection)* | Selects a response type; **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** names five: **Accept**, **Avoid** (redesign feature), **Mitigate** (deploy controls), **Share**, and **Transfer** (insurance/SLAs)—share and transfer are distinct but often grouped together informally. | Selecting **Mitigate** to deploy technical security controls. |
+| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/final)** control catalog (organized into 20 control families, not a 4-function taxonomy). This journal groups implemented controls by a practical functional lens—**Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*)—for reasoning about defense in depth. | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
 | **Stage 5: Loop**<br>*(Continuous Audit)* | Continuously monitors control efficacy (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), tracks new threats, and feeds metrics back into Stage 1 Inputs for re-assessment. | Automated SIEM alerting on brute-force spikes and feeding log metrics into annual audits. |
 
 A vulnerability alone does not constitute a risk. Risk assessment requires determining whether a plausible threat can reach the vulnerability, the magnitude of the resulting impact, and how existing controls alter overall probability. Risk management is never a static, one-time activity—it operates as a continuous feedback loop (**NIST SP 800-37**).
@@ -81,7 +81,7 @@ When evaluating the security posture of any new feature or system architecture, 
 | **Domain Boundary Identification** | Are you managing paper records (InfoSec), digital endpoints (Cybersecurity), or hardware roots of trust? | Scope boundary documents &amp; system security plan (SSP) architecture bounds. |
 | **Exposure Assessment** | What is the risk severity based on threat likelihood and consequential impact? | Risk assessment reports (**NIST SP 800-30 Rev. 1**). |
 | **Objective Testing** | Which CIA triad properties, safety, or privacy limits would be breached if compromised? | FIPS 199 impact categorization &amp; privacy impact assessments (PIA). |
-| **Strategic Response Selection** | Which response strategy—Avoid, Reduce, Transfer, or Accept—is authorized by the risk owner? | Signed executive risk treatment plan (**NIST SP 800-39**). |
+| **Strategic Response Selection** | Which response strategy—Accept, Avoid, Mitigate, Share, or Transfer—is authorized by the risk owner? | Signed executive risk treatment plan (**NIST SP 800-39**). |
 
 ## What I Need to Remember
 

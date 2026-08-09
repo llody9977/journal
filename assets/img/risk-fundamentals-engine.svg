@@ -35,7 +35,7 @@
     <!-- Card 3: Risk Evaluation Engine (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="135" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
     <text x="825" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">3. RISK EVALUATION (NIST 800-39 / FAIR)</text>
-    <text x="825" y="165" font-size="14" font-weight="800" fill="#0f172a">Risk Exposure = Likelihood × Impact</text>
+    <text x="825" y="165" font-size="14" font-weight="800" fill="#0f172a">Risk ≈ Likelihood × Impact (simplified model)</text>
     <line x1="825" y1="176" x2="1140" y2="176" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="196" font-size="11.5" font-weight="500" fill="#475569">• Qualitative (Low/Med/High) &amp; Quantitative Loss ($)</text>
     <text x="825" y="214" font-size="11.5" font-weight="500" fill="#475569">• Existing Security Control Efficacy Offset</text>
@@ -59,7 +59,7 @@
 
     <!-- Option 3: Transfer (x=614, w=260) -->
     <rect x="614" y="265" width="260" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
-    <text x="629" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">3. TRANSFER (SHARE)</text>
+    <text x="629" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">3. SHARE / TRANSFER</text>
     <text x="629" y="315" font-size="13" font-weight="800" fill="#0f172a">Shift Financial Exposure</text>
     <line x1="629" y1="326" x2="859" y2="326" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
     <text x="629" y="346" font-size="11" font-weight="500" fill="#475569">Cybersecurity insurance policies</text>

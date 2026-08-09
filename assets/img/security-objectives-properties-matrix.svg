@@ -44,7 +44,7 @@
     <!-- Grid Row 1 Left: Authenticity & Non-Repudiation (x=40, w=545, y=275, h=105) -->
     <rect x="40" y="275" width="545" height="105" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
     <text x="60" y="298" font-size="10.5" font-weight="900" letter-spacing="1" fill="#7c3aed">AUTHENTICITY &amp; NON-REPUDIATION</text>
-    <text x="60" y="318" font-size="14" font-weight="800" fill="#0f172a">Origin Proof &amp; Unforgeable Cryptographic Evidence</text>
+    <text x="60" y="318" font-size="14" font-weight="800" fill="#0f172a">Origin Verification &amp; Cryptographic Evidence</text>
     <line x1="60" y1="330" x2="565" y2="330" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
     <text x="60" y="350" font-size="11.5" font-weight="500" fill="#475569">• PKI Mutual TLS (mTLS), FIDO2 Passkeys / WebAuthn</text>
     <text x="60" y="368" font-size="11.5" font-weight="500" fill="#475569">• Asymmetric Cryptographic Signatures (Ed25519 / ECDSA)</text>
@@ -55,7 +55,7 @@
     <text x="635" y="318" font-size="14" font-weight="800" fill="#0f172a">Attributing System Actions to Verified Identity Context</text>
     <line x1="635" y1="330" x2="1140" y2="330" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1" />
     <text x="635" y="350" font-size="11.5" font-weight="500" fill="#475569">• Tamper-Evident Audit Logging (NIST SP 800-92)</text>
-    <text x="635" y="368" font-size="11.5" font-weight="500" fill="#475569">• SIEM Event Attribution &amp; Immutable Audit Trails</text>
+    <text x="635" y="368" font-size="11.5" font-weight="500" fill="#475569">• SIEM Event Attribution &amp; Tamper-Evident Audit Trails</text>
 
     <!-- Grid Row 2 Left: Privacy & Minimization (x=40, w=545, y=390, h=105) -->
     <rect x="40" y="390" width="545" height="105" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
