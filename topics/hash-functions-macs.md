@@ -65,17 +65,188 @@ Naive concatenation `H(key || message)` using Merkle–Damgård hashes (MD5, SHA
 
 HMAC's nested construction prevents length-extension attacks by wrapping the inner hash output inside an outer hash layer protected by `opad`. Modern sponge-based constructions (**SHA-3 / FIPS 202**, **KMAC / SP 800-185**, **BLAKE3**) are inherently immune to length extension by design.
 
-## Command-Line Validation & Demo
+### Client-Side Executable Hash Digest & HMAC-SHA256 Authentication Playground
 
-```bash
-# 1. Compute plain SHA-256 hash digest
-echo -n "The quick brown fox" | shasum -a 256
-# Output: 5cac4f980fedc3d3f1f99b4be3472c9b30d56523e632d151237ec9309048bda9  -
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Browser Playground</span>
+    <h3>SHA-256 Digest & HMAC-SHA256 Authentication Playground</h3>
+    <p>Compute unkeyed SHA-256 digests and keyed HMAC-SHA256 authentication tags directly in your browser. Test secret key verification and observe how invalid keys trigger authentication rejections (Zero server calls / Executed locally via Web Crypto API).</p>
+  </div>
 
-# 2. Compute HMAC-SHA256 authenticated tag using shared key
-echo -n "The quick brown fox" | openssl dgst -sha256 -hmac "secret-key-32-bytes"
-# Output: e8076ef407b3f9ca99b234733a2114bd63bd9e8bbd9bf842ef69ed64fc339fa8
-```
+  <div class="demo-body">
+    <!-- 1. Payload Input -->
+    <div class="demo-form-group">
+      <label for="hmac-payload-input">1. Message Payload Input:</label>
+      <input type="text" id="hmac-payload-input" class="demo-input" value="The quick brown fox" placeholder="Enter message payload...">
+    </div>
+
+    <!-- 2. Secret Key Inputs -->
+    <div class="demo-form-group">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+        <div>
+          <label for="hmac-key-input">2. Sender Secret Key (HMAC Generator):</label>
+          <input type="text" id="hmac-key-input" class="demo-input" value="secret-key-32-bytes" placeholder="Enter shared secret key...">
+        </div>
+        <div>
+          <label for="hmac-verify-key-input">3. Receiver Verification Key (Test Authentication):</label>
+          <input type="text" id="hmac-verify-key-input" class="demo-input" value="secret-key-32-bytes" placeholder="Enter key to verify...">
+        </div>
+      </div>
+      <small class="demo-help">Try changing the Receiver Verification Key to <code>"wrong-secret-key"</code> to verify invalid authentication rejection!</small>
+    </div>
+
+    <!-- 3. Actions -->
+    <div class="demo-form-group">
+      <div class="demo-actions" style="margin: 0.5rem 0;">
+        <button id="btn-run-hmac" class="btn-primary" type="button">⚡ Compute Hash &amp; Verify HMAC Tag</button>
+        <button id="btn-invalid-key" class="btn-secondary" type="button" style="color: #b91c1c; border-color: #fca5a5;">❌ Inject Wrong Key ("wrong-key")</button>
+        <button id="btn-reset-hmac" class="btn-secondary" type="button">Reset Default Key</button>
+      </div>
+    </div>
+
+    <!-- 4. Output Displays -->
+    <div id="hmac-output-area" class="demo-output-area"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const payloadInput = document.getElementById('hmac-payload-input');
+  const keyInput = document.getElementById('hmac-key-input');
+  const verifyKeyInput = document.getElementById('hmac-verify-key-input');
+  const btnRun = document.getElementById('btn-run-hmac');
+  const btnInvalid = document.getElementById('btn-invalid-key');
+  const btnReset = document.getElementById('btn-reset-hmac');
+  const outputArea = document.getElementById('hmac-output-area');
+
+  if (!payloadInput || !keyInput || !verifyKeyInput || !btnRun || !outputArea) return;
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function runHmacCalculation() {
+    try {
+      const payloadStr = payloadInput.value;
+      const keyStr = keyInput.value;
+      const verifyKeyStr = verifyKeyInput.value;
+
+      const encoder = new TextEncoder();
+      const payloadBytes = encoder.encode(payloadStr);
+
+      // 1. Unkeyed SHA-256 Digest
+      const shaBuffer = await window.crypto.subtle.digest("SHA-256", payloadBytes);
+      const shaHex = bytesToHex(new Uint8Array(shaBuffer));
+
+      // 2. Keyed HMAC-SHA256 Generation
+      const genCryptoKey = await window.crypto.subtle.importKey(
+        "raw",
+        encoder.encode(keyStr),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["sign"]
+      );
+
+      const hmacBuffer = await window.crypto.subtle.sign(
+        "HMAC",
+        genCryptoKey,
+        payloadBytes
+      );
+      const hmacBytes = new Uint8Array(hmacBuffer);
+      const hmacHex = bytesToHex(hmacBytes);
+
+      // 3. Receiver HMAC Verification using verifyKeyStr
+      const verifyCryptoKey = await window.crypto.subtle.importKey(
+        "raw",
+        encoder.encode(verifyKeyStr),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["verify"]
+      );
+
+      const isValid = await window.crypto.subtle.verify(
+        "HMAC",
+        verifyCryptoKey,
+        hmacBytes,
+        payloadBytes
+      );
+
+      let html = '<div class="ecb-blocks-list">';
+
+      // SHA-256 Digest Display
+      html += `
+      <div class="ecb-block-item">
+        <div class="block-meta">
+          <span class="block-num">Unkeyed SHA-256 Hash Digest (32 Bytes / 256 Bits)</span>
+          <span class="block-plain-preview">No Origin Authentication</span>
+        </div>
+        <div class="block-hex-val" style="word-break: break-all; font-size: 0.78rem;">
+          <code>${shaHex}</code>
+        </div>
+      </div>`;
+
+      // HMAC-SHA256 Tag Display
+      html += `
+      <div class="ecb-block-item ${isValid ? 'target-block-decrypted' : 'is-repeat-block'}">
+        <div class="block-meta">
+          <span class="block-num">Keyed HMAC-SHA256 Authentication Tag</span>
+          <span class="block-plain-preview">Key: "${keyStr}"</span>
+        </div>
+        <div class="block-hex-val" style="word-break: break-all; font-size: 0.78rem;">
+          <code>${hmacHex}</code>
+        </div>
+      </div>`;
+
+      html += '</div>';
+
+      if (isValid) {
+        html += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Authentication Status</div>
+          <div>
+            <strong>✔ AUTHENTICATION SUCCESSFUL!</strong>
+            <p style="margin-bottom:0;">The receiver verification key <code>"${verifyKeyStr}"</code> matches the sender key. Payload integrity and origin authenticity are 100% verified!</p>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Authentication Status</div>
+          <div>
+            <strong>❌ AUTHENTICATION FAILED! (Invalid Secret Key)</strong>
+            <p style="margin-bottom:0;">The receiver verification key <code>"${verifyKeyStr}"</code> does not match the sender key. The HMAC authentication tag was rejected!</p>
+          </div>
+        </div>`;
+      }
+
+      outputArea.innerHTML = html;
+
+    } catch (err) {
+      outputArea.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>HMAC Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  btnRun.addEventListener('click', runHmacCalculation);
+  payloadInput.addEventListener('input', runHmacCalculation);
+  keyInput.addEventListener('input', runHmacCalculation);
+  verifyKeyInput.addEventListener('input', runHmacCalculation);
+
+  btnInvalid.addEventListener('click', function() {
+    verifyKeyInput.value = "wrong-secret-key";
+    runHmacCalculation();
+  });
+
+  btnReset.addEventListener('click', function() {
+    verifyKeyInput.value = keyInput.value;
+    runHmacCalculation();
+  });
+
+  runHmacCalculation();
+})();
+</script>
 
 ## What I Need to Remember
 
