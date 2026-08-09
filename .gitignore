@@ -10,8 +10,3 @@ vendor/
 *.swp
 *.bak
 
-# labs/ (Flask app virtual environment & caches)
-labs/.venv/
-labs/__pycache__/
-labs/**/__pycache__/
-labs/*.pyc
