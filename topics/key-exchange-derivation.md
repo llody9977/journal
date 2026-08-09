@@ -69,7 +69,7 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
 Unauthenticated Diffie-Hellman (Anonymous DH/ECDH) provides confidentiality against passive eavesdroppers, but is **fundamentally vulnerable to active Man-in-the-Middle (MITM) attacks**. An active adversary intercepting the network connection can negotiate independent shared secrets with both parties, decrypting and re-encrypting all traffic transparently.
 
 To prevent MITM key substitution, key exchange protocols MUST be authenticated:
-- **Digital Signatures (TLS 1.3)**: The server signs its ephemeral ECDH key share using a long-term private key bound to a verified X.509 certificate (`RSA-PSS` or `Ed25519`).
+- **Digital Signatures (TLS 1.3)**: TLS 1.3 does not simply sign the ephemeral ECDH key share in isolation; CertificateVerify signs the complete handshake transcript, which includes and therefore cryptographically binds the exchanged key shares per [RFC 9846](https://www.rfc-editor.org/info/rfc9846/) bound to a verified X.509 certificate (`RSA-PSS` or `Ed25519`).
 - **Pre-Shared Keys (PSK)**: Both parties share a pre-configured high-entropy secret used to authenticate the key exchange.
 - **Mutual TLS (mTLS)**: Both client and server present X.509 certificates and verify digital signatures over the handshake transcript.
 

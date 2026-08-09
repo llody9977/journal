@@ -9,7 +9,7 @@ last_verified: 2026-08-08
 
 # Post-Quantum Cryptography (PQC) Migration
 
-<p class="lede">Post-Quantum Cryptography (PQC) prepares enterprise systems for the advent of Cryptographically Relevant Quantum Computers (CRQCs). Quantum computers running Shor's algorithm will break classical public-key cryptography (RSA, ECC, ECDSA, ECDH) in polynomial time. Security architects must execute a phased migration to NIST PQC standards (FIPS 203/204/205/206) and enforce NSA CNSA 2.0 migration deadlines.</p>
+<p class="lede">Post-Quantum Cryptography (PQC) prepares enterprise systems for the advent of Cryptographically Relevant Quantum Computers (CRQCs). Quantum computers running Shor's algorithm will break classical public-key cryptography (RSA, ECC, ECDSA, ECDH) in polynomial time. Security architects must execute a phased migration to finalized NIST PQC standards FIPS 203, 204 and 205, with FN-DSA/FIPS 206 under development and enforce NSA CNSA 2.0 migration deadlines.</p>
 
 ## Quantum Threat Horizon: Shor's vs Grover's Algorithm
 
@@ -96,7 +96,7 @@ In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA co
       <li><strong>Finalized vs. Draft</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) are <strong>finalized NIST standards (Aug 2024)</strong>. FIPS 206 (FN-DSA) is a <strong>draft standard under development</strong>.</li>
       <li><strong>Shor's vs. Grover's</strong>: Shor's algorithm completely breaks RSA/ECC. Grover's algorithm only halves symmetric key strength (AES-256 remains secure with 128-bit quantum security).</li>
       <li><strong>Harvest Now, Decrypt Later</strong>: Adversaries record encrypted traffic today to decrypt years later. Long-lived data requires immediate deployment of hybrid key exchange (X25519MLKEM768).</li>
-      <li><strong>CNSA 2.0 Scope</strong>: Applies specifically to U.S. National Security Systems (NSS), targeting full PQC transition between 2030 and 2033.</li>
+      <li><strong>CNSA 2.0 Scope</strong>: Applies specifically to U.S. National Security Systems (NSS), Software and firmware signing target 2030; traditional networking equipment targets 2030; web browsers, web servers, cloud services, and operating systems target exclusive CNSA 2.0 deployment by **2033** per [NSA CNSA 2.0 Advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF).</li>
     </ul>
   </div>
 </div>

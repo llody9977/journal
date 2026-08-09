@@ -65,8 +65,8 @@
 
   <!-- Bottom Result Summary Banner -->
   <rect x="60" y="340" width="680" height="120" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
-  <text x="400" y="368" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Identical Shared Secret Derived: S = g^(ab) mod p</text>
-  <text x="400" y="394" font-size="12" font-weight="500" fill="#334155" text-anchor="middle">Neither private keys (a, b) nor the shared secret (S) ever cross the network.</text>
+  <text x="400" y="368" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Unauthenticated DH Mechanics: Identical Shared Secret Derived (S = g^(ab) mod p)</text>
+  <text x="400" y="394" font-size="12" font-weight="500" fill="#334155" text-anchor="middle">Unauthenticated DH mechanics—authentication (digital signatures / certificates) is required to prevent active MITM attacks.</text>
   <text x="400" y="416" font-size="11.5" font-weight="500" fill="#475569" text-anchor="middle">Shared secret S is passed through HKDF (RFC 5869) to derive symmetric AEAD keys.</text>
   <text x="400" y="438" font-size="11" font-style="italic" fill="#64748b" text-anchor="middle">ECDH / X25519 (RFC 7748): Same key agreement principle using scalar multiplication on elliptic curves.</text>
 </svg>

@@ -35,7 +35,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
   <div class="demo-header">
     <span class="demo-badge">Live Certificate Inspector</span>
     <h3>Domain CT Log Issuance Inspector</h3>
-    <p>Enter any public domain name (e.g. google.com, github.com) to query its active certificate and print a live RFC 5280 structural output.</p>
+    <p>Enter any public domain name (e.g. google.com, github.com) to query its Certificate Transparency (CT) log issuance records via CertSpotter API.</p>
   </div>
 
   <div class="demo-body">
@@ -103,26 +103,17 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
         sans = cert.dns_names.slice(0, 3).map(name => `DNS:${name}`).join(', ') + `, ... (+ ${cert.dns_names.length - 3} more)`;
       }
 
-      let rfcText = `Certificate:
+      let rfcText = `Certificate Transparency Log Entry:
   Data:
-    Version: 3 (0x2)
-    Serial Number (SHA-256): ${cert.cert_sha256}
-    Signature Algorithm: Inferred from Root CA
+    Log Certificate Hash (SHA-256): ${cert.cert_sha256}
     Issuer: ${cert.issuer.name}
-    Validity:
+    Validity Window:
         Not Before: ${formatDate(cert.not_before)}
         Not After : ${formatDate(cert.not_after)}
-    Subject: CN=${domain}
-    Subject Public Key Info:
-        Public Key Algorithm: SHA-256 SPKI Pin
-        SPKI Pin Hash (Base64): ${pinBase64}
-    X509v3 extensions:
-        X509v3 Subject Alternative Name:
-            ${sans}
-        X509v3 Basic Constraints:
-            cA: FALSE
-        X509v3 Key Usage:
-            Digital Signature, Key Encipherment`;
+    Subject Alternative Names (SANs):
+        ${sans}
+    Subject Public Key SPKI SHA-256 Pin (Base64):
+        ${pinBase64}`;
 
       outputArea.innerHTML = rfcText;
     } catch (err) {
@@ -141,7 +132,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 | **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must have `cA: FALSE` to prevent rogue CA certificate creation. |
 | **Extended Key Usage (EKU)** | Specifies allowed certificate roles (*Server Auth, Client Auth, Code Signing*) | Prevents a TLS server certificate from signing executable software binaries. |
 | **Subject Alternative Name (SAN)** | Lists exact FQDN domain names bound to this certificate | Modern browsers validate SAN fields exclusively; commonName (CN) is ignored. |
-| **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | Enforces maximum 90-day to 398-day lifetime limits. |
+| **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | Enforces maximum 200-day validity period as of March 15, 2026 per CA/Browser Forum Baseline Requirements (progressing toward a 90-day maximum limit). |
 
 ## Certificate Lifecycle & Automated Issuance (ACME & ARI)
 
