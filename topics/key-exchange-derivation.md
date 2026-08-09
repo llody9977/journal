@@ -96,10 +96,14 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
   </div>
 
   <div class="demo-body">
-    <!-- Protocol Tab Buttons -->
-    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-      <button id="tab-static-rsa" class="btn-primary" style="flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text);" type="button">1. Static RSA (No PFS)</button>
-      <button id="tab-ephemeral-ecdh" class="btn-primary" style="flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text);" type="button">2. Ephemeral ECDH (PFS Standard)</button>
+    <!-- Segmented Tab Switcher -->
+    <div style="display: flex; gap: 0.25rem; background: rgba(127, 127, 127, 0.08); padding: 0.35rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1.5rem;">
+      <button id="tab-static-rsa" type="button" style="flex: 1; padding: 0.6rem 1rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s ease;">
+        1. Static RSA (No PFS)
+      </button>
+      <button id="tab-ephemeral-ecdh" type="button" style="flex: 1; padding: 0.6rem 1rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s ease;">
+        2. Ephemeral ECDH (PFS)
+      </button>
     </div>
 
     <!-- Simulator Steps -->
@@ -203,10 +207,21 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
     state.serverLongTermECDSAKeyPair = null;
     state.sessions = [];
 
-    tabRSA.style.background = activeMode === 'rsa' ? 'var(--primary)' : 'var(--bg)';
-    tabRSA.style.color = activeMode === 'rsa' ? '#fff' : 'var(--text)';
-    tabECDH.style.background = activeMode === 'ecdh' ? 'var(--primary)' : 'var(--bg)';
-    tabECDH.style.color = activeMode === 'ecdh' ? '#fff' : 'var(--text)';
+    if (activeMode === 'rsa') {
+      tabRSA.style.background = 'var(--primary)';
+      tabRSA.style.color = '#ffffff';
+      tabRSA.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+      tabECDH.style.background = 'transparent';
+      tabECDH.style.color = 'var(--text-muted, #888)';
+      tabECDH.style.boxShadow = 'none';
+    } else {
+      tabECDH.style.background = 'var(--primary)';
+      tabECDH.style.color = '#ffffff';
+      tabECDH.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+      tabRSA.style.background = 'transparent';
+      tabRSA.style.color = 'var(--text-muted, #888)';
+      tabRSA.style.boxShadow = 'none';
+    }
 
     setStepOpacity(1);
     outputArea.innerHTML = log(`Simulator switched to <strong>${activeMode === 'rsa' ? 'Static RSA Key Transport' : 'Ephemeral ECDH (PFS)'}</strong>. Ready for Step 1.`);
