@@ -35,12 +35,12 @@
 
   <!-- Encrypt Box -->
   <rect x="215" y="140" width="210" height="90" rx="10" fill="#1e40af" />
-  <text x="320" y="168" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">AES-256-GCM Encrypt</text>
-  <text x="320" y="188" font-size="11" fill="#bfdbfe" text-anchor="middle">AEAD Cipher + CSPRNG IV</text>
+  <text x="320" y="165" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">AES-256-GCM Encrypt</text>
+  <text x="320" y="184" font-size="11" fill="#bfdbfe" text-anchor="middle">AEAD Cipher + CSPRNG IV</text>
   <g fill="#fde047" stroke="#fde047">
-    <use href="#key-icon" transform="translate(305,212) scale(0.65)" />
+    <use href="#key-icon" transform="translate(255,210) scale(0.55)" />
+    <text x="282" y="214" font-size="11" font-weight="800" fill="#fde047" stroke="none">Shared Key K</text>
   </g>
-  <text x="320" y="217" font-size="11" font-weight="800" fill="#fde047" text-anchor="middle">Shared Key K</text>
 
   <path d="M 430 185 L 500 185" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
@@ -55,12 +55,12 @@
 
   <!-- Decrypt Box -->
   <rect x="775" y="140" width="210" height="90" rx="10" fill="#15803d" />
-  <text x="880" y="168" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">AES-256-GCM Decrypt</text>
-  <text x="880" y="188" font-size="11" fill="#bbf7d0" text-anchor="middle">Verify Tag &amp; Recover Plaintext</text>
+  <text x="880" y="165" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">AES-256-GCM Decrypt</text>
+  <text x="880" y="184" font-size="11" fill="#bbf7d0" text-anchor="middle">Verify Tag &amp; Recover Plaintext</text>
   <g fill="#fde047" stroke="#fde047">
-    <use href="#key-icon" transform="translate(865,212) scale(0.65)" />
+    <use href="#key-icon" transform="translate(818,210) scale(0.55)" />
+    <text x="845" y="214" font-size="11" font-weight="800" fill="#fde047" stroke="none">Same Key K</text>
   </g>
-  <text x="880" y="217" font-size="11" font-weight="800" fill="#fde047" text-anchor="middle">Same Key K</text>
 
   <path d="M 990 185 L 1050 185" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
 
