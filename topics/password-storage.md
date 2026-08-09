@@ -38,6 +38,169 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 5. **Deprecate Security Questions / Hints**:
    * Knowledge-based authentication (KBA) questions (e.g., *"What was your first pet's name?"*) are forbidden because answers are easily researched using open-source intelligence (OSINT).
 
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Strength Meter</span>
+    <h3>Password Entropy &amp; Strength Estimator</h3>
+    <p>Type any password or passphrase below to calculate its Shannon entropy (bits of security) and estimate the time required for a modern GPU cluster to crack it offline.</p>
+  </div>
+
+  <div class="demo-body">
+    <!-- Password Input -->
+    <div class="demo-form-group">
+      <label for="entropy-password-input">Test Password or Passphrase:</label>
+      <input id="entropy-password-input" type="text" class="demo-input" style="width: 100%;" placeholder="Type a password..." value="correct horse battery staple">
+    </div>
+
+    <!-- Live Calculations -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-top: 1rem;">
+      <div style="background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px; text-align: center;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Length</div>
+        <div id="entropy-len-val" style="font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-top: 0.25rem;">0</div>
+      </div>
+      <div style="background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px; text-align: center;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Pool Size (R)</div>
+        <div id="entropy-pool-val" style="font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-top: 0.25rem;">0</div>
+      </div>
+      <div style="background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px; text-align: center;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Entropy (E)</div>
+        <div id="entropy-bits-val" style="font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-top: 0.25rem;">0 bits</div>
+      </div>
+    </div>
+
+    <!-- Live Strength Status -->
+    <div id="entropy-status-bar" style="margin-top: 1rem; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; border: 1px solid transparent;"></div>
+
+    <!-- Crack Time Display -->
+    <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--ink-2); background: var(--paper); border: 1px solid var(--border); padding: 0.75rem; border-radius: 6px;">
+      <strong>Attacker Brute-Force Time Estimate:</strong>
+      <div style="margin: 0.25rem 0 0 0; font-size: 0.8rem; line-height: 1.4;">
+        Assuming a modern GPU cluster attempting <strong>100 billion guesses/sec</strong> (SHA-256 rate):
+        <span id="entropy-crack-time" style="font-weight: 700; display: block; margin-top: 0.25rem; font-size: 0.9rem;"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% raw %}
+<script>
+(function() {
+  const passwordInput = document.getElementById('entropy-password-input');
+  const lenVal = document.getElementById('entropy-len-val');
+  const poolVal = document.getElementById('entropy-pool-val');
+  const bitsVal = document.getElementById('entropy-bits-val');
+  const statusBar = document.getElementById('entropy-status-bar');
+  const crackTime = document.getElementById('entropy-crack-time');
+
+  if (!passwordInput || !lenVal || !poolVal || !bitsVal || !statusBar || !crackTime) return;
+
+  function calculateEntropy() {
+    const password = passwordInput.value;
+    const len = password.length;
+    lenVal.innerText = len;
+
+    if (len === 0) {
+      poolVal.innerText = '0';
+      bitsVal.innerText = '0 bits';
+      statusBar.innerText = 'Enter a password to begin estimation.';
+      statusBar.style.background = 'transparent';
+      statusBar.style.color = 'var(--text-muted)';
+      statusBar.style.borderColor = 'var(--border)';
+      crackTime.innerText = 'N/A';
+      return;
+    }
+
+    // Determine character pool (R)
+    let hasLower = false;
+    let hasUpper = false;
+    let hasDigit = false;
+    let hasSpecial = false;
+
+    for (let i = 0; i < len; i++) {
+      const charCode = password.charCodeAt(i);
+      if (charCode >= 97 && charCode <= 122) hasLower = true;
+      else if (charCode >= 65 && charCode <= 90) hasUpper = true;
+      else if (charCode >= 48 && charCode <= 57) hasDigit = true;
+      else hasSpecial = true;
+    }
+
+    let R = 0;
+    if (hasLower) R += 26;
+    if (hasUpper) R += 26;
+    if (hasDigit) R += 10;
+    if (hasSpecial) R += 33; // Standard printable special characters
+
+    poolVal.innerText = R;
+
+    // Shannon Entropy Formula: E = L * log2(R)
+    const E = len * (Math.log(R) / Math.log(2));
+    bitsVal.innerText = `${E.toFixed(1)} bits`;
+
+    // Qualitative Rating
+    let rating = '';
+    let bgColor = '';
+    let textColor = '';
+    let borderColor = '';
+
+    if (E < 28) {
+      rating = '&#10060; Very Weak (Vulnerable to instant offline brute-forcing)';
+      bgColor = 'rgba(159, 18, 57, 0.08)'; // critical-wash
+      textColor = 'var(--critical)';
+      borderColor = 'var(--critical)';
+    } else if (E < 60) {
+      rating = '&#9888; Weak (Vulnerable to targeted GPU guessing clusters)';
+      bgColor = 'rgba(161, 76, 0, 0.08)'; // amber-wash
+      textColor = 'var(--amber)';
+      borderColor = 'var(--amber)';
+    } else if (E < 80) {
+      rating = '&#128309; Moderate Strength (Safe for ordinary consumer applications)';
+      bgColor = 'rgba(36, 87, 214, 0.08)'; // accent-wash
+      textColor = 'var(--accent)';
+      borderColor = 'var(--accent)';
+    } else {
+      rating = '&#9989; Strong (Extremely secure passphrase - resistant to GPU cracking)';
+      bgColor = 'rgba(15, 118, 110, 0.08)'; // teal-wash
+      textColor = 'var(--teal)';
+      borderColor = 'var(--teal)';
+    }
+
+    statusBar.innerHTML = rating;
+    statusBar.style.background = bgColor;
+    statusBar.style.color = textColor;
+    statusBar.style.borderColor = borderColor;
+
+    // Crack time estimation: T = (2^(E-1)) / 10^11 seconds
+    const totalPossibilities = Math.pow(2, E);
+    const avgGuesses = totalPossibilities / 2;
+    const guessesPerSec = 100000000000; // 100 Billion
+    const seconds = avgGuesses / guessesPerSec;
+
+    let timeText = '';
+    if (seconds < 1) {
+      timeText = 'Instantaneous (under 1 second)';
+    } else if (seconds < 60) {
+      timeText = `~${Math.round(seconds)} seconds`;
+    } else if (seconds < 3600) {
+      timeText = `~${Math.round(seconds / 60)} minutes`;
+    } else if (seconds < 86400) {
+      timeText = `~${Math.round(seconds / 3600)} hours`;
+    } else if (seconds < 31536000) {
+      timeText = `~${Math.round(seconds / 86400)} days`;
+    } else if (seconds < 3153600000) {
+      timeText = `~${Math.round(seconds / 31536000)} years`;
+    } else {
+      timeText = 'Centuries / Billions of Years';
+    }
+
+    crackTime.innerText = timeText;
+  }
+
+  passwordInput.addEventListener('input', calculateEntropy);
+  calculateEntropy();
+})();
+</script>
+{% endraw %}
+
 ---
 
 ## Specialized Password Hashing Functions Matrix
