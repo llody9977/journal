@@ -1,6 +1,6 @@
 ---
 title: What Is Security?
-description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and the universal risk management lifecycle.
+description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and a journal working model of the risk management lifecycle.
 permalink: /topics/security-fundamentals/
 last_verified: 2026-08-09
 ---
@@ -18,9 +18,9 @@ While the term "Security" is used casually as a general heading, technical engin
 | Security Domain | Representative Standard / Law | Primary Scope & Focus |
 |---|---|---|
 | **Security** (Generic) | No single standard defines generic "Security" universally; **CNSSI 4009** and **NIST SP 800-37** (an RMF-specific publication) each use working definitions within their own scope, used here as a practical starting point. | The general condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
-| **Information Security** (InfoSec) | **FISMA (44 U.S.C. § 3542)** / **ISO/IEC 27001** | Protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to preserve **Confidentiality, Integrity, and Availability (CIA)**. |
+| **Information Security** (InfoSec) | **[FISMA (44 U.S.C. § 3552)](https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title44-section3552)** / **ISO/IEC 27001** | Protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to preserve **Confidentiality, Integrity, and Availability (CIA)**. |
 | **Cybersecurity** | **NIST CSF 2.0** / **ISO/IEC 27032** | Protecting digital infrastructure, software applications, cloud services, and network data streams connected to cyberspace against cyber threats. |
-| **System Security Engineering** | **NIST SP 800-160 Vol. 1** | The engineering discipline of building resilient hardware, kernel, software, and cryptographic architectures that function predictably under hostile conditions. |
+| **System Security Engineering** | **NIST SP 800-160 Vol. 1** | The engineering discipline of building trustworthy secure systems across the full system lifecycle—requirements, architecture, hardware, software, and cryptographic design—so they function predictably under hostile conditions. |
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" alt="Conceptual model of security domain scopes showing Core Security Objectives, Information Security and Cybersecurity Scopes, a common Risk Management approach, and Security Controls Execution.">
@@ -42,7 +42,7 @@ Evaluating harm to an asset requires testing it against fundamental security pro
 Comprehensive security engineering expands beyond the CIA triad to address additional critical properties across systems:
 
 - **Authenticity**: Verifying that a user, process, system, or payload is genuine (**NIST SP 800-63**).
-- **Accountability**: Ensuring system actions can be traced unequivocally to an authenticated identity via tamper-evident audit logging (**NIST SP 800-92**).
+- **Accountability**: Producing evidence—via audit logging (**NIST SP 800-92**)—that supports tracing system actions to an authenticated identity; the strength of that attribution still depends on identity binding, log integrity, access controls to the logs, time synchronization, and investigative context, not the logging mechanism alone.
 - **Privacy**: Ensuring data processing respects individual rights and regulatory boundaries (**[NIST Privacy Framework](https://www.nist.gov/privacy-framework)**).
 - **Safety**: Ensuring system operational failures do not cause physical injury, environmental damage, or loss of life (**ISO 26262 / NIST SP 800-160**).
 - **Resilience**: The capacity of a system to withstand, adapt to, and recover from adverse conditions or attacks (**NIST SP 800-160 Vol. 2**).
@@ -65,7 +65,7 @@ The five-stage breakdown below is a practical synthesis for this journal, inform
 | **Stage 1: Inputs**<br>*(Problem Domain)* | Gathers inputs from **Threat Modeling**, **CVSS Vulnerability Scans**, **Threat Intel**, Asset Inventories, and Gap Audits to construct scenario components (*Asset, Threat, Vulnerability, Impact*). | Unauthenticated public API route exposing customer database queries without rate limiting. |
 | **Stage 2: Evaluation**<br>*(Risk Assessment)* | Calculates exposure severity per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** by rating threat plausibility and harm consequence—commonly approximated as a simplified working model, `Risk ≈ Likelihood × Impact`, though SP 800-30 itself does not mandate multiplication. | Rating data exfiltration likelihood as **High** and financial harm as **Critical**. |
 | **Stage 3: Strategy**<br>*(Response Selection)* | Selects a response type; **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** names five: **Accept**, **Avoid** (redesign feature), **Mitigate** (deploy controls), **Share**, and **Transfer** (insurance/SLAs)—share and transfer are distinct but often grouped together informally. | Selecting **Mitigate** to deploy technical security controls. |
-| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/final)** control catalog (organized into 20 control families, not a 4-function taxonomy). This journal groups implemented controls by a practical functional lens—**Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*)—for reasoning about defense in depth. | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
+| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** control catalog (organized into 20 control families, not a 4-function taxonomy). This journal groups implemented controls by a practical functional lens—**Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*)—for reasoning about defense in depth. This four-part lens is a simplified summary for this page; **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})** uses a related but distinct five-part functional taxonomy (adding Compensating and Deterrent). Both are overlapping journal lenses, not competing official standards. | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
 | **Stage 5: Loop**<br>*(Continuous Audit)* | Continuously monitors control efficacy (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), tracks new threats, and feeds metrics back into Stage 1 Inputs for re-assessment. | Automated SIEM alerting on brute-force spikes and feeding log metrics into annual audits. |
 
 A vulnerability alone does not constitute a risk. Risk assessment requires determining whether a plausible threat can reach the vulnerability, the magnitude of the resulting impact, and how existing controls alter overall probability. Risk management is never a static, one-time activity—it operates as a continuous feedback loop (**NIST SP 800-37**).
@@ -90,16 +90,16 @@ When evaluating the security posture of any new feature or system architecture, 
   <div>
     <strong>Security Fundamentals Summary</strong>
     <ul>
-      <li><strong>Security Objectives</strong>: Core goals are Confidentiality, Integrity, Authenticity, Non-Repudiation, and Availability.</li>
+      <li><strong>Security Objectives</strong>: The CIA triad (Confidentiality, Integrity, Availability) plus the extended properties this page covers—Authenticity, Accountability, Privacy, Safety, and Resilience.</li>
       <li><strong>Risk-Driven Architecture</strong>: Security controls must be selected based on threat modeling and risk assessments, not checkbox compliance.</li>
-      <li><strong>Defense in Depth</strong>: Layer controls across physical, network, identity, application, and data layers so no single point of failure exists.</li>
+      <li><strong>Defense in Depth</strong>: Layer controls across physical, network, identity, application, and data layers to reduce dependence on any single control—layering lowers the odds that one failure causes systemic compromise, but it does not guarantee the absence of every single point of failure.</li>
     </ul>
   </div>
 </div>
 
 ## Primary References
 
-- **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/final)
+- **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
 - **ISO/IEC 27001:2022**: *Information security, cybersecurity and privacy protection — Information security management systems* — [ISO 27001 Overview](https://www.iso.org/standard/27001)
 - **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
 - **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)

@@ -12,8 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Identity &amp; Access Management Architecture</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement and &amp;</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">(PEP/PDP), Lifecycle Revocation Audit (NIST SP 800-63 &amp; 800-207).</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement (PEP/PDP),</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">and Lifecycle Revocation &amp; Audit (NIST SP 800-63 &amp; 800-207).</text>
   
     <!-- Setup Stage: IAL, AAL, FAL (y=115, h=135) -->
     <!-- Card 1: IAL Identity Proofing (x=40, w=355) -->
@@ -37,7 +37,7 @@
     <text x="825" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">3. FEDERATION ASSURANCE (FAL1 - FAL3)</text>
     <text x="825" y="162" font-size="14" font-weight="800" fill="#0f172a">Secure Token &amp; Assertion Exchange</text>
     <line x1="825" y1="174" x2="1140" y2="174" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-    <text x="825" y="194" font-size="10.5" font-weight="500" fill="#475569">• OpenID Connect (OIDC), OAuth &amp; DPoP (NIST 800-63C)</text>
+    <text x="825" y="194" font-size="10.5" font-weight="500" fill="#475569">• OIDC = identity; OAuth = authZ delegation (800-63C)</text>
     <text x="825" y="212" font-size="10.5" font-weight="500" fill="#475569">• FAL1 (Bearer) → FAL2 (Protected) → FAL3 (Holder-of-Key)</text>
 
     <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=265, h=145) -->
@@ -66,7 +66,7 @@
     <line x1="825" y1="324" x2="1140" y2="324" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="344" font-size="10.5" font-weight="500" fill="#475569">• Executes authorized application logic</text>
     <text x="825" y="362" font-size="10.5" font-weight="500" fill="#475569">• Enforces fine-grained field level filters</text>
-    <text x="825" y="380" font-size="10.5" font-weight="500" fill="#475569">• Emits tamper-evident SIEM telemetry</text>
+    <text x="825" y="380" font-size="10.5" font-weight="500" fill="#475569">• Emits SIEM telemetry (not inherently tamper-evident)</text>
 
     <!-- Bottom Stage: Revocation & Governance (y=425, h=55) -->
     <!-- Left Box: Revocation (x=40, w=545) -->

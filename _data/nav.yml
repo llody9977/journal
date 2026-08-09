@@ -21,10 +21,12 @@
           url: /topics/trust-boundaries-threat-modeling/
         - title: "1.5 Threats, Vulnerabilities & Risk"
           url: /topics/risk-fundamentals/
-        - title: 1.6 Identity & Access Fundamentals
-          url: /topics/identity-access-fundamentals/
-        - title: 1.7 Security Controls & Defense in Depth
+        - title: 1.6 Security Controls & Defense in Depth
           url: /topics/security-controls-defense-in-depth/
+        - title: 1.7 Identity & Access Fundamentals
+          url: /topics/identity-access-fundamentals/
+        - title: "1.8 Monitoring, Incident Response & Operational Learning"
+          url: /topics/incident-response-operational-learning/
     - title: 2. Cryptography
       children:
         - title: 2.1 What Is Cryptography?

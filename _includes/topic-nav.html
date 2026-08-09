@@ -29,24 +29,30 @@
 {% if current_url == '/topics/risk-fundamentals/' or current_url == '/topics/risk-fundamentals' %}
   {% assign prev_title = '1.4 Trust Boundaries & Threat Modeling' %}
   {% assign prev_url = '/topics/trust-boundaries-threat-modeling/' %}
-  {% assign next_title = '1.6 Identity & Access Fundamentals' %}
-  {% assign next_url = '/topics/identity-access-fundamentals/' %}
-{% endif %}
-{% if current_url == '/topics/identity-access-fundamentals/' or current_url == '/topics/identity-access-fundamentals' %}
-  {% assign prev_title = '1.5 Threats, Vulnerabilities & Risk' %}
-  {% assign prev_url = '/topics/risk-fundamentals/' %}
-  {% assign next_title = '1.7 Security Controls & Defense in Depth' %}
+  {% assign next_title = '1.6 Security Controls & Defense in Depth' %}
   {% assign next_url = '/topics/security-controls-defense-in-depth/' %}
 {% endif %}
 {% if current_url == '/topics/security-controls-defense-in-depth/' or current_url == '/topics/security-controls-defense-in-depth' %}
-  {% assign prev_title = '1.6 Identity & Access Fundamentals' %}
+  {% assign prev_title = '1.5 Threats, Vulnerabilities & Risk' %}
+  {% assign prev_url = '/topics/risk-fundamentals/' %}
+  {% assign next_title = '1.7 Identity & Access Fundamentals' %}
+  {% assign next_url = '/topics/identity-access-fundamentals/' %}
+{% endif %}
+{% if current_url == '/topics/identity-access-fundamentals/' or current_url == '/topics/identity-access-fundamentals' %}
+  {% assign prev_title = '1.6 Security Controls & Defense in Depth' %}
+  {% assign prev_url = '/topics/security-controls-defense-in-depth/' %}
+  {% assign next_title = '1.8 Monitoring, Incident Response & Operational Learning' %}
+  {% assign next_url = '/topics/incident-response-operational-learning/' %}
+{% endif %}
+{% if current_url == '/topics/incident-response-operational-learning/' or current_url == '/topics/incident-response-operational-learning' %}
+  {% assign prev_title = '1.7 Identity & Access Fundamentals' %}
   {% assign prev_url = '/topics/identity-access-fundamentals/' %}
   {% assign next_title = '2.1 What Is Cryptography?' %}
   {% assign next_url = '/topics/cryptography-overview/' %}
 {% endif %}
 {% if current_url == '/topics/cryptography-overview/' or current_url == '/topics/cryptography-overview' %}
-  {% assign prev_title = '1.7 Security Controls & Defense in Depth' %}
-  {% assign prev_url = '/topics/security-controls-defense-in-depth/' %}
+  {% assign prev_title = '1.8 Monitoring, Incident Response & Operational Learning' %}
+  {% assign prev_url = '/topics/incident-response-operational-learning/' %}
   {% assign next_title = '2.2 Symmetric Cryptography' %}
   {% assign next_url = '/topics/symmetric-cryptography/' %}
 {% endif %}
@@ -143,6 +149,138 @@
 {% if current_url == '/topics/blockchain-cryptography/' or current_url == '/topics/blockchain-cryptography' %}
   {% assign prev_title = '2.16 Full-Disk & File Encryption' %}
   {% assign prev_url = '/topics/full-disk-file-encryption/' %}
+  {% assign next_title = '3.1 HSM & KMS' %}
+  {% assign next_url = '/topics/hsm-kms/' %}
+{% endif %}
+{% if current_url == '/topics/hsm-kms/' or current_url == '/topics/hsm-kms' %}
+  {% assign prev_title = '2.17 Blockchain Cryptography' %}
+  {% assign prev_url = '/topics/blockchain-cryptography/' %}
+  {% assign next_title = '4.1 Digital Identity Assurance Levels (IAL, AAL, FAL)' %}
+  {% assign next_url = '/topics/digital-identity-assurance-levels/' %}
+{% endif %}
+{% if current_url == '/topics/digital-identity-assurance-levels/' or current_url == '/topics/digital-identity-assurance-levels' %}
+  {% assign prev_title = '3.1 HSM & KMS' %}
+  {% assign prev_url = '/topics/hsm-kms/' %}
+  {% assign next_title = '4.2 Authorization Models: RBAC, ABAC, ReBAC & Zero Trust' %}
+  {% assign next_url = '/topics/authorization-models/' %}
+{% endif %}
+{% if current_url == '/topics/authorization-models/' or current_url == '/topics/authorization-models' %}
+  {% assign prev_title = '4.1 Digital Identity Assurance Levels (IAL, AAL, FAL)' %}
+  {% assign prev_url = '/topics/digital-identity-assurance-levels/' %}
+  {% assign next_title = '4.3 WebAuthn & Passkeys Deep-Dive' %}
+  {% assign next_url = '/topics/webauthn-passkeys/' %}
+{% endif %}
+{% if current_url == '/topics/webauthn-passkeys/' or current_url == '/topics/webauthn-passkeys' %}
+  {% assign prev_title = '4.2 Authorization Models: RBAC, ABAC, ReBAC & Zero Trust' %}
+  {% assign prev_url = '/topics/authorization-models/' %}
+  {% assign next_title = '4.4 Step-Up Authentication & MFA' %}
+  {% assign next_url = '/topics/step-up-authentication/' %}
+{% endif %}
+{% if current_url == '/topics/step-up-authentication/' or current_url == '/topics/step-up-authentication' %}
+  {% assign prev_title = '4.3 WebAuthn & Passkeys Deep-Dive' %}
+  {% assign prev_url = '/topics/webauthn-passkeys/' %}
+  {% assign next_title = '4.5 OAuth & OpenID Connect' %}
+  {% assign next_url = '/topics/oauth-oidc/' %}
+{% endif %}
+{% if current_url == '/topics/oauth-oidc/' or current_url == '/topics/oauth-oidc' %}
+  {% assign prev_title = '4.4 Step-Up Authentication & MFA' %}
+  {% assign prev_url = '/topics/step-up-authentication/' %}
+  {% assign next_title = '4.6 SAML 2.0' %}
+  {% assign next_url = '/topics/saml/' %}
+{% endif %}
+{% if current_url == '/topics/saml/' or current_url == '/topics/saml' %}
+  {% assign prev_title = '4.5 OAuth & OpenID Connect' %}
+  {% assign prev_url = '/topics/oauth-oidc/' %}
+  {% assign next_title = '4.7 NTLM, Kerberos & HTTP Authentication Schemes' %}
+  {% assign next_url = '/topics/http-auth-schemes/' %}
+{% endif %}
+{% if current_url == '/topics/http-auth-schemes/' or current_url == '/topics/http-auth-schemes' %}
+  {% assign prev_title = '4.6 SAML 2.0' %}
+  {% assign prev_url = '/topics/saml/' %}
+  {% assign next_title = '4.8 SSH Architecture & Authentication' %}
+  {% assign next_url = '/topics/ssh/' %}
+{% endif %}
+{% if current_url == '/topics/ssh/' or current_url == '/topics/ssh' %}
+  {% assign prev_title = '4.7 NTLM, Kerberos & HTTP Authentication Schemes' %}
+  {% assign prev_url = '/topics/http-auth-schemes/' %}
+  {% assign next_title = '4.9 Security Token Service (STS)' %}
+  {% assign next_url = '/topics/security-token-service/' %}
+{% endif %}
+{% if current_url == '/topics/security-token-service/' or current_url == '/topics/security-token-service' %}
+  {% assign prev_title = '4.8 SSH Architecture & Authentication' %}
+  {% assign prev_url = '/topics/ssh/' %}
+  {% assign next_title = '4.10 Machine-to-Machine API Authentication' %}
+  {% assign next_url = '/topics/api-security/' %}
+{% endif %}
+{% if current_url == '/topics/api-security/' or current_url == '/topics/api-security' %}
+  {% assign prev_title = '4.9 Security Token Service (STS)' %}
+  {% assign prev_url = '/topics/security-token-service/' %}
+  {% assign next_title = '5.1 DNS Security' %}
+  {% assign next_url = '/topics/dns-security/' %}
+{% endif %}
+{% if current_url == '/topics/dns-security/' or current_url == '/topics/dns-security' %}
+  {% assign prev_title = '4.10 Machine-to-Machine API Authentication' %}
+  {% assign prev_url = '/topics/api-security/' %}
+  {% assign next_title = '5.2 Network Segmentation & Microsegmentation' %}
+  {% assign next_url = '/topics/network-segmentation-microsegmentation/' %}
+{% endif %}
+{% if current_url == '/topics/network-segmentation-microsegmentation/' or current_url == '/topics/network-segmentation-microsegmentation' %}
+  {% assign prev_title = '5.1 DNS Security' %}
+  {% assign prev_url = '/topics/dns-security/' %}
+  {% assign next_title = '5.3 Secure Tunneling: IPsec, WireGuard & SSH Bastions' %}
+  {% assign next_url = '/topics/vpn-ipsec-wireguard/' %}
+{% endif %}
+{% if current_url == '/topics/vpn-ipsec-wireguard/' or current_url == '/topics/vpn-ipsec-wireguard' %}
+  {% assign prev_title = '5.2 Network Segmentation & Microsegmentation' %}
+  {% assign prev_url = '/topics/network-segmentation-microsegmentation/' %}
+  {% assign next_title = '6.1 Threat Frameworks & Modeling Methodologies' %}
+  {% assign next_url = '/topics/threat-frameworks/' %}
+{% endif %}
+{% if current_url == '/topics/threat-frameworks/' or current_url == '/topics/threat-frameworks' %}
+  {% assign prev_title = '5.3 Secure Tunneling: IPsec, WireGuard & SSH Bastions' %}
+  {% assign prev_url = '/topics/vpn-ipsec-wireguard/' %}
+  {% assign next_title = '7.1 AI & LLM Security' %}
+  {% assign next_url = '/topics/ai-llm-security/' %}
+{% endif %}
+{% if current_url == '/topics/ai-llm-security/' or current_url == '/topics/ai-llm-security' %}
+  {% assign prev_title = '6.1 Threat Frameworks & Modeling Methodologies' %}
+  {% assign prev_url = '/topics/threat-frameworks/' %}
+  {% assign next_title = '7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA' %}
+  {% assign next_url = '/topics/software-supply-chain-security/' %}
+{% endif %}
+{% if current_url == '/topics/software-supply-chain-security/' or current_url == '/topics/software-supply-chain-security' %}
+  {% assign prev_title = '7.1 AI & LLM Security' %}
+  {% assign prev_url = '/topics/ai-llm-security/' %}
+  {% assign next_title = '8.1 Cybersecurity Standards & Frameworks' %}
+  {% assign next_url = '/topics/cybersecurity-standards/' %}
+{% endif %}
+{% if current_url == '/topics/cybersecurity-standards/' or current_url == '/topics/cybersecurity-standards' %}
+  {% assign prev_title = '7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA' %}
+  {% assign prev_url = '/topics/software-supply-chain-security/' %}
+  {% assign next_title = '8.2 GRC Strategy: Framework Stacking & Assessment Models' %}
+  {% assign next_url = '/topics/grc-framework-strategy/' %}
+{% endif %}
+{% if current_url == '/topics/grc-framework-strategy/' or current_url == '/topics/grc-framework-strategy' %}
+  {% assign prev_title = '8.1 Cybersecurity Standards & Frameworks' %}
+  {% assign prev_url = '/topics/cybersecurity-standards/' %}
+  {% assign next_title = '8.3 Regulatory Mandates & Compliance Attestations' %}
+  {% assign next_url = '/topics/regulatory-compliance-mandates/' %}
+{% endif %}
+{% if current_url == '/topics/regulatory-compliance-mandates/' or current_url == '/topics/regulatory-compliance-mandates' %}
+  {% assign prev_title = '8.2 GRC Strategy: Framework Stacking & Assessment Models' %}
+  {% assign prev_url = '/topics/grc-framework-strategy/' %}
+  {% assign next_title = '8.4 Security Certifications' %}
+  {% assign next_url = '/topics/security-certifications/' %}
+{% endif %}
+{% if current_url == '/topics/security-certifications/' or current_url == '/topics/security-certifications' %}
+  {% assign prev_title = '8.3 Regulatory Mandates & Compliance Attestations' %}
+  {% assign prev_url = '/topics/regulatory-compliance-mandates/' %}
+  {% assign next_title = '8.5 Security Maturity Models' %}
+  {% assign next_url = '/topics/security-maturity-models/' %}
+{% endif %}
+{% if current_url == '/topics/security-maturity-models/' or current_url == '/topics/security-maturity-models' %}
+  {% assign prev_title = '8.4 Security Certifications' %}
+  {% assign prev_url = '/topics/security-certifications/' %}
 {% endif %}
 
 {% if prev_url != "" or next_url != "" %}

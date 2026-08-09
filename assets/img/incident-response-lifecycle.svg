@@ -1,0 +1,83 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Incident Response &amp; Operational Learning Loop</title>
+  <desc id="description">Diagram showing Continuous Monitoring feeding Detect, Respond (Triage, Contain, Eradicate), Recover, and Improve stages in sequence, connected in a loop back to a Govern-level Risk &amp; Control Decisions banner that both sets priorities for monitoring and receives feedback from the Improve stage.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#64748b"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#15803d"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Incident Response &amp; Operational Learning Loop</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Continuous Monitoring feeds Detect, Respond, Recover and Improve; Improve feeds</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">back into Govern-level risk &amp; control decisions, closing a continuous loop.</text>
+
+  <!-- GOVERN banner (x=40, y=115, w=1120, h=75) -->
+  <rect x="40" y="115" width="1120" height="75" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="600" y="145" text-anchor="middle" font-size="13" font-weight="900" letter-spacing="1" fill="#2563eb">GOVERN: RISK &amp; CONTROL DECISIONS</text>
+  <text x="600" y="167" text-anchor="middle" font-size="11.5" font-weight="600" fill="#475569">Risk Register Updates • Control Effectiveness Review • Threat Model Reassessment</text>
+
+  <!-- Down connector: Govern -> Monitor (sets priorities) -->
+  <path d="M 150 190 L 150 278" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <rect x="95" y="222" width="110" height="20" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="150" y="236" text-anchor="middle" font-size="9" font-weight="900" fill="#2563eb">SETS PRIORITIES</text>
+
+  <!-- Up connector: Improve -> Govern (feedback) -->
+  <path d="M 1040 278 L 1040 190" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-violet)"/>
+  <rect x="985" y="222" width="110" height="20" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="1040" y="236" text-anchor="middle" font-size="9" font-weight="900" fill="#7c3aed">FEEDS BACK</text>
+
+  <!-- Box 1: Monitor (x=40, w=205) -->
+  <rect x="40" y="280" width="205" height="105" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="2" />
+  <text x="55" y="302" font-size="11" font-weight="900" fill="#64748b">1. MONITOR</text>
+  <text x="55" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Continuous Telemetry</text>
+  <line x1="55" y1="330" x2="230" y2="330" stroke="#64748b" stroke-opacity="0.3" stroke-width="1" />
+  <text x="55" y="348" font-size="10" font-weight="500" fill="#475569">• SIEM, eBPF, vuln scans</text>
+  <text x="55" y="364" font-size="10" font-weight="500" fill="#475569">• Feeds the Detect stage</text>
+
+  <path d="M 245 332 L 260 332" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+
+  <!-- Box 2: Detect (x=260, w=205) -->
+  <rect x="260" y="280" width="205" height="105" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+  <text x="275" y="302" font-size="11" font-weight="900" fill="#2563eb">2. DETECT</text>
+  <text x="275" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Confirm &amp; Scope</text>
+  <line x1="275" y1="330" x2="450" y2="330" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="275" y="348" font-size="10" font-weight="500" fill="#475569">• Confirms real incident</text>
+  <text x="275" y="364" font-size="10" font-weight="500" fill="#475569">• Initial severity assigned</text>
+
+  <path d="M 465 332 L 480 332" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- Box 3: Respond (x=480, w=205) -->
+  <rect x="480" y="280" width="205" height="105" rx="10" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
+  <text x="495" y="302" font-size="11" font-weight="900" fill="#b91c1c">3. RESPOND</text>
+  <text x="495" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Contain &amp; Eradicate</text>
+  <line x1="495" y1="330" x2="670" y2="330" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+  <text x="495" y="348" font-size="10" font-weight="500" fill="#475569">• Triage confirms severity</text>
+  <text x="495" y="364" font-size="10" font-weight="500" fill="#475569">• Limit spread, remove cause</text>
+
+  <path d="M 685 332 L 700 332" fill="none" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+
+  <!-- Box 4: Recover (x=700, w=205) -->
+  <rect x="700" y="280" width="205" height="105" rx="10" fill="#f0fdf4" stroke="#15803d" stroke-width="2" />
+  <text x="715" y="302" font-size="11" font-weight="900" fill="#15803d">4. RECOVER</text>
+  <text x="715" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Verified Restoration</text>
+  <line x1="715" y1="330" x2="890" y2="330" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
+  <text x="715" y="348" font-size="10" font-weight="500" fill="#475569">• Restore to normal ops</text>
+  <text x="715" y="364" font-size="10" font-weight="500" fill="#475569">• Only as clean as its source</text>
+
+  <path d="M 905 332 L 920 332" fill="none" stroke="#15803d" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+
+  <!-- Box 5: Improve (x=920, w=205) -->
+  <rect x="920" y="280" width="205" height="105" rx="10" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
+  <text x="935" y="302" font-size="11" font-weight="900" fill="#7c3aed">5. IMPROVE</text>
+  <text x="935" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Continuous Improvement</text>
+  <line x1="935" y1="330" x2="1110" y2="330" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+  <text x="935" y="348" font-size="10" font-weight="500" fill="#475569">• Blameless postmortem</text>
+  <text x="935" y="364" font-size="10" font-weight="500" fill="#475569">• Corrective action tracking</text>
+
+  <!-- Footer note -->
+  <rect x="40" y="410" width="1120" height="55" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+  <text x="600" y="434" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0f172a">NIST SP 800-61 Rev. 3 (2025) maps this activity onto CSF 2.0's functions, chiefly Detect / Respond / Recover / Improve</text>
+  <text x="600" y="450" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">The 5-stage flow above is this journal's practical operational lens on that structure, not a restatement of Rev. 3 itself.</text>
+</svg>

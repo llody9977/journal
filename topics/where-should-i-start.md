@@ -1,6 +1,6 @@
 ---
 title: Where Should I Start?
-description: Practical architectural roadmap for security engineering, choosing implementation pathways (system threat modeling vs enterprise ISMS governance), and selecting standards.
+description: Practical architectural roadmap for security engineering—choosing implementation pathways (system threat modeling vs enterprise ISMS governance), establishing mission context, asset inventory and data classification, and selecting standards.
 permalink: /topics/where-should-i-start/
 last_verified: 2026-08-09
 ---
@@ -58,18 +58,28 @@ The operational connection between **GOVERN** and **TECHNICAL** functions as a c
 - **Operational Action**: Automated vulnerability scan metrics, SIEM log telemetry, SAST/DAST results, and penetration test reports generated in **TECHNICAL** flow up to **GOVERN**.
 - **Governance Impact**: Provides evidence toward demonstrating control effectiveness to CISOs, executive boards, external auditors, and regulatory compliance authorities—telemetry supports the case for effectiveness, it does not on its own prove it.
 
+## Mission Context, Asset Inventory & Data Classification
+
+Both pathways above eventually need the same missing input: what the organization actually does, what it holds, and what happens if that's compromised. Selecting a framework or a control before establishing this context risks over-engineering low-value systems and under-engineering the ones that actually carry the organization's risk.
+
+- **Mission/business context**: What service or product the system supports, who depends on it (customers, other internal systems, regulators), and what legal, contractual, or regulatory obligations already apply to it (e.g., a payments feature inherits PCI DSS exposure; a system processing EU personal data inherits GDPR exposure). This context sets the organization's risk appetite and tolerance for the systems built on top of it—see **[Threats, Vulnerabilities & Risk]({{ '/topics/risk-fundamentals/' | relative_url }})** for how appetite and tolerance are distinguished and applied.
+- **Asset inventory**: The concrete things worth protecting—data repositories, production workloads, credentials and keys, key personnel, and third-party/vendor dependencies (Pathway B step 2 above). An asset that isn't inventoried can't be scoped into a threat model, categorized, or assigned an owner.
+- **Data classification**: A tiering scheme (commonly Public / Internal / Confidential / Restricted, though organizations vary this) that groups data by the harm its exposure, corruption, or loss would cause. **ISO/IEC 27001:2022** Annex A control 5.12 requires organizations to classify information by confidentiality, integrity, availability, and relevant stakeholder requirements, but does not prescribe this or any other specific tiering scheme or label set; **[FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)**'s Low/Moderate/High impact categorization, covered in **[Security Objectives & Properties]({{ '/topics/security-objectives-properties/' | relative_url }})**, is a related but distinct federal-specific model for categorizing whole systems rather than classifying individual data.
+
+Classification is what makes the rest of the pipeline tractable: it determines which systems need FIPS-style impact categorization, which data types trigger which regulatory obligations, and which control baseline (CIS IG1 vs IG2/IG3, or a FIPS Low/Moderate/High baseline) is proportionate—without it, framework and control selection below has no way to distinguish a public marketing site from a system holding regulated customer data.
+
 ## Framework Selection at a Glance
 
 No single security catalog exhaustively covers every regional regulation or specialized technical standard worldwide. The table below is a starting-point selection, not an exhaustive catalog:
 
-| Standard / Framework | Domain Scope | Best Used For |
-|---|---|---|
-| **[NIST CSF 2.0](https://www.nist.gov/cyberframework)** | Cybersecurity | Organizing security capabilities into an executive-level vocabulary across six functions: **Govern, Identify, Protect, Detect, Respond, Recover**. |
-| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | InfoSec & Privacy Control Catalog | Selecting granular technical, operational, and managerial safeguards for high-assurance or federal environments. |
-| **[ISO/IEC 27001:2022](https://www.iso.org/standard/27001)** | Information Security | Building a certifiable ISMS and proving governance to external partners and auditors. |
-| **[CIS Controls v8.1](https://www.cisecurity.org/controls)** | Technical Safeguards | A prioritized, resource-tiered technical hygiene checklist (IG1/IG2/IG3). |
-| **[OWASP ASVS 5.0.0](https://owasp.org/www-project-application-security-verification-standard/)** | Application Security | Testable, level-based application security requirements. |
-| **[GDPR](https://gdpr.eu/) / Singapore PDPA** | Statutory Data Privacy | Legal obligations, not optional frameworks—applicability is jurisdictional. |
+| Reference / Instrument | Type | Domain Scope | Best Used For |
+|---|---|---|---|
+| **[NIST CSF 2.0](https://www.nist.gov/cyberframework)** | Framework (non-prescriptive) | Cybersecurity | Organizing security capabilities into an executive-level vocabulary across six functions: **Govern, Identify, Protect, Detect, Respond, Recover**. |
+| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | Control catalog | InfoSec & Privacy Control Catalog | Selecting granular technical, operational, and managerial safeguards for high-assurance or federal environments. |
+| **[ISO/IEC 27001:2022](https://www.iso.org/standard/27001)** | Certifiable standard | Information Security | Building a certifiable ISMS and proving governance to external partners and auditors. |
+| **[CIS Controls v8.1](https://www.cisecurity.org/controls)** | Control catalog | Technical Safeguards | A prioritized, resource-tiered technical hygiene checklist (IG1/IG2/IG3). |
+| **[OWASP ASVS 5.0.0](https://owasp.org/www-project-application-security-verification-standard/)** | Verifiable requirements standard | Application Security | Testable, level-based application security requirements. |
+| **[GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj)** / **[Singapore PDPA](https://www.pdpc.gov.sg/overview-of-pdpa/the-legislation/personal-data-protection-act)** | Statutory law | Statutory Data Privacy | Legal obligations, not optional frameworks—applicability is jurisdictional. |
 
 **Decision rule**: start from **NIST CSF 2.0** (or an equivalent outcome framework) to organize *what* to cover, select a control catalog (**NIST SP 800-53**, **CIS Controls**) to decide *which specific safeguards*, and layer in statutory or contractual requirements (GDPR, PCI-DSS, SOC 2) only where they actually apply to the system's jurisdiction and data.
 
@@ -82,9 +92,9 @@ The full catalog of NIST/FIPS publication mappings, application/supply-chain sta
   <div>
     <strong>Practitioner Roadmap Summary</strong>
     <ul>
-      <li><strong>Start with Threat Modeling</strong>: Map assets, data flows, and trust boundaries before choosing security controls.</li>
-      <li><strong>Use Frameworks to Set Requirements, Not to Replace Engineering</strong>: Peer-reviewed frameworks (NIST CSF 2.0, OWASP Top 10) define required outcomes and known risk categories; engineering teams still design and select the specific controls that satisfy them.</li>
-      <li><strong>Measure Security Maturity</strong>: Track progress using established maturity models (CMMI, OWASP SAMM, CIS Implementation Groups).</li>
+      <li><strong>Pick the Entry Point That Matches Your Scope</strong>: For a specific system or change, start with architecture and threat modeling; for an enterprise security program, start with mission context, assets, obligations, ownership, and risk appetite.</li>
+      <li><strong>Use Frameworks to Organize Requirements, Not to Replace Engineering</strong>: NIST CSF 2.0 is deliberately non-prescriptive—it organizes outcomes, not mandated controls—and OWASP Top 10 is principally an awareness document about common risk categories, not a verifiable requirements standard (OWASP recommends ASVS for that). Engineering teams still design and select the specific controls that satisfy the applicable outcomes.</li>
+      <li><strong>Measure Progress with the Right Tool</strong>: Maturity models (CMMI, OWASP SAMM) gauge how mature a program's practices are; CIS Implementation Groups are a separate, risk- and resource-based prioritization grouping for which safeguards to adopt first, not a maturity scale.</li>
     </ul>
   </div>
 </div>
@@ -92,6 +102,6 @@ The full catalog of NIST/FIPS publication mappings, application/supply-chain sta
 ## Primary References
 
 - **NIST Cybersecurity Framework 2.0**: *Framework for Improving Critical Infrastructure Cybersecurity* — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
-- **OWASP Top 10:2021**: *The Ten Most Critical Web Application Security Risks* — [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- **OWASP Top 10:2025**: *The Ten Most Critical Web Application Security Risks* — [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
 - **CIS Controls v8.1** — [CIS Controls](https://www.cisecurity.org/controls)

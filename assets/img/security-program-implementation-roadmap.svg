@@ -30,7 +30,7 @@
     <line x1="180" y1="298" x2="1020" y2="298" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
     <text x="180" y="322" font-size="12" font-weight="600" fill="#0f172a">• Define Business Context, Scope &amp; Risk Appetite (NIST SP 800-39 / SP 800-37)</text>
     <text x="180" y="342" font-size="12" font-weight="600" fill="#0f172a">• Adopt ISMS &amp; Cybersecurity Frameworks (ISO/IEC 27001:2022 / NIST CSF 2.0 / CIS IG1)</text>
-    <text x="180" y="362" font-size="12" font-weight="600" fill="#0f172a">• Meet Statutory Mandates (GDPR, Singapore PDPA) &amp; Contractual Standards (PCI-DSS, SOC 2)</text>
+    <text x="180" y="362" font-size="12" font-weight="600" fill="#0f172a">• Meet Statutory Mandates (GDPR, PDPA), Contractual Standards (PCI-DSS) &amp; Attestations (SOC 2)</text>
 
     <!-- Bi-Directional Connectors Between GOVERN and TECHNICAL (y=375 to y=435) -->
     <!-- Top-Down Arrow, label centered on the connector line -->
