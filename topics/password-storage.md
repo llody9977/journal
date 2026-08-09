@@ -20,6 +20,26 @@ Fast general-purpose hash functions (SHA-256, MD5) are engineered for gigabytes-
   <p class="diagram-caption">Password hash comparison: Argon2id enforces memory hardness to defeat GPU/ASIC parallel cracking</p>
 </div>
 
+## Modern Password Complexity & Policy Guidelines (NIST SP 800-63B)
+
+Modern password security standards (formalized in **NIST SP 800-63B**) prioritize **length and entropy** over arbitrary complexity rules. Traditional policies forcing mixed casing, digits, and symbols are deprecated because they result in predictable user behavior (e.g., capitalizing the first letter and appending `1!`) while making passwords harder to remember.
+
+### NIST SP 800-63B Core Authentication Requirements
+
+1. **Length-Based Security**:
+   * Enforce a **minimum length of at least 8 characters** (14+ characters recommended for administrative or privileged accounts).
+   * Allow maximum lengths of at least **64 characters** to support easy-to-remember, high-entropy **passphrases** (e.g., `correct horse battery staple`).
+2. **Eliminate Arbitrary Complexity Rules**:
+   * Deprecate rules requiring specific character mixes (uppercase, numbers, symbols) to improve user adoption and key diversity.
+3. **Ban Periodic Expiry / Forced Rotation**:
+   * Do not force users to change passwords periodically (e.g., every 90 days) unless a compromise is active. Forced rotation results in users selecting weaker, sequential passwords (e.g., `Winter2025!` to `Spring2025!`).
+4. **Enforce Breached Password Blacklisting**:
+   * Compare new passwords against a dictionary of **known compromised credentials** (breached database lists like HaveIBeenPwned) and block matches during registration.
+5. **Deprecate Security Questions / Hints**:
+   * Knowledge-based authentication (KBA) questions (e.g., *"What was your first pet's name?"*) are forbidden because answers are easily researched using open-source intelligence (OSINT).
+
+---
+
 ## Specialized Password Hashing Functions Matrix
 
 | Algorithm | Memory Hardness | GPU / ASIC Resistance | OWASP &amp; NIST Recommendation Status |
