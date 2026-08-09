@@ -187,7 +187,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
   };
 
   function log(message, type = 'info') {
-    let color = 'var(--text)';
+    let color = 'var(--ink)';
     if (type === 'success') color = 'var(--teal)';
     if (type === 'error') color = '#b91c1c';
     if (type === 'warning') color = 'var(--amber)';
@@ -228,14 +228,14 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
       tabRSA.style.color = '#ffffff';
       tabRSA.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
       tabECDH.style.background = 'transparent';
-      tabECDH.style.color = 'var(--text-muted, #888)';
+      tabECDH.style.color = 'var(--muted)';
       tabECDH.style.boxShadow = 'none';
     } else {
       tabECDH.style.background = 'var(--accent)';
       tabECDH.style.color = '#ffffff';
       tabECDH.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
       tabRSA.style.background = 'transparent';
-      tabRSA.style.color = 'var(--text-muted, #888)';
+      tabRSA.style.color = 'var(--muted)';
       tabRSA.style.boxShadow = 'none';
     }
 

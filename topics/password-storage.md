@@ -55,15 +55,15 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     <!-- Character Pool & Entropy Display -->
     <div style="display: flex; gap: 1rem; margin-top: 1rem;">
       <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; text-align: center;">
-        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Password Length (L)</span>
-        <span id="password-len-val" style="font-size: 1.25rem; font-weight: 800; color: var(--text);">0</span>
+        <span style="font-size: 0.75rem; color: var(--muted); display: block;">Password Length (L)</span>
+        <span id="password-len-val" style="font-size: 1.25rem; font-weight: 800; color: var(--ink);">0</span>
       </div>
       <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; text-align: center;">
-        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Character Pool (R)</span>
-        <span id="password-pool-val" style="font-size: 1.25rem; font-weight: 800; color: var(--text);">0</span>
+        <span style="font-size: 0.75rem; color: var(--muted); display: block;">Character Pool (R)</span>
+        <span id="password-pool-val" style="font-size: 1.25rem; font-weight: 800; color: var(--ink);">0</span>
       </div>
       <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; text-align: center;">
-        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Idealized Upper Bound</span>
+        <span style="font-size: 0.75rem; color: var(--muted); display: block;">Idealized Upper Bound</span>
         <span id="password-bits-val" style="font-size: 1.25rem; font-weight: 800; color: var(--accent);">0 bits</span>
       </div>
     </div>
@@ -73,8 +73,8 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
     <!-- Estimated Crack Time Card -->
     <div style="margin-top: 1rem; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
-      <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Estimated Uniform Brute-Force Time (at 100,000 guesses/sec):</span>
-      <span id="password-crack-time" style="font-size: 1.1rem; font-weight: 800; color: var(--text);">N/A</span>
+      <span style="font-size: 0.8rem; color: var(--muted); display: block;">Estimated Uniform Brute-Force Time (at 100,000 guesses/sec):</span>
+      <span id="password-crack-time" style="font-size: 1.1rem; font-weight: 800; color: var(--ink);">N/A</span>
     </div>
   </div>
 </div>
@@ -101,8 +101,8 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
       bitsVal.innerText = '0 bits';
       statusBar.innerText = 'Enter a password to begin estimation.';
       statusBar.style.background = 'transparent';
-      statusBar.style.color = 'var(--text-muted)';
-      statusBar.style.borderColor = 'var(--border)';
+      statusBar.style.color = 'var(--muted)';
+      statusBar.style.borderColor = 'var(--rule)';
       crackTime.innerText = 'N/A';
       return;
     }
@@ -166,19 +166,33 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     statusBar.style.color = textColor;
     statusBar.style.borderColor = borderColor;
 
-    // Crack time estimation
+    // Crack time estimation: average-case seconds = (2^E / 2) / guessesPerSec
     const totalPossibilities = Math.pow(2, E);
     const avgGuesses = totalPossibilities / 2;
     const guessesPerSec = 100000;
     const seconds = avgGuesses / guessesPerSec;
 
     let timeText = '';
-    if (seconds < 1) timeText = 'Instantaneous';
-    else if (seconds < 60) timeText = `~${Math.round(seconds)} seconds`;
-    else if (seconds < 3600) timeText = `~${Math.round(seconds / 60)} minutes`;
-    else if (seconds < 86400) timeText = `~${Math.round(seconds / 3600)} hours`;
-    else if (seconds < 31536000) timeText = `~${Math.round(seconds / 86400)} days`;
-    else timeText = 'Years / Centuries';
+    if (seconds < 1) {
+      timeText = 'Instantaneous (under 1 second)';
+    } else if (seconds < 60) {
+      timeText = `~${Math.round(seconds)} seconds`;
+    } else if (seconds < 3600) {
+      timeText = `~${Math.round(seconds / 60)} minutes`;
+    } else if (seconds < 86400) {
+      timeText = `~${Math.round(seconds / 3600)} hours`;
+    } else if (seconds < 31536000) {
+      timeText = `~${Math.round(seconds / 86400)} days`;
+    } else if (seconds < 3153600000) {
+      timeText = `~${Math.round(seconds / 31536000)} years`;
+    } else {
+      const centuries = seconds / (31536000 * 100);
+      if (centuries < 1e6) {
+        timeText = `~${centuries.toExponential(2)} centuries`;
+      } else {
+        timeText = `~${centuries.toExponential(2)} centuries (computationally infeasible)`;
+      }
+    }
 
     crackTime.innerText = timeText;
   }
@@ -188,6 +202,8 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 })();
 </script>
 {% endraw %}
+
+---
 
 ## Specialized Password Hashing Functions Matrix
 
@@ -231,7 +247,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
     <div class="demo-form-group">
       <div style="display: flex; justify-content: space-between;">
         <label for="argon-mem">Memory Cost (m): <span id="label-argon-mem-val" style="font-weight: 700;">64 MiB</span></label>
-        <span style="font-size: 0.8rem; color: var(--text-muted);">65,536 KiB</span>
+        <span style="font-size: 0.8rem; color: var(--muted);">65,536 KiB</span>
       </div>
       <input id="argon-mem" type="range" class="demo-input" style="width: 100%;" min="8" max="256" step="8" value="64">
     </div>
@@ -239,7 +255,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
     <div class="demo-form-group">
       <div style="display: flex; justify-content: space-between;">
         <label for="argon-time">Time Cost (t - Iterations): <span id="label-argon-time-val" style="font-weight: 700;">3</span></label>
-        <span style="font-size: 0.8rem; color: var(--text-muted);">Passes over memory</span>
+        <span style="font-size: 0.8rem; color: var(--muted);">Passes over memory</span>
       </div>
       <input id="argon-time" type="range" class="demo-input" style="width: 100%;" min="1" max="10" step="1" value="3">
     </div>
@@ -247,7 +263,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
     <div class="demo-form-group">
       <div style="display: flex; justify-content: space-between;">
         <label for="argon-threads">Parallelism (p - Threads): <span id="label-argon-threads-val" style="font-weight: 700;">4</span></label>
-        <span style="font-size: 0.8rem; color: var(--text-muted);">OWASP single-lane profiles specify p=1; RFC 9106 uses p=4</span>
+        <span style="font-size: 0.8rem; color: var(--muted);">OWASP single-lane profiles specify p=1; RFC 9106 uses p=4</span>
       </div>
       <input id="argon-threads" type="range" class="demo-input" style="width: 100%;" min="1" max="8" step="1" value="4">
     </div>
