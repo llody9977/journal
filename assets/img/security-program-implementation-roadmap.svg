@@ -33,15 +33,15 @@
     <text x="180" y="362" font-size="12" font-weight="600" fill="#0f172a">• Meet Statutory Mandates (GDPR, Singapore PDPA) &amp; Contractual Standards (PCI-DSS, SOC 2)</text>
 
     <!-- Bi-Directional Connectors Between GOVERN and TECHNICAL (y=375 to y=435) -->
-    <!-- Top-Down Arrow (Left: x=450) -->
+    <!-- Top-Down Arrow, label centered on the connector line -->
     <path d="M 450 375 L 450 435" fill="none" stroke="#b45309" stroke-width="3.5" marker-end="url(#arrow-amber)"/>
-    <rect x="235" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="1.5"/>
-    <text x="335" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#b45309">TOP-DOWN: POLICY &amp; MANDATES ↓</text>
+    <rect x="345" y="393" width="210" height="24" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="1.5"/>
+    <text x="450" y="409" text-anchor="middle" font-size="9.5" font-weight="900" fill="#b45309">TOP-DOWN: POLICY &amp; MANDATES</text>
 
-    <!-- Bottom-Up Arrow (Right: x=750) -->
+    <!-- Bottom-Up Arrow, label centered on the connector line -->
     <path d="M 750 435 L 750 375" fill="none" stroke="#0f766e" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
-    <rect x="765" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
-    <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#0f766e">BOTTOM-UP: TELEMETRY &amp; PROOF ↑</text>
+    <rect x="645" y="393" width="210" height="24" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="750" y="409" text-anchor="middle" font-size="9.5" font-weight="900" fill="#0f766e">BOTTOM-UP: TELEMETRY &amp; PROOF</text>
 
     <!-- Bottom Tier Card: TECHNICAL (x=150, y=435, w=900) -->
     <rect x="150" y="435" width="900" height="140" rx="16" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
