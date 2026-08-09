@@ -1,67 +1,72 @@
-<svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
-  <rect x="0" y="0" width="760" height="430" fill="#ffffff" />
+<svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="480" fill="#ffffff" />
 
   <defs>
-    <marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#8491a3" />
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f766e" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9f1239" />
     </marker>
   </defs>
 
-  <!-- Public parameter -->
-  <rect x="290" y="20" width="180" height="34" rx="6" fill="#a14c00" />
-  <text x="380" y="42" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">Public: g, p (sent in the clear)</text>
+  <!-- Top Stage: Public Parameters -->
+  <rect x="230" y="16" width="340" height="38" rx="8" fill="#a14c00" />
+  <text x="400" y="40" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">Public Parameters: Base (g) &amp; Modulus (p)</text>
 
-  <path d="M370 54 L200 90" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah4)" />
-  <path d="M390 54 L560 90" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah4)" />
+  <!-- Connectors from Public Parameters -->
+  <path d="M 330 54 L 160 82" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+  <path d="M 470 54 L 640 82" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
 
-  <!-- Alice / Bob column headers -->
-  <text x="150" y="85" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Alice</text>
-  <text x="610" y="85" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Bob</text>
+  <!-- Column Headers -->
+  <text x="160" y="80" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Alice (Client)</text>
+  <text x="640" y="80" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Bob (Server)</text>
 
-  <!-- Secrets -->
-  <rect x="80" y="95" width="140" height="34" rx="6" fill="#0f766e" />
-  <text x="150" y="117" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">secret a (never sent)</text>
+  <!-- Secret Private Keys -->
+  <rect x="70" y="92" width="180" height="36" rx="6" fill="#0f766e" />
+  <text x="160" y="115" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Private Key: a (Secret)</text>
 
-  <rect x="540" y="95" width="140" height="34" rx="6" fill="#9f1239" />
-  <text x="610" y="117" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">secret b (never sent)</text>
+  <rect x="550" y="92" width="180" height="36" rx="6" fill="#9f1239" />
+  <text x="640" y="115" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Private Key: b (Secret)</text>
 
-  <path d="M150 129 L150 155" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah4)" />
-  <path d="M610 129 L610 155" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah4)" />
+  <path d="M 160 128 L 160 152" stroke="#0f766e" stroke-width="2" fill="none" marker-end="url(#arrow-teal)" />
+  <path d="M 640 128 L 640 152" stroke="#9f1239" stroke-width="2" fill="none" marker-end="url(#arrow-rose)" />
 
-  <!-- Sent values (two-tone) -->
-  <rect x="80" y="160" width="70" height="34" rx="0" fill="#a14c00" />
-  <rect x="150" y="160" width="70" height="34" rx="0" fill="#0f766e" />
-  <rect x="80" y="160" width="140" height="34" rx="6" fill="none" stroke="#111827" stroke-width="1.5" />
-  <text x="150" y="207" font-size="11.5" fill="#111827" text-anchor="middle">sends g^a mod p</text>
+  <!-- Public Key Computation & Sent Values -->
+  <rect x="60" y="156" width="200" height="42" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="1.5" />
+  <text x="160" y="174" font-size="11" font-weight="600" fill="#166534" text-anchor="middle">Computes &amp; Sends Public Key A:</text>
+  <text x="160" y="191" font-size="13" font-weight="800" fill="#15803d" text-anchor="middle">A = g^a mod p</text>
 
-  <rect x="540" y="160" width="70" height="34" rx="0" fill="#a14c00" />
-  <rect x="610" y="160" width="70" height="34" rx="0" fill="#9f1239" />
-  <rect x="540" y="160" width="140" height="34" rx="6" fill="none" stroke="#111827" stroke-width="1.5" />
-  <text x="610" y="207" font-size="11.5" fill="#111827" text-anchor="middle">sends g^b mod p</text>
+  <rect x="540" y="156" width="200" height="42" rx="6" fill="#fff1f2" stroke="#be123c" stroke-width="1.5" />
+  <text x="640" y="174" font-size="11" font-weight="600" fill="#9f1239" text-anchor="middle">Computes &amp; Sends Public Key B:</text>
+  <text x="640" y="191" font-size="13" font-weight="800" fill="#be123c" text-anchor="middle">B = g^b mod p</text>
 
-  <!-- crossing arrows -->
-  <path d="M225 177 L555 250" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah4)" />
-  <path d="M535 177 L205 250" stroke="#8491a3" stroke-width="2" fill="none" marker-end="url(#ah4)" />
+  <!-- Crossing Public Exchange Arrows -->
+  <path d="M 260 177 L 530 255" stroke="#15803d" stroke-width="2" fill="none" marker-end="url(#arrow-teal)" />
+  <path d="M 540 177 L 270 255" stroke="#be123c" stroke-width="2" fill="none" marker-end="url(#arrow-rose)" />
 
-  <!-- eavesdropper -->
-  <circle cx="380" cy="215" r="24" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
-  <text x="380" y="211" font-size="10" font-weight="700" fill="#a14c00" text-anchor="middle">sees only</text>
-  <text x="380" y="223" font-size="9" fill="#a14c00" text-anchor="middle">g, p, g^a, g^b</text>
+  <!-- Eavesdropper Pill Box (Center Network Channel) -->
+  <rect x="270" y="200" width="260" height="44" rx="22" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
+  <text x="400" y="218" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">Public Channel (Adversary Sees):</text>
+  <text x="400" y="235" font-size="11.5" font-weight="600" fill="#78350f" text-anchor="middle">g, p, Public Key A, Public Key B</text>
 
-  <!-- final shared secrets (three-tone) -->
-  <rect x="80" y="270" width="47" height="34" fill="#a14c00" />
-  <rect x="127" y="270" width="46" height="34" fill="#0f766e" />
-  <rect x="173" y="270" width="47" height="34" fill="#9f1239" />
-  <rect x="80" y="270" width="140" height="34" rx="6" fill="none" stroke="#111827" stroke-width="1.5" />
-  <text x="150" y="320" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">(g^b)^a mod p</text>
+  <!-- Shared Secret Computation -->
+  <rect x="50" y="262" width="220" height="46" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" />
+  <text x="160" y="280" font-size="11" font-weight="600" fill="#1e40af" text-anchor="middle">Derives Shared Secret S:</text>
+  <text x="160" y="298" font-size="13" font-weight="800" fill="#1d4ed8" text-anchor="middle">S = B^a mod p = (g^b)^a mod p</text>
 
-  <rect x="540" y="270" width="47" height="34" fill="#a14c00" />
-  <rect x="587" y="270" width="46" height="34" fill="#0f766e" />
-  <rect x="633" y="270" width="47" height="34" fill="#9f1239" />
-  <rect x="540" y="270" width="140" height="34" rx="6" fill="none" stroke="#111827" stroke-width="1.5" />
-  <text x="610" y="320" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">(g^a)^b mod p</text>
+  <rect x="530" y="262" width="220" height="46" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" />
+  <text x="640" y="280" font-size="11" font-weight="600" fill="#1e40af" text-anchor="middle">Derives Shared Secret S:</text>
+  <text x="640" y="298" font-size="13" font-weight="800" fill="#1d4ed8" text-anchor="middle">S = A^b mod p = (g^a)^b mod p</text>
 
-  <text x="380" y="365" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">Same result on both sides — the shared secret</text>
-  <text x="380" y="387" font-size="12" fill="#475569" text-anchor="middle">Neither a, b, nor the shared secret itself ever crossed the network</text>
-  <text x="380" y="408" font-size="11" fill="#8491a3" text-anchor="middle">(ECDH: same idea, points on an elliptic curve instead of modular exponentiation)</text>
+  <!-- Bottom Result Summary Banner -->
+  <rect x="60" y="340" width="680" height="120" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+  <text x="400" y="368" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">Identical Shared Secret Derived: S = g^(ab) mod p</text>
+  <text x="400" y="394" font-size="12" font-weight="500" fill="#334155" text-anchor="middle">Neither private keys (a, b) nor the shared secret (S) ever cross the network.</text>
+  <text x="400" y="416" font-size="11.5" font-weight="500" fill="#475569" text-anchor="middle">Shared secret S is passed through HKDF (RFC 5869) to derive symmetric AEAD keys.</text>
+  <text x="400" y="438" font-size="11" font-style="italic" fill="#64748b" text-anchor="middle">ECDH / X25519 (RFC 7748): Same key agreement principle using scalar multiplication on elliptic curves.</text>
 </svg>
