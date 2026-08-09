@@ -457,45 +457,204 @@ Because **C<sub>i-1</sub>** is XORed directly into decrypted plaintext **P<sub>i
   <p class="diagram-caption">CBC bit-flipping mechanics: altering ciphertext block 1 flips targeted bits in block 2</p>
 </div>
 
-### Python Bit-Flipping Privilege Escalation Proof
+### Client-Side Executable CBC Bit-Flipping Privilege Escalation Playground
 
-```python
-# cbc_attack.py: Bit-flipping attack modifying "isadmin=0" to "isadmin=1"
-import subprocess
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive CBC Bit-Flipping Playground</span>
+    <h3>AES-128-CBC Malleability & Privilege Escalation Playground</h3>
+    <p>Demonstrate how altering ciphertext byte 13 in Block 1 flips the exact bit in Decrypted Block 2, forcing <code>isadmin=0</code> → <code>isadmin=1</code> without knowing key K (Zero server calls / Executed locally via Web Crypto API).</p>
+  </div>
 
-# 1. Create a 32-byte plaintext across two 16-byte AES blocks:
-# Block 1: "user=alice;role="
-# Block 2: "user;isadmin=0;;"
-plain = b"user=alice;role=" + b"user;isadmin=0;;"
-open("plain.bin", "wb").write(plain)
+  <div class="demo-body">
+    <!-- 1. Original Plaintext Payload -->
+    <div class="demo-form-group">
+      <label>1. Original Session Plaintext (32 Bytes / 2 Blocks):</label>
+      <div style="background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
+        <div><strong>Block 1 (Bytes 0–15) :</strong> <code>"user=alice;role="</code></div>
+        <div><strong>Block 2 (Bytes 16–31):</strong> <code>"user;isadmin=0;;"</code> (Target byte: '0' at index 13)</div>
+      </div>
+    </div>
 
-# 2. Encrypt using AES-128-CBC with OpenSSL
-key_hex = "000102030405060708090a0b0c0d0e0f"
-iv_hex  = "0102030405060708090a0b0c0d0e0f10"
+    <!-- 2. Bit-Flipping Tampering Action -->
+    <div class="demo-form-group">
+      <label>2. Attacker Ciphertext Tampering Action:</label>
+      <div class="demo-actions" style="margin: 0.5rem 0;">
+        <button id="btn-flip-cbc" class="btn-primary" type="button">⚡ Flip Bit 13 (Force "0" → "1")</button>
+        <button id="btn-reset-cbc" class="btn-secondary" type="button">Reset Original Ciphertext</button>
+      </div>
+      <small class="demo-help" id="cbc-flip-status">Status: Untampered Ciphertext (Original <code>isadmin=0</code> payload).</small>
+    </div>
 
-cmd_enc = (
-    f"openssl enc -aes-128-cbc -K {key_hex} -iv {iv_hex} "
-    f"-nopad -in plain.bin -out cipher.bin"
-)
-subprocess.run(cmd_enc, shell=True)
+    <!-- 3. Ciphertext Inspection -->
+    <div class="demo-form-group">
+      <label>3. Ciphertext Inspection (AES-128-CBC Hex):</label>
+      <div style="background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
+        <div><strong>Ciphertext Block 1 (Hex):</strong> <code id="cbc-c1-hex">bc718c55b1a5ff2fae647de3debd047f</code></div>
+        <div><strong>Ciphertext Block 2 (Hex):</strong> <code id="cbc-c2-hex">f3a7ff30057f22130d2d45e041d774f8</code></div>
+      </div>
+    </div>
 
-# 3. Flip bit 13 in Block 1 of Ciphertext ('0' -> '1' in Block 2)
-ciphertext = bytearray(open("cipher.bin", "rb").read())
-ciphertext[13] ^= (ord("0") ^ ord("1"))
-open("cipher_flipped.bin", "wb").write(ciphertext)
+    <!-- 4. Decrypted Result -->
+    <div class="demo-form-group">
+      <label>4. Server Decryption Result (Tampered Ciphertext):</label>
+      <div id="cbc-decryption-output" class="ecb-blocks-list">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+</div>
 
-# 4. Decrypt tampered ciphertext
-cmd_dec = (
-    f"openssl enc -d -aes-128-cbc -K {key_hex} -iv {iv_hex} "
-    f"-nopad -in cipher_flipped.bin -out decrypted.bin"
-)
-subprocess.run(cmd_dec, shell=True)
+<script>
+(function() {
+  const keyHex = "000102030405060708090a0b0c0d0e0f";
+  const ivHex  = "0102030405060708090a0b0c0d0e0f10";
 
-decrypted = open("decrypted.bin", "rb").read()
-print("Block 1 (Garbled Noise):", decrypted[0:16])
-print("Block 2 (Target Payload):", decrypted[16:32])
-# Output: Block 2 (Target Payload): b'user;isadmin=1;;'
-```
+  const b1Str = "user=alice;role=";
+  const b2Str = "user;isadmin=0;;";
+  
+  const c1Code = document.getElementById('cbc-c1-hex');
+  const c2Code = document.getElementById('cbc-c2-hex');
+  const flipStatus = document.getElementById('cbc-flip-status');
+  const btnFlip = document.getElementById('btn-flip-cbc');
+  const btnReset = document.getElementById('btn-reset-cbc');
+  const outputContainer = document.getElementById('cbc-decryption-output');
+
+  if (!btnFlip || !outputContainer) return;
+
+  let isFlipped = false;
+
+  function hexToBytes(hex) {
+    hex = hex.replace(/\s+/g, '');
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return bytes;
+  }
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function runCBCAttack() {
+    try {
+      const keyBytes = hexToBytes(keyHex);
+      const ivBytes = hexToBytes(ivHex);
+      
+      const encoder = new TextEncoder();
+      const plainBytes = encoder.encode(b1Str + b2Str);
+
+      const cryptoKey = await window.crypto.subtle.importKey(
+        "raw", keyBytes, { name: "AES-CBC" }, false, ["encrypt", "decrypt"]
+      );
+
+      const encrypted = await window.crypto.subtle.encrypt(
+        { name: "AES-CBC", iv: ivBytes }, cryptoKey, plainBytes
+      );
+      
+      const cipherBytes = new Uint8Array(encrypted.slice(0, 32));
+
+      if (isFlipped) {
+        cipherBytes[13] ^= ('0'.charCodeAt(0) ^ '1'.charCodeAt(0));
+      }
+
+      c1Code.textContent = bytesToHex(cipherBytes.slice(0, 16));
+      c2Code.textContent = bytesToHex(cipherBytes.slice(16, 32));
+
+      if (isFlipped) {
+        c1Code.style.color = "#b91c1c";
+        c1Code.style.fontWeight = "700";
+        flipStatus.innerHTML = '<span style="color: #b91c1c; font-weight: 700;">⚡ BIT FLIPPED: Byte 13 in Ciphertext Block 1 modified by XOR mask (0x30 ^ 0x31)</span>';
+      } else {
+        c1Code.style.color = "var(--ink)";
+        c1Code.style.fontWeight = "400";
+        flipStatus.innerHTML = 'Status: Untampered Ciphertext (Original <code>isadmin=0</code> payload).';
+      }
+
+      const decryptedBuffer = await window.crypto.subtle.decrypt(
+        { name: "AES-CBC", iv: ivBytes }, cryptoKey, cipherBytes
+      );
+      const decBytes = new Uint8Array(decryptedBuffer);
+
+      const decB1Bytes = decBytes.slice(0, 16);
+      const decB2Bytes = decBytes.slice(16, 32);
+
+      const decB1Str = Array.from(decB1Bytes)
+        .map(b => (b >= 32 && b <= 126) ? String.fromCharCode(b) : '.')
+        .join('');
+      const decB2Str = new TextDecoder().decode(decB2Bytes);
+
+      let html = '<div class="ecb-blocks-list">';
+      
+      html += `
+      <div class="ecb-block-item ${isFlipped ? 'is-repeat-block' : ''}">
+        <div class="block-meta">
+          <span class="block-num">Decrypted Block 1 (Bytes 0–15)</span>
+          <span class="block-plain-preview">${isFlipped ? '⚠️ SCRAMBLED NOISE (Decryption Matrix Corruption)' : '✔ Normal Payload'}</span>
+        </div>
+        <div class="block-hex-val">
+          <code>"<strong>${decB1Str}</strong>"</code>
+        </div>
+      </div>`;
+
+      const isAdminOne = decB2Str.includes("isadmin=1");
+      html += `
+      <div class="ecb-block-item ${isAdminOne ? 'target-block-decrypted' : ''}">
+        <div class="block-meta">
+          <span class="block-num">Decrypted Block 2 (Bytes 16–31)</span>
+          <span class="block-plain-preview">${isAdminOne ? '🎯 PRIVILEGE ESCALATED TO ADMIN' : 'Regular User Rights'}</span>
+        </div>
+        <div class="block-hex-val">
+          <code>"<strong>${decB2Str}</strong>"</code>
+          ${isAdminOne ? '<span class="matched-tag">⚡ isadmin=1 FORCED</span>' : '<span class="unmatched-tag">isadmin=0</span>'}
+        </div>
+      </div>`;
+
+      html += '</div>';
+
+      if (isAdminOne) {
+        html += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Privilege Escalation Verified</div>
+          <div>
+            <strong>CBC Bit-Flipping Successful!</strong>
+            <p style="margin-bottom:0;">Decryption completed without integrity check errors because unauthenticated AES-CBC lacks an authentication tag. Regular user <code>alice</code> has been granted <strong>admin rights (isadmin=1)</strong>!</p>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Normal Decryption</div>
+          <div>
+            <strong>Original Payload Decrypted</strong>
+            <p style="margin-bottom:0;">The ciphertext is untampered. User rights remain set to regular user (<code>isadmin=0</code>).</p>
+          </div>
+        </div>`;
+      }
+
+      outputContainer.innerHTML = html;
+
+    } catch (err) {
+      outputContainer.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>Decryption Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  btnFlip.addEventListener('click', function() {
+    isFlipped = true;
+    runCBCAttack();
+  });
+
+  btnReset.addEventListener('click', function() {
+    isFlipped = false;
+    runCBCAttack();
+  });
+
+  runCBCAttack();
+})();
+</script>
 
 Because unauthenticated CBC mode lacks an authentication tag (AEAD), decryption succeeds without raising an integrity exception, granting unauthorized administrative privileges.
 
@@ -512,24 +671,167 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   <p class="diagram-caption">CTR nonce-reuse two-time pad: XORing ciphertexts C1 and C2 reveals P1 XOR P2</p>
 </div>
 
-### Python Keystream Extraction Proof
+### Client-Side Executable CTR Nonce Reuse Playground
 
-```python
-# ctr_reuse.py: Extracting plaintext bytes from CTR nonce reuse
-c1 = open("c1.bin", "rb").read()  # Encrypted "Transfer $100 to Bob!!!"
-c2 = open("c2.bin", "rb").read()  # Encrypted "Meet me at 9pm sharp!!!"
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive CTR Playground</span>
+    <h3>AES-128-CTR Nonce Reuse Two-Time Pad Playground</h3>
+    <p>Demonstrate how encrypting two messages with the same Nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2), allowing an adversary to extract Plaintext 2 by guessing a snippet of Plaintext 1 without key K.</p>
+  </div>
 
-# 1. Compute XOR of the two ciphertexts
-xor_cipher = bytes(a ^ b for a, b in zip(c1, c2))
+  <div class="demo-body">
+    <!-- 1. Two Plaintexts -->
+    <div class="demo-form-group">
+      <label>1. Intercepted Server Messages (Encrypted under SAME Nonce):</label>
+      <div style="background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
+        <div><strong>Message 1 (P1):</strong> <code id="ctr-p1-val">Transfer $100 to Bob!!!</code></div>
+        <div><strong>Message 2 (P2):</strong> <code id="ctr-p2-val">Meet me at 9pm sharp!!!</code></div>
+      </div>
+    </div>
 
-# 2. Known-Plaintext Attack: Suppose adversary guesses first 16 bytes of P1 ("Transfer $100 to")
-guessed_p1 = b"Transfer $100 to"
+    <!-- 2. Attacker Guess Input -->
+    <div class="demo-form-group">
+      <label for="ctr-guess-input">2. Attacker Known-Plaintext Guess Snippet for P1:</label>
+      <div style="display: flex; gap: 0.5rem;">
+        <input type="text" id="ctr-guess-input" class="demo-input" value="Transfer $100 to" placeholder="Enter guessed snippet of P1 (e.g. 'Transfer $100 to')...">
+        <button id="btn-recover-ctr" class="btn-primary" type="button" style="white-space: nowrap;">Extract P2 Bytes</button>
+      </div>
+      <small class="demo-help">The attacker XORs the two ciphertexts (C1 ⊕ C2) with the guessed P1 snippet to recover P2.</small>
+    </div>
 
-# 3. Recover corresponding bytes of P2 without the decryption key
-recovered_p2 = bytes(a ^ b for a, b in zip(xor_cipher[:len(guessed_p1)], guessed_p1))
-print("Recovered P2 bytes:", recovered_p2)
-# Output: Recovered P2 bytes: b'Meet me at 9pm s'
-```
+    <!-- 3. Decryption Result -->
+    <div class="demo-form-group">
+      <label>3. Two-Time Pad Keystream Extraction Output:</label>
+      <div id="ctr-extraction-output" class="ecb-blocks-list">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const p1Text = "Transfer $100 to Bob!!!";
+  const p2Text = "Meet me at 9pm sharp!!!";
+  const keyHex = "000102030405060708090a0b0c0d0e0f";
+  const nonceHex = "000000000000000000000001"; // 12-byte nonce for AES-CTR
+
+  const guessInput = document.getElementById('ctr-guess-input');
+  const btnRecover = document.getElementById('btn-recover-ctr');
+  const outputContainer = document.getElementById('ctr-extraction-output');
+
+  if (!guessInput || !btnRecover || !outputContainer) return;
+
+  function hexToBytes(hex) {
+    hex = hex.replace(/\s+/g, '');
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return bytes;
+  }
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function runCTRReuseAttack() {
+    try {
+      const keyBytes = hexToBytes(keyHex);
+      const counterBytes = new Uint8Array(16);
+      counterBytes.set(hexToBytes(nonceHex), 0); // 12-byte nonce + 4-byte counter
+
+      const encoder = new TextEncoder();
+      const p1Bytes = encoder.encode(p1Text);
+      const p2Bytes = encoder.encode(p2Text);
+
+      const cryptoKey = await window.crypto.subtle.importKey(
+        "raw", keyBytes, { name: "AES-CTR" }, false, ["encrypt"]
+      );
+
+      // Encrypt P1 & P2 under identical nonce/counter
+      const c1Buffer = await window.crypto.subtle.encrypt(
+        { name: "AES-CTR", counter: counterBytes, length: 64 }, cryptoKey, p1Bytes
+      );
+      const c2Buffer = await window.crypto.subtle.encrypt(
+        { name: "AES-CTR", counter: counterBytes, length: 64 }, cryptoKey, p2Bytes
+      );
+
+      const c1Bytes = new Uint8Array(c1Buffer);
+      const c2Bytes = new Uint8Array(c2Buffer);
+
+      // Compute Ciphertext XOR Sum: C1 ⊕ C2 = P1 ⊕ P2
+      const cXor = new Uint8Array(Math.min(c1Bytes.length, c2Bytes.length));
+      for (let i = 0; i < cXor.length; i++) {
+        cXor[i] = c1Bytes[i] ^ c2Bytes[i];
+      }
+
+      // Attacker Known-Plaintext Guess
+      const guessStr = guessInput.value;
+      const guessBytes = encoder.encode(guessStr);
+
+      const recoveredBytes = new Uint8Array(Math.min(cXor.length, guessBytes.length));
+      for (let i = 0; i < recoveredBytes.length; i++) {
+        recoveredBytes[i] = cXor[i] ^ guessBytes[i];
+      }
+
+      const recoveredStr = new TextDecoder().decode(recoveredBytes);
+
+      let html = '<div class="ecb-blocks-list">';
+
+      html += `
+      <div class="ecb-block-item">
+        <div class="block-meta">
+          <span class="block-num">Ciphertext XOR Sum (C1 ⊕ C2 = P1 ⊕ P2)</span>
+          <span class="block-plain-preview">Keystream Cancelled</span>
+        </div>
+        <div class="block-hex-val">
+          <code>Hex: ${bytesToHex(cXor)}</code>
+        </div>
+      </div>`;
+
+      const isTargetFound = recoveredStr.length > 0;
+      html += `
+      <div class="ecb-block-item ${isTargetFound ? 'target-block-decrypted' : ''}">
+        <div class="block-meta">
+          <span class="block-num">Recovered P2 Plaintext Snippet</span>
+          <span class="block-plain-preview">${isTargetFound ? '✔ RECOVERED WITHOUT KEY' : 'Enter P1 Snippet'}</span>
+        </div>
+        <div class="block-hex-val">
+          <code>"<strong>${recoveredStr}</strong>"</code>
+          ${isTargetFound ? `<span class="matched-tag">🎯 P2 RECOVERED (${recoveredBytes.length} Bytes)</span>` : ''}
+        </div>
+      </div>`;
+
+      html += '</div>';
+
+      if (isTargetFound) {
+        html += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
+          <div class="security-layer-label">Keystream Reuse Vulnerability Verified</div>
+          <div>
+            <strong>P2 Plaintext Extracted!</strong>
+            <p style="margin-bottom:0;">Because the server reused the AES-CTR nonce, the keystream cancelled out completely. Entering the guessed P1 snippet <code>"${guessStr}"</code> instantly extracted P2 bytes <code>"${recoveredStr}"</code> without knowing secret key K.</p>
+          </div>
+        </div>`;
+      }
+
+      outputContainer.innerHTML = html;
+
+    } catch (err) {
+      outputContainer.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>CTR Attack Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  btnRecover.addEventListener('click', runCTRReuseAttack);
+  guessInput.addEventListener('input', runCTRReuseAttack);
+
+  runCTRReuseAttack();
+})();
+</script>
 
 ## What I Need to Remember
 
