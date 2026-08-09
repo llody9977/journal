@@ -47,9 +47,9 @@ Comprehensive security engineering across all systems—whether cloud-native mic
 
 | Extended Property | Target System Invariant | Governing Specification | Primary Engineering Application |
 |---|---|---|---|
-| **[Accountability](https://csrc.nist.gov/glossary/term/accountability)** | Tracing system actions unequivocally to an authenticated identity. | **NIST SP 800-92** | Tamper-evident SIEM audit trails & cryptographically bound log chains. |
-| **[Authenticity](https://csrc.nist.gov/glossary/term/authenticity)** | Verifying identity, message, or payload origin is genuine. | **NIST SP 800-63-4** / **FIDO2** | Mutual TLS (mTLS) microservice identity & WebAuthn passkey authentication. |
-| **[Non-Repudiation](https://csrc.nist.gov/glossary/term/non_repudiation)** | Cryptographic evidence that supports attributing an action to an entity, making it harder for that entity to credibly deny it. | **RFC 8032 (Ed25519)** | Asymmetric digital signatures on transaction ledgers & code commits. |
+| **[Accountability](https://csrc.nist.gov/glossary/term/accountability)** | Tracing system actions unequivocally to an authenticated identity. | **[NIST SP 800-92](https://csrc.nist.gov/pubs/sp/800/92/final)** | Tamper-evident SIEM audit trails & cryptographically bound log chains. |
+| **[Authenticity](https://csrc.nist.gov/glossary/term/authenticity)** | Verifying identity, message, or payload origin is genuine. | **[NIST SP 800-63-4](https://pages.nist.gov/800-63-4/)** / **FIDO2** | Mutual TLS (mTLS) microservice identity & WebAuthn passkey authentication. |
+| **[Non-Repudiation](https://csrc.nist.gov/glossary/term/non_repudiation)** | Cryptographic evidence that supports attributing an action to an entity, making it harder for that entity to credibly deny it. | **[RFC 8032 (Ed25519)](https://datatracker.ietf.org/doc/html/rfc8032)** | Asymmetric digital signatures on transaction ledgers & code commits. |
 | **Privacy** | Processing personal data in compliance with individual rights & limits. | **NIST Privacy** / **ISO 27701** | Data minimization, pseudonymization, consent management & GDPR/PDPA compliance. |
 | **Resilience** | Withstanding active attack, adapting, and recovering core state. | **NIST SP 800-160 Vol. 2** | Automated failover, graceful degradation, and chaos engineering drills. |
 | **Safety** | Ensuring failure modes cannot cause physical harm or loss of life. | **ISO 26262** / **IEC 61508** | Fail-safe fault isolation, interlocks, and hazard containment circuits. |

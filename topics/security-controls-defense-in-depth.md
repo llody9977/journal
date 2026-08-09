@@ -1,6 +1,6 @@
 ---
 title: Security Controls & Defense in Depth
-description: Technical framework for control mitigation functional types, control domains, effectiveness hierarchy, control interdependence, defense-in-depth vs duplicate control anti-patterns, fail-safe vs fail-open trade-offs, and diagnostic audits.
+description: Technical framework for control mitigation functional types, control domains and their consistency/failure-mode profiles, control interdependence, defense-in-depth vs duplicate control anti-patterns, fail-closed vs fail-open trade-offs, and diagnostic audits.
 permalink: /topics/security-controls-defense-in-depth/
 last_verified: 2026-08-09
 ---
@@ -13,7 +13,7 @@ last_verified: 2026-08-09
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/defense-in-depth-architecture.svg' | relative_url }}" alt="Defense in Depth vs Duplicate Control Architecture diagram mapping True Defense-in-Depth (Diverse Complementary Gates with Independent Failure Modes) versus Duplicate Control Anti-Patterns (Redundant Signatures Sharing Common Point of Failure).">
-  <p class="diagram-caption">Defense in Depth vs Duplicate Control Architecture: Panel 1 illustrates True Defense in Depth across 4 diverse boundaries (Network mTLS → Ingress WAF → Code SAST/OPA → Data AES-256 Encryption). Panel 2 contrasts Valid Ingestion Point Layering across boundaries against Single-Boundary Duplicate Anti-Patterns (NIST SP 800-53 Rev. 5 / NIST SP 800-160 Vol. 2).</p>
+  <p class="diagram-caption">Defense in Depth vs Duplicate Control Architecture (journal working model): Panel 1 illustrates True Defense in Depth across 4 diverse boundaries (Network mTLS → Ingress WAF → Runtime Application Controls → Data-at-Rest Encryption). Panel 2 contrasts Valid Ingestion Point Layering across boundaries against Single-Boundary Duplicate Anti-Patterns.</p>
 </div>
 
 The architecture diagram above illustrates two foundational concepts in security engineering:

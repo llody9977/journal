@@ -118,7 +118,7 @@ Use a secondary framework only when it materially improves clarity.
 
 - Verify security-sensitive or time-sensitive claims against current primary sources.
 - Prefer standards bodies, specifications, vendor documentation, and original research over secondary summaries.
-- Place references next to the claims they support and summarize them in the ending `## Primary references` section. The ending references do not need to repeat every incidental link, but collectively they must cover **every material standards-dependent claim or major framework discussed on the page**.
+- Every material standards-dependent claim must be supported by a primary source, either inline (a link at first mention) or in the ending `## Primary references` section — it does not need both. The ending section should list the principal sources that establish the page's core technical conclusions, not a repository of every standard the page happens to name; a secondary or supporting standard is adequately covered by a single inline link at its first mention.
 - Distinguish a standard requirement from my own recommendation or working rule.
 - Label legacy, deprecated, restricted, or unsafe examples clearly.
 - Keep runnable code and displayed output consistent. If values are random, explain the invariant behavior rather than promising identical bytes.
