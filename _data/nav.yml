@@ -62,8 +62,58 @@
         - title: 2.17 Blockchain Cryptography
           url: /topics/blockchain-cryptography/
     - title: 3. Key Management
+      children:
+        - title: 3.1 HSM & KMS
+          url: /topics/hsm-kms/
     - title: 4. Authentication & Authorization
+      children:
+        - title: 4.1 Digital Identity Assurance Levels (IAL, AAL, FAL)
+          url: /topics/digital-identity-assurance-levels/
+        - title: "4.2 Authorization Models: RBAC, ABAC, ReBAC & Zero Trust"
+          url: /topics/authorization-models/
+        - title: 4.3 WebAuthn & Passkeys Deep-Dive
+          url: /topics/webauthn-passkeys/
+        - title: 4.4 Step-Up Authentication & MFA
+          url: /topics/step-up-authentication/
+        - title: 4.5 OAuth & OpenID Connect
+          url: /topics/oauth-oidc/
+        - title: 4.6 SAML 2.0
+          url: /topics/saml/
+        - title: "4.7 NTLM, Kerberos & HTTP Authentication Schemes"
+          url: /topics/http-auth-schemes/
+        - title: 4.8 SSH Architecture & Authentication
+          url: /topics/ssh/
+        - title: 4.9 Security Token Service (STS)
+          url: /topics/security-token-service/
+        - title: 4.10 Machine-to-Machine API Authentication
+          url: /topics/api-security/
     - title: 5. Network Security
+      children:
+        - title: 5.1 DNS Security
+          url: /topics/dns-security/
+        - title: 5.2 Network Segmentation & Microsegmentation
+          url: /topics/network-segmentation-microsegmentation/
+        - title: "5.3 Secure Tunneling: IPsec, WireGuard & SSH Bastions"
+          url: /topics/vpn-ipsec-wireguard/
     - title: 6. Threat Intelligence & Detection
+      children:
+        - title: 6.1 Threat Frameworks & Modeling Methodologies
+          url: /topics/threat-frameworks/
     - title: 7. Emerging Topics
+      children:
+        - title: 7.1 AI & LLM Security
+          url: /topics/ai-llm-security/
+        - title: "7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA"
+          url: /topics/software-supply-chain-security/
     - title: 8. Governance, Risk & Compliance
+      children:
+        - title: "8.1 Cybersecurity Standards & Frameworks"
+          url: /topics/cybersecurity-standards/
+        - title: "8.2 GRC Strategy: Framework Stacking & Assessment Models"
+          url: /topics/grc-framework-strategy/
+        - title: 8.3 Regulatory Mandates & Compliance Attestations
+          url: /topics/regulatory-compliance-mandates/
+        - title: 8.4 Security Certifications
+          url: /topics/security-certifications/
+        - title: 8.5 Security Maturity Models
+          url: /topics/security-maturity-models/

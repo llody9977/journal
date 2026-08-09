@@ -22,7 +22,7 @@
     <text x="60" y="162" font-size="14" font-weight="800" fill="#0f172a">Applicant Identity Verification</text>
     <line x1="60" y1="174" x2="375" y2="174" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="60" y="194" font-size="10.5" font-weight="500" fill="#475569">• Document &amp; biometric-comparison proofing (NIST 800-63A)</text>
-    <text x="60" y="212" font-size="10.5" font-weight="500" fill="#475569">• IAL1 (Self-asserted) → IAL2 (Verified) → IAL3 (In-Person/Supervised)</text>
+    <text x="60" y="212" font-size="10.5" font-weight="500" fill="#475569">• IAL1 (Self-asserted) → IAL2 (Verified) → IAL3 (In-Person)</text>
 
     <!-- Card 2: AAL Authenticator Binding (x=422, w=355) -->
     <rect x="422" y="115" width="355" height="135" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
@@ -38,7 +38,7 @@
     <text x="825" y="162" font-size="14" font-weight="800" fill="#0f172a">Secure Token &amp; Assertion Exchange</text>
     <line x1="825" y1="174" x2="1140" y2="174" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="194" font-size="10.5" font-weight="500" fill="#475569">• OpenID Connect (OIDC), OAuth &amp; DPoP (NIST 800-63C)</text>
-    <text x="825" y="212" font-size="10.5" font-weight="500" fill="#475569">• FAL1 (Bearer) → FAL2 (Injection-Protected) → FAL3 (Holder-of-Key)</text>
+    <text x="825" y="212" font-size="10.5" font-weight="500" fill="#475569">• FAL1 (Bearer) → FAL2 (Protected) → FAL3 (Holder-of-Key)</text>
 
     <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=265, h=145) -->
     <!-- Card 1: PEP (x=40, w=355) -->

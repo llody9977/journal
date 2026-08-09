@@ -58,75 +58,22 @@ The operational connection between **GOVERN** and **TECHNICAL** functions as a c
 - **Operational Action**: Automated vulnerability scan metrics, SIEM log telemetry, SAST/DAST results, and penetration test reports generated in **TECHNICAL** flow up to **GOVERN**.
 - **Governance Impact**: Provides evidence toward demonstrating control effectiveness to CISOs, executive boards, external auditors, and regulatory compliance authorities—telemetry supports the case for effectiveness, it does not on its own prove it.
 
-## Standard Framework & Compliance Selection Guide
+## Framework Selection at a Glance
 
-No single security catalog exhaustively covers every regional regulation or specialized technical standard worldwide. The following curated selection highlights the most widely adopted foundational frameworks, supply chain standards, statutory mandates, and commercial compliance attestations across security engineering:
+No single security catalog exhaustively covers every regional regulation or specialized technical standard worldwide. The table below is a starting-point selection, not an exhaustive catalog:
 
-### Enterprise Governance & Safeguard Frameworks
+| Standard / Framework | Domain Scope | Best Used For |
+|---|---|---|
+| **[NIST CSF 2.0](https://www.nist.gov/cyberframework)** | Cybersecurity | Organizing security capabilities into an executive-level vocabulary across six functions: **Govern, Identify, Protect, Detect, Respond, Recover**. |
+| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | InfoSec & Privacy Control Catalog | Selecting granular technical, operational, and managerial safeguards for high-assurance or federal environments. |
+| **[ISO/IEC 27001:2022](https://www.iso.org/standard/27001)** | Information Security | Building a certifiable ISMS and proving governance to external partners and auditors. |
+| **[CIS Controls v8.1](https://www.cisecurity.org/controls)** | Technical Safeguards | A prioritized, resource-tiered technical hygiene checklist (IG1/IG2/IG3). |
+| **[OWASP ASVS 5.0.0](https://owasp.org/www-project-application-security-verification-standard/)** | Application Security | Testable, level-based application security requirements. |
+| **[GDPR](https://gdpr.eu/) / Singapore PDPA** | Statutory Data Privacy | Legal obligations, not optional frameworks—applicability is jurisdictional. |
 
-| Standard / Framework | Domain Scope | Primary Function | Best Used For |
-|---|---|---|---|
-| **[CIS Controls v8.1](https://www.cisecurity.org/controls)** | Technical Safeguards | Prioritized technical hygiene checklist | Establishing Implementation Group 1 (IG1) baseline defense against common cyber attacks. |
-| **[FedRAMP](https://www.fedramp.gov/)** / **CMMC 2.0** | US Federal & Defense Cloud | Federal & defense cloud authorization | Mandatory security baselines for cloud services (FedRAMP) and defense industrial base contractors (NIST SP 800-171). |
-| **[ISO/IEC 27001:2022](https://www.iso.org/standard/27001)** | Information Security | Certifiable ISMS management standard | Building an enterprise security program and proving compliance to external partners and auditors. |
-| **[NIST CSF 2.0](https://www.nist.gov/cyberframework)** | Cybersecurity | Outcome-based strategic framework | Organizing security capabilities across six continuous functions: **Govern, Identify, Protect, Detect, Respond, Recover**. |
-| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | InfoSec & Privacy | Comprehensive control catalog | Selecting granular technical, operational, and managerial safeguards for high-assurance environments. |
+**Decision rule**: start from **NIST CSF 2.0** (or an equivalent outcome framework) to organize *what* to cover, select a control catalog (**NIST SP 800-53**, **CIS Controls**) to decide *which specific safeguards*, and layer in statutory or contractual requirements (GDPR, PCI-DSS, SOC 2) only where they actually apply to the system's jurisdiction and data.
 
-### Taxonomy of NIST Special Publications (SPs) & FIPS Standards
-
-Engineering teams often navigate multiple NIST 800-series publications and Federal Information Processing Standards (FIPS). Below is how key NIST and FIPS publications map to specific engineering domains:
-
-| Standard / Publication | Engineering Domain | Primary Scope & Function | Operational Placement |
-|---|---|---|---|
-| **[NIST FIPS 140-3](https://csrc.nist.gov/pubs/fips/140/3/final)** | Cryptography & Hardware Security | Security requirements for hardware and software cryptographic modules | Validating Hardware Security Modules (HSMs), TPMs, and cryptographic libraries. |
-| **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** / **FIPS 200** | Security Categorization | Categorizing system impact (*Low, Moderate, High*) across CIA triad properties | **Risk Assessment & System Categorization**: Defining baseline security requirements based on potential harm severity. |
-| **[NIST SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** / **SP 800-37** / **SP 800-39** | Risk Management Lifecycle | Risk Assessment (800-30), Risk Management Framework (800-37), Risk Governance (800-39) | **Universal Risk Engine**: The continuous decision engine connecting threat inputs, risk responses, and control monitoring. |
-| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | Control Catalog & Safeguards | Catalog of 20 control families (*Access Control, Audit, Cryptography, Incident Response*) | **Enterprise Governance & Control Execution**: The primary baseline catalog for FedRAMP, DoD, and enterprise risk controls. |
-| **[NIST SP 800-63-4](https://pages.nist.gov/800-63-4/)** (current; supersedes Rev. 3) | Digital Identity & Authentication | Guidelines for Identity (IAL), Authenticator (AAL), and Federation (FAL) assurance | **Identity & Access Management (IAM)**: Standardizing WebAuthn, FIDO2 passkeys, MFA, and OAuth 2.0 / OIDC federation. |
-| **[NIST SP 800-160 Vol. 1 & 2](https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final)** | System Security Engineering | Engineering trustworthy systems, OS kernels, and resilient hardware roots of trust | **System Security Engineering**: Building hardware, software, and firmware that function predictably under hostile attack conditions. |
-
-### Application, CI/CD & Supply Chain Standards
-
-| Standard / Framework | Focus Area | Primary Function | Best Used For |
-|---|---|---|---|
-| **[NIST SP 800-218 (SSDF)](https://csrc.nist.gov/pubs/sp/800/218/final)** & **[SLSA v1.2](https://slsa.dev/spec/v1.2/)** | Software Supply Chain | Secure development & build provenance | Hardening software supply chains, dependency integrity, and artifact provenance. |
-| **[OWASP ASVS 5.0.0](https://owasp.org/www-project-application-security-verification-standard/)** | Application Security | Testable application requirements | Designing, coding, and auditing secure web applications and API endpoints. |
-| **[OWASP CI/CD Top 10](https://owasp.org/www-project-top-10-ci-cd-security-risks/)** | Pipeline Security | CI/CD build hardening | Mitigating build pipeline manipulation, runner compromise, and un-gated deployments. |
-| **Threat Modeling** *(STRIDE / PASTA)* | Architecture | Structured threat identification | Evaluating misuse cases and trust transitions tailored to project trade-offs. |
-
-### System Hardening Benchmarks & Vendor Security Baselines
-
-While high-level frameworks (NIST SP 800-53, ISO 27001, CIS Controls) define *what* safeguards are required, technical hardening benchmarks define the exact *configuration settings* needed to secure operating systems, containers, database engines, and cloud platforms:
-
-| Hardening Standard / Baseline | Focus Area | Primary Function | Operational Placement |
-|---|---|---|---|
-| **[CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks)** | OS, Cloud & Container Hardening | Prescriptive technical configuration checklists (*Linux, Windows, Kubernetes, AWS, GCP, Azure*) | **Technical Safeguards Execution**: Concrete system-level hardening settings (*e.g., SSH daemon configurations, IAM policies, container isolation*). |
-| **Cloud Vendor Baselines** *(AWS Well-Architected / Azure Security / GCP Foundations)* | Cloud Infrastructure Architecture | Cloud provider security architecture baselines | **Cloud Infrastructure Architecture**: Best-practice configuration for IAM identity perimeters, VPC Service Controls, and KMS key policies. |
-| **[DISA STIGs](https://public.cyber.mil/stigs/)** | Defense & Federal System Hardening | DoD mandatory security technical implementation guides | **High-Assurance Federal Infrastructure**: Mandatory technical configuration baselines for military and defense IT environments. |
-
-### Statutory Regulatory Mandates (REGULATORY)
-
-Mandatory legal laws enacted by legislative bodies that enforce statutory data protection rules and financial/legal penalties:
-
-| Regulatory Law / Mandate | Jurisdiction | Statutory Scope | Primary Legal Focus |
-|---|---|---|---|
-| **[EU DORA](https://www.eiopa.europa.eu/digital-operational-resilience-act-dora_en)** / **NIS 2 Directive** | European Union | Financial & Critical Infrastructure Law | Mandatory digital operational resilience, ICT risk management, and incident reporting for financial institutions and critical infrastructure. |
-| **[GDPR](https://gdpr.eu/) / CCPA** | European Union / California | Statutory Data Privacy Law | Mandatory legal rules governing personal data collection, user consent, processing limits, and data subject access rights. |
-| **[HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/index.html)** | United States (Federal) | Statutory Healthcare Law | Mandatory administrative, physical, and technical safeguards for protecting electronic Protected Health Information (ePHI). |
-| **[Singapore PDPA](https://www.pdpc.gov.sg/Overview-of-PDPA/The-American-and-European-Context/Personal-Data-Protection-Act)** | Singapore | Statutory Data Protection Act | Mandatory rules for collecting, processing, storing, and protecting personal data in Singapore (enforced by PDPC). |
-
-Separately, the **[DOJ Evaluation of Corporate Compliance Programs (ECCP)](https://www.justice.gov/criminal-fraud/page/file/937501/dl)** is **prosecutorial guidance**, not a statute—it is the criteria US federal prosecutors use to judge whether a corporate compliance program (including cybersecurity) was adequate when deciding charges or penalties after an incident. It carries real enforcement weight but sits in a different legal category from the statutory laws above.
-
-### Commercial & Industry Compliance Standards (COMPLIANCE)
-
-Contractual, certifiable, and industry audit frameworks required for enterprise business operations, SaaS sales, and customer trust:
-
-| Compliance Standard | Focus & Scope | Audit / Attestation Mechanism | Primary Business Purpose |
-|---|---|---|---|
-| **[ISO/IEC 27001:2022](https://www.iso.org/standard/27001)** | Enterprise Information Security | Accredited Third-Party Certification | Certifiable Information Security Management System (ISMS) proving enterprise security governance to partners. |
-| **[ISO/IEC 27701](https://www.iso.org/standard/71670.html)** & **NIST Privacy** | Privacy Management Systems | ISMS Privacy Extension | Operationalizing data minimization, PII governance, and privacy risk management. |
-| **[PCI-DSS v4.0](https://www.pcisecuritystandards.org/)** | Payment Card Security | Annual QSA Audit / Report on Compliance | Contractual technical requirements for processing, storing, or transmitting credit card data. |
-| **[SOC 2 Type II (AICPA)](https://www.aicpa-cima.com/resources/landing/aicpa-soc-for-service-organizations)** | B2B SaaS & Cloud Security | Independent CPA Audit Attestation | Proving operational control effectiveness (*Security, Availability, Confidentiality*) to enterprise customers. |
+The full catalog of NIST/FIPS publication mappings, application/supply-chain standards, and OS/cloud hardening benchmarks lives in **[Cybersecurity Standards & Frameworks]({{ '/topics/cybersecurity-standards/' | relative_url }})**. Statutory regulations and commercial compliance attestations (GDPR, HIPAA, PDPA, DORA/NIS 2, PCI-DSS, SOC 2, ISO 27701, and the DOJ's ECCP guidance) live in **[Regulatory Mandates & Compliance Attestations]({{ '/topics/regulatory-compliance-mandates/' | relative_url }})**. Framework stacking strategy and a maturity-based implementation roadmap live in **[GRC Strategy]({{ '/topics/grc-framework-strategy/' | relative_url }})**.
 
 ## What I Need to Remember
 

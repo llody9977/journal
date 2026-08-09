@@ -2,7 +2,7 @@
 title: "Cybersecurity Standards & Frameworks"
 description: Comprehensive comparative guide to NIST CSF 2.0, NIST SP 800-53, ISO 27001/27002, OWASP ASVS/SAMM, CIS Controls, CISA CPGs, and SOC 2 audits.
 permalink: /topics/cybersecurity-standards/
-last_verified: 2026-08-06
+last_verified: 2026-08-09
 ---
 
 <span class="eyebrow">Governance, Risk & Compliance / Deep Dive</span>
@@ -21,8 +21,9 @@ last_verified: 2026-08-06
 | **ISO/IEC 27002:2022** | Implementation Guide | Detailed implementation guidance for ISO 27001 Annex A controls | Security engineers implementing ISO 27001 | Companion guidance (Non-certifiable) |
 | **CIS Controls v8.1** | Prioritized Safeguard List | 153 concrete safeguards grouped into 18 Controls and 3 Implementation Groups (IG1, IG2, IG3) | Resource-constrained security teams needing prioritized actions | Self-assessed / Audit baseline |
 | **CISA CPGs** | Critical Baseline Goals | Minimum high-impact practices for critical infrastructure operators | Critical infrastructure, SMBs establishing a security floor | Voluntary baseline guidance |
+| **FedRAMP** / **CMMC 2.0** | US Federal & Defense Cloud Authorization | Federal & defense cloud authorization baselines built on NIST SP 800-53 / SP 800-171 | Cloud service providers selling to US federal agencies; defense industrial base contractors | Mandatory for in-scope federal/defense contracts |
 | **OWASP Top 10** | Awareness Document | Consensus list of critical web application security risks | Web developers, application security engineers | Educational awareness floor |
-| **OWASP ASVS 4.0** | Verification Standard | Testable application security requirements across 3 levels (L1, L2, L3) | AppSec engineers, penetration testers, QA auditors | Verifiable software standard |
+| **OWASP ASVS 5.0.0** | Verification Standard | Testable application security requirements across 3 levels (L1, L2, L3) | AppSec engineers, penetration testers, QA auditors | Verifiable software standard |
 | **OWASP SAMM v2** | Maturity Model | Assesses and matures software security practices across 5 business functions | Software engineering leadership | Organizational assessment framework |
 | **SOC 2 (Type I / Type II)** | Audit Attestation | Independent CPA audit report based on AICPA Trust Services Criteria | B2B SaaS vendors proving control operation to enterprise buyers | Independent CPA Audit Attestation Report |
 
@@ -96,6 +97,38 @@ For organizations seeking a direct, prioritized roadmap, **[CIS Controls v8.1](h
 - **SOC 2 Type II**: Evaluates whether controls operated *effectively over a continuous observation period* (typically 6 to 12 months).
 
 Enterprise B2B SaaS buyers require SOC 2 Type II reports to verify vendor security compliance contractually.
+
+## Taxonomy of NIST Special Publications (SPs) &amp; FIPS Standards
+
+Engineering teams often navigate multiple NIST 800-series publications and Federal Information Processing Standards (FIPS). Below is how key NIST and FIPS publications map to specific engineering domains:
+
+| Standard / Publication | Engineering Domain | Primary Scope &amp; Function | Operational Placement |
+|---|---|---|---|
+| **[NIST FIPS 140-3](https://csrc.nist.gov/pubs/fips/140/3/final)** | Cryptography &amp; Hardware Security | Security requirements for hardware and software cryptographic modules | Validating Hardware Security Modules (HSMs), TPMs, and cryptographic libraries. |
+| **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** / **FIPS 200** | Security Categorization | Categorizing system impact (*Low, Moderate, High*) across CIA triad properties | **Risk Assessment &amp; System Categorization**: Defining baseline security requirements based on potential harm severity. |
+| **[NIST SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** / **SP 800-37** / **SP 800-39** | Risk Management Lifecycle | Risk Assessment (800-30), Risk Management Framework (800-37), Risk Governance (800-39) | **Risk Engine**: The continuous decision process connecting threat inputs, risk responses, and control monitoring. |
+| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | Control Catalog &amp; Safeguards | Catalog of 20 control families (*Access Control, Audit, Cryptography, Incident Response*) | **Enterprise Governance &amp; Control Execution**: The primary baseline catalog for FedRAMP, DoD, and enterprise risk controls. |
+| **[NIST SP 800-63-4](https://pages.nist.gov/800-63-4/)** | Digital Identity &amp; Authentication | Guidelines for Identity (IAL), Authenticator (AAL), and Federation (FAL) assurance | **Identity &amp; Access Management (IAM)**: See **[Digital Identity Assurance Levels]({{ '/topics/digital-identity-assurance-levels/' | relative_url }})**. |
+| **[NIST SP 800-160 Vol. 1 &amp; 2](https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final)** | System Security Engineering | Engineering trustworthy systems, OS kernels, and resilient hardware roots of trust | **System Security Engineering**: Building hardware, software, and firmware that function predictably under hostile attack conditions. |
+
+## Application, CI/CD &amp; Supply Chain Standards
+
+| Standard / Framework | Focus Area | Primary Function | Best Used For |
+|---|---|---|---|
+| **[NIST SP 800-218 (SSDF)](https://csrc.nist.gov/pubs/sp/800/218/final)** &amp; **[SLSA v1.2](https://slsa.dev/spec/v1.2/)** | Software Supply Chain | Secure development &amp; build provenance | Hardening software supply chains, dependency integrity, and artifact provenance—see **[Software Supply Chain Security]({{ '/topics/software-supply-chain-security/' | relative_url }})** for the deep dive. |
+| **OWASP ASVS 5.0.0** | Application Security | Testable application requirements | Designing, coding, and auditing secure web applications and API endpoints. |
+| **[OWASP CI/CD Top 10](https://owasp.org/www-project-top-10-ci-cd-security-risks/)** | Pipeline Security | CI/CD build hardening | Mitigating build pipeline manipulation, runner compromise, and un-gated deployments. |
+| **Threat Modeling** *(STRIDE / PASTA)* | Architecture | Structured threat identification | Evaluating misuse cases and trust transitions tailored to project trade-offs—see **[Trust Boundaries &amp; Threat Modeling]({{ '/topics/trust-boundaries-threat-modeling/' | relative_url }})**. |
+
+## System Hardening Benchmarks &amp; Vendor Security Baselines
+
+While the high-level frameworks above define *what* safeguards are required, technical hardening benchmarks define the exact *configuration settings* needed to secure operating systems, containers, database engines, and cloud platforms:
+
+| Hardening Standard / Baseline | Focus Area | Primary Function | Operational Placement |
+|---|---|---|---|
+| **[CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks)** | OS, Cloud &amp; Container Hardening | Prescriptive technical configuration checklists (*Linux, Windows, Kubernetes, AWS, GCP, Azure*) | **Technical Safeguards Execution**: Concrete system-level hardening settings (*e.g., SSH daemon configurations, IAM policies, container isolation*). |
+| **Cloud Vendor Baselines** *(AWS Well-Architected / Azure Security / GCP Foundations)* | Cloud Infrastructure Architecture | Cloud provider security architecture baselines | **Cloud Infrastructure Architecture**: Best-practice configuration for IAM identity perimeters, VPC Service Controls, and KMS key policies. |
+| **[DISA STIGs](https://public.cyber.mil/stigs/)** | Defense &amp; Federal System Hardening | DoD mandatory security technical implementation guides | **High-Assurance Federal Infrastructure**: Mandatory technical configuration baselines for military and defense IT environments. |
 
 ## What I Need to Remember
 

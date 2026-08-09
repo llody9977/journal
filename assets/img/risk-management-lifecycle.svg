@@ -45,12 +45,13 @@
     <text x="285" y="194" font-size="10.5" font-weight="600" fill="#475569">(NIST SP 800-30 Rev. 1)</text>
     <line x1="285" y1="206" x2="465" y2="206" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
     <text x="285" y="228" font-size="11.5" font-weight="700" fill="#0f172a">Calculate Exposure:</text>
-    <text x="285" y="250" font-size="12" font-weight="800" fill="#b45309">Risk ≈ Likelihood × Impact (simplified)</text>
-    <line x1="285" y1="264" x2="465" y2="264" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-    <text x="285" y="286" font-size="11.5" font-weight="500" fill="#475569">• Threat Plausibility</text>
-    <text x="285" y="304" font-size="11.5" font-weight="500" fill="#475569">• Impact Harm Severity</text>
-    <text x="285" y="322" font-size="11.5" font-weight="500" fill="#475569">• Evaluated Severity:</text>
-    <text x="285" y="342" font-size="11" font-weight="700" fill="#0f172a">  (Low/Med/High/Critical)</text>
+    <text x="285" y="248" font-size="12" font-weight="800" fill="#b45309">Risk ≈ Likelihood × Impact</text>
+    <text x="285" y="262" font-size="9" font-weight="600" fill="#475569">(simplified working model)</text>
+    <line x1="285" y1="274" x2="465" y2="274" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="285" y="296" font-size="11.5" font-weight="500" fill="#475569">• Threat Plausibility</text>
+    <text x="285" y="314" font-size="11.5" font-weight="500" fill="#475569">• Impact Harm Severity</text>
+    <text x="285" y="332" font-size="11.5" font-weight="500" fill="#475569">• Evaluated Severity:</text>
+    <text x="285" y="352" font-size="11" font-weight="700" fill="#0f172a">  (Low/Med/High/Critical)</text>
 
     <!-- Arrow 2 -> 3 -->
     
@@ -90,19 +91,20 @@
     <rect x="740" y="125" width="220" height="340" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2" />
     <text x="755" y="152" font-size="10.5" font-weight="900" letter-spacing="1" fill="#0f766e">STAGE 4: EXECUTION</text>
     <text x="755" y="174" font-size="15" font-weight="800" fill="#0f172a">Security Controls</text>
-    <text x="755" y="194" font-size="10.5" font-weight="600" fill="#475569">(NIST SP 800-53 catalog; grouping below is a practical lens)</text>
-    <line x1="755" y1="206" x2="945" y2="206" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-    <text x="755" y="226" font-size="11" font-weight="800" fill="#0f172a">• Preventive Safeguards:</text>
-    <text x="755" y="244" font-size="10.5" font-weight="500" fill="#475569">  IAM policies, WAF, mTLS</text>
-    <text x="755" y="264" font-size="11" font-weight="800" fill="#0f172a">• Detective Safeguards:</text>
-    <text x="755" y="282" font-size="10.5" font-weight="500" fill="#475569">  SIEM logging, IDS/IPS audit</text>
-    <text x="755" y="302" font-size="11" font-weight="800" fill="#0f172a">• Responsive Safeguards:</text>
-    <text x="755" y="320" font-size="10.5" font-weight="500" fill="#475569">  Incident containment</text>
-    <text x="755" y="340" font-size="11" font-weight="800" fill="#0f172a">• Recovery Safeguards:</text>
-    <text x="755" y="358" font-size="10.5" font-weight="500" fill="#475569">  Backups, DR failover</text>
-    <line x1="755" y1="372" x2="945" y2="372" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-    <text x="755" y="394" font-size="11" font-weight="800" fill="#0f766e">LEAVES OUTCOME:</text>
-    <text x="755" y="412" font-size="11.5" font-weight="700" fill="#0f172a">Authorized Residual Risk</text>
+    <text x="755" y="192" font-size="10.5" font-weight="600" fill="#475569">(NIST SP 800-53 catalog)</text>
+    <text x="755" y="205" font-size="9" font-weight="600" fill="#475569">Grouping below is a practical lens</text>
+    <line x1="755" y1="216" x2="945" y2="216" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="755" y="236" font-size="11" font-weight="800" fill="#0f172a">• Preventive Safeguards:</text>
+    <text x="755" y="254" font-size="10.5" font-weight="500" fill="#475569">  IAM policies, WAF, mTLS</text>
+    <text x="755" y="274" font-size="11" font-weight="800" fill="#0f172a">• Detective Safeguards:</text>
+    <text x="755" y="292" font-size="10.5" font-weight="500" fill="#475569">  SIEM logging, IDS/IPS audit</text>
+    <text x="755" y="312" font-size="11" font-weight="800" fill="#0f172a">• Responsive Safeguards:</text>
+    <text x="755" y="330" font-size="10.5" font-weight="500" fill="#475569">  Incident containment</text>
+    <text x="755" y="350" font-size="11" font-weight="800" fill="#0f172a">• Recovery Safeguards:</text>
+    <text x="755" y="368" font-size="10.5" font-weight="500" fill="#475569">  Backups, DR failover</text>
+    <line x1="755" y1="382" x2="945" y2="382" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="755" y="402" font-size="11" font-weight="800" fill="#0f766e">LEAVES OUTCOME:</text>
+    <text x="755" y="420" font-size="11.5" font-weight="700" fill="#0f172a">Authorized Residual Risk</text>
 
     <!-- Arrow 4 -> 5 -->
     
