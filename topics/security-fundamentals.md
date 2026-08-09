@@ -47,7 +47,7 @@ Comprehensive security engineering expands beyond the CIA triad to address addit
 - **Safety**: Ensuring system operational failures do not cause physical injury, environmental damage, or loss of life (**ISO 26262 / NIST SP 800-160**).
 - **Resilience**: The capacity of a system to withstand, adapt to, and recover from adverse conditions or attacks (**NIST SP 800-160 Vol. 2**).
 
-## The Universal Engine: Continuous Risk Management
+## A Common Decision Engine: Continuous Risk Management
 
 Whether protecting a physical paper archive (**Information Security**) or a cloud-native microservice (**Cybersecurity**), security protection is never arbitrary. Both domains aim to preserve the core **CIA Triad**, and both commonly rely on **Risk Management ([NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final) / [ISO/IEC 27005](https://www.iso.org/standard/75281.html))** to connect objectives, threats, and controls—though the specific process each domain follows can differ in detail.
 

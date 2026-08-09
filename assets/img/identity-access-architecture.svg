@@ -44,10 +44,10 @@
     <!-- Card 1: PEP (x=40, w=355) -->
     <rect x="40" y="265" width="355" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
     <text x="60" y="290" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">4. POLICY ENFORCEMENT POINT (PEP)</text>
-    <text x="60" y="312" font-size="14" font-weight="800" fill="#0f172a">API Gateway &amp; Ingress Proxy</text>
+    <text x="60" y="312" font-size="14" font-weight="800" fill="#0f172a">Gateway PLUS Owning Service</text>
     <line x1="60" y1="324" x2="375" y2="324" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
-    <text x="60" y="344" font-size="10.5" font-weight="500" fill="#475569">• Intercepts incoming client requests &amp; bearer tokens</text>
-    <text x="60" y="362" font-size="10.5" font-weight="500" fill="#475569">• Extracts mTLS certs, IP &amp; Device context</text>
+    <text x="60" y="344" font-size="10.5" font-weight="500" fill="#475569">• Gateway: coarse-grained request/token checks</text>
+    <text x="60" y="362" font-size="10.5" font-weight="500" fill="#475569">• Owning service: object/function-level checks too</text>
     <text x="60" y="380" font-size="10.5" font-weight="500" fill="#475569">• Enforces PDP Allow / Deny decision rules</text>
 
     <!-- Card 2: PDP Engine (x=422, w=355) -->

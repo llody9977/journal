@@ -12,13 +12,13 @@ last_verified: 2026-08-09
 <p class="lede">Detective controls generate telemetry; incident response is the process that turns an actual detection into contained, recovered, and understood harm; and operational learning is what feeds the outcome back into risk and control decisions instead of letting the same failure recur silently. This closes the loop this journal has followed from objective → requirement → control → verification → residual risk, returning the outcome to where that chain started.</p>
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" alt="Incident Response & Operational Learning Loop diagram showing Continuous Monitoring feeding Detect, Respond (Triage, Contain, Eradicate), Recover, and Improve stages, which feed back into Govern-level risk and control decisions.">
-  <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model, informed by NIST SP 800-61 Rev. 3's CSF 2.0 alignment): Continuous Monitoring → Detect → Respond (Triage, Contain, Eradicate) → Recover → Improve → feeds back into Govern-level risk &amp; control decisions</p>
+  <img src="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" alt="Incident Response & Operational Learning Loop diagram showing Continuous Monitoring feeding Detect, Respond (Triage, Contain, Eradicate), Recover, and a Learn & Improve stage, which feed back into Govern-level risk and control decisions. The Learn & Improve stage is this journal's operational lens on CSF 2.0's Identify/Improvement (ID.IM) Category, not a seventh CSF Function.">
+  <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model, informed by NIST SP 800-61 Rev. 3's CSF 2.0 alignment): Continuous Monitoring → Detect → Respond (Triage, Contain, Eradicate) → Recover → Learn &amp; Improve → feeds back into Govern-level risk &amp; control decisions. CSF 2.0 has six Functions (Govern, Identify, Protect, Detect, Respond, Recover); Learn &amp; Improve maps to Identify's Improvement (ID.IM) Category, not a 7th Function.</p>
 </div>
 
 ## Continuous Monitoring: Feeding the Response Pipeline
 
-Incident response has nothing to respond to without monitoring that actually surfaces anomalies. This is the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**, operated continuously rather than as a point-in-time check:
+Incident response has nothing to respond to without monitoring that actually surfaces anomalies. This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
 
 | Monitoring Input | What It Surfaces | Where the Evidence Goes |
 |---|---|---|
@@ -31,14 +31,14 @@ A high volume of monitoring signal is not the same as effective detection—aler
 
 ## The Incident Response Lifecycle: Rev. 2's Phases vs. Rev. 3's Current Structure
 
-**NIST SP 800-61 Rev. 2** (2012) described a linear four-phase model: *Preparation → Detection & Analysis → Containment, Eradication & Recovery → Post-Incident Activity*. NIST withdrew Rev. 2 and published **[NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)** in April 2025—*Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile*—which replaces the standalone linear phases with incident response activities mapped onto **[NIST CSF 2.0](https://www.nist.gov/cyberframework)**'s functions, consolidating them primarily under **Detect, Respond, Recover,** and **Improve**, while explicitly integrating **Govern, Identify,** and **Protect** so incident response is treated as part of continuous risk management rather than a separate standalone process. The table below maps the historical phase names to the current structure—use the right-hand column as the current reference; the left-hand column is retained here because the phase vocabulary is still widely used in practice:
+**NIST SP 800-61 Rev. 2** (2012) described a linear four-phase model: *Preparation → Detection & Analysis → Containment, Eradication & Recovery → Post-Incident Activity*. NIST withdrew Rev. 2 and published **[NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)** in April 2025—*Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile*—which replaces the standalone linear phases with incident response activities mapped onto all six of **[NIST CSF 2.0](https://www.nist.gov/cyberframework)**'s Functions: **Govern, Identify, Protect, Detect, Respond,** and **Recover**. In-incident activity concentrates in Detect, Respond, and Recover; continuous-improvement outcomes are captured specifically under Identify's **Improvement (ID.IM)** Category—CSF 2.0 has exactly six Functions, and "Improve" is not a seventh one. ID.IM is new in CSF 2.0 and explicitly consolidates the prior version's scattered improvement subcategories (PR.IP-7, DE.DP-5, RS.IM, RC.IM) into one place. The table below maps the historical phase names to the current structure—use the right-hand column as the current reference; the left-hand column is retained here because the phase vocabulary is still widely used in practice:
 
 | Historical Rev. 2 Phase (2012, withdrawn) | Current Rev. 3 / CSF 2.0 Mapping | What Happens |
 |---|---|---|
 | Preparation | **Govern / Identify / Protect** | Incident response plans, playbooks, roles, and tooling are established as part of ongoing risk management—not a one-time setup before the "real" lifecycle starts. |
 | Detection & Analysis | **Detect** | Monitoring surfaces a candidate event; analysis confirms whether it is a genuine incident and assesses scope and severity. |
 | Containment, Eradication & Recovery | **Respond** and **Recover** | Respond covers triage, containment (stopping the spread), and eradication (removing the cause); Recover covers restoring affected systems to normal operation. |
-| Post-Incident Activity | **Improve** | Rev. 3 frames this as continuous improvement woven through the incident lifecycle, rather than a single retrospective meeting held only after closure. |
+| Post-Incident Activity | **Identify — Improvement (ID.IM) Category** | Rev. 3 frames this as continuous improvement woven through the incident lifecycle and across all Functions, rather than a single retrospective meeting held only after closure—but it is organized as a Category under Identify, not a separate Function. |
 
 This journal still uses the practical operational sequence *detect → triage → contain → eradicate → recover → learn* below as a working narrative, because it remains widely used in practice—but treat it as this journal's operational lens on top of Rev. 3's structure, not a restatement of Rev. 3 itself:
 
@@ -47,7 +47,7 @@ This journal still uses the practical operational sequence *detect → triage �
 3. **Contain**: Limit the incident's ability to spread further (isolate a workload, revoke a credential, block an IP) without necessarily removing the root cause yet.
 4. **Eradicate**: Remove the root cause—patch the vulnerability, delete the malicious artifact, close the misconfiguration.
 5. **Recover**: Restore affected systems to verified-clean, normal operation—see the caveat on automated recovery controls in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**: recovery is only as clean as what it restores from.
-6. **Learn**: Conduct a blameless postmortem and track corrective actions (below).
+6. **Learn**: Conduct a blameless postmortem and track corrective actions (below)—this journal stage maps to CSF 2.0's Identify/Improvement (ID.IM) Category, not a distinct CSF Function, and its outcomes feed back across all six Functions.
 
 ## Incident Severity Classification (Journal Working Example)
 
@@ -62,7 +62,7 @@ Severity classification determines escalation speed, staffing, and communication
 
 ## Roles During an Incident (Common Practice, Not a NIST-Defined Structure)
 
-Most organizations running structured incident response adapt role concepts from the **Incident Command System (ICS)**—a command structure originally developed for emergency services and formalized in the US under FEMA's National Incident Management System—rather than a security-specific standard. The roles below are common industry practice, not a scheme NIST SP 800-61 itself defines:
+Many organizations running structured incident response adapt role concepts from the **Incident Command System (ICS)**—a command structure originally developed for emergency services and formalized in the US under FEMA's National Incident Management System—rather than a security-specific standard; this pattern is visible in widely cited incident-command write-ups from practitioners such as Google's SRE book and PagerDuty's incident response documentation. The roles below are common industry practice, not a scheme NIST SP 800-61 itself defines:
 
 | Role | Responsibility | Explicitly Not Responsible For |
 |---|---|---|
@@ -75,7 +75,7 @@ Small teams routinely collapse several of these roles into one person; the value
 
 ## Post-Incident: Closing the Loop Back to Risk and Control Decisions
 
-An incident that ends at "resolved" without feeding its findings back into risk and control decisions guarantees the same failure recurs. The blameless postmortem's output should route to the same mechanisms this journal already covers elsewhere, not exist as a standalone document:
+An incident that ends at "resolved" without feeding its findings back into risk and control decisions increases the likelihood that the same failure recurs. The blameless postmortem's output should route to the same mechanisms this journal already covers elsewhere, not exist as a standalone document:
 
 - **Risk register update**: A materialized incident is direct evidence for updating likelihood and impact estimates—see **Inherent, Current, Target & Residual Risk** in **[Threats, Vulnerabilities & Risk]({{ '/topics/risk-fundamentals/' | relative_url }})**.
 - **Control effectiveness reassessment**: An incident that occurred despite a control being "in place" is a signal about that control's *operating* effectiveness specifically—see **Control Effectiveness Types & Lifecycle Governance** in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**.
@@ -104,7 +104,7 @@ When auditing an incident response program or reviewing a specific incident's ha
   <div>
     <strong>Incident Response &amp; Operational Learning Summary</strong>
     <ul>
-      <li><strong>Rev. 3 Replaced the Linear Model</strong>: NIST SP 800-61 Rev. 3 (2025) reorganized incident response around CSF 2.0's functions (chiefly Detect, Respond, Recover, Improve) instead of Rev. 2's standalone four-phase lifecycle; the phase vocabulary (detect/triage/contain/eradicate/recover/learn) is still useful in practice but is this journal's operational lens, not the current standard's structure.</li>
+      <li><strong>Rev. 3 Replaced the Linear Model</strong>: NIST SP 800-61 Rev. 3 (2025) reorganized incident response around all six CSF 2.0 Functions (Govern, Identify, Protect, Detect, Respond, Recover) instead of Rev. 2's standalone four-phase lifecycle; in-incident work concentrates in Detect/Respond/Recover, and continuous improvement is Identify's Improvement (ID.IM) Category, not a seventh Function. The phase vocabulary (detect/triage/contain/eradicate/recover/learn) is still useful in practice but is this journal's operational lens, not the current standard's structure.</li>
       <li><strong>Severity and Roles Are Locally Defined</strong>: Severity tiers and incident-command-style roles are common practice, not something NIST SP 800-61 itself mandates—define them explicitly for your own organization.</li>
       <li><strong>The Loop Only Closes If Findings Feed Back</strong>: A postmortem that doesn't update the risk register, reassess control effectiveness, and re-check the threat model has not actually closed the loop—it has just documented the incident.</li>
     </ul>

@@ -62,7 +62,7 @@
     <text x="410" y="210" font-size="13" font-weight="800" fill="#0f172a">OAuth Token Verification &amp; WAF Rate Limiting</text>
     <line x1="410" y1="220" x2="770" y2="220" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="410" y="238" font-size="11" font-weight="500" fill="#475569">• Validates JWT Bearer Tokens &amp; DPoP Proofs</text>
-    <text x="410" y="254" font-size="11" font-weight="500" fill="#475569">• Sanitizes Input &amp; Blocks Attack Payloads</text>
+    <text x="410" y="254" font-size="11" font-weight="500" fill="#475569">• Filters Known Attack Patterns</text>
 
     <!-- Card 3: Process 2 Payroll Microservice -->
     <rect x="395" y="290" width="390" height="105" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="2" />

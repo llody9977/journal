@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Incident Response &amp; Operational Learning Loop</title>
-  <desc id="description">Diagram showing Continuous Monitoring feeding Detect, Respond (Triage, Contain, Eradicate), Recover, and Improve stages in sequence, connected in a loop back to a Govern-level Risk &amp; Control Decisions banner that both sets priorities for monitoring and receives feedback from the Improve stage.</desc>
+  <desc id="description">Diagram showing Continuous Monitoring feeding Detect, Respond (Triage, Contain, Eradicate), Recover, and a Learn &amp; Improve stage in sequence, connected in a loop back to a Govern-level Risk &amp; Control Decisions banner that both sets priorities for monitoring and receives feedback from Learn &amp; Improve. Learn &amp; Improve is this journal's operational lens on CSF 2.0's Identify/Improvement (ID.IM) Category, not a seventh CSF Function.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
@@ -70,7 +70,7 @@
 
   <!-- Box 5: Improve (x=920, w=205) -->
   <rect x="920" y="280" width="205" height="105" rx="10" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
-  <text x="935" y="302" font-size="11" font-weight="900" fill="#7c3aed">5. IMPROVE</text>
+  <text x="935" y="302" font-size="11" font-weight="900" fill="#7c3aed">5. LEARN &amp; IMPROVE</text>
   <text x="935" y="320" font-size="12.5" font-weight="800" fill="#0f172a">Continuous Improvement</text>
   <line x1="935" y1="330" x2="1110" y2="330" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
   <text x="935" y="348" font-size="10" font-weight="500" fill="#475569">• Blameless postmortem</text>
@@ -78,6 +78,6 @@
 
   <!-- Footer note -->
   <rect x="40" y="410" width="1120" height="55" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
-  <text x="600" y="434" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0f172a">NIST SP 800-61 Rev. 3 (2025) maps this activity onto CSF 2.0's functions, chiefly Detect / Respond / Recover / Improve</text>
-  <text x="600" y="450" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">The 5-stage flow above is this journal's practical operational lens on that structure, not a restatement of Rev. 3 itself.</text>
+  <text x="600" y="434" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0f172a">CSF 2.0 has 6 Functions (Govern, Identify, Protect, Detect, Respond, Recover) — "Improve" is not a 7th Function</text>
+  <text x="600" y="450" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">Learn &amp; Improve above is this journal's lens on Identify's Improvement (ID.IM) Category per SP 800-61 Rev. 3.</text>
 </svg>

@@ -54,8 +54,8 @@
     <text x="635" y="298" font-size="10.5" font-weight="900" letter-spacing="1" fill="#0f172a">ACCOUNTABILITY &amp; AUDITING</text>
     <text x="635" y="318" font-size="14" font-weight="800" fill="#0f172a">Attributing System Actions to Verified Identity Context</text>
     <line x1="635" y1="330" x2="1140" y2="330" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1" />
-    <text x="635" y="350" font-size="11.5" font-weight="500" fill="#475569">• Tamper-Evident Audit Logging (NIST SP 800-92)</text>
-    <text x="635" y="368" font-size="11.5" font-weight="500" fill="#475569">• SIEM Event Attribution &amp; Tamper-Evident Audit Trails</text>
+    <text x="635" y="350" font-size="11.5" font-weight="500" fill="#475569">• Audit Logging (NIST SP 800-92) + Added Tamper-Evidence</text>
+    <text x="635" y="368" font-size="11.5" font-weight="500" fill="#475569">• SIEM Event Attribution &amp; Cryptographic Log Chaining</text>
 
     <!-- Grid Row 2 Left: Privacy & Minimization (x=40, w=545, y=390, h=105) -->
     <rect x="40" y="390" width="545" height="105" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
@@ -74,6 +74,6 @@
     <text x="635" y="483" font-size="11.5" font-weight="500" fill="#475569">• System Resilience &amp; Automated Recovery (NIST SP 800-160 Vol. 2)</text>
 
     <!-- Bottom Bar: Mechanism Alignment (y=505, w=1120, h=45) -->
-    <text x="600" y="525" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">TECHNICAL SAFEGUARD ALIGNMENT (NIST SP 800-53 REV. 5)</text>
-    <text x="600" y="540" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0f172a">Technical mechanisms enforce specific properties. No single mechanism satisfies all objectives in isolation.</text>
+    <text x="600" y="525" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">SAFEGUARD ALIGNMENT — TECHNICAL, ADMINISTRATIVE &amp; PHYSICAL (NIST SP 800-53 REV. 5)</text>
+    <text x="600" y="540" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0f172a">Safeguards enforce specific properties. No single mechanism, technical or otherwise, satisfies all objectives in isolation.</text>
 </svg>
