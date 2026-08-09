@@ -1,6 +1,6 @@
 ---
 title: Post-Quantum Cryptography (PQC) Migration
-description: Architectural roadmap for migrating to NIST PQC standards (FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA, FIPS 206 FN-DSA), NSA CNSA 2.0 timelines, and hybrid key exchange.
+description: Architectural roadmap for migrating to NIST PQC standards (finalized FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA, and draft FIPS 206 FN-DSA), NSA CNSA 2.0 timelines, and hybrid key exchange.
 permalink: /topics/post-quantum-cryptography/
 last_verified: 2026-08-08
 ---
@@ -108,4 +108,4 @@ In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA co
 - **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST CSRC FIPS 204 Final](https://csrc.nist.gov/pubs/fips/204/final)
 - **NIST FIPS 205**: *Stateless Hash-Based Digital Signature Standard (SLH-DSA)* — [NIST CSRC FIPS 205 Final](https://csrc.nist.gov/pubs/fips/205/final)
 - **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2022/Sep/07/2003071833/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
-- **IETF TLS 1.3 Hybrid Group**: *X25519MLKEM768 Key Exchange for TLS 1.3* — [draft-ietf-tls-westerbaan-xyber768d00](https://datatracker.ietf.org/doc/draft-ietf-tls-westerbaan-xyber768d00/)
+- **IETF TLS 1.3 Hybrid Group**: *X25519MLKEM768 Key Exchange for TLS 1.3* — [RFC 10024](https://auth48-transition.rfc-editor.org/authors/rfc10024.html)

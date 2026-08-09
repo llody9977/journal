@@ -63,6 +63,18 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
 - **Smaller Public Keys**: 32-byte (256-bit) public keys provide 128-bit security, compared to 3072-bit modular prime groups in finite-field DH.
 - **Fast Execution**: Orders of magnitude faster scalar multiplication with complete, constant-time arithmetic routines.
 
+
+## Authenticated Key Exchange & MITM Prevention
+
+Unauthenticated Diffie-Hellman (Anonymous DH/ECDH) provides confidentiality against passive eavesdroppers, but is **fundamentally vulnerable to active Man-in-the-Middle (MITM) attacks**. An active adversary intercepting the network connection can negotiate independent shared secrets with both parties, decrypting and re-encrypting all traffic transparently.
+
+To prevent MITM key substitution, key exchange protocols MUST be authenticated:
+- **Digital Signatures (TLS 1.3)**: The server signs its ephemeral ECDH key share using a long-term private key bound to a verified X.509 certificate (`RSA-PSS` or `Ed25519`).
+- **Pre-Shared Keys (PSK)**: Both parties share a pre-configured high-entropy secret used to authenticate the key exchange.
+- **Mutual TLS (mTLS)**: Both client and server present X.509 certificates and verify digital signatures over the handshake transcript.
+
+Furthermore, raw ECDH produces an $(x, y)$ coordinate point on an elliptic curve, which has non-uniform bit distribution. Applications MUST pass the raw shared secret through a Key Derivation Function (**HKDF / RFC 5869**) to extract and expand uniform symmetric keys for AEAD ciphers.
+
 ## Perfect Forward Secrecy (PFS)
 
 **Perfect Forward Secrecy (PFS)** guarantees that compromising a long-term server private key today does NOT allow an adversary to decrypt past recorded session traffic.

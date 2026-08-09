@@ -78,7 +78,7 @@ All cryptographic security ultimately depends on unpredictable randomness. Keys,
 
 ### Client-Side Simulator: Insecure PRNG (MT19937) State Reconstruction Attack
 
-The interactive simulator below demonstrates how an adversary observing 624 outputs from a non-cryptographic PRNG (Mersenne Twister `MT19937` used in standard `Math.random` implementations or standard library `random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
+The interactive simulator below demonstrates how an adversary observing 624 outputs from a non-cryptographic PRNG (such as Mersenne Twister `MT19937` in Python `random` or xorshift128+ in browser `Math.random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
 
 <div class="interactive-demo-card">
   <div class="demo-header">
