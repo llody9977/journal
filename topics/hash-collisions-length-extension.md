@@ -153,7 +153,7 @@ var SparkMD5 = (function(undefined){"use strict";var add32=function(a,b){return 
         </div>`;
       }
 
-      outputAreaMD5.textContent = html;
+      outputAreaMD5.innerHTML = html;
     } catch (err) {
       outputAreaMD5.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
     }
@@ -311,7 +311,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
         </div>`;
       }
 
-      outputAreaSHA1.textContent = html;
+      outputAreaSHA1.innerHTML = html;
     } catch (err) {
       outputAreaSHA1.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Verification Error: ${err.message || err}</div>`;
     }
@@ -633,7 +633,7 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
         </div>`;
       }
 
-      outputArea.textContent = html;
+      outputArea.innerHTML = html;
     } catch (err) {
       outputArea.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">Execution Error: ${err.message || err}</div>`;
     }

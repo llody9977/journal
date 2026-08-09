@@ -220,7 +220,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
         </div>`;
       }
 
-      outputArea.textContent = html;
+      outputArea.innerHTML = html;
 
     } catch (err) {
       outputArea.textContent = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
