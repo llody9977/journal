@@ -13,7 +13,7 @@ last_verified: 2026-08-09
 
 ## Why Plain Cryptographic Hashes Fail for Passwords
 
-Fast general-purpose hash functions (SHA-256, MD5) are engineered for gigabytes-per-second throughput. A modern GPU cluster can compute over **100 billion SHA-256 hashes per second**, allowing offline brute-force recovery of weak passwords in minutes. Specialized password hashes (Argon2id, bcrypt) force memory accesses and CPU iterations to slow down execution to an example deployment target of ~250ms per verification.
+Fast general-purpose hash functions (SHA-256, MD5) are engineered for high throughput on general-purpose hardware. Multi-GPU cracking clusters can compute billions to tens of billions of un-salted SHA-256 hashes per second, allowing offline brute-force recovery of weak passwords in minutes. Specialized password hashes (Argon2id, bcrypt) force memory accesses and CPU iterations to slow down execution to an example deployment target of ~250ms per verification.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/password-hash-comparison.svg' | relative_url }}" alt="Execution throughput comparison across SHA-256, bcrypt, scrypt, and Argon2id.">
@@ -233,7 +233,7 @@ A **Pepper** is a 32-byte secret key stored outside the primary user database (*
 
 ## Argon2id Recommended Parameters (RFC 9106)
 
-Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST SP 800-63B Rev. 4](https://csrc.nist.gov/pubs/sp/800/63/b/r4/final)**, **Argon2id** provides optimal protection against both side-channel and GPU attacks. The current **[OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)** lists several single-lane (p=1) configurations, from **m=47104 KiB (46 MiB), t=1, p=1** as the strongest down to its minimum recommendation of **m=19456 KiB (19 MiB), t=2, p=1**. RFC 9106 separately recommends **m=65536 KiB (64 MiB), t=3, p=4** as its own memory-constrained profile (the tuner's default below), which spreads the work across four parallel lanes rather than OWASP's single lane:
+Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and recommended by **[OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)**, **Argon2id** is a memory-hard password-hashing function designed to resist parallel cracking while balancing side-channel considerations. The current **[OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)** lists several single-lane (p=1) configurations, from **m=47104 KiB (46 MiB), t=1, p=1** as the strongest down to its minimum recommendation of **m=19456 KiB (19 MiB), t=2, p=1**. RFC 9106 separately recommends **m=65536 KiB (64 MiB), t=3, p=4** as its own memory-constrained profile (the tuner's default below), which spreads the work across four parallel lanes rather than OWASP's single lane:
 
 <div class="interactive-demo-card">
   <div class="demo-header">

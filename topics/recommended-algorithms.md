@@ -62,14 +62,14 @@ NIST finalized three quantum-resistant FIPS standards in August 2024, with a fou
 
 ## Regional Standards: Chinese ShangMi (SM) Algorithm Suite
 
-Under China's Cryptography Law (2020) and national standards (**[GB/T 39786-2021 Record](https://std.samr.gov.cn/gb/search/gbDetailed?id=BD89DE8E07393D08E05397BE0A0A4FAD)** *Baseline for Cryptographic Application in Information Systems* and **GM/T 0054-2018** *Cryptographic Application Security Evaluation*), commercial cryptography compliance is governed by the State Cryptography Administration (SCA). The ShangMi suite is mandatory in specific regulated contexts—critical information infrastructure (CII) operators, government procurement, financial sector rules (PBOC banking requirements), and certified commercial cryptography products. General commercial software operating outside these statutory categories is not mandated to replace AES/RSA/ECC.
+Under China's Cryptography Law (2020) and technical standards such as **[GB/T 39786-2021](https://std.samr.gov.cn/gb/search/gbDetailed?id=BD89DE8E07393D08E05397BE0A0A4FAD)** (*Baseline for Cryptographic Application in Information Systems*), commercial cryptography evaluation is overseen by the State Cryptography Administration (SCA) and sector regulators. Requirements to adopt the ShangMi algorithm suite depend on the specific system classification level, certification regime, and applicable sector rules (such as for Critical Information Infrastructure, government systems, or financial infrastructure). General commercial software operating outside designated regulatory scopes is not mandated to replace AES, RSA, or ECC.
 
-| SM Algorithm | Cryptographic Primitive | Equivalent Western Primitive | Compliance Requirement |
+| SM Algorithm | Cryptographic Primitive | Equivalent Western Primitive | Regulatory Context &amp; Scope |
 |---|---|---|---|
-| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Mandatory for public-key encryption and digital signatures within CII, government, and PBOC-regulated banking systems ([GB/T 39786-2021](https://std.samr.gov.cn/gb/search/gbDetailed?id=BD89DE8E07393D08E05397BE0A0A4FAD)); not required for general commercial software. |
-| **SM3** | Cryptographic Hash | SHA-256 | Mandatory 256-bit hash digest for integrity checks and signatures within the same regulated sectors (GM/T 0054-2018). |
-| **SM4** | 128-bit Block Cipher | AES-128-GCM | Mandatory 128-bit block cipher for data at rest and network transit within the same regulated sectors; general deployments are not required to replace AES. |
-| **SM9** | Identity-Based Encryption | IBE / Identity PKI | Identity-based public-key algorithm using user ID as public key. |
+| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Elliptic-curve public-key algorithm (GB/T 32918); adoption depends on system security classification, regulatory regime, and sector-specific commercial cryptography rules. |
+| **SM3** | Cryptographic Hash | SHA-256 | 256-bit cryptographic hash function (GB/T 32905); used for integrity verification and digital signatures within applicable regulatory scopes. |
+| **SM4** | 128-bit Block Cipher | AES-128-GCM | 128-bit block cipher (GB/T 32907); used for bulk payload and transmission encryption within applicable regulatory scopes. |
+| **SM9** | Identity-Based Encryption | IBE / Identity PKI | Identity-based public-key algorithm (GM/T 0044) using identifier strings as public keys in supported PKI architectures. |
 
 ## What I Need to Remember
 
