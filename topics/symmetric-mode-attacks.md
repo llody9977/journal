@@ -242,7 +242,7 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
 
 ### Chosen-Plaintext & Dictionary Cryptanalysis Attack (ECB Codebook Exploitation)
 
-When a server encrypts data using **AES-ECB** mode, an adversary possessing stolen target ciphertext does not need to guess the secret key $K$. If the adversary has access to an **Encryption Oracle** (such as a web portal or API endpoint that encrypts user inputs under the same key $K$), they can build a **Codebook / Dictionary Table** mapping candidate plaintexts to generated ciphertext blocks.
+When a server encrypts data using **AES-ECB** mode, an adversary possessing stolen target ciphertext does not need to guess the secret key **K**. If the adversary has access to an **Encryption Oracle** (such as a web portal or API endpoint that encrypts user inputs under the same key **K**), they can build a **Codebook / Dictionary Table** mapping candidate plaintexts to generated ciphertext blocks.
 
 Once a generated ciphertext block matches a block in the stolen target file, the target block is **instantly decrypted**:
 
@@ -250,7 +250,7 @@ Once a generated ciphertext block matches a block in the stolen target file, the
   <div class="demo-header">
     <span class="demo-badge">Chosen-Plaintext Attack Playground</span>
     <h3>ECB Codebook Dictionary Cryptanalysis Playground</h3>
-    <p>Simulate an attacker using an Encryption Oracle portal to build a Codebook / Dictionary mapping candidate plaintexts to ciphertexts, decrypting stolen target data block-by-block without key $K$.</p>
+    <p>Simulate an attacker using an Encryption Oracle portal to build a Codebook / Dictionary mapping candidate plaintexts to ciphertexts, decrypting stolen target data block-by-block without key K.</p>
   </div>
 
   <div class="demo-body">
