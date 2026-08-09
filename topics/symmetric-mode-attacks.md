@@ -695,16 +695,16 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
     <!-- 2. Attacker Guess Input -->
     <div class="demo-form-group">
-      <label for="ctr-guess-mode">3. Attacker Recovery Mode:</label>
+      <label for="ctr-guess-mode">3. Attacker Recovery Mode Selection:</label>
       <select id="ctr-guess-mode" class="demo-input" style="margin-bottom: 0.5rem;">
         <option value="guess_p1" selected>Guess P1 snippet → Recover P2 Plaintext</option>
         <option value="guess_p2">Guess P2 snippet → Recover P1 Plaintext</option>
       </select>
       <div style="display: flex; gap: 0.5rem;">
-        <input type="text" id="ctr-guess-input" class="demo-input" value="Transfer $100 to" placeholder="Enter guessed snippet...">
+        <input type="text" id="ctr-guess-input" class="demo-input" readonly value="Transfer $100 to" style="background: var(--paper); color: var(--ink); cursor: not-allowed;">
         <button id="btn-recover-ctr" class="btn-primary" type="button" style="white-space: nowrap;">Extract Bytes</button>
       </div>
-      <small class="demo-help" id="ctr-mode-help">The attacker XORs (C1 ⊕ C2) with the guessed P1 snippet to recover P2.</small>
+      <small class="demo-help" id="ctr-mode-help">Auto-populated snippet derived from selected mode. The attacker XORs (C1 ⊕ C2) with snippet to extract target payload.</small>
     </div>
 
     <!-- 3. Decryption Result -->
@@ -751,11 +751,16 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
       const p2Text = p2Input.value;
       const mode = modeSelect.value;
 
+      // Auto-populate snippet based on mode
+      let activeSnippet = "";
       if (mode === 'guess_p1') {
-        modeHelp.textContent = 'The attacker XORs (C1 ⊕ C2) with the guessed P1 snippet to recover P2.';
+        activeSnippet = p1Text.substring(0, Math.min(16, p1Text.length));
+        modeHelp.textContent = 'Auto-populated P1 snippet. XORing (C1 ⊕ C2) with P1 snippet recovers P2.';
       } else {
-        modeHelp.textContent = 'The attacker XORs (C1 ⊕ C2) with the guessed P2 snippet to recover P1.';
+        activeSnippet = p2Text.substring(0, Math.min(16, p2Text.length));
+        modeHelp.textContent = 'Auto-populated P2 snippet. XORing (C1 ⊕ C2) with P2 snippet recovers P1.';
       }
+      guessInput.value = activeSnippet;
 
       const keyBytes = hexToBytes(keyHex);
       const counterBytes = new Uint8Array(16);
@@ -846,7 +851,6 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   btnRecover.addEventListener('click', runCTRReuseAttack);
   p1Input.addEventListener('input', runCTRReuseAttack);
   p2Input.addEventListener('input', runCTRReuseAttack);
-  guessInput.addEventListener('input', runCTRReuseAttack);
   modeSelect.addEventListener('change', runCTRReuseAttack);
 
   runCTRReuseAttack();
