@@ -1,81 +1,81 @@
-<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
-  <rect x="0" y="0" width="760" height="380" fill="#ffffff" rx="8" />
+<svg viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+  <rect x="0" y="0" width="820" height="380" fill="#ffffff" rx="8" />
 
   <!-- Header Title -->
-  <text x="380" y="28" font-size="13" font-weight="700" fill="#1e293b" text-anchor="middle" font-family="ui-monospace,monospace">KEY LENGTH (BITS) NEEDED FOR EQUIVALENT NIST SECURITY STRENGTH</text>
+  <text x="410" y="28" font-size="13" font-weight="700" fill="#1e293b" text-anchor="middle" font-family="ui-monospace,monospace">KEY LENGTH (BITS) NEEDED FOR EQUIVALENT NIST SECURITY STRENGTH</text>
 
-  <!-- Y-Axis Title -->
-  <text x="25" y="170" font-size="11" font-weight="600" fill="#475569" text-anchor="middle" transform="rotate(-90 25 170)">Required Key Length (Bits)</text>
+  <!-- Y-Axis Title (Rotated Left Axis) -->
+  <text x="25" y="180" font-size="11" font-weight="700" fill="#475569" text-anchor="middle" transform="rotate(-90 25 180)">Required Key Length (Bits)</text>
 
-  <!-- Y-Axis Gridlines & Labels -->
+  <!-- Y-Axis Gridlines & Labels (Right-aligned at X=135, leaving 110px margin from X=25) -->
   <g font-size="10" fill="#64748b" text-anchor="end" font-family="ui-monospace,monospace">
     <!-- 8000 bits -->
-    <text x="95" y="64">8,000 bits —</text>
-    <line x1="105" y1="60" x2="720" y2="60" stroke="#f1f5f9" stroke-width="1" />
+    <text x="135" y="64">8,000 bits —</text>
+    <line x1="145" y1="60" x2="780" y2="60" stroke="#f1f5f9" stroke-width="1" />
     
     <!-- 6000 bits -->
-    <text x="95" y="124">6,000 bits —</text>
-    <line x1="105" y1="120" x2="720" y2="120" stroke="#f1f5f9" stroke-width="1" />
+    <text x="135" y="124">6,000 bits —</text>
+    <line x1="145" y1="120" x2="780" y2="120" stroke="#f1f5f9" stroke-width="1" />
 
     <!-- 4000 bits -->
-    <text x="95" y="184">4,000 bits —</text>
-    <line x1="105" y1="180" x2="720" y2="180" stroke="#f1f5f9" stroke-width="1" />
+    <text x="135" y="184">4,000 bits —</text>
+    <line x1="145" y1="180" x2="780" y2="180" stroke="#f1f5f9" stroke-width="1" />
 
     <!-- 2000 bits -->
-    <text x="95" y="244">2,000 bits —</text>
-    <line x1="105" y1="240" x2="720" y2="240" stroke="#f1f5f9" stroke-width="1" />
+    <text x="135" y="244">2,000 bits —</text>
+    <line x1="145" y1="240" x2="780" y2="240" stroke="#f1f5f9" stroke-width="1" />
 
     <!-- 0 bits -->
-    <text x="95" y="304">0 bits —</text>
+    <text x="135" y="304">0 bits —</text>
   </g>
 
   <!-- Baseline (Y=300) -->
-  <line x1="105" y1="300" x2="720" y2="300" stroke="#94a3b8" stroke-width="1.5" />
+  <line x1="145" y1="300" x2="780" y2="300" stroke="#94a3b8" stroke-width="1.5" />
 
   <!-- Group 1: 112-bit security -->
   <g>
-    <!-- RSA-2048: Height 61.4px (2048/8000 * 240) -> Y = 300 - 61.4 = 238.6 -->
-    <rect x="170" y="238.6" width="44" height="61.4" fill="#2563eb" rx="3" />
-    <text x="192" y="232" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">2,048b</text>
+    <!-- RSA-2048: Height 61.4px -> Y = 300 - 61.4 = 238.6 -->
+    <rect x="210" y="238.6" width="44" height="61.4" fill="#2563eb" rx="3" />
+    <text x="232" y="230" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">2,048b</text>
 
-    <!-- ECC-224: Height 6.7px (224/8000 * 240) -> Y = 300 - 6.7 = 293.3 -->
-    <rect x="222" y="293.3" width="44" height="6.7" fill="#0d9488" rx="2" />
-    <text x="244" y="288" font-size="10" font-weight="700" fill="#0d9488" text-anchor="middle">224b</text>
+    <!-- ECC-224: Height 6.7px -> Y = 300 - 6.7 = 293.3 -->
+    <rect x="262" y="293.3" width="44" height="6.7" fill="#0d9488" rx="2" />
+    <text x="284" y="286" font-size="10" font-weight="700" fill="#0d9488" text-anchor="middle">224b</text>
 
-    <text x="218" y="322" font-size="12" font-weight="700" fill="#1e293b" text-anchor="middle">112-bit Security</text>
-    <text x="218" y="336" font-size="10" fill="#64748b" text-anchor="middle">(Legacy Minimum)</text>
+    <text x="258" y="322" font-size="12" font-weight="700" fill="#1e293b" text-anchor="middle">112-bit Security</text>
+    <text x="258" y="336" font-size="10" fill="#64748b" text-anchor="middle">(Legacy Minimum)</text>
   </g>
 
   <!-- Group 2: 128-bit security -->
   <g>
-    <!-- RSA-3072: Height 92.2px (3072/8000 * 240) -> Y = 300 - 92.2 = 207.8 -->
-    <rect x="360" y="207.8" width="44" height="92.2" fill="#2563eb" rx="3" />
-    <text x="382" y="201" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">3,072b</text>
+    <!-- RSA-3072: Height 92.2px -> Y = 300 - 92.2 = 207.8 -->
+    <rect x="410" y="207.8" width="44" height="92.2" fill="#2563eb" rx="3" />
+    <text x="432" y="199" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">3,072b</text>
 
-    <!-- ECC-256: Height 7.7px (256/8000 * 240) -> Y = 300 - 7.7 = 292.3 -->
-    <rect x="412" y="292.3" width="44" height="7.7" fill="#0d9488" rx="2" />
-    <text x="434" y="287" font-size="10" font-weight="700" fill="#0d9488" text-anchor="middle">256b</text>
+    <!-- ECC-256: Height 7.7px -> Y = 300 - 7.7 = 292.3 -->
+    <rect x="462" y="292.3" width="44" height="7.7" fill="#0d9488" rx="2" />
+    <text x="484" y="285" font-size="10" font-weight="700" fill="#0d9488" text-anchor="middle">256b</text>
 
-    <text x="408" y="322" font-size="12" font-weight="700" fill="#1e293b" text-anchor="middle">128-bit Security</text>
-    <text x="408" y="336" font-size="10" fill="#64748b" text-anchor="middle">(Current Standard)</text>
+    <text x="458" y="322" font-size="12" font-weight="700" fill="#1e293b" text-anchor="middle">128-bit Security</text>
+    <text x="458" y="336" font-size="10" fill="#64748b" text-anchor="middle">(Current Standard)</text>
   </g>
 
   <!-- Group 3: 192-bit security -->
   <g>
-    <!-- RSA-7680: Height 230.4px (7680/8000 * 240) -> Y = 300 - 230.4 = 69.6 -->
-    <rect x="550" y="69.6" width="44" height="230.4" fill="#2563eb" rx="3" />
-    <text x="572" y="63" font-size="10" font-weight="700" fill="#2563eb" text-anchor="middle">7,680b</text>
+    <!-- RSA-7680: Height 230.4px -> Y = 300 - 230.4 = 69.6 -->
+    <rect x="610" y="69.6" width="44" height="230.4" fill="#2563eb" rx="3" />
+    <text x="632" y="61" font-size="10" font-weight="700" fill="#2563eb" text-anchor="middle">7,680b</text>
 
-    <!-- ECC-384: Height 11.5px (384/8000 * 240) -> Y = 300 - 11.5 = 288.5 -->
-    <rect x="602" y="288.5" width="44" height="11.5" fill="#0d9488" rx="2" />
-    <text x="624" y="283" font-size="10" font-weight="700" fill="#0d9488" text-anchor="middle">384b</text>
+    <!-- ECC-384: Height 11.5px -> Y = 300 - 11.5 = 288.5 -->
+    <rect x="662" y="288.5" width="44" height="11.5" fill="#0d9488" rx="2" />
+    <text x="684" y="281" font-size="10" font-weight="700" fill="#0d9488" text-anchor="middle">384b</text>
 
-    <text x="598" y="322" font-size="12" font-weight="700" fill="#1e293b" text-anchor="middle">192-bit Security</text>
-    <text x="598" y="336" font-size="10" fill="#64748b" text-anchor="middle">(High Security)</text>
+    <text x="658" y="322" font-size="12" font-weight="700" fill="#1e293b" text-anchor="middle">192-bit Security</text>
+    <text x="658" y="336" font-size="10" fill="#64748b" text-anchor="middle">(High Security)</text>
   </g>
 
   <!-- Legend -->
-  <g transform="translate(260, 360)" font-size="11">
+  <g transform="translate(300, 360)" font-size="11">
     <rect x="0" y="0" width="14" height="10" fill="#2563eb" rx="2" />
     <text x="18" y="9" fill="#1e293b" font-weight="600">RSA Key Length (Bits)</text>
 
