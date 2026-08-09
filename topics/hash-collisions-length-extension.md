@@ -401,15 +401,24 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
   }
 
   function md5PaddingBytes(msgLenBytes) {
-    const bitLen = BigInt(msgLenBytes) * 8n;
+    const bitLen = msgLenBytes * 8;
     const padLen = (56 - (msgLenBytes + 1) % 64 + 64) % 64;
     const pad = new Uint8Array(1 + padLen + 8);
     pad[0] = 0x80;
-    let bl = bitLen;
-    for (let i = 0; i < 8; i++) {
-      pad[1 + padLen + i] = Number(bl & 0xffn);
-      bl >>= 8n;
-    }
+    
+    const lo = bitLen & 0xffffffff;
+    const hi = Math.floor(bitLen / 0x100000000) & 0xffffffff;
+    
+    pad[1 + padLen + 0] = lo & 0xff;
+    pad[1 + padLen + 1] = (lo >>> 8) & 0xff;
+    pad[1 + padLen + 2] = (lo >>> 16) & 0xff;
+    pad[1 + padLen + 3] = (lo >>> 24) & 0xff;
+    
+    pad[1 + padLen + 4] = hi & 0xff;
+    pad[1 + padLen + 5] = (hi >>> 8) & 0xff;
+    pad[1 + padLen + 6] = (hi >>> 16) & 0xff;
+    pad[1 + padLen + 7] = (hi >>> 24) & 0xff;
+    
     return pad;
   }
 
@@ -474,12 +483,51 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
     return stateToHex(state);
   }
 
+  function stringToUtf8Bytes(str) {
+    const bytes = [];
+    for (let i = 0; i < str.length; i++) {
+      const code = str.charCodeAt(i);
+      if (code < 0x80) {
+        bytes.push(code);
+      } else if (code < 0x800) {
+        bytes.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f));
+      } else if (code < 0xd800 || code >= 0xe000) {
+        bytes.push(0xe0 | (code >> 12), 0x80 | ((code >> 6) & 0x3f), 0x80 | (code & 0x3f));
+      } else {
+        i++;
+        const surrogate = 0x10000 + (((code & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
+        bytes.push(
+          0xf0 | (surrogate >> 18),
+          0x80 | ((surrogate >> 12) & 0x3f),
+          0x80 | ((surrogate >> 6) & 0x3f),
+          0x80 | (surrogate & 0x3f)
+        );
+      }
+    }
+    return new Uint8Array(bytes);
+  }
+
+  function escapeHtml(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function bytesToEscapedString(bytes) {
     let str = '';
     for (let i = 0; i < bytes.length; i++) {
       const b = bytes[i];
-      if (b >= 32 && b <= 126 && b !== 92) {
+      if (b >= 32 && b <= 126 && b !== 92 && b !== 38 && b !== 60 && b !== 62) {
         str += String.fromCharCode(b);
+      } else if (b === 38) {
+        str += '&amp;';
+      } else if (b === 60) {
+        str += '&lt;';
+      } else if (b === 62) {
+        str += '&gt;';
       } else {
         str += '\\x' + b.toString(16).padStart(2, '0');
       }
@@ -489,15 +537,14 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
 
   function runLengthExtensionAttack() {
     try {
-      const secretStr = inputSecret.value || 's3cr3tkey';
-      const origMsgStr = inputOrigMsg.value || 'user=alice&admin=false';
-      const injectedStr = inputInjected.value || '&admin=true';
-      const secretLenGuess = parseInt(inputGuessedLen.value, 10) || 9;
+      const secretStr = inputSecret.value || '';
+      const origMsgStr = inputOrigMsg.value || '';
+      const injectedStr = inputInjected.value || '';
+      const secretLenGuess = parseInt(inputGuessedLen.value, 10) || 0;
 
-      const enc = new TextEncoder();
-      const secretBytes = enc.encode(secretStr);
-      const origMsgBytes = enc.encode(origMsgStr);
-      const injectedBytes = enc.encode(injectedStr);
+      const secretBytes = stringToUtf8Bytes(secretStr);
+      const origMsgBytes = stringToUtf8Bytes(origMsgStr);
+      const injectedBytes = stringToUtf8Bytes(injectedStr);
 
       // 1. Server computes orig_mac = MD5(Secret || OriginalMessage)
       const secretAndOrig = new Uint8Array(secretBytes.length + origMsgBytes.length);
@@ -550,7 +597,7 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
         <div class="block-meta">
           <span class="block-num">Forged Message Body (Sent to Server)</span>
         </div>
-        <div class="block-plain-preview"><code>${bytesToEscapedString(forgedMsgBody)}</code></div>
+        <div class="block-plain-preview" style="word-break: break-all; white-space: pre-wrap;"><code>${bytesToEscapedString(forgedMsgBody)}</code></div>
       </div>
       <div class="ecb-block-item">
         <div class="block-meta">
@@ -572,7 +619,7 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
           <div class="security-layer-label">Length-Extension Forgery Successful</div>
           <div>
             <strong>&#128680; FORGERY ACCEPTED BY SERVER!</strong>
-            <p style="margin-bottom:0;">The server computed <code>${serverMac}</code> which <strong>exactly matches</strong> the attacker's forged MAC (<code>${forgedMac}</code>). The attacker injected <code>${injectedStr}</code> without ever learning the Secret Key (K)!</p>
+            <p style="margin-bottom:0;">The server computed <code>${serverMac}</code> which <strong>exactly matches</strong> the attacker's forged MAC (<code>${forgedMac}</code>). The attacker injected <code>${escapeHtml(injectedStr)}</code> without ever learning the Secret Key (K)!</p>
           </div>
         </div>`;
       } else {
@@ -598,67 +645,8 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
 </script>
 {% endraw %}
 
-### Reference Python Implementation
 
-```python
-# length_extension_attack.py: Forging a valid MAC without the secret key
-import struct, hashlib, math
 
-# MD5 Compression Constants & Utilities
-S = [7,12,17,22]*4 + [5,9,14,20]*4 + [4,11,16,23]*4 + [6,10,15,21]*4
-K = [int(abs(math.sin(i+1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
-
-def left_rotate(x, c): return ((x << c) | (x >> (32 - c))) & 0xFFFFFFFF
-
-def md5_padding(msg_len_bytes):
-    bit_len = (msg_len_bytes * 8) & 0xFFFFFFFFFFFFFFFF
-    pad_len = (56 - (msg_len_bytes + 1) % 64) % 64
-    return b'\x80' + b'\x00' * pad_len + struct.pack('<Q', bit_len)
-
-def md5_compress(chunk, h):
-    a0, b0, c0, d0 = h
-    M = list(struct.unpack('<16I', chunk))
-    A, B, C, D = a0, b0, c0, d0
-    for i in range(64):
-        if i < 16:   F, g = (B & C) | (~B & D), i
-        elif i < 32: F, g = (D & B) | (~D & C), (5*i + 1) % 16
-        elif i < 48: F, g = B ^ C ^ D, (3*i + 5) % 16
-        else:        F, g = C ^ (B | (~D & 0xFFFFFFFF)), (7*i) % 16
-        F = (F + A + K[i] + M[g]) & 0xFFFFFFFF
-        A, D, C, B = D, C, B, (B + left_rotate(F, S[i])) & 0xFFFFFFFF
-    return [(a0+A)&0xFFFFFFFF, (b0+B)&0xFFFFFFFF, (c0+C)&0xFFFFFFFF, (d0+D)&0xFFFFFFFF]
-
-def state_to_hex(h): return b''.join(struct.pack('<I', x) for x in h).hex()
-def hex_to_state(hx): return list(struct.unpack('<4I', bytes.fromhex(hx)))
-
-# Server Setup: Naive MAC = MD5(Secret + Message)
-SECRET = b"s3cr3tkey"  # 9 bytes (Unknown to attacker)
-orig_message = b"user=alice&admin=false"
-orig_mac = hashlib.md5(SECRET + orig_message).hexdigest()
-
-# Attacker Execution: Reconstruct internal state and append "&admin=true"
-guessed_secret_len = 9
-injected_data = b"&admin=true"
-state = hex_to_state(orig_mac)
-
-glue_padding = md5_padding(guessed_secret_len + len(orig_message))
-forged_message = orig_message + glue_padding + injected_data
-
-total_len_so_far = guessed_secret_len + len(orig_message) + len(glue_padding)
-tail = injected_data + md5_padding(total_len_so_far + len(injected_data))
-
-h = state
-for i in range(0, len(tail), 64):
-    h = md5_compress(tail[i:i+64], h)
-forged_mac = state_to_hex(h)
-
-# Server Validation Test
-server_check = hashlib.md5(SECRET + forged_message).hexdigest()
-print("Forged MAC matches server verification:", server_check == forged_mac)
-# Output: Forged MAC matches server verification: True
-```
-
-The script proves that an adversary can alter `admin=false` to `admin=true` and compute a valid digest accepted by the server without knowing the secret key.
 
 ### Defensive Countermeasure: Use Standard HMAC or Sponge Hashes
 
