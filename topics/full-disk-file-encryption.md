@@ -74,7 +74,7 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
 | Cloud Provider | Managed Service | Customer Key Control (CMEK) | HSM Backing Standard |
 |---|---|---|---|
 | **Amazon Web Services (AWS)** | AWS KMS / EBS Encryption | AWS KMS Customer Managed Keys (CMK) | FIPS 140-3 Level 3 HSM hardware module backing. |
-| **Google Cloud (GCP)** | Cloud KMS / Persistent Disk | Customer-Managed Encryption Keys (CMEK) | Cloud HSM with dual-region key replication. |
+| **Google Cloud (GCP)** | Cloud KMS / Persistent Disk | Customer-Managed Encryption Keys (CMEK) | Cloud HSM backing with configurable regional, dual-region, or multi-region key locations ([Google Cloud KMS Locations](https://docs.cloud.google.com/kms/docs/locations)). |
 | **Microsoft Azure** | Azure Key Vault / Disk Encryption | Customer-Managed Keys (CMK) | Managed HSM providing dedicated FIPS 140-3 Level 3 hardware. |
 
 ## What I Need to Remember

@@ -344,9 +344,9 @@ Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** 
 
 | Pinning Strategy | Target Object Pinned | Maintenance & Operational Risk | Primary Use Case |
 |---|---|---|---|
-| **Leaf Certificate Pinning** | Hashes full leaf X.509 certificate | **CRITICAL RISK**: Leaf cert expiration or emergency ACME renewal breaks app connectivity unless app update is deployed. | High-security ephemeral IoT sessions. |
-| **Intermediate / Root CA Pinning** | Hashes public key of issuing CA | **MODERATE RISK**: Leaf certs can rotate freely, but issuing CA key rotation or intermediate retirement breaks client connections. | Enterprise mobile applications. |
-| **SPKI Public Key Pinning** | Hashes `SubjectPublicKeyInfo` (SPKI) bit string | **HIGH RISK**: Re-issuing leaf certs using the *same key pair* maintains pin validity, but key compromise or emergency key rotation without a valid backup pin breaks connectivity. | Native mobile app transport security. |
+| **Leaf Certificate Pinning** | Hashes full leaf X.509 certificate | **Highest rotation sensitivity**: Leaf cert expiration or emergency ACME renewal breaks app connectivity unless an app update is deployed. | High-security ephemeral IoT sessions. |
+| **Intermediate / Root CA Pinning** | Hashes public key of issuing CA | **Lower certificate-renewal sensitivity**: Leaf certs can rotate freely, but issuing CA key rotation or intermediate retirement breaks client connections. | Enterprise mobile applications. |
+| **SPKI Public Key Pinning** | Hashes `SubjectPublicKeyInfo` (SPKI) bit string | **Survives certificate renewal only while pinned key remains unchanged**: Re-issuing leaf certs using the same key pair maintains pin validity, but key compromise or key rotation without a valid backup pin breaks connectivity. | Native mobile app transport security. |
 
 ### Pinning Scope: Public CA vs. Private CA Deployment
 

@@ -13,7 +13,7 @@ last_verified: 2026-08-09
 
 ## Why Plain Cryptographic Hashes Fail for Passwords
 
-Fast general-purpose hash functions (SHA-256, MD5) are engineered for gigabytes-per-second throughput. A modern GPU cluster can compute over **100 billion SHA-256 hashes per second**, allowing offline brute-force recovery of weak passwords in minutes. Specialized password hashes (Argon2id, bcrypt) force memory accesses and CPU iterations to slow down execution to ~250ms per verification.
+Fast general-purpose hash functions (SHA-256, MD5) are engineered for gigabytes-per-second throughput. A modern GPU cluster can compute over **100 billion SHA-256 hashes per second**, allowing offline brute-force recovery of weak passwords in minutes. Specialized password hashes (Argon2id, bcrypt) force memory accesses and CPU iterations to slow down execution to an example deployment target of ~250ms per verification.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/password-hash-comparison.svg' | relative_url }}" alt="Execution throughput comparison across SHA-256, bcrypt, scrypt, and Argon2id.">
@@ -27,7 +27,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 ### NIST SP 800-63B Core Authentication Requirements
 
 1. **Length-Based Security**:
-   * Enforce a minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA; 16+ characters recommended for administrative or privileged accounts).
+   * Enforce a minimum length of at least **15 characters** for single-factor password authentication per **[NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)** (an 8-character minimum is permitted only when the password is used as one factor alongside an independent authenticator in MFA; 16+ characters recommended as an organizational best practice for administrative or privileged accounts).
    * Allow maximum lengths of at least **64 characters** to support easy-to-remember, high-entropy **passphrases** (e.g., `correct horse battery staple`).
 2. **Eliminate Arbitrary Complexity Rules**:
    * Deprecate rules requiring specific character mixes (uppercase, numbers, symbols) to improve user adoption and key diversity.
@@ -239,7 +239,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
   <div class="demo-header">
     <span class="demo-badge">Interactive Parameter Tuner</span>
     <h3>Argon2id Cost Estimator & Parameter Tuner</h3>
-    <p>Adjust memory, time, and thread parameters to generate and copy the optimal Node.js Argon2 config conforming to OWASP and NIST guidelines.</p>
+    <p>Adjust memory, time, and thread parameters to generate and copy the optimal Node.js Argon2 config conforming to OWASP and RFC 9106 guidelines.</p>
   </div>
 
   <div class="demo-body">
@@ -326,13 +326,13 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and **[NIST 
       bgColor = 'rgba(161, 76, 0, 0.08)';
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
-    } else if (threadsVal > 1 && memMiB >= 64 && timeVal >= 3) {
-      statusHtml = '&#9989; Meets RFC 9106 Recommended Multi-Threaded Profile (m&#8805;64 MiB, t&#8805;3, p&#8805;4)';
+    } else if (threadsVal === 4 && memMiB >= 64 && timeVal >= 3) {
+      statusHtml = '&#9989; Meets RFC 9106 Recommended Multi-Threaded Profile (m&#8805;64 MiB, t&#8805;3, p=4)';
       bgColor = 'rgba(15, 118, 110, 0.08)';
       textColor = 'var(--teal)';
       borderColor = 'var(--teal)';
     } else if (memMiB >= 19) {
-      statusHtml = '&#9888; Custom Parameter Configuration (Note: OWASP single-lane profiles specify p=1)';
+      statusHtml = '&#9888; Custom Parameter Configuration (Note: OWASP single-lane profiles specify p=1; RFC 9106 specifies p=4)';
       bgColor = 'rgba(161, 76, 0, 0.08)';
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';

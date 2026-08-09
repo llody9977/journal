@@ -78,7 +78,7 @@ SCTs can be delivered to the client browser via three distinct transport mechani
     <strong>Certificate Transparency Summary</strong>
     <ul>
       <li><strong>Detection, Not Prevention</strong>: CT does not stop a CA from misissuing a certificate — it makes misissuance publicly loggable and discoverable after the fact, so it enables accountability rather than blocking the act itself.</li>
-      <li><strong>Public Append-Only Logs</strong>: CAs must log pre-certificates to public Merkle tree logs before issuing certificates.</li>
+      <li><strong>Public Append-Only Logs</strong>: In the common embedded-SCT workflow, the CA submits a pre-certificate before final issuance; SCTs may also be delivered through supported TLS mechanisms.</li>
       <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling.</li>
       <li><strong>Browser Enforcement Policies</strong>: Chrome and Apple enforce distinct CT policies requiring specific SCT counts and log operator diversity rules based on certificate lifetime.</li>
     </ul>

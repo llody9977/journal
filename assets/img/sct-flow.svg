@@ -8,7 +8,7 @@
     <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Signed Certificate Timestamps (SCT) Workflow &amp; CT Log Auditing</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Submitting pre-certificates to independent CT logs, receiving SCTs, and verifying via browser CT policies</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Common Embedded-SCT Workflow (RFC 6962 / RFC 9162): submitting pre-certificates to CT logs and verifying via browser CT policies</text>
   
   <g>
     <!-- Top Row: 4 Sequential Workflow Steps (245px wide boxes, 40px gaps) -->
@@ -51,7 +51,7 @@
 
     <!-- Bottom Card: Delivery Methods & Protection -->
     <rect x="50" y="240" width="1100" height="170" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
-    <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SCT DELIVERY METHODS &amp; SECURITY GUARANTEE</text>
+    <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SCT DELIVERY METHODS &amp; BROWSER ENFORCEMENT</text>
     <text x="70" y="294" font-size="15" font-weight="800" fill="#0f172a">3 Approved SCT Delivery Methods in TLS Connections:</text>
     <text x="70" y="320" font-size="12.5" font-weight="600" fill="#0f172a">1. X.509 Extension (Most Common): CA bakes SCTs directly into certificate extensions during issuance.</text>
     <text x="70" y="342" font-size="12.5" font-weight="600" fill="#0f172a">2. TLS Extension (signed_certificate_timestamp): Transmitted in TLS handshake (TLS 1.3 Certificate extension / TLS 1.2 ServerHello).</text>
