@@ -213,30 +213,6 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 </script>
 {% endraw %}
 
-```javascript
-// Node.js Envelope Encryption Implementation
-const crypto = require('node:crypto');
-
-function encryptEnvelope(plaintextBuffer, kekBuffer) {
-  // 1. Generate a single-use 256-bit DEK and 96-bit GCM nonce
-  const dek = crypto.randomBytes(32);
-  const nonce = crypto.randomBytes(12);
-
-  // 2. Encrypt payload using AES-256-GCM
-  const cipher = crypto.createCipheriv('aes-256-gcm', dek, nonce);
-  const ciphertext = Buffer.concat([cipher.update(plaintextBuffer), cipher.final()]);
-  const authTag = cipher.getAuthTag();
-
-  // 3. Wrap DEK using AES Key Wrap (RFC 3394) under KMS KEK
-  const iv = Buffer.alloc(8, 0xa6); // Standard 64-bit IV for AES Key Wrap
-  const cipherWrap = crypto.createCipheriv('aes256-wrap', kekBuffer, iv);
-  const wrappedDek = Buffer.concat([cipherWrap.update(dek), cipherWrap.final()]);
-
-  // 4. Return envelope containing encrypted DEK, nonce, authTag, and ciphertext
-  return { wrappedDek, nonce, authTag, ciphertext };
-}
-```
-
 ---
 
 ## Customer Key Custody Models (CMEK vs BYOK vs HYOK)
@@ -416,27 +392,7 @@ function encryptEnvelope(plaintextBuffer, kekBuffer) {
 </script>
 {% endraw %}
 
-```bash
-# 1. Initialize a new SoftHSM2 slot
-softhsm2-util --init-token --free --label "production-hsm" --pin 1234 --so-pin 5678
-
-# 2. Generate a non-extractable EC P-256 key pair inside the token
-pkcs11-tool --module /opt/homebrew/lib/softhsm/libsofthsm2.so --slot-index 0 \
-    --login --pin 1234 --keypairgen --key-type EC:prime256v1 --id 01 --label "signing-key"
-
-# 3. Inspect key attributes (Confirm sensitive & non-extractable)
-pkcs11-tool --module /opt/homebrew/lib/softhsm/libsofthsm2.so --slot-index 0 \
-    --login --pin 1234 --list-objects --id 01
-# Output snippet:
-# Private Key Object; EC
-#   Usage:      decrypt, sign
-#   Access:     sensitive, always sensitive, never extractable
-
-# 4. Sign a payload inside the HSM boundary without extracting the key
-pkcs11-tool --module /opt/homebrew/lib/softhsm/libsofthsm2.so --slot-index 0 \
-    --login --pin 1234 --sign --mechanism ECDSA-SHA256 --id 01 \
-    --input-file payload.bin --output-file payload.sig
-```
+---
 
 ## What I Need to Remember
 
