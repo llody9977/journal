@@ -1575,7 +1575,7 @@ rows({
     <!-- PANEL 1: TRUE DEFENSE IN DEPTH (y=110, h=185) -->
     <rect x="40" y="110" width="1120" height="185" rx="14" fill="${colors.greenFill}" stroke="${colors.green}" stroke-width="2.5" />
     <text x="60" y="135" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.green}">TRUE DEFENSE IN DEPTH: DIVERSE COMPLEMENTARY SAFEGUARDS</text>
-    <text x="60" y="155" font-size="13" font-weight="800" fill="${colors.ink}">Independent Failure Modes Across 4 Distinct Boundaries (NIST SP 800-160)</text>
+    <text x="60" y="155" font-size="13" font-weight="800" fill="${colors.ink}">Largely Independent Failure Modes Across Distinct Boundaries</text>
 
     <!-- Box 1: Network Gate (x=60, y=172, w=245, h=105) -->
     <rect x="60" y="172" width="245" height="105" rx="10" fill="#ffffff" stroke="${colors.green}" stroke-width="1.5" />
@@ -1601,8 +1601,8 @@ rows({
 
     <!-- Box 3: Application Gate (x=600, y=172, w=245, h=105) -->
     <rect x="600" y="172" width="245" height="105" rx="10" fill="#ffffff" stroke="${colors.green}" stroke-width="1.5" />
-    <text x="615" y="195" font-size="10.5" font-weight="900" fill="${colors.green}">3. CODE GATE (SAST / OPA)</text>
-    <text x="615" y="213" font-size="12" font-weight="800" fill="${colors.ink}">Input Sanitization</text>
+    <text x="615" y="195" font-size="10.5" font-weight="900" fill="${colors.green}">3. CODE GATE (RUNTIME CHECKS)</text>
+    <text x="615" y="213" font-size="12" font-weight="800" fill="${colors.ink}">Query Safety &amp; Authorization</text>
     <line x1="615" y1="222" x2="830" y2="222" stroke="${colors.green}" stroke-opacity="0.3" stroke-width="1" />
     <text x="615" y="240" font-size="10" font-weight="500" fill="${colors.muted}">• Parameterized SQL Queries</text>
     <text x="615" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Rego Policy Enforcement</text>
@@ -1621,7 +1621,7 @@ rows({
     <!-- PANEL 2: INGESTION POINT LAYERING VS DUPLICATE ANTI-PATTERN (y=310, h=175) -->
     <rect x="40" y="310" width="1120" height="175" rx="14" fill="${colors.panel}" stroke="${colors.line}" stroke-width="2.5" />
     <text x="60" y="335" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.ink}">INGESTION POINT LAYERING VS SINGLE-BOUNDARY DUPLICATE ANTI-PATTERN</text>
-    <text x="60" y="355" font-size="12.5" font-weight="600" fill="${colors.muted}">Distinguishing Multi-Boundary Ingress Safeguards from Redundant Single-Point Inspection Stacks (NIST SP 800-160)</text>
+    <text x="60" y="355" font-size="12.5" font-weight="600" fill="${colors.muted}">Journal working model, informed by NIST SP 800-160 resilience principles</text>
 
     <!-- Box 1: Single Boundary Duplicate Anti-Pattern (x=60, y=372, w=520, h=95) -->
     <rect x="60" y="372" width="520" height="95" rx="10" fill="${colors.redFill}" stroke="${colors.red}" stroke-width="1.5" />
@@ -1629,7 +1629,7 @@ rows({
     <text x="75" y="413" font-size="12" font-weight="800" fill="${colors.ink}">Dual Stacked WAF Regex Engines at Same API Gateway Ingress</text>
     <line x1="75" y1="422" x2="565" y2="422" stroke="${colors.red}" stroke-opacity="0.3" stroke-width="1" />
     <text x="75" y="440" font-size="10" font-weight="500" fill="${colors.muted}">• Stacked Vendor A + Vendor B WAFs on same proxy checking identical HTTP headers</text>
-    <text x="75" y="454" font-size="10" font-weight="600" fill="${colors.red}">• Failure Mode: HTTP request smuggling evades BOTH WAFs simultaneously</text>
+    <text x="75" y="454" font-size="10" font-weight="600" fill="${colors.red}">• Failure Mode: shared parsing behavior can create correlated bypass risk</text>
 
     <!-- Box 2: Valid Ingestion Point Layering (x=600, y=372, w=540, h=95) -->
     <rect x="600" y="372" width="540" height="95" rx="10" fill="${colors.greenFill}" stroke="${colors.green}" stroke-width="1.5" />
