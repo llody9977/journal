@@ -259,8 +259,8 @@ Once a generated ciphertext block matches a block in the stolen target file, the
       <label>1. Stolen Target Ciphertext (Intercepted Server Payload):</label>
       <div style="background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
         <div><strong>Target Block 1:</strong> <code id="target-b1-hex">f443167bd98b197e88e7a6fdc7c01f50</code></div>
-        <div><strong>Target Block 2:</strong> <code id="target-b2-hex">379e56312a02b1f3c3a9d5e7a9b0c1d2</code></div>
-        <div><strong>Target Block 3:</strong> <code id="target-b3-hex">8e9102ab1234567890abcdef12345678</code></div>
+        <div><strong>Target Block 2:</strong> <code id="target-b2-hex">de28f66b406a9553e16e0227efff68a1</code></div>
+        <div><strong>Target Block 3:</strong> <code id="target-b3-hex">1ccee8e0f42d116dc93b77651c4aed13</code></div>
       </div>
     </div>
 
@@ -313,8 +313,8 @@ Once a generated ciphertext block matches a block in the stolen target file, the
 <script>
 (function() {
   const targetB1Hex = "f443167bd98b197e88e7a6fdc7c01f50"; // "ATTACKATDAWN1234"
-  const targetB2Hex = "379e56312a02b1f3c3a9d5e7a9b0c1d2"; // "ROLE=ADMIN______"
-  const targetB3Hex = "8e9102ab1234567890abcdef12345678"; // "STATUS=ACTIVE___"
+  const targetB2Hex = "de28f66b406a9553e16e0227efff68a1"; // "ROLE=ADMIN______"
+  const targetB3Hex = "1ccee8e0f42d116dc93b77651c4aed13"; // "STATUS=ACTIVE___"
   
   const targetBlocks = [
     { num: 1, hex: targetB1Hex, expected: "ATTACKATDAWN1234" },
