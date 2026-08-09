@@ -814,8 +814,10 @@ hr {
 }
 
 .image-pair img {
-  max-width: 100%;
+  max-width: 200px;
   height: auto;
+  margin: 0 auto;
+  display: block;
   border-radius: 8px;
   border: 1px solid var(--rule);
   background: var(--paper);
