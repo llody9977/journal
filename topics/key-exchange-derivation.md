@@ -208,14 +208,14 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
     state.sessions = [];
 
     if (activeMode === 'rsa') {
-      tabRSA.style.background = 'var(--primary)';
+      tabRSA.style.background = 'var(--accent)';
       tabRSA.style.color = '#ffffff';
       tabRSA.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
       tabECDH.style.background = 'transparent';
       tabECDH.style.color = 'var(--text-muted, #888)';
       tabECDH.style.boxShadow = 'none';
     } else {
-      tabECDH.style.background = 'var(--primary)';
+      tabECDH.style.background = 'var(--accent)';
       tabECDH.style.color = '#ffffff';
       tabECDH.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
       tabRSA.style.background = 'transparent';
