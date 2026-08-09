@@ -76,3 +76,23 @@ echo -n "The quick brown fox" | shasum -a 256
 echo -n "The quick brown fox" | openssl dgst -sha256 -hmac "secret-key-32-bytes"
 # Output: e8076ef407b3f9ca99b234733a2114bd63bd9e8bbd9bf842ef69ed64fc339fa8
 ```
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Hash &amp; MAC Summary</strong>
+    <ul>
+      <li><strong>Three Security Properties</strong>: Preimage resistance (one-way), Second-preimage resistance (target substitution proof), Collision resistance (any match proof).</li>
+      <li><strong>HMAC Construction</strong>: HMAC uses double-nested key hashing (<code>ipad</code> / <code>opad</code>) to prevent Merkle–Damgård length-extension attacks.</li>
+      <li><strong>Modern Sponge MACs</strong>: KMAC (SP 800-185) and BLAKE3 are inherently immune to length extension by design.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST FIPS 180-4**: *Secure Hash Standard (SHS)* — [NIST CSRC FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)
+- **NIST FIPS 198-1**: *The Keyed-Hash Message Authentication Code (HMAC)* — [NIST CSRC FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)
+- **NIST SP 800-185**: *SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash, and ParallelHash* — [NIST CSRC SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)

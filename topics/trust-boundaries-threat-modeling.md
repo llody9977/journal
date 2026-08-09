@@ -76,3 +76,22 @@ When evaluating a threat model for a new architecture or system refactor, evalua
 | **STRIDE Coverage** | Has every DFD element type been evaluated against its applicable STRIDE threat categories? | Documented Threat Register listing component, threat vector, risk score &amp; owner. |
 | **Third-Party Risk** | Are external cloud APIs, IdP dependencies, and open-source packages integrated into the threat model? | Software Bill of Materials (SBOM), dependency vulnerability reports &amp; SLSA provenance. |
 | **Trust Boundary Rigor** | Are explicit input verification and authentication controls deployed at every trust boundary crossing? | API Gateway policy rules, mTLS sidecar configs &amp; input sanitization test suites. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Threat Modeling Summary</strong>
+    <ul>
+      <li><strong>STRIDE Model</strong>: Categorizes threats into Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, and Elevation of Privilege.</li>
+      <li><strong>NIST CSF 2.0 Functions</strong>: Enforces six core functions: <em>GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER</em>.</li>
+      <li><strong>Trust Boundaries</strong>: Identify every interface where data transitions between different privilege levels or untrusted networks.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST Cybersecurity Framework 2.0**: *NIST CSF 2.0 Governance and Core Functions* — [NIST CSF 2.0 Final](https://www.nist.gov/cyberframework)
+- **OWASP Threat Modeling**: *Threat Modeling Process & STRIDE Framework* — [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling)

@@ -147,3 +147,22 @@ recovered_p2 = bytes(a ^ b for a, b in zip(xor_cipher[:len(guessed_p1)], guessed
 print("Recovered P2 bytes:", recovered_p2)
 # Output: Recovered P2 bytes: b'Meet me at 9pm s'
 ```
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Symmetric Mode Vulnerabilities Summary</strong>
+    <ul>
+      <li><strong>ECB Block Leakage</strong>: Identical plaintext blocks produce identical ciphertext blocks. Never use ECB for multi-block payloads.</li>
+      <li><strong>CBC Bit-Flipping</strong>: Modifying ciphertext block <em>C₁</em> flips corresponding bits in decrypted plaintext block <em>P₂</em>. Always enforce AEAD or HMAC.</li>
+      <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em>, allowing adversaries to recover cleartext payloads.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-38A**: *Recommendation for Block Cipher Modes of Operation* — [NIST CSRC SP 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
+- **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [IETF RFC 8452](https://www.rfc-editor.org/rfc/rfc8452)

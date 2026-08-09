@@ -137,3 +137,22 @@ print("State Reconstruction    :", "SUCCESS (100% Match!)" if target_secret_toke
 - **Enforce CSPRNG for Key Material**: Generate all keys, nonces, and salts using OS CSPRNG APIs. Never use PRNG functions.
 - **Ensure Cryptographic Agility**: Design software protocols to support key and algorithm rotation as cryptanalytic capabilities advance.
 - **Account for Long-Term Data Lifetimes**: Data encrypted today must remain secure for the duration of its confidentiality lifetime, incorporating post-quantum migration planning (**[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**, **[NIST FIPS 204 ML-DSA](https://csrc.nist.gov/pubs/fips/204/final)** per **[NIST SP 800-175B Rev. 1](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final)**).
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Cryptographic Foundations Summary</strong>
+    <ul>
+      <li><strong>CSPRNG Requirement</strong>: Cryptographic keys, nonces, and tokens must use OS CSPRNG APIs (<code>secrets.token_bytes()</code>, <code>crypto.randomBytes()</code>). Never use non-cryptographic PRNGs (<code>Math.random()</code>).</li>
+      <li><strong>Enforce AEAD</strong>: Always use Authenticated Encryption with Associated Data (AES-GCM, ChaCha20-Poly1305) to prevent padding oracle attacks.</li>
+      <li><strong>Protocol Composition</strong>: Production protocols combine asymmetric signatures (authentication), ephemeral ECDH (key agreement), and symmetric AEAD (bulk data).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-90A Rev. 1**: *Recommendation for Random Number Generation Using Deterministic Random Bit Generators* — [NIST CSRC SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)
+- **RFC 8446**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)

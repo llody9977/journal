@@ -85,3 +85,22 @@ The **[SLSA Framework](https://slsa.dev/spec/v1.0/levels)** defines four build i
 - **Build Level 1**: Automated build script generates provenance data detailing build sources.
 - **Build Level 2**: Build runs on an isolated, hosted platform generating cryptographically signed provenance.
 - **Build Level 3**: Build platform enforces hermetic build isolation and protects signing keys against tampering.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Security Maturity Summary</strong>
+    <ul>
+      <li><strong>OWASP SAMM 2.0</strong>: Evaluates software security across Governance, Design, Implementation, Verification, and Operations (Levels 1–3).</li>
+      <li><strong>BSIMM Framework</strong>: Descriptive model benchmarking software security practices against real-world industry observations.</li>
+      <li><strong>CMMI Levels</strong>: Level 1 (Initial/Ad-hoc) to Level 5 (Optimizing/Continuous Improvement).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **OWASP SAMM v2.0**: *Software Assurance Maturity Model* — [OWASP SAMM](https://owaspsamm.org/)
+- **BSIMM14**: *Building Security In Maturity Model* — [BSIMM Official](https://www.bsimm.com/)

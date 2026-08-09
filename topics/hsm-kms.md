@@ -113,3 +113,22 @@ pkcs11-tool --module /opt/homebrew/lib/softhsm/libsofthsm2.so --slot-index 0 \
     --login --pin 1234 --sign --mechanism ECDSA-SHA256 --id 01 \
     --input-file payload.bin --output-file payload.sig
 ```
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>HSM &amp; KMS Summary</strong>
+    <ul>
+      <li><strong>FIPS 140-3 Levels</strong>: Level 1 (software), Level 2 (tamper-evident), Level 3 (tamper-resistant zeroization), Level 4 (environmental protection).</li>
+      <li><strong>Non-Extractable Keys</strong>: PKCS#11 attributes (<code>CKA_SENSITIVE=TRUE</code>, <code>CKA_EXTRACTABLE=FALSE</code>) guarantee key bytes never leave HSM RAM.</li>
+      <li><strong>Envelope Encryption</strong>: KMS wraps small DEK (AES Key Wrap RFC 3394); application encrypts bulk data locally with DEK.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST FIPS 140-3**: *Security Requirements for Cryptographic Modules* — [NIST CSRC FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)
+- **RFC 3394**: *Advanced Encryption Standard (AES) Key Wrap Algorithm* — [IETF RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)

@@ -63,3 +63,22 @@ In WebAuthn:
 2. The browser packages `https://examp1e.com` into `clientDataJSON`.
 3. The signature is computed over that exact origin.
 4. When the attacker forwards the signature to `example.com`, the server checks `clientDataJSON.origin`, detects the mismatch (`examp1e.com` != `example.com`), and rejects the authentication instantly.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>WebAuthn &amp; Passkeys Summary</strong>
+    <ul>
+      <li><strong>Phishing-Resistant FIDO2</strong>: WebAuthn binds public keys directly to origin domain names (<code>origin</code> field), completely immune to credential harvesting sites.</li>
+      <li><strong>Hardware Signature Verification</strong>: Authenticator signs server <code>challenge</code> using device private key; server verifies signature with stored public key.</li>
+      <li><strong>Passkeys (Synced vs. Hardware)</strong>: Synced passkeys (iCloud Keychain, 1Password) provide seamless UX; Hardware keys (YubiKey) provide non-extractable key custody.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **W3C WebAuthn Level 3**: *Web Authentication: An API for accessing Public Key Credentials* — [W3C WebAuthn Spec](https://www.w3.org/TR/webauthn-3/)
+- **FIDO Alliance Passkeys**: *Passkeys Standard & Specifications* — [FIDO Alliance](https://fidoalliance.org/passkeys/)

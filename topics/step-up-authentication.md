@@ -52,3 +52,22 @@ When a user attempts a high-risk action with a low-assurance session token, the 
 1. **API Interception**: The Resource Server determines the current token's `acr` (Authentication Context Class Reference) or age is insufficient for the requested action.
 2. **HTTP 401 Challenge**: Returns `error="insufficient_user_authentication"` specifying required `acr_values` and `max_age`.
 3. **Targeted Re-authentication**: The client redirects the user to the Authorization Server to complete targeted AAL3 step-up verification without terminating the base user session.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Step-Up Authentication Summary</strong>
+    <ul>
+      <li><strong>Contextual Re-Authentication</strong>: Challenge users for additional MFA factors when accessing high-risk actions (wire transfers, password reset).</li>
+      <li><strong>OIDC <code>acr_values</code> / <code>max_age</code></strong>: Standardized parameters requesting higher Authentication Context Class Reference levels.</li>
+      <li><strong>FIDO2 / WebAuthn Priority</strong>: Prefer hardware security keys (YubiKey) for step-up auth to defeat adversary-in-the-middle phishing attacks.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **OpenID Connect Core 1.0**: *Authentication Context Class Reference (acr_values)* — [OpenID Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+- **NIST SP 800-63B**: *Authenticator Assurance Levels (AAL1, AAL2, AAL3)* — [NIST CSRC SP 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html)

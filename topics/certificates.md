@@ -198,3 +198,23 @@ While pinning protects network transport against rogue CAs, it introduces signif
     </dict>
 </dict>
 ```
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Certificates &amp; PKI Summary</strong>
+    <ul>
+      <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
+      <li><strong>Automated ACME &amp; ARI</strong>: Cert lifespans are shrinking to 47–90 days; automated renewal via ACME (RFC 8555) and ARI is mandatory.</li>
+      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning protects mobile native apps against rogue CAs, but introduces self-inflicted DoS risks if backup pins are omitted. HPKP is deprecated in web browsers.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 5280**: *Internet X.509 Public Key Infrastructure Certificate and CRL Profile* — [IETF RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)
+- **RFC 8555**: *Automatic Certificate Management Environment (ACME)* — [IETF RFC 8555](https://www.rfc-editor.org/rfc/rfc8555)
+- **RFC 7469**: *Public Key Pinning Extension for HTTP (Deprecation Notice)* — [IETF RFC 7469](https://www.rfc-editor.org/rfc/rfc7469)

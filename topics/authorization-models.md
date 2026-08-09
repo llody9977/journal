@@ -64,3 +64,22 @@ When designing access control for a system or service:
 2. **ABAC**: Layer when access depends on dynamic context (time, location, device health, risk score).
 3. **ReBAC**: Choose when building multi-tenant SaaS, document sharing, or nested team ownership structures.
 4. **Zero Trust Integration**: Enforce authorization decisions at the resource gateway on every request.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Authorization Models Summary</strong>
+    <ul>
+      <li><strong>RBAC vs. ABAC vs. ReBAC</strong>: RBAC grants access based on static roles; ABAC evaluates dynamic attributes (time, IP, user location); ReBAC models graph relationship edges (Google Zanzibar).</li>
+      <li><strong>Centralized Authorization Engines</strong>: Decouple authorization logic from application code using Open Policy Agent (OPA) or Cedar.</li>
+      <li><strong>Default Deny</strong>: Always enforce explicit allow policies; unhandled permission queries must fail closed to deny.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-162**: *Guide to Attribute Based Access Control (ABAC) Definition and Consideration* — [NIST CSRC SP 800-162](https://csrc.nist.gov/pubs/sp/800/162/final)
+- **Google Zanzibar Paper**: *Zanzibar: Google’s Consistent, Global Authorization System* — [Google Research Zanzibar](https://research.google/pubs/pub48190/)

@@ -47,3 +47,23 @@ Specified in **[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)** and **[RFC 8
 ## Hardware Key Custody: HSMs & Secure Enclaves
 
 Non-repudiation requires guaranteeing that private keys cannot be exported or cloned. Production architectures store signing keys inside **Hardware Security Modules (HSMs)**, **AWS KMS**, or **TPM 2.0 / Secure Enclaves**. Applications request cryptographic sign operations over secure APIs without ever exposing private key bytes in application memory.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Digital Signatures Summary</strong>
+    <ul>
+      <li><strong>Signature Pipeline</strong>: Signatures sign a cryptographic hash digest (<code>H(M)</code>) using <code>K<sub>priv</sub></code>; verifiers check the signature tag against <code>K<sub>pub</sub></code>.</li>
+      <li><strong>ECDSA Nonce Hazard</strong>: Reusing a random nonce <code>k</code> across two ECDSA signatures leaks the private key. Use RFC 6979 deterministic nonces or Ed25519.</li>
+      <li><strong>Post-Quantum Signatures</strong>: FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) are finalized post-quantum signature standards.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST FIPS 186-5**: *Digital Signature Standard (DSS)* — [NIST CSRC FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)
+- **RFC 8032**: *Edwards-Curve Digital Signature Algorithm (EdDSA / Ed25519)* — [IETF RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)
+- **RFC 6979**: *Deterministic Usage of the Digital Signature Algorithm (DSA) and ECDSA* — [IETF RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)

@@ -46,3 +46,22 @@ Modern web browsers (Google Chrome and Apple Safari) refuse to establish trusted
 |---|---|---|
 | **Under 180 Days** | **Minimum 2 SCTs** | Must include SCTs from at least 2 distinct, independent CT log operators (*e.g., Google + Cloudflare*). |
 | **Over 180 Days** | **Minimum 3 SCTs** | Must include SCTs from at least 2 distinct log operators to hedge against operator outage or compromise. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Certificate Transparency Summary</strong>
+    <ul>
+      <li><strong>Public Append-Only Logs</strong>: CAs must log pre-certificates to public Merkle tree logs before issuing certificates.</li>
+      <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling.</li>
+      <li><strong>Browser Enforcement</strong>: Chrome and Safari reject TLS connections unless at least 2 independent SCTs from diverse log operators are presented.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 6962**: *Certificate Transparency* — [IETF RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)
+- **RFC 9162**: *Certificate Transparency Version 2.0* — [IETF RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)

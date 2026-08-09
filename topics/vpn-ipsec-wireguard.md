@@ -53,3 +53,22 @@ ssh -J admin@bastion.example.com admin@10.0.2.45
 1. **WireGuard**: Primary choice for site-to-site tunnels and modern VPN infrastructure (minimal attack surface, high performance).
 2. **IPsec (IKEv2)**: Selected when client devices require native OS VPN integration without installing third-party agents.
 3. **Short-Lived SSH Certificates + ProxyJump**: Standard for interactive engineer access to private VPC resources.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>VPN, IPsec &amp; WireGuard Summary</strong>
+    <ul>
+      <li><strong>WireGuard Architecture</strong>: Modern, lightweight VPN protocol using Noise protocol framework, Curve25519, ChaCha20-Poly1305, and BLAKE2s (~4,000 LOC).</li>
+      <li><strong>IPsec IKEv2</strong>: Enterprise standard for site-to-site tunnels; encrypts IP packets using ESP (Encapsulating Security Payload) mode.</li>
+      <li><strong>Zero Trust Network Access (ZTNA)</strong>: Replaces perimeter VPN access with identity-aware application proxies to prevent lateral network movement.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **WireGuard Whitepaper**: *WireGuard: Next Generation Kernel Network Tunnel* — [WireGuard Official Paper](https://www.wireguard.com/papers/wireguard.pdf)
+- **RFC 7296**: *Internet Key Exchange Protocol Version 2 (IKEv2)* — [IETF RFC 7296](https://www.rfc-editor.org/rfc/rfc7296)

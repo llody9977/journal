@@ -52,3 +52,22 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
 
 1. **zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge)**: Enables a prover to demonstrate to a verifier that a computational statement is true (*e.g., "I know a private key that owns this UTXO and has sufficient balance"*) without revealing any private inputs.
 2. **zk-STARKs (Zero-Knowledge Scalable Transparent Arguments of Knowledge)**: Quantum-resistant zero-knowledge proofs relying purely on hash functions without requiring a trusted setup ceremony.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Blockchain Cryptography Summary</strong>
+    <ul>
+      <li><strong>Hash Chains &amp; Immutability</strong>: Embedding block header hashes <code>H(Block<sub>n-1</sub>)</code> creates an immutable sequential ledger.</li>
+      <li><strong>Merkle SPV Proofs</strong>: Light clients verify transaction inclusion in <code>O(log₂ N)</code> time without downloading full blocks.</li>
+      <li><strong>Signature Schemes</strong>: Bitcoin uses secp256k1 ECDSA and Schnorr (BIP 340); Ethereum consensus uses BLS12-381 signature aggregation.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **Bitcoin BIP 340**: *Schnorr Signatures for secp256k1* — [Bitcoin BIP 340 Specification](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
+- **BLS Signatures Draft**: *BLS Signatures IETF Draft Standard* — [draft-irtf-cfrg-bls-signature-05](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)

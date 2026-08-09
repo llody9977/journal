@@ -74,3 +74,22 @@ The **Model Context Protocol (MCP)** specification profiles **OAuth 2.1** for se
 - **RFC 9728 (Protected Resource Metadata)**: MCP servers return a `401 Unauthorized` with `WWW-Authenticate` pointing to protected resource metadata.
 - **RFC 8707 (Resource Indicators)**: Token requests MUST specify the `resource` parameter set to the target MCP server's canonical URI.
 - **Anti-Token Passthrough Rule**: MCP servers MUST validate the token audience (`aud`) and reject incoming tokens that were issued for third-party upstream APIs to prevent "confused deputy" attacks.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>HTTP Authentication Summary</strong>
+    <ul>
+      <li><strong>Bearer Token Hazard</strong>: Anyone possessing a Bearer token (RFC 6750) can impersonate the subject. Always combine with TLS and short lifetimes.</li>
+      <li><strong>Sender-Constrained Tokens</strong>: DPoP (RFC 9449) and mTLS (RFC 8705) bind tokens to client private keys, preventing stolen token replay.</li>
+      <li><strong>Basic Auth Deprecation</strong>: Basic Authentication sends base64 credentials in cleartext; restrict strictly to local debug or replace with OAuth2.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 6750**: *The OAuth 2.0 Authorization Framework: Bearer Token Usage* — [IETF RFC 6750](https://www.rfc-editor.org/rfc/rfc6750)
+- **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)* — [IETF RFC 9449](https://www.rfc-editor.org/rfc/rfc9449)

@@ -93,3 +93,22 @@ When auditing a system architecture or API endpoint, evaluate these 8 diagnostic
 | **Privacy** | Is personal data processing minimized, pseudonymized, or restricted by explicit legal consent boundaries? | Data flow inventory, DPIA reports & GDPR/PDPA audits. |
 | **Resilience** | How does the system degrade gracefully when downstream database or identity dependencies fail? | Chaos engineering test suite & circuit breaker metrics. |
 | **Safety** | Could an unauthorized state change trigger physical, operational, or safety hazards (**ISO 26262**)? | ISO 26262 hazard analysis & fail-safe circuit checks. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Security Objectives Summary</strong>
+    <ul>
+      <li><strong>CIA Triad + Extensions</strong>: Confidentiality (secrecy), Integrity (tamper-proofing), Availability (uptime), plus Authenticity and Non-Repudiation.</li>
+      <li><strong>Authenticity vs. Non-Repudiation</strong>: Authenticity proves who sent the message; Non-repudiation prevents the sender from denying the action to third parties.</li>
+      <li><strong>Privacy as a Distinct Objective</strong>: Privacy enforces data minimization, consent, and access restrictions over personal data (PII).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-33**: *Underlying Technical Models for Information Technology Security* — [NIST CSRC SP 800-33](https://csrc.nist.gov/pubs/sp/800/33/final)
+- **ISO/IEC 27000:2020**: *Overview and vocabulary for Information Security Management Systems* — [ISO 27000](https://www.iso.org/standard/73906.html)

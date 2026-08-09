@@ -99,3 +99,22 @@ When evaluating an enterprise risk assessment or vulnerability management pipeli
 | **Executive Governance** | Is all accepted residual risk formally signed off by an authorized executive asset owner (**NIST SP 800-39**)? | Executive risk sign-off records &amp; GRC risk register approval trails. |
 | **Exploit Intelligence** | Are vulnerability patch priorities driven by real-world exploitation telemetry (**EPSS &amp; CISA KEV**)? | Vulnerability management SLA reports &amp; EPSS prioritization dashboards. |
 | **Scenario Completeness** | Does the risk assessment evaluate all six components (*Asset, Threat Source, Event, Vulnerability, Likelihood, Impact*)? | Documented Risk Register matrices (**NIST SP 800-30 Rev. 1**). |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Risk Fundamentals Summary</strong>
+    <ul>
+      <li><strong>Risk Formula</strong>: Risk = Threat × Vulnerability × Impact. Reducing any component lowers overall residual risk.</li>
+      <li><strong>Risk Treatment Strategies</strong>: Four primary responses: Mitigate (controls), Transfer (insurance/cloud), Avoid (eliminate feature), Accept (formal risk sign-off).</li>
+      <li><strong>FAIR Methodology</strong>: Enables quantitative financial modeling of loss event frequency and magnitude.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
+- **ISO 31000:2018**: *Risk management — Guidelines* — [ISO 31000](https://www.iso.org/standard/65694.html)

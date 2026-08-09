@@ -67,3 +67,22 @@ When auditing vendor certification claims:
 2. **Distinguish "FIPS Compliant" vs "FIPS Validated"**: Reject marketing phrases like *"FIPS compliant"* or *"FIPS-approved algorithms"*. Only a listed NIST CMVP certificate number guarantees an audited module.
 3. **Inspect the Physical/Software Boundary**: Confirm whether validation covers the entire physical hardware unit or merely an underlying software library module.
 4. **Check Certificate Sunset Dates**: Verify that hardware modules have not moved to NIST's *Historical List* following firmware or hardware updates.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Security Certifications Summary</strong>
+    <ul>
+      <li><strong>ISO 27001 vs. SOC 2</strong>: ISO 27001 is a globally recognized cert auditing ISMS processes; SOC 2 Type II is a U.S. report evaluating trust principles over 6+ months.</li>
+      <li><strong>FedRAMP High/Moderate</strong>: Mandatory authorization for U.S. federal cloud providers based on NIST SP 800-53 controls.</li>
+      <li><strong>Common Criteria (CC)</strong>: Evaluates hardware/software assurance levels (EAL1 to EAL7) against defined protection profiles.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **AICPA SOC 2**: *Trust Services Criteria for Security, Availability, and Confidentiality* — [AICPA SOC 2](https://www.aicpa.org/topic/audit-assurance/audit-and-assurance-greater-than-soc-for-service-organizations)
+- **FedRAMP Marketplace**: *Federal Risk and Authorization Management Program* — [FedRAMP Official](https://www.fedramp.gov/)

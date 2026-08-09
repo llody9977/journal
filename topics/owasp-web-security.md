@@ -86,3 +86,22 @@ def get_invoice(invoice_id):
         raise AuthorizationError("Access denied")
     return invoice
 ```
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>OWASP Web Security Summary</strong>
+    <ul>
+      <li><strong>Top Web Vulnerabilities</strong>: Broken Access Control (#1), Cryptographic Failures (#2), Injection (#3), Insecure Design (#4).</li>
+      <li><strong>Defense Against Injection</strong>: Parameterized SQL queries, contextual output encoding (XSS defense), and CSP headers.</li>
+      <li><strong>Security Headers</strong>: Enforce Strict-Transport-Security (HSTS), Content-Security-Policy (CSP), and X-Frame-Options across all endpoints.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **OWASP Top 10:2021**: *Top 10 Web Application Security Risks* — [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- **OWASP ASVS 4.0**: *Application Security Verification Standard* — [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)

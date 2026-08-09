@@ -63,3 +63,22 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 |---|---|---|
 | **Impersonation** | `{"sub": "user_123"}` | Client A assumes User B's identity completely; downstream APIs cannot distinguish Client A from User B. |
 | **Delegation** | `{"sub": "user_123", "act": {"sub": "client_A"}}` | Client A acts *on behalf of* User B. Downstream APIs retain full auditability of both subject and acting agent. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Security Token Service (STS) Summary</strong>
+    <ul>
+      <li><strong>Token Exchange Pattern</strong>: STS exchanges long-lived enterprise credentials or SAML assertions for short-lived AWS/cloud IAM security tokens.</li>
+      <li><strong>AWS STS AssumeRole</strong>: Returns temporary access key, secret key, and session token with maximum lifetime constraints (1–12 hours).</li>
+      <li><strong>RFC 8693 OAuth Token Exchange</strong>: Standardized API for requesting delegation tokens across microservice boundaries.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **AWS STS Documentation**: *AWS Security Token Service User Guide* — [AWS STS Docs](https://docs.aws.amazon.com/STS/latest/UsingSTS/welcome.html)
+- **RFC 8693**: *OAuth 2.0 Token Exchange* — [IETF RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)

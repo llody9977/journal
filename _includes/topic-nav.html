@@ -1,0 +1,167 @@
+{% assign current_url = page.url %}
+{% assign prev_title = "" %}
+{% assign prev_url = "" %}
+{% assign next_title = "" %}
+{% assign next_url = "" %}
+
+{% if current_url == '/topics/security-fundamentals/' or current_url == '/topics/security-fundamentals' %}
+  {% assign next_title = '1.2 Where Should I Start?' %}
+  {% assign next_url = '/topics/where-should-i-start/' %}
+{% endif %}
+{% if current_url == '/topics/where-should-i-start/' or current_url == '/topics/where-should-i-start' %}
+  {% assign prev_title = '1.1 What Is Security?' %}
+  {% assign prev_url = '/topics/security-fundamentals/' %}
+  {% assign next_title = '1.3 Security Objectives & Properties' %}
+  {% assign next_url = '/topics/security-objectives-properties/' %}
+{% endif %}
+{% if current_url == '/topics/security-objectives-properties/' or current_url == '/topics/security-objectives-properties' %}
+  {% assign prev_title = '1.2 Where Should I Start?' %}
+  {% assign prev_url = '/topics/where-should-i-start/' %}
+  {% assign next_title = '1.4 Trust Boundaries & Threat Modeling' %}
+  {% assign next_url = '/topics/trust-boundaries-threat-modeling/' %}
+{% endif %}
+{% if current_url == '/topics/trust-boundaries-threat-modeling/' or current_url == '/topics/trust-boundaries-threat-modeling' %}
+  {% assign prev_title = '1.3 Security Objectives & Properties' %}
+  {% assign prev_url = '/topics/security-objectives-properties/' %}
+  {% assign next_title = '1.5 Threats, Vulnerabilities & Risk' %}
+  {% assign next_url = '/topics/risk-fundamentals/' %}
+{% endif %}
+{% if current_url == '/topics/risk-fundamentals/' or current_url == '/topics/risk-fundamentals' %}
+  {% assign prev_title = '1.4 Trust Boundaries & Threat Modeling' %}
+  {% assign prev_url = '/topics/trust-boundaries-threat-modeling/' %}
+  {% assign next_title = '1.6 Identity & Access Fundamentals' %}
+  {% assign next_url = '/topics/identity-access-fundamentals/' %}
+{% endif %}
+{% if current_url == '/topics/identity-access-fundamentals/' or current_url == '/topics/identity-access-fundamentals' %}
+  {% assign prev_title = '1.5 Threats, Vulnerabilities & Risk' %}
+  {% assign prev_url = '/topics/risk-fundamentals/' %}
+  {% assign next_title = '1.7 Security Controls & Defense in Depth' %}
+  {% assign next_url = '/topics/security-controls-defense-in-depth/' %}
+{% endif %}
+{% if current_url == '/topics/security-controls-defense-in-depth/' or current_url == '/topics/security-controls-defense-in-depth' %}
+  {% assign prev_title = '1.6 Identity & Access Fundamentals' %}
+  {% assign prev_url = '/topics/identity-access-fundamentals/' %}
+  {% assign next_title = '2.1 What Is Cryptography?' %}
+  {% assign next_url = '/topics/cryptography-overview/' %}
+{% endif %}
+{% if current_url == '/topics/cryptography-overview/' or current_url == '/topics/cryptography-overview' %}
+  {% assign prev_title = '1.7 Security Controls & Defense in Depth' %}
+  {% assign prev_url = '/topics/security-controls-defense-in-depth/' %}
+  {% assign next_title = '2.2 Symmetric Cryptography' %}
+  {% assign next_url = '/topics/symmetric-cryptography/' %}
+{% endif %}
+{% if current_url == '/topics/symmetric-cryptography/' or current_url == '/topics/symmetric-cryptography' %}
+  {% assign prev_title = '2.1 What Is Cryptography?' %}
+  {% assign prev_url = '/topics/cryptography-overview/' %}
+  {% assign next_title = '2.3 Symmetric Mode Attacks: ECB, CBC & CTR' %}
+  {% assign next_url = '/topics/symmetric-mode-attacks/' %}
+{% endif %}
+{% if current_url == '/topics/symmetric-mode-attacks/' or current_url == '/topics/symmetric-mode-attacks' %}
+  {% assign prev_title = '2.2 Symmetric Cryptography' %}
+  {% assign prev_url = '/topics/symmetric-cryptography/' %}
+  {% assign next_title = '2.4 Asymmetric Cryptography' %}
+  {% assign next_url = '/topics/asymmetric-cryptography/' %}
+{% endif %}
+{% if current_url == '/topics/asymmetric-cryptography/' or current_url == '/topics/asymmetric-cryptography' %}
+  {% assign prev_title = '2.3 Symmetric Mode Attacks: ECB, CBC & CTR' %}
+  {% assign prev_url = '/topics/symmetric-mode-attacks/' %}
+  {% assign next_title = '2.5 Symmetric vs Asymmetric Cryptography' %}
+  {% assign next_url = '/topics/symmetric-vs-asymmetric/' %}
+{% endif %}
+{% if current_url == '/topics/symmetric-vs-asymmetric/' or current_url == '/topics/symmetric-vs-asymmetric' %}
+  {% assign prev_title = '2.4 Asymmetric Cryptography' %}
+  {% assign prev_url = '/topics/asymmetric-cryptography/' %}
+  {% assign next_title = '2.6 Post-Quantum Cryptography (PQC)' %}
+  {% assign next_url = '/topics/post-quantum-cryptography/' %}
+{% endif %}
+{% if current_url == '/topics/post-quantum-cryptography/' or current_url == '/topics/post-quantum-cryptography' %}
+  {% assign prev_title = '2.5 Symmetric vs Asymmetric Cryptography' %}
+  {% assign prev_url = '/topics/symmetric-vs-asymmetric/' %}
+  {% assign next_title = '2.7 Hash Functions & MACs' %}
+  {% assign next_url = '/topics/hash-functions-macs/' %}
+{% endif %}
+{% if current_url == '/topics/hash-functions-macs/' or current_url == '/topics/hash-functions-macs' %}
+  {% assign prev_title = '2.6 Post-Quantum Cryptography (PQC)' %}
+  {% assign prev_url = '/topics/post-quantum-cryptography/' %}
+  {% assign next_title = '2.8 Hash Collisions & Length Extension' %}
+  {% assign next_url = '/topics/hash-collisions-length-extension/' %}
+{% endif %}
+{% if current_url == '/topics/hash-collisions-length-extension/' or current_url == '/topics/hash-collisions-length-extension' %}
+  {% assign prev_title = '2.7 Hash Functions & MACs' %}
+  {% assign prev_url = '/topics/hash-functions-macs/' %}
+  {% assign next_title = '2.9 Key Exchange & Key Derivation' %}
+  {% assign next_url = '/topics/key-exchange-derivation/' %}
+{% endif %}
+{% if current_url == '/topics/key-exchange-derivation/' or current_url == '/topics/key-exchange-derivation' %}
+  {% assign prev_title = '2.8 Hash Collisions & Length Extension' %}
+  {% assign prev_url = '/topics/hash-collisions-length-extension/' %}
+  {% assign next_title = '2.10 Digital Signatures' %}
+  {% assign next_url = '/topics/digital-signatures/' %}
+{% endif %}
+{% if current_url == '/topics/digital-signatures/' or current_url == '/topics/digital-signatures' %}
+  {% assign prev_title = '2.9 Key Exchange & Key Derivation' %}
+  {% assign prev_url = '/topics/key-exchange-derivation/' %}
+  {% assign next_title = '2.11 Recommended Algorithms & Regional Standards' %}
+  {% assign next_url = '/topics/recommended-algorithms/' %}
+{% endif %}
+{% if current_url == '/topics/recommended-algorithms/' or current_url == '/topics/recommended-algorithms' %}
+  {% assign prev_title = '2.10 Digital Signatures' %}
+  {% assign prev_url = '/topics/digital-signatures/' %}
+  {% assign next_title = '2.12 Certificate Authorities & Certificates' %}
+  {% assign next_url = '/topics/certificates/' %}
+{% endif %}
+{% if current_url == '/topics/certificates/' or current_url == '/topics/certificates' %}
+  {% assign prev_title = '2.11 Recommended Algorithms & Regional Standards' %}
+  {% assign prev_url = '/topics/recommended-algorithms/' %}
+  {% assign next_title = '2.13 TLS Handshake' %}
+  {% assign next_url = '/topics/tls-ssl-handshake/' %}
+{% endif %}
+{% if current_url == '/topics/tls-ssl-handshake/' or current_url == '/topics/tls-ssl-handshake' %}
+  {% assign prev_title = '2.12 Certificate Authorities & Certificates' %}
+  {% assign prev_url = '/topics/certificates/' %}
+  {% assign next_title = '2.14 Certificate Transparency' %}
+  {% assign next_url = '/topics/certificate-transparency/' %}
+{% endif %}
+{% if current_url == '/topics/certificate-transparency/' or current_url == '/topics/certificate-transparency' %}
+  {% assign prev_title = '2.13 TLS Handshake' %}
+  {% assign prev_url = '/topics/tls-ssl-handshake/' %}
+  {% assign next_title = '2.15 Password Storage' %}
+  {% assign next_url = '/topics/password-storage/' %}
+{% endif %}
+{% if current_url == '/topics/password-storage/' or current_url == '/topics/password-storage' %}
+  {% assign prev_title = '2.14 Certificate Transparency' %}
+  {% assign prev_url = '/topics/certificate-transparency/' %}
+  {% assign next_title = '2.16 Full-Disk & File Encryption' %}
+  {% assign next_url = '/topics/full-disk-file-encryption/' %}
+{% endif %}
+{% if current_url == '/topics/full-disk-file-encryption/' or current_url == '/topics/full-disk-file-encryption' %}
+  {% assign prev_title = '2.15 Password Storage' %}
+  {% assign prev_url = '/topics/password-storage/' %}
+  {% assign next_title = '2.17 Blockchain Cryptography' %}
+  {% assign next_url = '/topics/blockchain-cryptography/' %}
+{% endif %}
+{% if current_url == '/topics/blockchain-cryptography/' or current_url == '/topics/blockchain-cryptography' %}
+  {% assign prev_title = '2.16 Full-Disk & File Encryption' %}
+  {% assign prev_url = '/topics/full-disk-file-encryption/' %}
+{% endif %}
+
+{% if prev_url != "" or next_url != "" %}
+<nav class="topic-footer-nav" aria-label="Topic navigation">
+  <div class="nav-prev">
+    {% if prev_url != "" %}
+    <a href="{{ prev_url | relative_url }}" class="topic-nav-link">
+      <span class="nav-direction">← Previous Topic</span>
+      <span class="nav-title">{{ prev_title }}</span>
+    </a>
+    {% endif %}
+  </div>
+  <div class="nav-next">
+    {% if next_url != "" %}
+    <a href="{{ next_url | relative_url }}" class="topic-nav-link">
+      <span class="nav-direction">Next Topic →</span>
+      <span class="nav-title">{{ next_title }}</span>
+    </a>
+    {% endif %}
+  </div>
+</nav>
+{% endif %}

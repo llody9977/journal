@@ -54,3 +54,22 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 1. **Do Not Encrypt Large Payloads with RSA**: RSA modular exponentiation is slow and constrained by modulus size. Use HPKE or a hybrid construction.
 2. **Symmetric MACs Do Not Provide Non-Repudiation**: A shared-key HMAC tag proves the message was created by *a holder of the key*, which includes both sender and receiver. Non-repudiation requires a private-key digital signature.
 3. **Validate Public Key Identity Bindings**: Exchanging public keys over an unauthenticated channel leaves endpoints vulnerable to Man-in-the-Middle (MitM) key substitution. Bind public keys using PKI X.509 certificates or out-of-band fingerprint verification.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Symmetric vs. Asymmetric Summary</strong>
+    <ul>
+      <li><strong>Performance Trade-off</strong>: Symmetric encryption (AES-256) is ~1000× faster than asymmetric algorithms (RSA/ECC) and processes arbitrary payload sizes.</li>
+      <li><strong>Key Distribution Problem</strong>: Asymmetric cryptography solves secret key distribution without requiring an out-of-band secret channel.</li>
+      <li><strong>Hybrid Architecture</strong>: Production systems use asymmetric keys to negotiate or wrap a single-use symmetric DEK, which encrypts bulk data.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-57 Part 1 Rev. 5**: *Recommendation for Key Management: General* — [NIST CSRC SP 800-57](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)
+- **RFC 8446**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)

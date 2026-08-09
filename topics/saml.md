@@ -73,3 +73,22 @@ A SAML Assertion is an XML payload signed using **XML Digital Signatures (XML-DS
 | **Primary Domain** | Enterprise B2B SaaS SSO | Web, Mobile Native, Microservices, Public APIs |
 | **Native Mobile Support** | Complex (Requires embedded browser webviews) | **Native** (OAuth 2.1 Authorization Code + PKCE) |
 | **API Authorization** | Unsuited for API access token delegation | **Standard** (Provides both ID Token and Access Token) |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>SAML 2.0 Summary</strong>
+    <ul>
+      <li><strong>XML Signature Wrapping (XSW)</strong>: Attackers manipulate XML DOM trees to alter assertions while keeping valid signature blocks. Always validate element positioning.</li>
+      <li><strong>SP-Initiated Flow</strong>: User accesses Service Provider first, receives SAML Request, authenticates at Identity Provider, and posts SAML Response.</li>
+      <li><strong>Clock Skew &amp; Replay</strong>: Enforce tight <code>NotOnOrAfter</code> timestamps and track assertion <code>ID</code>s to prevent replay attacks.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **OASIS SAML v2.0**: *SAML 2.0 Executive Overview* — [OASIS SAML 2.0 Standard](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)
+- **OWASP SAML Security**: *SAML Security Cheat Sheet* — [OWASP SAML Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html)

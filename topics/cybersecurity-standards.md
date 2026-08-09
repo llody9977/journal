@@ -96,3 +96,22 @@ For organizations seeking a direct, prioritized roadmap, **[CIS Controls v8.1](h
 - **SOC 2 Type II**: Evaluates whether controls operated *effectively over a continuous observation period* (typically 6 to 12 months).
 
 Enterprise B2B SaaS buyers require SOC 2 Type II reports to verify vendor security compliance contractually.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Cybersecurity Standards Summary</strong>
+    <ul>
+      <li><strong>Framework Hierarchy</strong>: ISO 27001 provides management systems (ISMS); NIST SP 800-53 provides technical controls; PCI-DSS governs payment security.</li>
+      <li><strong>Cross-Framework Mapping</strong>: Map enterprise controls to a unified control framework (UCF) to satisfy multi-regulation audits (SOC 2, ISO 27001, HIPAA).</li>
+      <li><strong>Continuous Evidence Collection</strong>: Automate compliance verification via continuous monitoring tools rather than annual point-in-time audits.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-53 Rev. 5**: *Security Controls for Information Systems* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/final)
+- **ISO/IEC 27001:2022**: *Information security management systems requirements* — [ISO 27001 Standard](https://www.iso.org/standard/27001)

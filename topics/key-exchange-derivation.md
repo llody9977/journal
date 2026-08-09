@@ -188,3 +188,23 @@ Specified in **[RFC 9180](https://www.rfc-editor.org/rfc/rfc9180)**, **HPKE** st
 ### Post-Quantum KEM Transition (FIPS 203 ML-KEM)
 
 Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Modern protocols deploy **[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)** (Kyber) or hybrid **X25519MLKEM768** key exchange to establish post-quantum shared secrets.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Key Exchange &amp; PFS Summary</strong>
+    <ul>
+      <li><strong>No Key Transmitted</strong>: Diffie-Hellman math derives matching shared secrets locally in RAM; no secret key ever crosses the network.</li>
+      <li><strong>Perfect Forward Secrecy (PFS)</strong>: Ephemeral keys (ECDHE / X25519) are generated in RAM per connection and erased when done. Stealing a server disk key later cannot decrypt past recorded sessions.</li>
+      <li><strong>HKDF Pipeline (RFC 5869)</strong>: Extracts raw Diffie-Hellman secrets into a master key (Extract) and expands independent sub-keys for client/server encryption (Expand).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 7748**: *Elliptic Curves for Security (X25519)* — [IETF RFC 7748](https://www.rfc-editor.org/rfc/rfc7748)
+- **RFC 5869**: *HMAC-based Extract-and-Expand Key Derivation Function (HKDF)* — [IETF RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)
+- **RFC 8446**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)

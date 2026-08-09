@@ -75,3 +75,22 @@ When evaluating an enterprise threat modeling program or threat intelligence pip
 | **Threat Intelligence Integration** | Are threat intelligence feeds and real-world adversary TTPs used to score threat likelihood (**PASTA / FAIR**)? | GRC risk assessment reports &amp; threat intelligence ingestion logs. |
 | **Defensive Countermeasure Mapping** | Are MITRE ATT&CK techniques paired with verified MITRE D3FEND countermeasures in production? | SIEM detection rule mappings &amp; D3FEND defensive coverage matrices. |
 | **Continuous Model Re-assessment** | Is threat modeling re-triggered automatically whenever major architectural changes or new TTPs occur? | CI/CD pipeline triggers, quarterly threat model reviews &amp; post-incident audits. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Threat Frameworks Summary</strong>
+    <ul>
+      <li><strong>MITRE ATT&amp;CK Matrix</strong>: Categorizes real-world adversary behavior into Tactics, Techniques, and Procedures (TTPs).</li>
+      <li><strong>Cyber Kill Chain</strong>: 7-stage attack flow (Reconnaissance, Weaponization, Delivery, Exploitation, Installation, Command &amp; Control, Actions on Objectives).</li>
+      <li><strong>Detection Mapping</strong>: Map SIEM/EDR detection rules directly to MITRE ATT&amp;CK technique IDs to measure coverage gaps.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **MITRE ATT&amp;CK**: *Adversary Tactics, Techniques, and Knowledge Base* — [MITRE ATT&amp;CK Official](https://attack.mitre.org/)
+- **Lockheed Martin Cyber Kill Chain**: *Seven Steps of Cyber Kill Chain* — [Lockheed Martin](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html)

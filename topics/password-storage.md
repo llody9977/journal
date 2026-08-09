@@ -74,3 +74,22 @@ async function hashUserPassword(password) {
     <p>The standard <code>bcrypt</code> algorithm silently truncates input password strings at <strong>72 bytes</strong>. Any characters beyond byte 72 are ignored during authentication. To mitigate this without breaking legacy compatibility, pre-hash long passwords using <code>SHA-256</code> (producing a fixed 32-byte binary digest) before passing the bytes into <code>bcrypt</code>.</p>
   </div>
 </div>
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Password Storage Summary</strong>
+    <ul>
+      <li><strong>Argon2id (RFC 9106)</strong>: Winner of Password Hashing Competition; primary recommendation for password storage (memory-hard against GPU/ASIC attacks).</li>
+      <li><strong>Bcrypt 72-Byte Truncation Limit</strong>: Bcrypt silently ignores characters beyond byte 72. Pre-hash long inputs with SHA-256 before passing to bcrypt.</li>
+      <li><strong>Salts &amp; Peppers</strong>: 128-bit CSPRNG unique salt per user prevents rainbow tables; HSM pepper protects against database exfiltration.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 9106**: *Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work Applications* — [IETF RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)
+- **NIST SP 800-63B**: *Digital Identity Guidelines: Authentication and Lifecycle Management* — [NIST CSRC SP 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html)

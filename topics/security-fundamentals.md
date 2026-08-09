@@ -82,3 +82,22 @@ When evaluating the security posture of any new feature or system architecture, 
 | **Exposure Assessment** | What is the risk severity based on threat likelihood and consequential impact? | Risk assessment reports (**NIST SP 800-30 Rev. 1**). |
 | **Objective Testing** | Which CIA triad properties, safety, or privacy limits would be breached if compromised? | FIPS 199 impact categorization &amp; privacy impact assessments (PIA). |
 | **Strategic Response Selection** | Which response strategy—Avoid, Reduce, Transfer, or Accept—is authorized by the risk owner? | Signed executive risk treatment plan (**NIST SP 800-39**). |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Security Fundamentals Summary</strong>
+    <ul>
+      <li><strong>Security Objectives</strong>: Core goals are Confidentiality, Integrity, Authenticity, Non-Repudiation, and Availability.</li>
+      <li><strong>Risk-Driven Architecture</strong>: Security controls must be selected based on threat modeling and risk assessments, not checkbox compliance.</li>
+      <li><strong>Defense in Depth</strong>: Layer controls across physical, network, identity, application, and data layers so no single point of failure exists.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/final)
+- **ISO/IEC 27001:2022**: *Information security, cybersecurity and privacy protection — Information security management systems* — [ISO 27001 Overview](https://www.iso.org/standard/27001)

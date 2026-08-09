@@ -136,3 +136,22 @@ Deploying **HMAC-SHA256** ([FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/fi
 **HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))**
 
 Furthermore, modern sponge-based hash functions (**SHA-3 / FIPS 202**, **KMAC / SP 800-185**, and **BLAKE3**) squeeze outputs through internal capacity states, rendering them inherently immune to length extension by design.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Hash Attacks Summary</strong>
+    <ul>
+      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance. Never use MD5 or SHA-1 for digital signatures or security integrity.</li>
+      <li><strong>Length-Extension Vulnerability</strong>: Naive MACs like <code>H(key \|\| message)</code> allow attackers to append data and forge valid tags without learning the key.</li>
+      <li><strong>Mitigation Standard</strong>: Deploy HMAC-SHA256, KMAC, or SHA-3 to guarantee resistance against length extension.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-131A Rev. 2**: *Transitioning the Use of Cryptographic Algorithms and Key Lengths* — [NIST CSRC SP 800-131A](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final)
+- **SHAttered Attack**: *First Practical SHA-1 Collision Announcement* — [SHAttered Google/CWI Paper](https://shattered.io/)

@@ -75,3 +75,23 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
 | **Amazon Web Services (AWS)** | AWS KMS / EBS Encryption | AWS KMS Customer Managed Keys (CMK) | FIPS 140-3 Level 3 HSM hardware module backing. |
 | **Google Cloud (GCP)** | Cloud KMS / Persistent Disk | Customer-Managed Encryption Keys (CMEK) | Cloud HSM with dual-region key replication. |
 | **Microsoft Azure** | Azure Key Vault / Disk Encryption | Customer-Managed Keys (CMK) | Managed HSM providing dedicated FIPS 140-3 Level 3 hardware. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Disk &amp; File Encryption Summary</strong>
+    <ul>
+      <li><strong>IEEE 1619 AES-XTS</strong>: Standard sector block cipher mode preventing pattern leakage without altering sector size.</li>
+      <li><strong>LUKS2 &amp; Argon2id</strong>: Linux disk encryption header format using Argon2id KDF to protect volume master keys.</li>
+      <li><strong>Envelope Key Rotation</strong>: Key rotation rotates the Master KEK/CMEK inside KMS—NOT the bulk data. Older data is decrypted seamlessly via key version headers.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **IEEE 1619-2018**: *IEEE Standard for Cryptographic Protection of Data on Block-Oriented Storage Devices* — [IEEE 1619 Standard](https://standards.ieee.org/ieee/1619/6966/)
+- **NIST SP 800-38E**: *Recommendation for Block Cipher Modes of Operation: The XTS-AES Mode for Confidentiality on Storage Devices* — [NIST CSRC SP 800-38E](https://csrc.nist.gov/pubs/sp/800/38/e/final)
+- **RFC 3394**: *Advanced Encryption Standard (AES) Key Wrap Algorithm* — [IETF RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)

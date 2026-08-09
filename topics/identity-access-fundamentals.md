@@ -108,3 +108,22 @@ When auditing an identity perimeters, microservice API, or SSO federation flow, 
 | **Policy Enforcement Point (PEP)** | Is authorization enforced centrally at an API gateway or decentralized inside microservice sidecars? | API Gateway OPA / Rego policy configs & envoy sidecar filter code. |
 | **Session Binding** | Are session tokens bound to client IP, mTLS connection, or cryptographic proof (**DPoP / RFC 9449**)? | DPoP proof-of-possession headers & mTLS client certificate verification logs. |
 | **Subject Identification** | Is the requesting subject a human user, federated identity, or automated non-human workload? | SPIFFE/SPIRE ID certificates, OIDC `sub` claim audits & IAM identity inventories. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Identity &amp; Access Summary</strong>
+    <ul>
+      <li><strong>Authentication vs. Authorization</strong>: Authentication verifies identity ("Who are you?"); Authorization determines permissions ("What can you do?").</li>
+      <li><strong>Zero Trust Architecture (NIST SP 800-207)</strong>: Never trust, always verify. Enforce explicit authentication and authorization per request regardless of network location.</li>
+      <li><strong>Principle of Least Privilege</strong>: Grant entities only the minimum permissions required to perform their explicit function.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-207**: *Zero Trust Architecture* — [NIST CSRC SP 800-207](https://csrc.nist.gov/pubs/sp/800/207/final)
+- **NIST SP 800-63-3**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-3](https://pages.nist.gov/800-63-3/)

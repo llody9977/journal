@@ -119,3 +119,22 @@ openssl pkeyutl -decrypt -pubin -inkey bob_pub.pem -in payload.enc -out fail.txt
 Specified in **[RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)**, **Ed25519** offers major advantages over legacy ECDSA:
 - **Deterministic Nonce Derivation**: Ed25519 derives its per-signature nonce deterministically from the private key and message hash, eliminating catastrophic ECDSA private key leaks caused by weak random number generators.
 - **Side-Channel &amp; Timing Attack Resistance**: Implemented using complete addition formulas on Edwards curves without conditional branching.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Asymmetric Cryptography Summary</strong>
+    <ul>
+      <li><strong>Private Keys Cannot Encrypt Data</strong>: Private keys are used for Digital Signing. Asymmetric encryption locks data under a recipient's Public Key (HPKE / RSA-OAEP).</li>
+      <li><strong>RSA vs. ECC Efficiency</strong>: 256-bit Elliptic Curve keys (Curve25519 / P-256) provide equivalent security to 3072-bit RSA with 12× smaller key sizes.</li>
+      <li><strong>HPKE (RFC 9180)</strong>: Standardized hybrid public-key encryption API combining KEM key exchange, HKDF expansion, and AEAD encryption.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 9180**: *Hybrid Public Key Encryption (HPKE)* — [IETF RFC 9180](https://www.rfc-editor.org/rfc/rfc9180)
+- **NIST SP 800-56B Rev. 2**: *Recommendation for Pair-Wise Key-Establishment Schemes Using Integer Factorization Cryptography* — [NIST CSRC SP 800-56B](https://csrc.nist.gov/pubs/sp/800/56/b/r2/final)

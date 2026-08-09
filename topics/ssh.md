@@ -78,3 +78,22 @@ ssh-keygen -lf ~/.ssh/id_ed25519.pub
 ssh-keyscan -t ed25519 github.com 2>/dev/null | ssh-keygen -lf -
 # Output: 256 SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU github.com (ED25519)
 ```
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>SSH &amp; Key Management Summary</strong>
+    <ul>
+      <li><strong>Deprecate Static Authorized_Keys</strong>: Managing static public keys on host disk scale poorly and causes key sprawl.</li>
+      <li><strong>SSH User Certificates (OpenSSH CA)</strong>: Sign short-lived SSH user certificates using a central SSH CA key; hosts verify signatures against CA public key.</li>
+      <li><strong>Modern Key Algorithms</strong>: Enforce Ed25519 (<code>ssh-ed25519</code>) or RSA-4096; disable legacy <code>ssh-rsa</code> (SHA-1 signature scheme).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **OpenSSH Certificates**: *OpenSSH Certificate Architecture Protocol* — [OpenSSH Specs](https://www.openssh.com/specs.html)
+- **RFC 4253**: *The Secure Shell (SSH) Transport Layer Protocol* — [IETF RFC 4253](https://www.rfc-editor.org/rfc/rfc4253)

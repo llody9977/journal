@@ -98,3 +98,23 @@ print("Signature Valid:", hmac.compare_digest(calc_sig.encode(), sig_b64.encode(
 2. **Validate State Parameter**: Enforce cryptographically random `state` parameters to prevent Cross-Site Request Forgery (CSRF) during authorization redirects.
 3. **Verify Token Claims on Resource Servers**: Resource servers MUST validate `iss` (Issuer), `aud` (Audience), `exp` (Expiration), and algorithm headers before granting access. Reject tokens specifying `alg: "none"`.
 4. **Never Send ID Tokens to Resource Servers**: ID Tokens belong to the Client application; Access Tokens belong to the Resource Server API.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>OAuth 2.0 &amp; OIDC Summary</strong>
+    <ul>
+      <li><strong>OAuth vs. OIDC</strong>: OAuth 2.0 is an <em>Authorization framework</em> (Access Tokens); OIDC is an <em>Authentication layer</em> built on OAuth 2.0 (ID Tokens).</li>
+      <li><strong>Mandatory PKCE (RFC 7636)</strong>: Authorization Code Flow with PKCE is required for all clients (mobile, SPA, backend) to defeat code interception attacks.</li>
+      <li><strong>Implicit Flow Deprecated</strong>: Never use OAuth 2.0 Implicit Flow (returns access tokens in URL hash fragment).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 6749**: *The OAuth 2.0 Authorization Framework* — [IETF RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)
+- **RFC 7636**: *Proof Key for Code Exchange by OAuth Public Clients (PKCE)* — [IETF RFC 7636](https://www.rfc-editor.org/rfc/rfc7636)
+- **OpenID Connect Core 1.0**: *OpenID Connect Specification* — [OpenID Foundation](https://openid.net/specs/openid-connect-core-1_0.html)

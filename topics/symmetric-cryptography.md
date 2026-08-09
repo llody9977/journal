@@ -108,3 +108,22 @@ Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but 
 1. **Never Reuse Nonces**: Reusing a 96-bit GCM nonce with the same key allows adversaries to recover the GHASH authentication key and forge authentication tags.
 2. **Deploy Synthetic IV (AES-GCM-SIV / RFC 8452) for Misuse Resistance**: When unique nonces cannot be guaranteed (*e.g., distributed stateless microservices*), deploy **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. If a nonce is accidentally repeated, AES-GCM-SIV degrades to deterministically leaking equality of identical messages without exposing the authentication key or plaintext.
 3. **Always Verify Tags Before Decrypting**: Software must compute and verify the authentication tag before exposing plaintext to the application layer.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Symmetric Cryptography Summary</strong>
+    <ul>
+      <li><strong>AES-256-GCM Standard</strong>: Universal AEAD cipher for data in transit and at rest. Provides 128-bit quantum security against Grover's algorithm.</li>
+      <li><strong>Nonce Uniqueness Rule</strong>: Reusing a 96-bit GCM nonce under the same key destroys authenticity and allows plaintext recovery.</li>
+      <li><strong>ChaCha20-Poly1305 Alternative</strong>: Software-optimized AEAD stream cipher providing exceptional speed on hardware lacking AES-NI acceleration.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-38D**: *Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM)* — [NIST CSRC SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)
+- **RFC 8439**: *ChaCha20 and Poly1305 for IETF Protocols* — [IETF RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)

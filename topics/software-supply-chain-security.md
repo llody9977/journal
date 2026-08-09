@@ -68,3 +68,22 @@ The controls answer different questions. An SBOM can show that XZ 5.6.x is prese
 - **Treating SBOM possession as vulnerability management** — an SBOM tells you what's present; something still has to cross-reference it against current CVE data on an ongoing basis for it to do anything.
 - **Assuming a scanner would have caught xz-utils** — it was hand-planted by a trusted maintainer through the legitimate release process; this is precisely the class of attack dependency scanners and SBOMs are not designed to catch.
 - **Long-lived cloud credentials sitting in CI/CD secret stores** — exactly [CICD-SEC-6](https://owasp.org/www-project-top-10-ci-cd-security-risks/), and exactly what OIDC-federated, short-lived credentials via a cloud STS are built to eliminate.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Supply Chain Security Summary</strong>
+    <ul>
+      <li><strong>Software Bill of Materials (SBOM)</strong>: Machine-readable inventory of software components (CycloneDX, SPDX) mandatory under Executive Order 14028.</li>
+      <li><strong>SLSA Framework (Levels 1–4)</strong>: Defines build integrity requirements (provenance generation, isolated build environments).</li>
+      <li><strong>Code Signing &amp; Sigstore</strong>: Sign container images and binaries using keyless signing (Cosign / Fulcio / Rekor) to prevent artifact tampering.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **SLSA Framework**: *Supply-chain Levels for Software Artifacts* — [SLSA Official](https://slsa.dev/)
+- **Sigstore Project**: *Keyless Code Signing and Transparency* — [Sigstore Documentation](https://www.sigstore.dev/)

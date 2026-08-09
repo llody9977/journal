@@ -53,3 +53,22 @@ TLS 1.3 allows returning clients to resume sessions and send data in the very fi
 ### 2. Encrypted Client Hello (ECH)
 
 In standard TLS 1.3, the Server Name Indication (SNI) header in `ClientHello` remains unencrypted, allowing network observers to monitor target domain destinations. **Encrypted Client Hello (ECH / draft-ietf-tls-esni)** encrypts the entire `ClientHello` payload under a public key published via DNS HTTPS records, preventing network SNI eavesdropping.
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>TLS Handshake Summary</strong>
+    <ul>
+      <li><strong>TLS 1.3 1-RTT Speed</strong>: Reduces handshake latency to 1 round-trip time; mandates AEAD ciphers and ephemeral key exchange (ECDHE).</li>
+      <li><strong>Encrypted Client Hello (ECH)</strong>: Encrypts the SNI domain name header in <code>ClientHello</code> to defeat network surveillance.</li>
+      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict 0-RTT strictly to idempotent <code>GET</code> requests.</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **RFC 8446**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)
+- **RFC 8996**: *Deprecating TLS 1.0 and TLS 1.1* — [IETF RFC 8996](https://www.rfc-editor.org/rfc/rfc8996)

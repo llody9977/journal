@@ -145,3 +145,22 @@ When auditing enterprise security controls and defense-in-depth architecture, ev
 | **Duplicate Signature Audit** | Are duplicate signature inspection engines creating false confidence without diversifying failure modes? | IPS/AV signature rule audit logs &amp; detection engine diversity reviews. |
 | **Failure Mode Isolation** | If an external WAF or ingress gateway fails, does the downstream application enforce baseline security? | Application-level input validation code &amp; API gateway bypass penetration test logs. |
 | **Recovery Validation** | Are automated recovery mechanisms (*token revocation, snapshot restores*) routinely tested? | Automated DR failover execution logs &amp; OAuth token revocation endpoint unit tests. |
+
+## What I Need to Remember
+
+<div class="security-layer security-layer-direct">
+  <div class="security-layer-label">Key Takeaways for Future Recall</div>
+  <div>
+    <strong>Security Controls Summary</strong>
+    <ul>
+      <li><strong>Control Categories</strong>: Preventive (stops attack), Detective (alerts on attack), Corrective (fixes impact), Compensating (alternate protection).</li>
+      <li><strong>Defense in Depth Layers</strong>: Overlapping controls across Perimeter, Network, Host, Application, Data, and IAM boundaries.</li>
+      <li><strong>CIS Implementation Groups</strong>: Tiered control deployment (IG1 baseline, IG2 enterprise, IG3 high-assurance).</li>
+    </ul>
+  </div>
+</div>
+
+## Primary References
+
+- **NIST SP 800-53 Rev. 5**: *Security Control Families and Catalog* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/final)
+- **CIS Controls v8**: *Center for Internet Security Critical Security Controls* — [CIS Controls](https://www.cisecurity.org/controls/v8)
