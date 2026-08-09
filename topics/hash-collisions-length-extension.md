@@ -17,15 +17,15 @@ A **hash collision** occurs when two distinct inputs **x ≠ x'** yield identica
 
 The two GIF files below (from security researcher Ange Albertini's research repository) contain different binary image data but produce the identical MD5 digest:
 
-<div class="image-pair">
+<div class="image-pair-compact">
   <figure>
-    <img src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="Green circle GIF image representing MD5 collision file 1" style="max-width: 200px; margin: 0 auto; display: block;">
+    <img src="{{ '/assets/downloads/md5-collision-1.gif' | relative_url }}" alt="Green circle GIF image representing MD5 collision file 1">
     <figcaption>
       <strong>md5-collision-1.gif</strong> (10,386 bytes)
     </figcaption>
   </figure>
   <figure>
-    <img src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="Red X GIF image representing MD5 collision file 2" style="max-width: 200px; margin: 0 auto; display: block;">
+    <img src="{{ '/assets/downloads/md5-collision-2.gif' | relative_url }}" alt="Red X GIF image representing MD5 collision file 2">
     <figcaption>
       <strong>md5-collision-2.gif</strong> (10,386 bytes)
     </figcaption>
