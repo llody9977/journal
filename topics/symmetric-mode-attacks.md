@@ -677,22 +677,25 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   <div class="demo-header">
     <span class="demo-badge">Interactive CTR Playground</span>
     <h3>AES-128-CTR Nonce Reuse Two-Time Pad Playground</h3>
-    <p>Demonstrate how encrypting two messages with the same Nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2), allowing an adversary to extract Plaintext 2 by guessing a snippet of Plaintext 1 without key K.</p>
+    <p>Demonstrate how encrypting any two arbitrary messages with the same Nonce cancels out the AES keystream (C1 ⊕ C2 = P1 ⊕ P2), allowing an adversary to extract Plaintext 2 by guessing a snippet of Plaintext 1 without key K.</p>
   </div>
 
   <div class="demo-body">
     <!-- 1. Two Plaintexts -->
     <div class="demo-form-group">
-      <label>1. Intercepted Server Messages (Encrypted under SAME Nonce):</label>
-      <div style="background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
-        <div><strong>Message 1 (P1):</strong> <code id="ctr-p1-val">Transfer $100 to Bob!!!</code></div>
-        <div><strong>Message 2 (P2):</strong> <code id="ctr-p2-val">Meet me at 9pm sharp!!!</code></div>
-      </div>
+      <label for="ctr-p1-input">1. Message 1 Plaintext (P1):</label>
+      <input type="text" id="ctr-p1-input" class="demo-input" value="Transfer $100 to Bob!!!" placeholder="Enter any text for Message 1...">
+    </div>
+
+    <div class="demo-form-group">
+      <label for="ctr-p2-input">2. Message 2 Plaintext (P2):</label>
+      <input type="text" id="ctr-p2-input" class="demo-input" value="Meet me at 9pm sharp!!!" placeholder="Enter any text for Message 2...">
+      <small class="demo-help">Both messages will be encrypted under the exact same AES-CTR key and nonce.</small>
     </div>
 
     <!-- 2. Attacker Guess Input -->
     <div class="demo-form-group">
-      <label for="ctr-guess-input">2. Attacker Known-Plaintext Guess Snippet for P1:</label>
+      <label for="ctr-guess-input">3. Attacker Known-Plaintext Guess Snippet for P1:</label>
       <div style="display: flex; gap: 0.5rem;">
         <input type="text" id="ctr-guess-input" class="demo-input" value="Transfer $100 to" placeholder="Enter guessed snippet of P1 (e.g. 'Transfer $100 to')...">
         <button id="btn-recover-ctr" class="btn-primary" type="button" style="white-space: nowrap;">Extract P2 Bytes</button>
@@ -702,7 +705,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
     <!-- 3. Decryption Result -->
     <div class="demo-form-group">
-      <label>3. Two-Time Pad Keystream Extraction Output:</label>
+      <label>4. Two-Time Pad Keystream Extraction Output:</label>
       <div id="ctr-extraction-output" class="ecb-blocks-list">
         <!-- Rendered via JS -->
       </div>
@@ -712,16 +715,16 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
 <script>
 (function() {
-  const p1Text = "Transfer $100 to Bob!!!";
-  const p2Text = "Meet me at 9pm sharp!!!";
-  const keyHex = "000102030405060708090a0b0c0d0e0f";
-  const nonceHex = "000000000000000000000001"; // 12-byte nonce for AES-CTR
-
+  const p1Input = document.getElementById('ctr-p1-input');
+  const p2Input = document.getElementById('ctr-p2-input');
   const guessInput = document.getElementById('ctr-guess-input');
   const btnRecover = document.getElementById('btn-recover-ctr');
   const outputContainer = document.getElementById('ctr-extraction-output');
 
-  if (!guessInput || !btnRecover || !outputContainer) return;
+  const keyHex = "000102030405060708090a0b0c0d0e0f";
+  const nonceHex = "000000000000000000000001";
+
+  if (!p1Input || !p2Input || !guessInput || !btnRecover || !outputContainer) return;
 
   function hexToBytes(hex) {
     hex = hex.replace(/\s+/g, '');
@@ -738,9 +741,12 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 
   async function runCTRReuseAttack() {
     try {
+      const p1Text = p1Input.value;
+      const p2Text = p2Input.value;
+
       const keyBytes = hexToBytes(keyHex);
       const counterBytes = new Uint8Array(16);
-      counterBytes.set(hexToBytes(nonceHex), 0); // 12-byte nonce + 4-byte counter
+      counterBytes.set(hexToBytes(nonceHex), 0);
 
       const encoder = new TextEncoder();
       const p1Bytes = encoder.encode(p1Text);
@@ -750,7 +756,6 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
         "raw", keyBytes, { name: "AES-CTR" }, false, ["encrypt"]
       );
 
-      // Encrypt P1 & P2 under identical nonce/counter
       const c1Buffer = await window.crypto.subtle.encrypt(
         { name: "AES-CTR", counter: counterBytes, length: 64 }, cryptoKey, p1Bytes
       );
@@ -761,13 +766,11 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
       const c1Bytes = new Uint8Array(c1Buffer);
       const c2Bytes = new Uint8Array(c2Buffer);
 
-      // Compute Ciphertext XOR Sum: C1 ⊕ C2 = P1 ⊕ P2
       const cXor = new Uint8Array(Math.min(c1Bytes.length, c2Bytes.length));
       for (let i = 0; i < cXor.length; i++) {
         cXor[i] = c1Bytes[i] ^ c2Bytes[i];
       }
 
-      // Attacker Known-Plaintext Guess
       const guessStr = guessInput.value;
       const guessBytes = encoder.encode(guessStr);
 
@@ -827,6 +830,8 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   }
 
   btnRecover.addEventListener('click', runCTRReuseAttack);
+  p1Input.addEventListener('input', runCTRReuseAttack);
+  p2Input.addEventListener('input', runCTRReuseAttack);
   guessInput.addEventListener('input', runCTRReuseAttack);
 
   runCTRReuseAttack();
