@@ -553,7 +553,7 @@ Because **C<sub>i-1</sub>** is XORed directly into decrypted plaintext **P<sub>i
         { name: "AES-CBC", iv: ivBytes }, cryptoKey, plainBytes
       );
       
-      const cipherBytes = new Uint8Array(encrypted.slice(0, 32));
+      const cipherBytes = new Uint8Array(encrypted);
 
       if (isFlipped) {
         cipherBytes[13] ^= ('0'.charCodeAt(0) ^ '1'.charCodeAt(0));
