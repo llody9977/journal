@@ -407,13 +407,13 @@ To achieve a given **Symmetric Security Strength** (measured in bits of brute-fo
 | **256-bit Security** (Maximum Strength) | **15,360 bits** | **512 bits** (P-521) | ECC key is **30x smaller** than RSA. RSA-15360 is unviable for production TLS. |
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Bar chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, and 192-bit security strengths. RSA-7680 spikes exponentially while ECC-384 remains compact.">
-  <p class="diagram-caption">Key size growth (Y-Axis: Key Length in Bits): RSA key sizes scale exponentially, whereas ECC key sizes scale linearly</p>
+  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Comparison chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, 192-bit, and 256-bit security strengths. RSA key sizes spike exponentially while ECC key sizes scale compactly.">
+  <p class="diagram-caption">Comparison of required RSA vs. ECC key lengths in bits across NIST security strength levels (112-bit to 256-bit security)</p>
 </div>
 
-### Why the RSA-7680 Bar Spikes Exponentially
+### Why the RSA Key Size Spikes Exponentially
 
-1. **Y-Axis Unit**: The vertical height of the chart measures **Required Key Length in Bits**.
+1. **Security Strength Scaling**: The chart compares the required key lengths in bits to achieve equivalent NIST symmetric security levels.
 2. **Sub-Exponential Attacks on RSA**: General Number Field Sieve (GNFS) algorithms allow attackers to factor RSA primes faster than pure brute-force. To counter this, increasing RSA's security strength requires **exponentially larger RSA key sizes** (2,048 bits → 3,072 bits → 7,680 bits → 15,360 bits).
 3. **Linear Scaling of ECC**: Elliptic Curve Discrete Logarithms (ECDLP) have no sub-exponential attack algorithm. Doubling ECC's security strength requires only doubling the curve key size (224 bits → 256 bits → 384 bits → 512 bits).
 4. **Engineering Consequence**: At 192-bit security, RSA requires a towering **7,680-bit key** (a 2.5x spike from 3,072 bits!), rendering RSA handshakes extremely slow and CPU-intensive compared to a compact **384-bit ECC key**.
