@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 565" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Security Objectives &amp; System Properties Matrix</title>
-  <desc id="description">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative &amp; Physical Safeguards.</desc>
+  <desc id="description">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative &amp;amp; Physical Safeguards.</desc>
   <rect width="1200" height="565" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -13,7 +13,7 @@
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Security Objectives &amp; System Properties Matrix</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties Privacy,</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">(Authenticity, Accountability, Safety, Resilience), and Technical, Administrative &amp; Physical Safeguards.</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">(Authenticity, Accountability, Safety, Resilience), and Technical, Administrative &amp;amp; Physical Safeguards.</text>
   
     <!-- Top CIA Triad Section (x=40, y=115, w=1120) -->
     <!-- Card 1: Confidentiality (x=40, w=355) -->

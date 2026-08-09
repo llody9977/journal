@@ -1280,7 +1280,7 @@ rows({
     <!-- Bottom Bar: Mechanism Alignment (y=505, w=1120, h=45) -->
     <text x="600" y="525" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.blue}">TECHNICAL SAFEGUARD ALIGNMENT (NIST SP 800-53 REV. 5)</text>
     <text x="600" y="540" text-anchor="middle" font-size="10.5" font-weight="600" fill="${colors.ink}">Technical mechanisms enforce specific properties. No single mechanism satisfies all objectives in isolation.</text>`;
-  write("security-objectives-properties-matrix.svg", documentSvg("Security Objectives & System Properties Matrix", "Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative & Physical Safeguards.", 565, body));
+  write("security-objectives-properties-matrix.svg", documentSvg("Security Objectives & System Properties Matrix", "Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative &amp; Physical Safeguards.", 565, body));
 }
 
 // Identity & Access Management Architecture Diagram (NIST SP 800-63 & 800-207 Zero Trust)
@@ -1583,7 +1583,7 @@ rows({
     <text x="75" y="213" font-size="12" font-weight="800" fill="${colors.ink}">Identity Verification</text>
     <line x1="75" y1="222" x2="290" y2="222" stroke="${colors.green}" stroke-opacity="0.3" stroke-width="1" />
     <text x="75" y="240" font-size="10" font-weight="500" fill="${colors.muted}">• Client Certificate Auth</text>
-    <text x="75" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Authenticated & Encrypted Transport</text>
+    <text x="75" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Authenticated &amp; Encrypted Transport</text>
 
     <!-- Arrow 1->2 -->
     <path d="M 305 224 L 330 224" fill="none" stroke="${colors.green}" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
