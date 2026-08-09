@@ -78,7 +78,7 @@ All cryptographic security ultimately depends on unpredictable randomness. Keys,
 
 ### Client-Side Simulator: Insecure PRNG (MT19937) State Reconstruction Attack
 
-The interactive simulator below demonstrates how an adversary observing 624 outputs from a non-cryptographic PRNG (such as Mersenne Twister `MT19937` in Python `random` or xorshift128+ in browser `Math.random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
+The interactive simulator below demonstrates how an adversary observing 624 32-bit outputs from a non-cryptographic PRNG (such as Mersenne Twister `MT19937` in Python `random` or xorshift128+ in browser `Math.random`) can invert the tempering operations, reconstruct the internal state, and predict **100% of all future tokens**:
 
 <div class="interactive-demo-card">
   <div class="demo-header">
@@ -89,22 +89,24 @@ The interactive simulator below demonstrates how an adversary observing 624 outp
 
   <div class="demo-body">
     <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
-      <button id="mt-btn-generate" class="btn-primary">1. Generate Target PRNG Tokens (624)</button>
-      <button id="mt-btn-reconstruct" class="btn-secondary" disabled>2. Reconstruct State &amp; Predict Next Token</button>
+      <button id="mt-btn-generate" class="btn-primary" type="button">1. Generate Target PRNG Tokens (All 624)</button>
+      <button id="mt-btn-reconstruct" class="btn-secondary" type="button" disabled>2. Untemper State &amp; Predict Token #625</button>
     </div>
 
     <!-- Output Logs -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; margin-top: 1rem;">
+      <!-- Left: Target Server -->
       <div style="background: var(--paper); border: 1px solid var(--rule); padding: 0.85rem; border-radius: 6px;">
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Target PRNG (MT19937) Status</div>
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Target PRNG Server (Observed Tokens 1 - 624)</div>
         <div id="mt-target-status" style="font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-top: 0.35rem;">Click "Generate Target PRNG Tokens" to begin.</div>
-        <div id="mt-target-tokens" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; max-height: 140px; overflow-y: auto; white-space: pre-wrap;"></div>
+        <div id="mt-target-tokens" style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink); margin-top: 0.5rem; max-height: 220px; overflow-y: auto; white-space: pre-wrap; background: var(--panel); border: 1px solid var(--rule); padding: 0.5rem; border-radius: 4px;"></div>
       </div>
 
+      <!-- Right: Attacker Predictor -->
       <div style="background: var(--paper); border: 1px solid var(--rule); padding: 0.85rem; border-radius: 6px;">
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Attacker Predictor Status</div>
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Attacker State Predictor (Untempered Reconstruct)</div>
         <div id="mt-predictor-status" style="font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-top: 0.35rem;">Awaiting 624 target tokens...</div>
-        <div id="mt-predictor-result" style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); margin-top: 0.5rem; white-space: pre-wrap;"></div>
+        <div id="mt-predictor-result" style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink); margin-top: 0.5rem; max-height: 220px; overflow-y: auto; white-space: pre-wrap; background: var(--panel); border: 1px solid var(--rule); padding: 0.5rem; border-radius: 4px;"></div>
       </div>
     </div>
   </div>
@@ -192,40 +194,62 @@ The interactive simulator below demonstrates how an adversary observing 624 outp
     targetRng = new MersenneTwister(seed);
     observedOutputs = [];
 
+    const lines = [];
     for (let i = 0; i < 624; i++) {
-      observedOutputs.push(targetRng.extractNumber());
+      const val = targetRng.extractNumber();
+      observedOutputs.push(val);
+      lines.push(`[Token #${String(i + 1).padStart(3, '0')}] ${val}`);
     }
 
-    targetStatus.textContent = `Generated 624 outputs (Seed: ${seed})`;
-    targetTokens.textContent = observedOutputs.slice(0, 20).join('\n') + '\n... (' + (observedOutputs.length - 20) + ' more tokens observed)';
-    predictorStatus.textContent = '624 tokens observed! Ready to untemper state.';
-    predictorResult.textContent = '';
+    targetStatus.textContent = `Generated All 624 Tokens (Seed: ${seed})`;
+    targetTokens.textContent = lines.join('\n');
+    predictorStatus.textContent = 'All 624 tokens observed! Ready to untemper state.';
+    predictorResult.textContent = 'Click "Untemper State & Predict Token #625" to clone internal MT19937 generator state.';
     btnReconstruct.disabled = false;
   });
 
   btnReconstruct.addEventListener('click', function() {
     if (!targetRng || observedOutputs.length < 624) return;
 
-    // Reconstruct 624-word state
+    // 1. Reconstruct 624-word state array
     const reconstructedState = observedOutputs.map(untemper);
 
-    // Clone into predictor
+    // 2. Clone state into attacker predictor
     const predictorRng = new MersenneTwister();
     predictorRng.mt = reconstructedState;
     predictorRng.index = 624;
 
-    // Generate next secret token from target
-    const targetSecretNext = targetRng.extractNumber();
-    const predictedNext = predictorRng.extractNumber();
+    // 3. Target generates Token #625 (Next Secret Token)
+    const targetNextSecret = targetRng.extractNumber();
 
-    const isMatch = targetSecretNext === predictedNext;
+    // 4. Attacker predicts Token #625
+    const attackerPredicted = predictorRng.extractNumber();
 
+    const isMatch = targetNextSecret === attackerPredicted;
+
+    // Append Token #625 to Target side (Left)
+    const currentTargetText = targetTokens.textContent;
+    targetTokens.textContent = currentTargetText + '\n\n----------------------------------------\n' +
+      `[Token #625 SECRET] ${targetNextSecret} (Target Server)`;
+    // Scroll to bottom of target log
+    targetTokens.scrollTop = targetTokens.scrollHeight;
+
+    // Display prediction details on Attacker side (Right)
     predictorStatus.textContent = isMatch ? '✅ State Reconstructed (100% Match!)' : '❌ State Reconstruction Failed';
-    predictorResult.textContent = [
-      `Target Next Secret Token : ${targetSecretNext}`,
-      `Attacker Predicted Token : ${predictedNext}`,
-      `Attack Result             : ${isMatch ? 'SUCCESS (100% Match!)' : 'FAILED'}`
-    ].join('\n');
+
+    const predictorLines = [
+      `Untempered 624/624 observed tokens into internal state array.`,
+      `Local MT19937 Generator Cloned Successfully!`,
+      ``,
+      `----------------------------------------`,
+      `[Token #625 PREDICTED] ${attackerPredicted} (Attacker)`,
+      `[Token #625 TARGET   ] ${targetNextSecret} (Server)`,
+      ``,
+      `Result: ${isMatch ? '✅ MATCH CONFIRMED (100% Token Parity)' : '❌ MISMATCH'}`
+    ];
+
+    predictorResult.textContent = predictorLines.join('\n');
+    predictorResult.scrollTop = predictorResult.scrollHeight;
   });
 })();
 </script>
