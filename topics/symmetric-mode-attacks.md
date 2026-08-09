@@ -240,34 +240,7 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
 })();
 </script>
 
-### Python CLI Reference Demonstration
 
-```python
-# ecb_leak.py: Demonstrating identical block pattern leakage in AES-ECB
-import subprocess
-
-# 1. Create a 64-byte plaintext with four identical 16-byte blocks
-plain = b"ATTACKATDAWN1234" * 4
-open("plain.bin", "wb").write(plain)
-
-# 2. Encrypt using AES-128-ECB via OpenSSL
-key_hex = "000102030405060708090a0b0c0d0e0f"
-cmd = (
-    f"openssl enc -aes-128-ecb -K {key_hex} "
-    f"-nopad -in plain.bin -out ecb_cipher.bin"
-)
-subprocess.run(cmd, shell=True)
-
-# 3. Read ciphertext and inspect 16-byte blocks
-cipher = open("ecb_cipher.bin", "rb").read()
-for i in range(0, len(cipher), 16):
-    print(f"Block {i//16 + 1}:", cipher[i:i+16].hex())
-# Output:
-# Block 1: f443167bd98b197e88e7a6fdc7c01f50
-# Block 2: f443167bd98b197e88e7a6fdc7c01f50  (Identical Match!)
-# Block 3: f443167bd98b197e88e7a6fdc7c01f50  (Identical Match!)
-# Block 4: f443167bd98b197e88e7a6fdc7c01f50  (Identical Match!)
-```
 
 ## 2. CBC Mode: Bit-Flipping Malleability & Padding Oracle Attacks
 
