@@ -26,8 +26,6 @@ Standardized in **[NIST SP 800-63B Rev. 4](https://pages.nist.gov/800-63-4/sp800
 | **AAL2** | Two distinct factors (*Something you know + Something you have*) | Max 24 hours (1 hour idle) | **Restricted**: SMS / Voice OTP (PSTN delivery vulnerable to SIM-swapping) |
 | **AAL3** | **Hardware-bound non-exportable private key** + activation factor (PIN/Biometric) | Max 12 hours (15 min idle) | **Excluded**: Syncable Passkeys (*Cloud-synced passkeys barred from AAL3 due to key exportability*) |
 
----
-
 ## Authenticator Threat Profile Comparison
 
 | Authenticator Type | NIST AAL Level | Primary Attack Vulnerability | Phishing Resistance |
@@ -37,8 +35,6 @@ Standardized in **[NIST SP 800-63B Rev. 4](https://pages.nist.gov/800-63-4/sp800
 | **TOTP App (RFC 6238)** | AAL2 | Real-time proxy phishing (*Evilginx2*), malware secret extraction | **None** |
 | **Push Notifications** | AAL2 | "MFA Fatigue" / Push-bombing (*Uber 2022 breach*) | **None** |
 | **Hardware Key (FIDO2 / WebAuthn)** | **AAL3** | Physical key theft | **High** (Bound to origin domain name) |
-
----
 
 ## OAuth 2.0 Step-Up Challenge Protocol (RFC 9470)
 

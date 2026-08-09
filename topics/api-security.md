@@ -21,8 +21,6 @@ last_verified: 2026-08-06
 | **HMAC Request Signing** | Per-request HMAC digest over headers/body (*AWS SigV4, Stripe*) | **Yes** (Bound to request payload) | Prevents payload tampering and replay attacks via timestamps and nonces. |
 | **DPoP (RFC 9449)** | Demonstrating Proof-of-Possession signed JWT header | **Yes** (Bound to client private key) | Prevents token replay; Access Token is cryptographically bound to client key pair. |
 
----
-
 ## AWS Signature Version 4 (SigV4) Signing Protocol
 
 AWS SigV4 never transmits long-term AWS secret keys over the network. Instead, SigV4 derives a single-use daily/regional **signing key** via nested HMACs to sign a canonical HTTP request digest:
@@ -46,8 +44,6 @@ k_signing = hmac_sha256(k_service, "aws4_request")
 print("Derived 256-bit Signing Key (Hex):", k_signing.hex())
 # Output: Derives 64-character hex string unique to date/region/service
 ```
-
----
 
 ## Closing the Impersonation Gap: Sender-Constrained Tokens
 

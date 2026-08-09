@@ -384,8 +384,6 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 </script>
 {% endraw %}
 
----
-
 ## What I Need to Remember
 
 <div class="security-layer security-layer-direct">

@@ -24,16 +24,12 @@ In LLMs, system prompts, user queries, retrieved RAG documents, and tool outputs
   <p class="diagram-caption">LLM context vulnerability: natural language instructions and untrusted data share the same token space</p>
 </div>
 
----
-
 ## Direct vs Indirect Prompt Injection
 
 | Attack Vector | Input Source | Attack Target & Mechanism | Operational Consequence |
 |---|---|---|---|
 | **Direct Prompt Injection** | User input string | Overrides system prompt instructions via jailbreaks (*e.g., "Ignore system instructions..."*). | System guardrail bypass, unauthorized capability access. |
 | **Indirect Prompt Injection** | Untrusted external data (RAG documents, fetched web pages, emails) | Attacker embeds instructions in data retrieved during background context assembly. | Silent background execution: exfiltrating user data, triggering unauthorized tool calls. |
-
----
 
 ## Model Context Protocol (MCP) Security: Tool Poisoning
 
@@ -49,8 +45,6 @@ The **Model Context Protocol (MCP)** enables AI agents to discover and execute e
 1. **Validate Tool Descriptions**: Treat tool metadata returned by MCP servers as untrusted input.
 2. **Restrict Scope via Resource Indicators (RFC 8707)**: Bind client tokens to explicit resource server URIs to prevent "confused deputy" attacks across multi-server agent environments.
 3. **Enforce Human-in-the-Loop (HITL)**: Require explicit human approval before executing destructive or high-privilege tool calls (*e.g., file writes, financial transfers, code execution*).
-
----
 
 ## Model Supply Chain Security: Safetensors vs PyTorch Pickle
 

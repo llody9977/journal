@@ -203,8 +203,6 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 </script>
 {% endraw %}
 
----
-
 ## Specialized Password Hashing Functions Matrix
 
 | Algorithm | Memory Hardness | GPU / ASIC Resistance | Specification &amp; Recommended Status |

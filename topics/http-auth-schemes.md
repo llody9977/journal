@@ -27,8 +27,6 @@ Standardized in **[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#name-http-au
 | **Negotiate (SPNEGO)** | RFC 4559 | `Authorization: Negotiate <Kerberos_Ticket_or_NTLM_Blob>` | Used in Windows enterprise environments for SSO (Kerberos / NTLM). |
 | **Digest** | RFC 7616 | `Authorization: Digest username=..., response=...` | Legacy challenge-response scheme replacing cleartext passwords (*Rarely used today*). |
 
----
-
 ## HTTP Basic Authentication (RFC 7617)
 
 **HTTP Basic Auth** concatenates `username` and `password` separated by a colon, Base64-encoding the resulting string:
@@ -44,8 +42,6 @@ python3 -c "import base64; print(base64.b64encode(b'Aladdin:open sesame').decode
   <p>Base64 encoding provides zero confidentiality. Anyone inspecting an HTTP trace can decode `QWxhZGRpbjpvcGVuIHNlc2FtZQ==` instantly back into cleartext credentials. Basic Auth must strictly run over encrypted TLS transport channels.</p>
 </div>
 
----
-
 ## Windows Enterprise Authentication: NTLM vs Kerberos
 
 Active Directory (AD) enterprise environments use two primary authentication protocols:
@@ -57,8 +53,6 @@ Active Directory (AD) enterprise environments use two primary authentication pro
 | **Delegation Support** | No support (Vulnerable to NTLM relay attacks). | Full support via Kerberos constrained delegation (KCD). |
 | **Performance Impact** | Requires Domain Controller round-trip on *every* request. | Client requests reusable Ticket-Granting Ticket (TGT); no DC load per call. |
 | **Security Status** | **Deprecated Fallback**: Vulnerable to relay and pass-the-hash attacks. | **Primary AD Standard**: Fast, scalable, mutually authenticated. |
-
----
 
 ## Model Context Protocol (MCP) Authorization Profile
 

@@ -22,8 +22,6 @@ last_verified: 2026-08-06
 | **TXT** | Arbitrary text attributes | Stores **SPF**, **DKIM**, and **DMARC** email authentication policies and SaaS verification tokens. |
 | **CAA** | Certification Authority Authorization | Restricts which public Certificate Authorities are authorized to issue TLS certificates for the zone. |
 
----
-
 ## The Threat: Kaminsky Cache Poisoning Attack (2008)
 
 Unauthenticated DNS (RFC 1035) relies solely on 16-bit Transaction IDs (TxID) and UDP source port matching. The 2008 **Kaminsky Attack** demonstrated that an adversary could flood a recursive resolver with forged authoritative responses for non-existent subdomains (*e.g., `1.example.com`, `2.example.com`*), forging matching TxIDs to poison the parent domain's nameserver record (`NS`) in the resolver cache.
@@ -34,8 +32,6 @@ Unauthenticated DNS (RFC 1035) relies solely on 16-bit Transaction IDs (TxID) an
 </div>
 
 Modern resolvers mitigate Kaminsky attacks by randomizing UDP source ports and query IDs, but complete authentication requires **DNSSEC**.
-
----
 
 ## DNSSEC: Cryptographic Chain of Trust (RFC 4033 - 4035)
 
@@ -52,8 +48,6 @@ Modern resolvers mitigate Kaminsky attacks by randomizing UDP source ports and q
 - **RRSIG**: Cryptographic signature over a record set (RRset) created by the ZSK.
 - **DS (Delegation Signer)**: Cryptographic hash of the child zone's DNSKEY published in the parent zone, forging the chain of trust across zone boundaries.
 
----
-
 ## DNSSEC vs Encrypted DNS (DoH / DoT)
 
 | Dimension | DNSSEC (RFC 4033-4035) | DNS-over-HTTPS (DoH / RFC 8484) | DNS-over-TLS (DoT / RFC 7858) |
@@ -62,8 +56,6 @@ Modern resolvers mitigate Kaminsky attacks by randomizing UDP source ports and q
 | **Transport Encryption** | None (Payloads sent in cleartext) | TLS Encrypted (HTTP/2 on Port 443) | TLS Encrypted (Dedicated Port 853) |
 | **Mitigates Eavesdropping?** | No | Yes (Hides queries from local ISP/WiFi) | Yes (Hides queries from local ISP/WiFi) |
 | **Mitigates Cache Poisoning?** | **Yes** (Validates signatures end-to-end) | No (Trusts resolver to provide valid data) | No (Trusts resolver to provide valid data) |
-
----
 
 ## CLI Inspection Commands
 

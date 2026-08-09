@@ -21,8 +21,6 @@ last_verified: 2026-08-06
 1. **Identity Provider (IdP)**: The centralized enterprise directory (*Okta, Entra ID, PingIdentity, Keycloak, AD FS*) that authenticates users and signs SAML assertions using an X.509 private key.
 2. **Service Provider (SP)**: The target SaaS application (*Salesforce, Workday, ServiceNow, AWS Console*) that relies on IdP assertions to create local user sessions.
 
----
-
 ## SP-Initiated vs IdP-Initiated SSO Flows
 
 | Dimension | SP-Initiated SSO | IdP-Initiated SSO |
@@ -31,8 +29,6 @@ last_verified: 2026-08-06
 | **Request Message** | SP generates `SAMLRequest` (AuthnRequest) sent to IdP. | No `AuthnRequest`; IdP directly generates `SAMLResponse`. |
 | **Replay Protection** | SP validates `InResponseTo` attribute matching request ID. | Requires strict timestamp (`NotOnOrAfter`) and assertion ID tracking. |
 | **Security Risk Profile** | **Recommended Flow**: Strongest CSRF and replay protection. | Vulnerable to unsolicited assertion replay if SP validation is weak. |
-
----
 
 ## Anatomy of a SAML 2.0 XML Assertion
 
@@ -61,8 +57,6 @@ A SAML Assertion is an XML payload signed using **XML Digital Signatures (XML-DS
   </saml2:AttributeStatement>
 </saml2:Assertion>
 ```
-
----
 
 ## Technical Comparison: SAML 2.0 vs OpenID Connect (OIDC)
 

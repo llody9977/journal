@@ -21,8 +21,6 @@ last_verified: 2026-08-06
 | **Bulk AEAD Encryption** | AES-256-GCM, ChaCha20-Poly1305 | `chacha20-poly1305@openssh.com`, `aes256-gcm@openssh.com` |
 | **Trust Anchor Storage** | Operating System / Browser Trust Store | Local `~/.ssh/known_hosts` file |
 
----
-
 ## Trust-On-First-Use (TOFU) Model & Host Key Verification
 
 When a client connects to an SSH server for the first time, the client verifies the server's bare host key using TOFU:
@@ -37,8 +35,6 @@ When a client connects to an SSH server for the first time, the client verifies 
   <p>If a host key in <code>~/.ssh/known_hosts</code> mismatches the key presented during a connection, OpenSSH aborts the session immediately. This alerts users to potential Man-in-the-Middle (MitM) key interception or unauthorized server replacement.</p>
 </div>
 
----
-
 ## OpenSSH Public Key Types & Recommendations
 
 | Algorithm | Key Length / Curve | Recommended Status | Cryptographic Properties |
@@ -47,8 +43,6 @@ When a client connects to an SSH server for the first time, the client verifies 
 | **RSA-3072 / 4096** | 3,072+ bits | Approved Legacy | High compatibility; larger signatures and slower key generation. |
 | **ECDSA P-256 / P-384** | NIST Curves | Accepted | Requires secure per-signature random nonces (Vulnerable to nonce reuse). |
 | **DSA** | 1024-bit | **PROHIBITED** | Disabled in modern OpenSSH releases due to small key size and weak math. |
-
----
 
 ## OpenSSH Certificate Authority (CA) Architecture
 
@@ -61,8 +55,6 @@ To eliminate TOFU fingerprint prompts across enterprise fleets, organizations de
 
 1. **Host Certificates**: Servers present host certificates signed by an OpenSSH Host CA. Clients trust all servers bearing valid CA signatures, eliminating `known_hosts` prompts.
 2. **User Certificates**: Users authenticate using short-lived (1–8 hour) certificates signed by an OpenSSH User CA, eliminating static `authorized_keys` management.
-
----
 
 ## OpenSSH CLI Commands
 

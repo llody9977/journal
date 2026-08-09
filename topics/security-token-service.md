@@ -22,8 +22,6 @@ Originated in the OASIS **WS-Trust** specification, an STS acts as a trusted bro
 
 Rather than sharing static long-lived credentials (*e.g., permanent AWS access keys or master database passwords*), clients present short-lived evidence to an STS to obtain dynamic, time-limited credentials.
 
----
-
 ## AWS Security Token Service (AWS STS)
 
 AWS STS provides short-lived temporary security credentials (typically valid for 15 minutes to 12 hours) for AWS IAM authorization:
@@ -38,8 +36,6 @@ AWS STS provides short-lived temporary security credentials (typically valid for
 Modern CI/CD pipelines avoid storing static AWS secret keys in repository secrets. Instead, GitHub Actions requests an OIDC token from GitHub's identity provider and trades it via `AssumeRoleWithWebIdentity` for temporary AWS STS credentials:
 
 $$\text{GitHub OIDC JWT} \xrightarrow{\text{AWS STS}} \text{Temporary AWS Access Key + Secret Key + Session Token}$$
-
----
 
 ## OAuth 2.0 Token Exchange (RFC 8693)
 
