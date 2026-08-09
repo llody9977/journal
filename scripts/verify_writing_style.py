@@ -3,7 +3,10 @@ import os
 import sys
 import re
 
-topics_dir = "/Users/llody/Documents/journal/topics"
+# Use relative path derived from script location
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+topics_dir = os.path.join(repo_root, "topics")
+
 files = sorted([f for f in os.listdir(topics_dir) if f.endswith(".md")])
 
 print(f"Running WRITING_STYLE.md automated quality gate across {len(files)} topic files...\n")
@@ -42,12 +45,12 @@ for fname in files:
         errors.append((fname, file_errors))
 
 if errors:
-        print(f"❌ Quality gate FAILED with errors in {len(errors)} file(s):\n")
-        for fname, errs in errors:
-            print(f"  File: {fname}")
-            for err in errs:
-                print(f"    - {err}")
-        sys.exit(1)
+    print(f"❌ Quality gate FAILED with errors in {len(errors)} file(s):\n")
+    for fname, errs in errors:
+        print(f"  File: {fname}")
+        for err in errs:
+            print(f"    - {err}")
+    sys.exit(1)
 
 print(f"✅ All {len(files)} topic files passed the WRITING_STYLE.md quality gate perfectly!")
 sys.exit(0)

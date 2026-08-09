@@ -1,7 +1,9 @@
 import yaml
 import os
 
-nav_path = "/Users/llody/Documents/journal/_data/nav.yml"
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+nav_path = os.path.join(repo_root, "_data", "nav.yml")
+
 with open(nav_path, "r", encoding="utf-8") as f:
     nav_data = yaml.safe_load(f)
 
@@ -66,7 +68,8 @@ html += """
 {% endif %}
 """
 
-with open("/Users/llody/Documents/journal/_includes/topic-nav.html", "w", encoding="utf-8") as f:
+target_path = os.path.join(repo_root, "_includes", "topic-nav.html")
+with open(target_path, "w", encoding="utf-8") as f:
     f.write(html)
 
 print("Generated _includes/topic-nav.html successfully.")
