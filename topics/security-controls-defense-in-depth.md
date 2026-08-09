@@ -12,7 +12,7 @@ last_verified: 2026-08-09
 <p class="lede">A security control is a technical, physical, or administrative safeguard deployed to alter a specific risk exposure. Defense in depth combines diverse, less-correlated safeguards across identity, application, network, and data perimeters to reduce the likelihood that the failure of a single security barrier results in systemic compromise—layering lowers that likelihood, it does not eliminate it.</p>
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/defense-in-depth-architecture.svg' | relative_url }}" alt="Defense in Depth vs Duplicate Control Architecture diagram mapping True Defense-in-Depth (Diverse Complementary Gates with Independent Failure Modes) versus Duplicate Control Anti-Patterns (Redundant Signatures Sharing Common Point of Failure).">
+  <img src="{{ '/assets/img/defense-in-depth-architecture.svg' | relative_url }}" alt="Defense in Depth vs Duplicate Control Architecture diagram mapping True Defense-in-Depth (Diverse Complementary Gates with Largely Independent Failure Modes) versus Duplicate Control Anti-Patterns (Redundant Signatures Sharing Common Point of Failure).">
   <p class="diagram-caption">Defense in Depth vs Duplicate Control Architecture (journal working model): Panel 1 illustrates True Defense in Depth across 4 diverse boundaries (Network mTLS → Ingress WAF → Runtime Application Controls → Data-at-Rest Encryption)—the encryption-at-rest gate narrows exfiltration via a stolen disk/backup, not exfiltration by an already-authenticated application reading data it's entitled to decrypt. Panel 2 contrasts Valid Ingestion Point Layering across boundaries against Single-Boundary Duplicate Anti-Patterns.</p>
 </div>
 

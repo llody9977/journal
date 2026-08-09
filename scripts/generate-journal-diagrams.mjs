@@ -1608,15 +1608,15 @@ rows({
     <text x="615" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Rego Policy Enforcement</text>
 
     <!-- Arrow 3->4 -->
-    <path d="M 845 224 L 870 224" fill="none" stroke="${colors.green}" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+    <path d="M 845 224 L 870 224" fill="none" stroke="${colors.green}" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-teal)"/>
 
-    <!-- Box 4: Data Gate (x=870, y=172, w=270, h=105) -->
+    <!-- Box 4: Storage Protection (x=870, y=172, w=270, h=105) -->
     <rect x="870" y="172" width="270" height="105" rx="10" fill="#ffffff" stroke="${colors.green}" stroke-width="1.5" />
-    <text x="885" y="195" font-size="10.5" font-weight="900" fill="${colors.green}">4. DATA GATE (ENCRYPTION)</text>
-    <text x="885" y="213" font-size="12" font-weight="800" fill="${colors.ink}">Exfiltration Protection</text>
+    <text x="885" y="195" font-size="9.5" font-weight="900" fill="${colors.green}">STORAGE PROTECTION — SEPARATE THREAT</text>
+    <text x="885" y="213" font-size="12" font-weight="800" fill="${colors.ink}">Data-at-Rest Encryption</text>
     <line x1="885" y1="222" x2="1125" y2="222" stroke="${colors.green}" stroke-opacity="0.3" stroke-width="1" />
     <text x="885" y="240" font-size="10" font-weight="500" fill="${colors.muted}">• AES-256 Envelope Keys</text>
-    <text x="885" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• HSM Key Isolation</text>
+    <text x="885" y="256" font-size="10" font-weight="500" fill="${colors.muted}">• Does not narrow the Gates 1–3 attack path</text>
 
     <!-- PANEL 2: INGESTION POINT LAYERING VS DUPLICATE ANTI-PATTERN (y=310, h=175) -->
     <rect x="40" y="310" width="1120" height="175" rx="14" fill="${colors.panel}" stroke="${colors.line}" stroke-width="2.5" />
