@@ -24,8 +24,6 @@ Standardized in **[NIST FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)
 | **Level 3** | **Tamper-resistant** hardware with automatic zeroization (key destruction) upon physical intrusion. | Commercial HSMs (*AWS CloudHSM, Thales Luna G7, YubiHSM2*) |
 | **Level 4** | Complete environmental attack protection (voltage, temperature, chemical probing). | High-assurance military and banking payment HSMs |
 
----
-
 ## Non-Extractable Key Attributes (PKCS#11 Standard)
 
 HSMs enforce logical non-extractability: secret key material ($K_{priv}$) is generated inside the hardware boundary and marked with unalterable object flags. Cryptographic operations (signing, decryption) execute inside the HSM; raw key bytes are never exported to host system RAM.
@@ -38,8 +36,6 @@ HSMs enforce logical non-extractability: secret key material ($K_{priv}$) is gen
 | `CKA_EXTRACTABLE` | `CK_FALSE` | Prohibits wrapping or exporting the key under any wrapping key. |
 | `CKA_ALWAYS_SENSITIVE` | `CK_TRUE` | Guarantees the key has been sensitive since initial generation. |
 | `CKA_NEVER_EXTRACTABLE` | `CK_TRUE` | Asserts the key was never exported across its entire lifecycle. |
-
----
 
 ## Envelope Encryption Architecture (DEK / KEK)
 
@@ -213,8 +209,6 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 </script>
 {% endraw %}
 
----
-
 ## Customer Key Custody Models (CMEK vs BYOK vs HYOK)
 
 | Key Custody Model | Operative Key Storage | Cloud Vendor Access Boundary | Ideal Use Case |
@@ -223,8 +217,6 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 | **CMEK (Customer-Managed Key)** | Dedicated KMS Vault | Dedicated service account granted narrow `encrypt`/`decrypt` permissions via KMS grants. | Enterprise regulatory compliance with full lifecycle control. |
 | **BYOK (Bring Your Own Key)** | Generated on-prem, imported to Cloud KMS | Key material resides inside Cloud KMS; customer retains backup. | Regulatory requirement for independent key generation. |
 | **HYOK (Hold Your Own Key)** | On-premise HSM | Cryptographic API calls cross customer boundary; raw key never leaves on-prem HSM. | High-assurance defense or banking environments (*Adds latency*). |
-
----
 
 ## SoftHSM2 & PKCS#11 Demonstration
 

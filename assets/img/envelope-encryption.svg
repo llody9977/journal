@@ -1,18 +1,55 @@
-<svg viewBox="0 0 1200 687" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">Envelope encryption with a KMS</title>
-  <desc id="description">The application encrypts data locally with a DEK and stores only the wrapped DEK beside the ciphertext.</desc>
-  <rect width="1200" height="687" fill="#ffffff"/>
+<svg viewBox="0 0 1200 325" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Envelope Encryption Architecture (DEK &amp; KEK)</title>
+  <desc id="description">Master Key Encryption Key (KEK) inside KMS wraps local Data Encryption Keys (DEKs) protecting bulk payload data</desc>
+  <rect width="1200" height="325" fill="#ffffff"/>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10Z" fill="#16a34a"/>
+    </marker>
   </defs>
-  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Envelope encryption with a KMS</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">The application encrypts data locally with a DEK and stores only the wrapped DEK the</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">beside ciphertext.</text>
-  <rect x="55" y="130" width="1090" height="115" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/><text x="85" y="172" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">1 · Generate DEK</text><text x="400" y="167" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Create a random symmetric data encryption key for the payload.</text><rect x="55" y="263" width="1090" height="115" rx="18" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/><text x="85" y="305" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">2 · Encrypt payload</text><text x="400" y="300" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Use the plaintext DEK with an AEAD cipher, then remove the plaintext DEK from memory.</text><rect x="55" y="396" width="1090" height="115" rx="18" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/><text x="85" y="438" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">3 · Wrap DEK</text><text x="400" y="433" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">KMS protects the DEK under a KEK or customer-managed key without exposing that KEK.</text><rect x="55" y="529" width="1090" height="115" rx="18" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5"/><text x="85" y="571" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">4 · Store envelope</text><text x="400" y="566" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Persist ciphertext, nonce, tag, metadata, and wrapped DEK together.</text>
+
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Envelope Encryption Architecture (DEK &amp; KEK)</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Master Key Encryption Key (KEK) inside KMS wraps local Data Encryption Keys (DEKs) protecting bulk payload data</text>
+
+  <!-- Outer Panel Container (1120px wide, equal 50px margins inside) -->
+  <rect x="40" y="110" width="1120" height="195" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
+
+  <!-- Box 1: Cloud KMS / HSM (300px wide, x=90 to 390) -->
+  <rect x="90" y="130" width="300" height="155" rx="10" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+  <text x="105" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#94a3b8">CLOUD KMS / HSM (TRUST BOUNDARY)</text>
+  <text x="105" y="176" font-size="13.5" font-weight="800" fill="#ffffff">Key Encryption Key (KEK)</text>
+  <line x1="105" y1="186" x2="375" y2="186" stroke="#475569" stroke-width="1"/>
+  <text x="105" y="205" font-size="11" fill="#cbd5e1">• KEK never leaves HSM boundary</text>
+  <text x="105" y="222" font-size="11" fill="#cbd5e1">• Handles Wrap / Unwrap API calls</text>
+  <rect x="105" y="238" width="270" height="32" rx="6" fill="#334155"/>
+  <text x="240" y="259" font-size="11" font-weight="800" fill="#fde047" text-anchor="middle">Customer-Managed Key (CMEK)</text>
+
+  <!-- Connector 1 -> 2 (60px gap, x=390 to 450) -->
+  <path d="M 395 207 L 445 207" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- Box 2: Application RAM (300px wide, x=450 to 750) -->
+  <rect x="450" y="130" width="300" height="155" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="465" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#2563eb">APPLICATION MEMORY (RAM)</text>
+  <text x="465" y="176" font-size="13.5" font-weight="800" fill="#1e40af">Plaintext DEK (32-byte AES)</text>
+  <line x1="465" y1="186" x2="735" y2="186" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="465" y="205" font-size="11" fill="#475569">• Encrypts/decrypts local bulk data</text>
+  <text x="465" y="222" font-size="11" fill="#475569">• Zeroed out of memory on exit</text>
+  <rect x="465" y="238" width="270" height="32" rx="6" fill="#1e40af"/>
+  <text x="600" y="259" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Ephemeral DEK in Memory</text>
+
+  <!-- Connector 2 -> 3 (60px gap, x=750 to 810) -->
+  <path d="M 755 207 L 805 207" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+
+  <!-- Box 3: Persistent Storage (300px wide, x=810 to 1110) -->
+  <rect x="810" y="130" width="300" height="155" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="825" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#16a34a">PERSISTENT STORAGE (DISK)</text>
+  <text x="825" y="176" font-size="13.5" font-weight="800" fill="#15803d">Encrypted Data + EDEK</text>
+  <line x1="825" y1="186" x2="1095" y2="186" stroke="#86efac" stroke-width="1"/>
+  <text x="825" y="205" font-size="11" fill="#475569">• Bulk Payload Ciphertext</text>
+  <text x="825" y="222" font-size="11" fill="#475569">• Wrapped EDEK Header</text>
+  <rect x="825" y="238" width="270" height="32" rx="6" fill="#15803d"/>
+  <text x="960" y="259" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">EDEK Header on Disk</text>
 </svg>
