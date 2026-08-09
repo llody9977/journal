@@ -385,7 +385,7 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
   const inputInjected = document.getElementById('input-injected-data');
   const inputGuessedLen = document.getElementById('input-guessed-len');
 
-  if (!btnExec || !outputArea) return;
+  if (!btnExec || !outputArea || !inputSecret || !inputOrigMsg || !inputInjected || !inputGuessedLen) return;
 
   const S = [7,12,17,22, 7,12,17,22, 7,12,17,22, 7,12,17,22,
              5,9,14,20,  5,9,14,20,  5,9,14,20,  5,9,14,20,
