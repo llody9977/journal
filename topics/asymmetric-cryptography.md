@@ -44,60 +44,352 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 2. **Signature Algorithms Do Not Possess Encryption Functions**: Signature algorithms (*Ed25519, ECDSA, RSA-PSS, FIPS 204 ML-DSA*) operate strictly on mathematical signature equations. They do not contain encryption functions and cannot transform plaintext into ciphertext.
 3. **Asymmetric Encryption Standards Enforce Fixed Key Roles**: Asymmetric encryption standards (*RSA-OAEP, HPKE RFC 9180*) define encryption as locking data using a recipient's Public Key. Standardized padding routines (*RSA-OAEP*) cannot execute using a private key, and decryption APIs explicitly reject public keys.
 
-### OpenSSL CLI Demonstrations
+### Client-Side Executable RSA Asymmetric Encryption & Digital Signature Playground
 
-#### 1. Digital Signature: Plaintext Payload Remains 100% Unchanged
+<div class="interactive-demo-card">
+  <div class="demo-header">
+    <span class="demo-badge">Interactive Browser Playground</span>
+    <h3>RSA Asymmetric Key Encryption & Digital Signature Playground</h3>
+    <p>Generate real 2048-bit RSA key pairs directly in your browser. Interactively test RSA-OAEP public key encryption, private key decryption, and digital signature verification (Zero server calls / Executed locally via Web Crypto API).</p>
+  </div>
 
-```bash
-# 1. Create a plaintext payload file
-echo "Confidential Payroll Data: $100,000" > payload.txt
+  <div class="demo-body">
+    <!-- 1. Key Generation Control -->
+    <div class="demo-form-group">
+      <label>1. Browser Asymmetric Key Pair Management:</label>
+      <div class="demo-actions" style="margin: 0.5rem 0;">
+        <button id="btn-gen-rsa-keys" class="btn-primary" type="button">🔑 Generate Real 2048-bit RSA Keypair</button>
+      </div>
+      <small class="demo-help" id="rsa-key-status">Status: Keys generated on page load via Web Crypto API.</small>
+    </div>
 
-# 2. Generate an RSA-3072 key pair for Alice (Signer)
-openssl genrsa -out alice_priv.pem 3072
-openssl rsa -in alice_priv.pem -pubout -out alice_pub.pem
+    <!-- Public / Private Key Display -->
+    <div class="demo-form-group">
+      <label>Generated Public &amp; Private Keys (PEM Format):</label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+        <div>
+          <small><strong>Recipient Public Key (Shareable):</strong></small>
+          <textarea id="rsa-pub-pem" rows="4" class="demo-textarea" readonly style="font-size: 0.72rem; cursor: default;"></textarea>
+        </div>
+        <div>
+          <small><strong>Recipient Private Key (Secret):</strong></small>
+          <textarea id="rsa-priv-pem" rows="4" class="demo-textarea" readonly style="font-size: 0.72rem; cursor: default;"></textarea>
+        </div>
+      </div>
+    </div>
 
-# 3. Create a digital signature using Alice's private key
-openssl dgst -sha256 -sign alice_priv.pem -out payload.sig payload.txt
+    <!-- 2. Asymmetric Encryption Section -->
+    <div class="demo-form-group">
+      <label for="rsa-plain-input">2. Plaintext Message Input:</label>
+      <input type="text" id="rsa-plain-input" class="demo-input" value="Confidential Payroll Data: $100,000" placeholder="Enter message to encrypt or sign...">
+      <div class="demo-actions" style="margin: 0.75rem 0 0.5rem;">
+        <button id="btn-rsa-encrypt" class="btn-primary" type="button">🔒 Encrypt with Public Key (RSA-OAEP)</button>
+        <button id="btn-rsa-decrypt" class="btn-secondary" type="button">🔓 Decrypt with Private Key</button>
+        <button id="btn-rsa-fail-decrypt" class="btn-secondary" type="button" style="color: #b91c1c; border-color: #fca5a5;">❌ Attempt Decrypt with Public Key</button>
+      </div>
+    </div>
 
-# 4. VERIFY PLAINTEXT: The original payload remains unencrypted cleartext!
-cat payload.txt
-# Output: Confidential Payroll Data: $100,000  (NOT ENCRYPTED!)
+    <!-- Encryption Output Display -->
+    <div id="rsa-enc-output-area" class="demo-output-area"></div>
 
-# 5. Verify the signature tag using Alice's public key
-openssl dgst -sha256 -verify alice_pub.pem -signature payload.sig payload.txt
-# Output: Verified OK
-```
+    <hr style="border: 0; border-top: 1px solid var(--rule); margin: 1.5rem 0;">
 
-#### 2. Asymmetric Encryption: Plaintext Is Transformed into Ciphertext
+    <!-- 3. Digital Signature Section -->
+    <div class="demo-form-group">
+      <label>3. Digital Signature &amp; Integrity Verification:</label>
+      <p style="font-size: 0.85rem; color: var(--muted); margin: 0.25rem 0 0.75rem;">Proving that signing locks a hash digest tag, leaving the original payload file 100% unencrypted in cleartext.</p>
+      <div class="demo-actions" style="margin-bottom: 0.5rem;">
+        <button id="btn-rsa-sign" class="btn-primary" type="button">✍️ Sign Payload with Private Key</button>
+        <button id="btn-rsa-verify" class="btn-secondary" type="button">✔ Verify Signature with Public Key</button>
+      </div>
+    </div>
 
-```bash
-# 1. Generate an RSA-3072 key pair for Bob (Recipient)
-openssl genrsa -out bob_priv.pem 3072
-openssl rsa -in bob_priv.pem -pubout -out bob_pub.pem
+    <!-- Signature Output Display -->
+    <div id="rsa-sig-output-area" class="demo-output-area"></div>
+  </div>
+</div>
 
-# 2. Encrypt plaintext using Bob's PUBLIC key (RSA-OAEP)
-openssl pkeyutl -encrypt -pubin -inkey bob_pub.pem -pkeyopt rsa_padding_mode:oaep \
-  -in payload.txt -out payload.enc
+<script>
+(function() {
+  const btnGenKeys = document.getElementById('btn-gen-rsa-keys');
+  const pubPemText = document.getElementById('rsa-pub-pem');
+  const privPemText = document.getElementById('rsa-priv-pem');
+  const keyStatus = document.getElementById('rsa-key-status');
 
-# 3. VERIFY CIPHERTEXT: The file is now unreadable binary ciphertext!
-xxd payload.enc | head -n 2
-# Output: 00000000: 1df9 70ed 6063 0717 ffdc 16fc cc42 36c1  ..p.`c.......B6.
+  const plainInput = document.getElementById('rsa-plain-input');
+  const btnEncrypt = document.getElementById('btn-rsa-encrypt');
+  const btnDecrypt = document.getElementById('btn-rsa-decrypt');
+  const btnFailDecrypt = document.getElementById('btn-rsa-fail-decrypt');
+  const encOutput = document.getElementById('rsa-enc-output-area');
 
-# 4. Decrypt using Bob's PRIVATE key
-openssl pkeyutl -decrypt -inkey bob_priv.pem -pkeyopt rsa_padding_mode:oaep \
-  -in payload.enc -out decrypted.txt
-cat decrypted.txt
-# Output: Confidential Payroll Data: $100,000
-```
+  const btnSign = document.getElementById('btn-rsa-sign');
+  const btnVerify = document.getElementById('btn-rsa-verify');
+  const sigOutput = document.getElementById('rsa-sig-output-area');
 
-#### 3. Attempting Public Key Decryption Fails
+  if (!btnGenKeys || !encOutput) return;
 
-```bash
-# Attempting to "decrypt" using a Public Key fails immediately
-openssl pkeyutl -decrypt -pubin -inkey bob_pub.pem -in payload.enc -out fail.txt
-# Output Error: A private key is needed for this operation
-# Error initializing context
-```
+  let encKeyPair = null;
+  let signKeyPair = null;
+  let currentCipherBytes = null;
+  let currentSignatureBytes = null;
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  }
+
+  function formatPEM(b64, type) {
+    const lines = b64.match(/.{1,64}/g) || [b64];
+    return `-----BEGIN ${type}-----\n${lines.join('\n')}\n-----END ${type}-----`;
+  }
+
+  async function generateRSAKeys() {
+    try {
+      keyStatus.innerHTML = '<span style="color: var(--amber); font-weight: 600;">⏳ Generating 2048-bit RSA keys...</span>';
+
+      // 1. RSA-OAEP Keys for Encryption
+      encKeyPair = await window.crypto.subtle.generateKey(
+        {
+          name: "RSA-OAEP",
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([1, 0, 1]),
+          hash: "SHA-256"
+        },
+        true,
+        ["encrypt", "decrypt"]
+      );
+
+      // 2. RSASSA-PKCS1-v1_5 Keys for Signature
+      signKeyPair = await window.crypto.subtle.generateKey(
+        {
+          name: "RSASSA-PKCS1-v1_5",
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([1, 0, 1]),
+          hash: "SHA-256"
+        },
+        true,
+        ["sign", "verify"]
+      );
+
+      // Export Public Key to PEM
+      const pubSpki = await window.crypto.subtle.exportKey("spki", encKeyPair.publicKey);
+      const pubB64 = arrayBufferToBase64(pubSpki);
+      pubPemText.value = formatPEM(pubB64, "PUBLIC KEY");
+
+      // Export Private Key to PEM
+      const privPkcs8 = await window.crypto.subtle.exportKey("pkcs8", encKeyPair.privateKey);
+      const privB64 = arrayBufferToBase64(privPkcs8);
+      privPemText.value = formatPEM(privB64, "PRIVATE KEY");
+
+      keyStatus.innerHTML = '<span style="color: #15803d; font-weight: 600;">✔ 2048-bit RSA Keypair Generated Successfully!</span>';
+    } catch (err) {
+      keyStatus.innerHTML = `<span style="color: #b91c1c;">Key Generation Error: ${err.message || err}</span>`;
+    }
+  }
+
+  async function handleEncrypt() {
+    try {
+      if (!encKeyPair) await generateRSAKeys();
+      const textVal = plainInput.value;
+      const encoder = new TextEncoder();
+      const plainBytes = encoder.encode(textVal);
+
+      const encrypted = await window.crypto.subtle.encrypt(
+        { name: "RSA-OAEP" },
+        encKeyPair.publicKey,
+        plainBytes
+      );
+
+      currentCipherBytes = new Uint8Array(encrypted);
+      const hexStr = bytesToHex(currentCipherBytes);
+
+      encOutput.innerHTML = `
+      <div class="ecb-blocks-list">
+        <div class="ecb-block-item target-block-decrypted">
+          <div class="block-meta">
+            <span class="block-num">RSA-OAEP Binary Ciphertext Output (${currentCipherBytes.length} Bytes)</span>
+            <span class="block-plain-preview">Encrypted under Public Key</span>
+          </div>
+          <div class="block-hex-val" style="word-break: break-all; font-size: 0.78rem;">
+            <code>${hexStr}</code>
+          </div>
+        </div>
+      </div>`;
+    } catch (err) {
+      encOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>Encryption Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  async function handleDecrypt() {
+    try {
+      if (!currentCipherBytes) {
+        encOutput.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please encrypt a message first before decrypting.</div>';
+        return;
+      }
+
+      const decrypted = await window.crypto.subtle.decrypt(
+        { name: "RSA-OAEP" },
+        encKeyPair.privateKey,
+        currentCipherBytes
+      );
+
+      const decText = new TextDecoder().decode(decrypted);
+
+      encOutput.innerHTML = `
+      <div class="ecb-blocks-list">
+        <div class="ecb-block-item target-block-decrypted">
+          <div class="block-meta">
+            <span class="block-num">Decrypted Plaintext Output</span>
+            <span class="block-plain-preview">✔ Decrypted via Private Key</span>
+          </div>
+          <div class="block-hex-val">
+            <code>"<strong>${decText}</strong>"</code>
+            <span class="matched-tag">✔ RECOVERED OK</span>
+          </div>
+        </div>
+      </div>`;
+    } catch (err) {
+      encOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>Decryption Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  async function handleFailDecrypt() {
+    try {
+      if (!currentCipherBytes) {
+        encOutput.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please encrypt a message first.</div>';
+        return;
+      }
+      // Intentionally pass Public Key to decrypt API (Key Usage rejection)
+      await window.crypto.subtle.decrypt(
+        { name: "RSA-OAEP" },
+        encKeyPair.publicKey,
+        currentCipherBytes
+      );
+    } catch (err) {
+      encOutput.innerHTML = `
+      <div class="security-layer security-layer-direct" style="margin-top: 1rem;">
+        <div class="security-layer-label">API Contract Rejection Confirmed</div>
+        <div>
+          <strong>Public Key Decryption Rejected by Web Crypto API!</strong>
+          <p style="margin-bottom:0;">Error Message: <code>${err.message || err}</code>. Asymmetric cryptography standards explicitly prohibit using Public Keys for decryption!</p>
+        </div>
+      </div>`;
+    }
+  }
+
+  async function handleSign() {
+    try {
+      if (!signKeyPair) await generateRSAKeys();
+      const textVal = plainInput.value;
+      const encoder = new TextEncoder();
+      const plainBytes = encoder.encode(textVal);
+
+      const sigBuffer = await window.crypto.subtle.sign(
+        { name: "RSASSA-PKCS1-v1_5" },
+        signKeyPair.privateKey,
+        plainBytes
+      );
+
+      currentSignatureBytes = new Uint8Array(sigBuffer);
+      const sigHex = bytesToHex(currentSignatureBytes);
+
+      sigOutput.innerHTML = `
+      <div class="ecb-blocks-list">
+        <div class="ecb-block-item">
+          <div class="block-meta">
+            <span class="block-num">Original Payload File (100% Cleartext Unchanged)</span>
+            <span class="block-plain-preview">NOT ENCRYPTED!</span>
+          </div>
+          <div class="block-hex-val">
+            <code>"<strong>${textVal}</strong>"</code>
+          </div>
+        </div>
+
+        <div class="ecb-block-item target-block-decrypted">
+          <div class="block-meta">
+            <span class="block-num">RSASSA-PKCS1-v1_5 Digital Signature Tag (${currentSignatureBytes.length} Bytes)</span>
+            <span class="block-plain-preview">Signed via Private Key</span>
+          </div>
+          <div class="block-hex-val" style="word-break: break-all; font-size: 0.75rem;">
+            <code>${sigHex}</code>
+          </div>
+        </div>
+      </div>`;
+    } catch (err) {
+      sigOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>Signature Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  async function handleVerify() {
+    try {
+      if (!currentSignatureBytes) {
+        sigOutput.innerHTML = '<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">⚠️ Please generate a signature first.</div>';
+        return;
+      }
+
+      const textVal = plainInput.value;
+      const encoder = new TextEncoder();
+      const plainBytes = encoder.encode(textVal);
+
+      const isValid = await window.crypto.subtle.verify(
+        { name: "RSASSA-PKCS1-v1_5" },
+        signKeyPair.publicKey,
+        currentSignatureBytes,
+        plainBytes
+      );
+
+      if (isValid) {
+        sigOutput.innerHTML += `
+        <div class="security-layer security-layer-protect" style="margin-top: 1rem;">
+          <div class="security-layer-label">Signature Verification Successful</div>
+          <div>
+            <strong>✔ Signature Verified OK!</strong>
+            <p style="margin-bottom:0;">The signature tag matches the message payload and was mathematically generated by the holder of the matching Private Key.</p>
+          </div>
+        </div>`;
+      } else {
+        sigOutput.innerHTML += `
+        <div class="security-layer security-layer-direct" style="margin-top: 1rem;">
+          <div class="security-layer-label">Verification Failure</div>
+          <div>
+            <strong>❌ Signature Invalid!</strong>
+            <p style="margin-bottom:0;">The payload or signature has been tampered with.</p>
+          </div>
+        </div>`;
+      }
+    } catch (err) {
+      sigOutput.innerHTML = `<div style="color: #b91c1c; padding: 1rem; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+        <strong>Verification Error:</strong> ${err.message || err}
+      </div>`;
+    }
+  }
+
+  btnGenKeys.addEventListener('click', generateRSAKeys);
+  btnEncrypt.addEventListener('click', handleEncrypt);
+  btnDecrypt.addEventListener('click', handleDecrypt);
+  btnFailDecrypt.addEventListener('click', handleFailDecrypt);
+
+  btnSign.addEventListener('click', handleSign);
+  btnVerify.addEventListener('click', handleVerify);
+
+  // Generate initial keypair on load
+  generateRSAKeys();
+})();
+</script>
 
 ## Comparative Analysis: RSA vs Elliptic Curve Cryptography (ECC)
 
