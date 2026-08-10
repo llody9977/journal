@@ -93,7 +93,10 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
   function calculateEntropy() {
     const password = passwordInput.value;
-    const len = password.length;
+    // Array.from splits on Unicode code points, not UTF-16 code units, so a
+    // surrogate-pair character (e.g. most emoji) counts as one character, not two.
+    const codePoints = Array.from(password);
+    const len = codePoints.length;
     lenVal.innerText = len;
 
     if (len === 0) {
@@ -107,18 +110,22 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
       return;
     }
 
-    // Determine character pool (R)
+    // Determine character pool (R). This model only covers printable ASCII —
+    // it does not attempt to size a pool for arbitrary Unicode scripts, where
+    // the "reasonable" character-set size varies enormously by language.
     let hasLower = false;
     let hasUpper = false;
     let hasDigit = false;
     let hasSpecial = false;
+    let hasNonAscii = false;
 
-    for (let i = 0; i < len; i++) {
-      const charCode = password.charCodeAt(i);
-      if (charCode >= 97 && charCode <= 122) hasLower = true;
-      else if (charCode >= 65 && charCode <= 90) hasUpper = true;
-      else if (charCode >= 48 && charCode <= 57) hasDigit = true;
-      else hasSpecial = true;
+    for (const ch of codePoints) {
+      const cp = ch.codePointAt(0);
+      if (cp >= 97 && cp <= 122) hasLower = true;
+      else if (cp >= 65 && cp <= 90) hasUpper = true;
+      else if (cp >= 48 && cp <= 57) hasDigit = true;
+      else if (cp >= 32 && cp <= 126) hasSpecial = true; // printable ASCII punctuation/symbols
+      else hasNonAscii = true; // outside this model's scope — see note below
     }
 
     let R = 0;
@@ -126,8 +133,9 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     if (hasUpper) R += 26;
     if (hasDigit) R += 10;
     if (hasSpecial) R += 33; // Standard printable special characters
+    if (hasNonAscii && R === 0) R = 33; // avoid log2(0) if the input is entirely non-ASCII
 
-    poolVal.innerText = R;
+    poolVal.innerText = hasNonAscii ? `${R}+ (non-ASCII present)` : R;
 
     // Idealized Uniform Search-Space Upper Bound: E = L * log2(R)
     const E = len * (Math.log(R) / Math.log(2));
@@ -161,7 +169,9 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
       borderColor = 'var(--teal)';
     }
 
-    statusBar.innerHTML = rating;
+    statusBar.innerHTML = hasNonAscii
+      ? rating + ' &mdash; note: this simplified pool model only sizes printable ASCII; non-ASCII characters are each counted as one character but not assigned a realistic pool size, so treat this number as a loose floor, not an accurate estimate.'
+      : rating;
     statusBar.style.background = bgColor;
     statusBar.style.color = textColor;
     statusBar.style.borderColor = borderColor;
@@ -396,7 +406,7 @@ async function hashUserPassword(password) {
 
 <div class="callout warn">
   <span class="callout-title">Do Not Pre-Hash With Plain, Unkeyed SHA-256</span>
-  <p>A tempting mitigation is to pre-hash long passwords with plain <code>SHA-256(password)</code> — producing a fixed 32-byte digest — before passing them to <code>bcrypt</code>. The <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage Cheat Sheet</a> advises against this: because SHA-256 is fast, unkeyed, and public, an attacker who obtains the database can attack the pre-hash independently of bcrypt's cost factor — a technique known as <strong>password shucking</strong>. If the attacker can find <em>any</em> password whose <code>SHA-256</code> digest matches the pre-hash value (using GPU-scale generic SHA-256 cracking infrastructure, entirely unrelated to your bcrypt cost setting), a single bcrypt verification confirms the match — the expensive memory/CPU-hard step bcrypt was supposed to force is bypassed almost entirely, because the pre-hash step that actually gates the attacker's search is cheap and requires no application secret.</p>
+  <p>A tempting mitigation is to pre-hash long passwords with plain <code>SHA-256(password)</code> — producing a fixed 32-byte digest — before passing them to <code>bcrypt</code>. The <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pre-hashing-passwords-with-bcrypt">OWASP Password Storage Cheat Sheet</a> advises against this because of a technique known as <strong>password shucking</strong> — but the risk isn't that possessing the <code>bcrypt(SHA-256(password))</code> database alone lets an attacker skip bcrypt's cost. Attacking that stored value directly still requires one full bcrypt computation per guess, exactly as intended, regardless of what the inner hash is. The actual danger is <strong>cross-referencing</strong>: because <code>SHA-256(password)</code> is fast, unkeyed, and produces the same output for the same password everywhere it's used, if that <em>intermediate</em> digest ever becomes independently known — leaked from a different breach that stored it raw, exposed by a debug log, a caching layer, or another service using the identical pre-hash-then-store pattern — an attacker can crack that separately-leaked SHA-256 value at GPU speed (since nothing here needs bcrypt-level cost) to recover the password, then confirm it against your bcrypt hash with a <em>single</em> bcrypt operation. That second step is what "shucks off" the bcrypt shell — but only once the attacker already has the plaintext from somewhere the bcrypt cost factor never protected. Without that separate leak, unkeyed SHA-256 pre-hashing on its own doesn't hand an attacker a shortcut against the bcrypt-protected database.</p>
   <p>OWASP's recommended construction instead uses a <strong>keyed</strong> pre-hash: <code>bcrypt(base64(HMAC-SHA-384(password, pepper)), salt, cost)</code>. Because HMAC-SHA-384 is keyed with a secret <strong>pepper</strong> (see "Salting &amp; Peppering Architecture" above), an attacker without that pepper cannot reuse generic public SHA-2 cracking infrastructure against the pre-hash at all — they would first need the pepper itself, which is why the pepper should live in KMS/HSM custody separate from the password database. Base64-encoding the HMAC output (rather than feeding bcrypt the raw binary digest) also avoids embedded null bytes, which some bcrypt implementations treat as a C-style string terminator and truncate on.</p>
   <p><strong>Pepper-management implications</strong>: this construction only helps if the pepper stays secret and available. Plan for pepper rotation (version peppers so old hashes can still be verified during a rotation window, then rehash on next login), a pepper backup/recovery strategy (losing the pepper makes every stored hash unverifiable — unlike a compromised per-user salt, which only affects that one user), and awareness that a single shared pepper is a single point of failure: its compromise affects the whole user base at once, which is why it belongs in a KMS/HSM rather than application config.</p>
 </div>

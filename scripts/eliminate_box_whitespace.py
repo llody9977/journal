@@ -66,7 +66,7 @@ SVGS['full-disk-encryption-scope.svg'] = """<svg viewBox="0 0 1200 420" xmlns="h
   <text x="75" y="244" font-size="12" fill="#475569">• AES-XTS (IEEE 1619) sector-level block encryption</text>
   <text x="75" y="264" font-size="12" fill="#475569">• Requires boot passphrase or TPM hardware authorization</text>
   <rect x="75" y="285" width="485" height="40" rx="8" fill="#15803d"/>
-  <text x="317" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">PROTECTED: Physical Theft Defeated</text>
+  <text x="317" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">MITIGATES OFFLINE DISCLOSURE FROM DEVICE THEFT</text>
 
   <!-- Right: Booted -->
   <rect x="615" y="115" width="535" height="235" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
@@ -113,11 +113,11 @@ SVGS['quantum-algorithm-impact.svg'] = """<svg viewBox="0 0 1200 420" xmlns="htt
   <text x="640" y="244" font-size="12" fill="#475569">• AES-256 retains 128-bit quantum security strength</text>
   <text x="640" y="264" font-size="12" fill="#475569">• SHA-256 / SHA-384 / SHA-512 remain collision-resistant</text>
   <rect x="640" y="285" width="485" height="40" rx="8" fill="#15803d"/>
-  <text x="882" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">SAFE: Use 256-bit Keys (AES-256 / SHA-384+)</text>
+  <text x="882" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">SAFE: AES-256 Keys &amp; SHA-384+ Digests</text>
 
   <!-- Summary Footer -->
   <rect x="50" y="365" width="1100" height="40" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Key Takeaway: Quantum threats necessitate immediate PQC migration for asymmetric PKI, while AES-256 remains secure.</text>
+  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Key Takeaway: Prioritize PQC migration for asymmetric PKI by data confidentiality lifetime and risk, while AES-256 remains secure.</text>
 </svg>"""
 
 # 4. hash-security-properties.svg

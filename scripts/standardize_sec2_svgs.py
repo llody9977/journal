@@ -316,7 +316,7 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Digital Signature Execution Pipeline</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Three-stage cryptographic pipeline: payload hashing, private key signing, and independent public key verification</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">RSA-PSS / ECDSA external-hash-then-sign pattern shown below; EdDSA (Ed25519/Ed448) hashes internally as one integrated step, not a separate pre-hash stage</text>
 
   <rect x="40" y="110" width="1120" height="270" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
@@ -522,7 +522,7 @@ NEW_SVGS['dek-kek.svg'] = """<svg viewBox="0 0 1200 420" xmlns="http://www.w3.or
   <text x="90" y="168" font-size="11" font-weight="900" letter-spacing="1" fill="#94a3b8">CLOUD KMS / HSM (TRUST BOUNDARY)</text>
   <text x="90" y="196" font-size="15" font-weight="800" fill="#ffffff">Key Encryption Key (KEK / CMEK)</text>
   <line x1="90" y1="208" x2="390" y2="208" stroke="#475569" stroke-width="1"/>
-  <text x="90" y="232" font-size="12" fill="#cbd5e1">• KEK never leaves the HSM security boundary</text>
+  <text x="90" y="232" font-size="12" fill="#cbd5e1">• KEK stays in the HSM security boundary (by design)</text>
   <text x="90" y="254" font-size="12" fill="#cbd5e1">• Handles Wrap / Unwrap API calls</text>
   <text x="90" y="276" font-size="12" fill="#cbd5e1">• Scheduled rotation creates new KEK versions</text>
   <rect x="90" y="295" width="300" height="40" rx="6" fill="#334155"/>
@@ -537,7 +537,7 @@ NEW_SVGS['dek-kek.svg'] = """<svg viewBox="0 0 1200 420" xmlns="http://www.w3.or
   <line x1="510" y1="208" x2="790" y2="208" stroke="#bfdbfe" stroke-width="1"/>
   <text x="510" y="232" font-size="12" fill="#475569">• Encrypts/decrypts local bulk data</text>
   <text x="510" y="254" font-size="12" fill="#475569">• High-speed local AES-GCM operations</text>
-  <text x="510" y="276" font-size="12" fill="#475569">• Zeroed out of memory when unmounted</text>
+  <text x="510" y="276" font-size="12" fill="#475569">• Should be zeroed when unmounted (impl.-dependent)</text>
   <rect x="510" y="295" width="280" height="40" rx="6" fill="#1e40af"/>
   <text x="650" y="320" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Ephemeral DEK in Memory</text>
 

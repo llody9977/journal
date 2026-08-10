@@ -101,7 +101,7 @@ SVGS['dek-kek.svg'] = """<svg viewBox="0 0 1200 350" xmlns="http://www.w3.org/20
   <text x="90" y="160" font-size="11" font-weight="900" letter-spacing="1" fill="#94a3b8">CLOUD KMS / HSM (TRUST BOUNDARY)</text>
   <text x="90" y="185" font-size="14.5" font-weight="800" fill="#ffffff">Key Encryption Key (KEK / CMEK)</text>
   <line x1="90" y1="195" x2="390" y2="195" stroke="#475569" stroke-width="1"/>
-  <text x="90" y="215" font-size="11.5" fill="#cbd5e1">• KEK never leaves HSM boundary</text>
+  <text x="90" y="215" font-size="11.5" fill="#cbd5e1">• KEK stays in HSM boundary (by design)</text>
   <text x="90" y="233" font-size="11.5" fill="#cbd5e1">• Handles Wrap / Unwrap API calls</text>
 
   <rect x="90" y="252" width="300" height="34" rx="6" fill="#334155"/>
@@ -115,7 +115,7 @@ SVGS['dek-kek.svg'] = """<svg viewBox="0 0 1200 350" xmlns="http://www.w3.org/20
   <text x="510" y="185" font-size="14.5" font-weight="800" fill="#1e40af">Plaintext DEK (32-byte AES)</text>
   <line x1="510" y1="195" x2="790" y2="195" stroke="#bfdbfe" stroke-width="1"/>
   <text x="510" y="215" font-size="11.5" fill="#475569">• Encrypts/decrypts local bulk data</text>
-  <text x="510" y="233" font-size="11.5" fill="#475569">• Zeroed out of memory on unmount</text>
+  <text x="510" y="233" font-size="11.5" fill="#475569">• Should be zeroed on unmount (impl.-dependent)</text>
 
   <rect x="510" y="252" width="280" height="34" rx="6" fill="#1e40af"/>
   <text x="650" y="274" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">Ephemeral DEK in Memory</text>
@@ -229,7 +229,7 @@ SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 365" xmlns="http://ww
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Digital Signature Execution Pipeline</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Three-stage cryptographic pipeline: payload hashing, private key signing, and independent public key verification</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">RSA-PSS / ECDSA external-hash-then-sign pattern shown below; EdDSA (Ed25519/Ed448) hashes internally as one integrated step, not a separate pre-hash stage</text>
 
   <rect x="40" y="110" width="1120" height="235" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 

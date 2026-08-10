@@ -849,8 +849,8 @@ fs.writeFileSync(
       <rect x="340" y="110" width="230" height="100" rx="10" fill="${colors.amberFill}" stroke="${colors.amber}" stroke-width="2"/>
       <text x="355" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.amber}">STEP 2: CT LOG SERVERS</text>
       <text x="355" y="158" font-size="14" font-weight="800" fill="${colors.ink}">Generate &amp; Return SCT</text>
-      <text x="355" y="180" font-size="12" font-weight="500" fill="${colors.muted}">Logs append to Merkle Tree &amp;</text>
-      <text x="355" y="196" font-size="12" font-weight="600" fill="${colors.amber}">Issue Signed SCT Promise</text>
+      <text x="355" y="180" font-size="12" font-weight="500" fill="${colors.muted}">Log signs a promise to include &#8212;</text>
+      <text x="355" y="196" font-size="12" font-weight="600" fill="${colors.amber}">actual Merkle append follows within MMD</text>
 
       <path d="M 570 160 L 620 160" fill="none" stroke="${colors.amber}" stroke-width="3" marker-end="url(#arrow-amber)"/>
 

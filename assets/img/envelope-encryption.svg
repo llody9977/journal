@@ -22,7 +22,7 @@
   <text x="105" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#94a3b8">CLOUD KMS / HSM (TRUST BOUNDARY)</text>
   <text x="105" y="176" font-size="13.5" font-weight="800" fill="#ffffff">Key Encryption Key (KEK)</text>
   <line x1="105" y1="186" x2="375" y2="186" stroke="#475569" stroke-width="1"/>
-  <text x="105" y="205" font-size="11" fill="#cbd5e1">• KEK never leaves HSM boundary</text>
+  <text x="105" y="205" font-size="11" fill="#cbd5e1">• KEK stays in HSM boundary (by design)</text>
   <text x="105" y="222" font-size="11" fill="#cbd5e1">• Handles Wrap / Unwrap API calls</text>
   <rect x="105" y="238" width="270" height="32" rx="6" fill="#334155"/>
   <text x="240" y="259" font-size="11" font-weight="800" fill="#fde047" text-anchor="middle">Customer-Managed Key (CMEK)</text>
@@ -36,7 +36,7 @@
   <text x="465" y="176" font-size="13.5" font-weight="800" fill="#1e40af">Plaintext DEK (32-byte AES)</text>
   <line x1="465" y1="186" x2="735" y2="186" stroke="#bfdbfe" stroke-width="1"/>
   <text x="465" y="205" font-size="11" fill="#475569">• Encrypts/decrypts local bulk data</text>
-  <text x="465" y="222" font-size="11" fill="#475569">• Zeroed out of memory on exit</text>
+  <text x="465" y="222" font-size="11" fill="#475569">• Should be zeroed after use (impl.-dependent)</text>
   <rect x="465" y="238" width="270" height="32" rx="6" fill="#1e40af"/>
   <text x="600" y="259" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Ephemeral DEK in Memory</text>
 

@@ -33,7 +33,7 @@ PKI relies on a hierarchical trust model where trusted Root CAs issue certificat
 
 1. **Path Building**: Given a leaf certificate, locate a chain of intermediate certificates connecting it to a Root CA already present in the local trust store. A server that omits a required intermediate, or presents intermediates out of order, can cause path building to fail even when a valid chain exists in principle — this is why "include the full intermediate chain" is standard TLS deployment advice.
 2. **Path Validation**: For the chain path building found, cryptographically verify each signature (leaf signed by intermediate, intermediate signed by root), confirm each certificate is within its validity window, and check policy constraints (basic constraints, name constraints, key usage/EKU) at every hop per [RFC 5280 §6](https://www.rfc-editor.org/rfc/rfc5280#section-6). This confirms the chain is cryptographically well-formed and policy-compliant — it does **not** yet confirm the certificate belongs to the host the client is talking to.
-3. **Endpoint (Hostname) Verification**: Separately from chain validation, the client must confirm the hostname it intended to connect to appears in the certificate's Subject Alternative Name (SAN) field, per [RFC 6125](https://www.rfc-editor.org/rfc/rfc6125). This step is easy to omit in custom TLS client code (hence a long history of vulnerabilities where a valid, trusted certificate for *any* domain was accepted for connections to *every* domain) and is worth calling out explicitly: a chain can pass path validation perfectly while still being the wrong certificate for the connection, if hostname verification isn't performed.
+3. **Endpoint (Hostname) Verification**: Separately from chain validation, the client must confirm the hostname it intended to connect to appears in the certificate's Subject Alternative Name (SAN) field, per [RFC 9525](https://www.rfc-editor.org/info/rfc9525/) (which obsoletes the earlier RFC 6125). This step is easy to omit in custom TLS client code (hence a long history of vulnerabilities where a valid, trusted certificate for *any* domain was accepted for connections to *every* domain) and is worth calling out explicitly: a chain can pass path validation perfectly while still being the wrong certificate for the connection, if hostname verification isn't performed.
 4. **Revocation Checking**: Query CRL or OCSP (see below) to confirm the certificate hasn't been revoked since issuance — a check that is best-effort in most real deployments (see the Trust Store row above) rather than a hard requirement.
 5. **Certificate Transparency**: Separately, confirm the certificate carries the SCTs a given browser vendor's policy requires (see [Certificate Transparency]({{ '/topics/certificate-transparency/' | relative_url }})) — a detection mechanism for rogue issuance, not part of RFC 5280 path validation itself.
 
@@ -322,7 +322,8 @@ X.509 certificates and private keys are distributed across four primary format e
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl pkcs7 -print_certs -in ${valIn} -out ${valOut}`;
+      groupFormat.style.display = 'block';
+      cmd = `openssl pkcs7 ${informFlag}-print_certs -in ${valIn} -out ${valOut}`;
     } else if (task === 'view-txt') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File:';
       groupOut.style.display = 'none';
@@ -367,6 +368,7 @@ X.509 certificates and private keys are distributed across four primary format e
   inputOut.addEventListener('input', updateCommand);
   inputKey.addEventListener('input', updateCommand);
   inputChain.addEventListener('input', updateCommand);
+  inputFormat.addEventListener('change', updateCommand);
 
   updateCommand();
 })();
