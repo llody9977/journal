@@ -1,59 +1,77 @@
 ---
 title: HSM & KMS
-description: Deep architectural guide to Hardware Security Modules (HSMs), Cloud KMS, FIPS 140-3 levels, non-extractable keys, envelope encryption, and CMEK.
+description: How Hardware Security Modules and Key Management Services differ, how their protection boundaries are evaluated, and how they support envelope encryption and custody choices.
 permalink: /topics/hsm-kms/
-last_verified: 2026-08-06
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Key Management / Architecture</span>
 
 # HSM & KMS
 
-<p class="lede">Hardware Security Modules (HSMs) and Key Management Services (KMS) provide secure cryptographic key lifecycle management, enforced non-extractability, and physical tamper resistance. This page analyzes physical and logical key protection levels (FIPS 140-3 Levels 1–4), envelope key hierarchies (DEK/KEK), customer-managed encryption key (CMEK) delegation, and PKCS#11 token integration.</p>
+<p class="lede">An HSM is a cryptographic module and protection boundary; a KMS is a wider management system for keys, metadata, policy, authorization, and lifecycle operations. A KMS may use HSMs, but the terms are not interchangeable. This page explains that boundary, how FIPS 140-3 validation should be read, how PKCS #11 expresses key attributes, and how envelope encryption limits direct use of high-value wrapping keys.</p>
 
-## Hardware Security Modules (HSM) & FIPS 140-3 Levels
+## HSMs protect key operations; KMSs manage the wider lifecycle
 
-A **Hardware Security Module (HSM)** is a hardened, physical computing device designed to safeguard secret cryptographic keys within an audited, tamper-resistant boundary.
+A **Hardware Security Module (HSM)** is hardware that protects sensitive security parameters and performs cryptographic operations within a defined module boundary. A **Key Management Service (KMS)** coordinates the policies, procedures, roles, metadata, interfaces, and components used to manage keys. The KMS can place high-value keys in an HSM while keeping policy and workflow logic outside that module.
 
-Standardized in **[NIST FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)**, cryptographic module assurance divides into four security levels:
-
-| FIPS 140-3 Level | Security Assurance & Requirements | Representative Deployment |
+| Boundary | HSM | KMS |
 |---|---|---|
-| **Level 1** | Basic cryptographic algorithm verification; no physical security requirements. | Software-based cryptographic libraries (*OpenSSL, SoftHSM*) |
-| **Level 2** | Role-based access control and **tamper-evident** physical enclosures. | Multi-tenant cloud KMS software containers |
-| **Level 3** | **Tamper-resistant** hardware with automatic zeroization (key destruction) upon physical intrusion. | Commercial HSMs (*AWS CloudHSM, Thales Luna G7, YubiHSM2*) |
-| **Level 4** | Complete environmental attack protection (voltage, temperature, chemical probing). | High-assurance military and banking payment HSMs |
+| Primary concern | Protect key material and execute cryptographic operations | Govern keys and bound metadata across their lifecycle |
+| Typical controls | Module authentication, sensitive-parameter handling, physical protection, self-tests | Inventory, state transitions, authorization, rotation, recovery, audit, and incident workflow |
+| Relationship | Can operate alone or as a KMS component | May use software modules, HSMs, or external key services |
+| Assurance question | What exact module, version, environment, mode, and certificate were evaluated? | Does the complete service enforce the required policy and operational controls? |
 
-## Non-Extractable Key Attributes (PKCS#11 Standard)
+## FIPS 140-3 validates an exact cryptographic module
 
-HSMs enforce logical non-extractability: secret key material ($K_{priv}$) is generated inside the hardware boundary and marked with unalterable object flags. Cryptographic operations (signing, decryption) execute inside the HSM; raw key bytes are never exported to host system RAM.
+[FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final) defines four qualitative security levels across eleven requirement areas, including module interfaces, roles and authentication, physical security, sensitive security parameter management, self-tests, and lifecycle assurance. It does not validate an algorithm by itself or automatically validate every product or cloud service that embeds a validated module.
 
-### PKCS#11 Core Attributes Matrix
-
-| PKCS#11 Attribute | Flag Value | Enforcement Behavior |
+| Validation question | Correct interpretation | Check before relying on the claim |
 |---|---|---|
-| `CKA_SENSITIVE` | `CK_TRUE` | Prevents cleartext key export via API calls. |
-| `CKA_EXTRACTABLE` | `CK_FALSE` | Prohibits wrapping or exporting the key under any wrapping key. |
-| `CKA_ALWAYS_SENSITIVE` | `CK_TRUE` | Guarantees the key has been sensitive since initial generation. |
-| `CKA_NEVER_EXTRACTABLE` | `CK_TRUE` | Asserts the key was never exported across its entire lifecycle. |
+| **What was evaluated?** | A specific cryptographic module implementation, not a product category. | Module name, version or part number, vendor, and certificate number. |
+| **Where is it valid?** | Software and firmware modules are evaluated in stated operational environments. | The deployed environment and configuration match the certificate and security policy. |
+| **Which behavior is covered?** | A module may support approved and non-approved modes. | The service operates in the approved mode and observes every certificate caveat. |
+| **Is the whole application validated?** | Correct use of an embedded validated module is outside the module validation boundary. | The application routes all claimed cryptographic services through the validated module and handles keys safely outside it. |
+| **Is the validation current?** | Active, historical, and revoked certificates have different evidentiary value. | Current CMVP status, sunset date, caveats, and applicable transition rules. |
 
-## Envelope Encryption Architecture (DEK / KEK)
+The [Cryptographic Module Validation Program (CMVP) FAQ](https://csrc.nist.gov/Projects/cryptographic-module-validation-program/FAQs) is the decision point for interpreting a vendor claim. A product name or a claimed level is not enough.
 
-Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to payload size limits (e.g., AWS KMS limits `Encrypt` calls to 4 KB) and API network latency. Instead, architectures enforce **Envelope Encryption**:
+## PKCS #11 attributes constrain API behavior
+
+PKCS #11 exposes key-object attributes that a conforming token uses to control API operations. Non-extractability reduces the ordinary export path, but it is not proof against implementation flaws, privileged code outside the interface, invasive attacks, or side channels. Whether raw key bytes enter host memory depends on how the key was generated, imported, restored, and used.
+
+### PKCS #11 core attributes
+
+| PKCS #11 attribute | Meaning when `CK_TRUE` | Evidence boundary |
+|---|---|---|
+| `CKA_SENSITIVE` | The object is sensitive; secret components cannot be revealed through the PKCS #11 interface in plaintext. | Describes current API treatment. |
+| `CKA_EXTRACTABLE` | The key can be wrapped. When `CK_FALSE`, PKCS #11 wrapping is disallowed. | Governs wrapping through the token interface, not every possible compromise path. |
+| `CKA_ALWAYS_SENSITIVE` | The key has always had `CKA_SENSITIVE=CK_TRUE`. | Records attribute history defined by PKCS #11. |
+| `CKA_NEVER_EXTRACTABLE` | The key has never had `CKA_EXTRACTABLE=CK_TRUE`. | Does not independently prove that the key was never exposed by another mechanism. |
+
+## Envelope encryption separates bulk data from high-value keys
+
+Envelope encryption uses a short-lived or narrowly scoped **data-encryption key (DEK)** for the payload and a **key-encryption key (KEK)** to wrap the DEK. This pattern keeps bulk cryptography local to the workload and limits the KMS or HSM operation to a small key object.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Envelope encryption process: generate a DEK, encrypt the payload, wrap the DEK with a KMS key, and store the encrypted envelope.">
   <p class="diagram-caption">The KMS protects the small DEK while the application encrypts the bulk data locally</p>
 </div>
 
-1. **Data Encryption Key (DEK)**: High-speed symmetric key (AES-256-GCM) generated locally per payload.
-2. **Key Encryption Key (KEK)**: Non-extractable master key stored inside KMS/HSM that wraps the DEK via AES Key Wrap ([RFC 3394](https://www.rfc-editor.org/rfc/rfc3394) / [NIST SP 800-38F](https://csrc.nist.gov/pubs/sp/800/38/f/final)).
+1. Generate a DEK with an approved random-bit generator or ask the KMS to generate one.
+2. Encrypt the payload with an authenticated-encryption mode such as AES-GCM and a nonce that is unique for that DEK.
+3. Bind immutable context—tenant, object identifier, content algorithm, and key reference—as authenticated additional data (AAD) where the protocol supports it.
+4. Wrap the DEK under a KEK using a specified key-wrapping mechanism such as an approved method in [NIST SP 800-38F](https://csrc.nist.gov/pubs/sp/800/38/f/final).
+5. Store the ciphertext, authentication tag, nonce, encrypted DEK, KEK identifier and version, algorithm identifiers, and authenticated context together.
+6. Minimize the lifetime and number of plaintext DEK copies in memory. A cache trades KMS availability and latency for a larger exposure window, so bound it by time, use count, data volume, and tenant or security context.
+
+Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting the bulk ciphertext. Changing the DEK requires decrypting and re-encrypting the bulk data. If the referenced KEK version is disabled, unavailable, or destroyed, the encrypted DEK cannot be unwrapped; destruction therefore requires dependency checks and a tested recovery decision.
 
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Interactive Web Crypto Simulator</span>
     <h3>Client-Side Envelope Encryption Simulator (DEK / KEK)</h3>
-    <p>Generate a Master KEK and a local single-use AES-256-GCM DEK in Web Crypto to wrap keys and encrypt data locally without exposing raw DEKs.</p>
+    <p>This browser-only logic simulation generates a local AES-KW key and an extractable AES-GCM DEK, then wraps the DEK and encrypts the payload. It does not call a KMS, use an HSM, or prove hardware-backed storage. This implementation sets the DEK as extractable so Web Crypto can wrap it.</p>
   </div>
 
   <div class="demo-body">
@@ -94,10 +112,10 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
     if (!text) return;
 
     try {
-      // 1. Generate 256-bit Master KEK (simulated in KMS/HSM)
+      // 1. Generate a local wrapping key. This is not a KMS or HSM boundary.
       masterKEK = await window.crypto.subtle.generateKey(
         { name: 'AES-KW', length: 256 },
-        true,
+        false,
         ['wrapKey', 'unwrapKey']
       );
 
@@ -108,16 +126,22 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
         ['encrypt', 'decrypt']
       );
 
-      // Export raw DEK bytes before wrapping (strictly to display in demo)
-      const rawDekBytes = await window.crypto.subtle.exportKey('raw', dek);
-
       // 3. Encrypt payload with DEK
       const encoder = new TextEncoder();
       const payloadBytes = encoder.encode(text);
       const nonce = window.crypto.getRandomValues(new Uint8Array(12));
+      const aadText = JSON.stringify({
+        tenant: 'demo-tenant',
+        object: 'demo-record',
+        keyId: 'local-demo-kek',
+        keyVersion: 'v1',
+        contentAlgorithm: 'AES-256-GCM',
+        wrapAlgorithm: 'A256KW'
+      });
+      const aad = encoder.encode(aadText);
 
       const cipherBuffer = await window.crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv: nonce, tagLength: 128 },
+        { name: 'AES-GCM', iv: nonce, additionalData: aad, tagLength: 128 },
         dek,
         payloadBytes
       );
@@ -132,22 +156,22 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 
       envelopeData = {
         nonce: nonce,
+        aad: aad,
+        aadText: aadText,
         ciphertext: cipherBuffer,
-        wrappedDek: wrappedDekBuffer,
-        rawDekHex: bytesToHex(rawDekBytes)
+        wrappedDek: wrappedDekBuffer
       };
 
       btnDecrypt.disabled = false;
 
       outputArea.innerHTML = `
         <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
-          <strong style="color: var(--teal); display: block; margin-bottom: 0.35rem;">&#128272; Step 1: Master KEK (KMS Custody Boundary)</strong>
-          <span style="color: var(--muted); font-size: 0.8rem;">AES-256 Key-Wrap Key (AES-KW RFC 3394) generated inside KMS boundary.</span>
+          <strong style="color: var(--teal); display: block; margin-bottom: 0.35rem;">&#128272; Step 1: Local Wrapping Key (Simulation Only)</strong>
+          <span style="color: var(--muted); font-size: 0.8rem;">Non-extractable AES-256-KW <code>CryptoKey</code> generated by Web Crypto. This is not evidence of KMS or HSM custody.</span>
         </div>
         <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
           <strong style="color: var(--accent); display: block; margin-bottom: 0.35rem;">&#128195; Step 2: Single-Use Data Encryption Key (DEK)</strong>
-          <span style="color: var(--muted); display: block; font-size: 0.8rem;">Raw DEK Hex (RAM Ephemeral):</span>
-          <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${envelopeData.rawDekHex}</code>
+          <span style="color: var(--muted); display: block; font-size: 0.8rem;">The DEK is extractable inside this page so Web Crypto can wrap it. Its raw bytes are intentionally not displayed.</span>
         </div>
         <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
           <strong style="color: var(--amber); display: block; margin-bottom: 0.35rem;">&#128230; Step 3: Wrapped DEK (EDEK Stored Beside Data)</strong>
@@ -157,6 +181,7 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
         <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
           <strong style="color: var(--ink); display: block; margin-bottom: 0.35rem;">&#128274; Step 4: Encrypted Payload &amp; Nonce</strong>
           <span style="color: var(--muted); display: block; font-size: 0.8rem;">GCM Nonce (Hex): <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink);">${bytesToHex(envelopeData.nonce)}</code></span>
+          <span style="color: var(--muted); display: block; font-size: 0.8rem; margin-top: 0.25rem;">Authenticated Context (AAD): <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${envelopeData.aadText}</code></span>
           <span style="color: var(--muted); display: block; font-size: 0.8rem; margin-top: 0.25rem;">Ciphertext (Hex):</span>
           <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${bytesToHex(envelopeData.ciphertext)}</code>
         </div>
@@ -183,7 +208,7 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 
       // 2. Decrypt ciphertext payload with unwrapped DEK
       const decryptedBuffer = await window.crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: envelopeData.nonce, tagLength: 128 },
+        { name: 'AES-GCM', iv: envelopeData.nonce, additionalData: envelopeData.aad, tagLength: 128 },
         unwrappedDEK,
         envelopeData.ciphertext
       );
@@ -193,7 +218,7 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 
       outputArea.innerHTML += `
         <div style="background: rgba(15, 118, 110, 0.08); border: 1px solid var(--teal); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; margin-top: 0.5rem;">
-          <strong style="color: var(--teal); display: block; margin-bottom: 0.35rem;">&#9989; Step 5: Envelope Successfully Decrypted!</strong>
+          <strong style="color: var(--teal); display: block; margin-bottom: 0.35rem;">&#9989; Step 5: Demo Envelope Decrypted</strong>
           <span style="color: var(--muted); display: block; font-size: 0.8rem;">Decrypted Payload Output:</span>
           <code style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--teal);">${decryptedText}</code>
         </div>
@@ -209,30 +234,32 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 </script>
 {% endraw %}
 
-## Customer Key Custody Models (CMEK vs BYOK vs HYOK)
+## Custody labels describe different control boundaries
 
-| Key Custody Model | Operative Key Storage | Cloud Vendor Access Boundary | Ideal Use Case |
+Provider terminology varies, so architecture decisions should be based on who generates the key material, where plaintext key material can exist, who authorizes operations, who can disable or destroy the key, and what happens when an external dependency is unavailable.
+
+| Custody model | Operational boundary | Control retained by the customer | Important limitation |
 |---|---|---|---|
-| **Provider-Managed Key** | Shared Cloud KMS | Full automated access; transparent provider lifecycle management. | Low-risk general infrastructure. |
-| **CMEK (Customer-Managed Key)** | Dedicated KMS Vault | Dedicated service account granted narrow `encrypt`/`decrypt` permissions via KMS grants. | Enterprise regulatory compliance with full lifecycle control. |
-| **BYOK (Bring Your Own Key)** | Generated on-prem, imported to Cloud KMS | Key material resides inside Cloud KMS; customer retains backup. | Regulatory requirement for independent key generation. |
-| **HYOK (Hold Your Own Key)** | On-premise HSM | Cryptographic API calls cross customer boundary; raw key never leaves on-prem HSM. | High-assurance defense or banking environments (*Adds latency*). |
+| **Provider-managed key** | Provider creates and operates the key for an integrated service. | Usually little direct policy or lifecycle control. | Exact isolation, rotation, deletion, and audit behavior is service-specific. |
+| **Customer-managed key (CMEK)** | Customer configures a key in the provider KMS and authorizes a service to use it. | Policy, service grants, disablement, and often rotation scheduling. | Does not by itself mean exclusive custody or prove a compliance outcome. |
+| **Bring your own key (BYOK)** | Key material originates outside the provider and is imported under a documented wrapping process. | Generation provenance and, if retained, an external recovery copy. | The imported material is still available to the destination service's cryptographic boundary during use. |
+| **Hold your own key (HYOK) or external KMS** | Key operations or release authorization depend on a customer-controlled external system. | Stronger operational control over availability and authorization. | Adds network, latency, quota, failover, and emergency-access dependencies. |
 
-## SoftHSM2 & PKCS#11 Demonstration
+## Browser non-extractability and PKCS #11 mapping simulation
 
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Interactive Web Crypto Simulator</span>
-    <h3>SoftHSM2 &amp; PKCS#11 Token Client Simulator</h3>
-    <p>Simulate a PKCS#11 hardware token slot, generate non-extractable EC P-256 keys in browser Web Crypto (<code>extractable: false</code>), inspect PKCS#11 object flags, and sign payloads within the secure hardware boundary.</p>
+    <h3>Web Crypto Non-Extractability Simulator</h3>
+    <p>This demonstration creates a browser <code>CryptoKey</code> with <code>extractable: false</code>, shows a conceptual mapping to PKCS #11 attributes, and signs a test payload. It does not run SoftHSM2 or PKCS #11, and Web Crypto does not guarantee that the key is hardware-backed.</p>
   </div>
 
   <div class="demo-body">
     <!-- Slot Status Header -->
     <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
       <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem; text-align: center;">
-        <span style="font-size: 0.75rem; color: var(--muted); display: block;">Token Slot</span>
-        <span id="hsm-slot-label" style="font-size: 0.95rem; font-weight: 800; color: var(--ink);">Slot 0 (production-hsm)</span>
+        <span style="font-size: 0.75rem; color: var(--muted); display: block;">Execution Context</span>
+        <span id="hsm-slot-label" style="font-size: 0.95rem; font-weight: 800; color: var(--ink);">Browser Web Crypto</span>
       </div>
       <div style="flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem; text-align: center;">
         <span style="font-size: 0.75rem; color: var(--muted); display: block;">User PIN Session</span>
@@ -246,13 +273,13 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 
     <!-- Step Buttons -->
     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button id="btn-hsm-init" class="btn-primary" type="button">1. Init Token &amp; Generate Non-Extractable Key (P-256)</button>
-      <button id="btn-hsm-attributes" class="btn-secondary" type="button" disabled>2. Inspect PKCS#11 Flags &amp; Test Non-Exportability</button>
-      <button id="btn-hsm-sign" class="btn-secondary" type="button" disabled>3. Authenticate PIN (1234) &amp; Sign Payload</button>
+      <button id="btn-hsm-init" class="btn-primary" type="button">1. Generate Non-Extractable Browser Key (P-256)</button>
+      <button id="btn-hsm-attributes" class="btn-secondary" type="button" disabled>2. Compare API Flags &amp; Test Export</button>
+      <button id="btn-hsm-sign" class="btn-secondary" type="button" disabled>3. Enter Demo PIN (1234) &amp; Sign Payload</button>
     </div>
 
     <!-- Live Output Terminal -->
-    <div id="hsm-terminal" style="margin-top: 1rem; background: #0f172a; color: #38bdf8; border-radius: 6px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.8rem; min-height: 140px; white-space: pre-wrap; word-break: break-all;">SoftHSM2 PKCS#11 Token Simulator ready. Click Step 1 to initialize token slot...</div>
+    <div id="hsm-terminal" style="margin-top: 1rem; background: #0f172a; color: #38bdf8; border-radius: 6px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.8rem; min-height: 140px; white-space: pre-wrap; word-break: break-all;">Web Crypto simulation ready. The PKCS #11 lines shown later are illustrative mappings, not live token output.</div>
   </div>
 </div>
 
@@ -281,14 +308,13 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
   }
 
   async function initHSMKey() {
-    terminal.innerText = '$ softhsm2-util --init-token --slot 0 --label "production-hsm"\n[OK] Token initialized in Slot 0.';
-    logTerminal('$ pkcs11-tool --keypairgen --key-type EC:prime256v1 --label "signing-key" --id 01');
+    terminal.innerText = '$ window.crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, false, ["sign", "verify"])';
 
     try {
-      // Generate Web Crypto EC P-256 key pair with extractable = false (Non-Extractable!)
+      // Generate a Web Crypto EC P-256 key pair with API-level export disabled.
       keyPair = await window.crypto.subtle.generateKey(
         { name: 'ECDSA', namedCurve: 'P-256' },
-        false, // extractable = false! Enforces non-extractability in browser hardware/OS sandbox!
+        false,
         ['sign', 'verify']
       );
 
@@ -297,8 +323,8 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
       btnAttr.disabled = false;
       btnSign.disabled = false;
 
-      logTerminal('[SUCCESS] Non-extractable EC P-256 Key Pair generated inside token boundary.');
-      logTerminal('[INFO] Key attributes enforced: CKA_SENSITIVE=TRUE, CKA_EXTRACTABLE=FALSE.');
+      logTerminal('[SUCCESS] EC P-256 CryptoKey generated with extractable=false.');
+      logTerminal('[LIMIT] This proves an API export restriction only; it does not prove hardware-backed storage.');
     } catch (err) {
       logTerminal('[ERROR] Key generation failed: ' + err.message);
     }
@@ -307,16 +333,16 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
   async function inspectAttributes() {
     if (!keyPair) return;
 
-    logTerminal('\n$ pkcs11-tool --list-objects --id 01');
+    logTerminal('\n[CONCEPTUAL PKCS #11 COMPARISON — NOT LIVE TOKEN OUTPUT]');
     logTerminal('---------------------------------------------------------');
     logTerminal('Private Key Object; EC P-256');
     logTerminal('  label:              signing-key');
     logTerminal('  ID:                 01');
     logTerminal('  Usage:              sign, verify');
-    logTerminal('  CKA_SENSITIVE:      CK_TRUE');
-    logTerminal('  CKA_EXTRACTABLE:     CK_FALSE (Non-Extractable)');
-    logTerminal('  CKA_ALWAYS_SENSITIVE:CK_TRUE');
-    logTerminal('  CKA_NEVER_EXTRACTABLE:CK_TRUE');
+    logTerminal('  Web Crypto extractable: false');
+    logTerminal('  Rough PKCS #11 analogue: CKA_EXTRACTABLE=CK_FALSE');
+    logTerminal('  CKA_SENSITIVE / CKA_ALWAYS_SENSITIVE / CKA_NEVER_EXTRACTABLE');
+    logTerminal('  are not returned or proven by this Web Crypto object.');
     logTerminal('---------------------------------------------------------');
 
     // Live test: Attempting to export private key
@@ -325,17 +351,18 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
       await window.crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
       logTerminal('[UNEXPECTED] Key was exported!');
     } catch (err) {
-      logTerminal('[CONFIRMED SECURITY] Export rejected by Crypto Engine: "DOMException: The key is not extractable"');
+      logTerminal('[EXPECTED] Export rejected because the CryptoKey has extractable=false.');
+      logTerminal('[PROVES] The browser API refused this export request.');
+      logTerminal('[DOES NOT PROVE] HSM custody, PKCS #11 conformance, or resistance to implementation compromise.');
     }
   }
 
   async function signPayload() {
     if (!keyPair) return;
 
-    const userPin = prompt('Enter SoftHSM2 User PIN to authorize signing:', '1234');
+    const userPin = prompt('Enter the demonstration PIN to continue:', '1234');
     if (userPin !== '1234') {
-      logTerminal('\n$ pkcs11-tool --login --pin **** --sign');
-      logTerminal('[FAIL] CKR_PIN_INCORRECT: Access denied. Incorrect PIN.');
+      logTerminal('\n[DEMO AUTHORIZATION] Access denied. Incorrect PIN.');
       pinStatus.innerText = 'PIN Error (Incorrect PIN)';
       pinStatus.style.color = 'var(--critical)';
       return;
@@ -344,15 +371,15 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
     pinStatus.innerText = 'Authenticated (PIN 1234)';
     pinStatus.style.color = 'var(--teal)';
 
-    logTerminal('\n$ pkcs11-tool --login --pin 1234 --sign --mechanism ECDSA-SHA256 --id 01');
-    logTerminal('[PIN AUTHENTICATED] Session logged in as CKU_USER.');
+    logTerminal('\n[DEMO AUTHORIZATION] PIN accepted by page logic.');
+    logTerminal('[LIMIT] This prompt is not browser, operating-system, token, or HSM authentication.');
 
     const payloadText = 'Transaction Payload: Transfer $50,000 to Account #882194';
     const encoder = new TextEncoder();
     const data = encoder.encode(payloadText);
 
     try {
-      // Perform ECDSA signing inside the non-extractable boundary
+      // Perform ECDSA signing through Web Crypto.
       const sigBuffer = await window.crypto.subtle.sign(
         { name: 'ECDSA', hash: 'SHA-256' },
         keyPair.privateKey,
@@ -360,8 +387,8 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
       );
 
       const sigHex = bytesToHex(sigBuffer);
-      logTerminal(`[SIGNATURE COMPUTED INSIDE HSM BOUNDARY] (${sigBuffer.byteLength} bytes)`);
-      logTerminal(`Signature DER/P1363 Hex:\n${sigHex}`);
+      logTerminal(`[WEB CRYPTO SIGNATURE COMPUTED] (${sigBuffer.byteLength} bytes)`);
+      logTerminal(`Signature bytes (hex):\n${sigHex}`);
 
       // Verify signature
       const valid = await window.crypto.subtle.verify(
@@ -371,7 +398,8 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
         data
       );
 
-      logTerminal(`[VERIFICATION] Signature Verification Status: ${valid ? 'VALID (Integrity Proven)' : 'INVALID'}`);
+      logTerminal(`[VERIFICATION] ${valid ? 'VALID for this payload and generated public key' : 'INVALID'}`);
+      logTerminal('[LIMIT] The demo does not bind the public key to a trusted identity.');
     } catch (err) {
       logTerminal('[ERROR] Signing failed: ' + err.message);
     }
@@ -384,21 +412,18 @@ Cloud applications avoid encrypting bulk payloads directly with KMS APIs due to 
 </script>
 {% endraw %}
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>HSM &amp; KMS Summary</strong>
-    <ul>
-      <li><strong>FIPS 140-3 Levels</strong>: Level 1 (software), Level 2 (tamper-evident), Level 3 (tamper-resistant zeroization), Level 4 (environmental protection).</li>
-      <li><strong>Non-Extractable Keys</strong>: PKCS#11 attributes (<code>CKA_SENSITIVE=TRUE</code>, <code>CKA_EXTRACTABLE=FALSE</code>) guarantee key bytes never leave HSM RAM.</li>
-      <li><strong>Envelope Encryption</strong>: KMS wraps small DEK (AES Key Wrap RFC 3394); application encrypts bulk data locally with DEK.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>An HSM protects cryptographic operations inside a module boundary; a KMS governs keys and metadata across a wider operational lifecycle. Verify the exact module certificate and deployment context, treat non-extractability as a bounded API property, and preserve every dependency needed to unwrap an encrypted DEK.</p>
 </div>
 
-## Primary References
+## Primary references
 
-- **NIST FIPS 140-3**: *Security Requirements for Cryptographic Modules* — [NIST CSRC FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)
-- **RFC 3394**: *Advanced Encryption Standard (AES) Key Wrap Algorithm* — [IETF RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)
+- **[NIST FIPS 140-3: Security Requirements for Cryptographic Modules](https://csrc.nist.gov/pubs/fips/140-3/final)** — verified the validation scope, four-level model, and eleven requirement areas.
+- **[NIST CMVP FAQ](https://csrc.nist.gov/Projects/cryptographic-module-validation-program/FAQs)** — verified certificate, version, operational-environment, approved-mode, and embedded-module caveats.
+- **[NIST SP 800-57 Part 1 Rev. 5: Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)** — verified that key management extends beyond storage to lifecycle protection and operational controls.
+- **[NIST SP 800-130: A Framework for Designing Cryptographic Key Management Systems](https://csrc.nist.gov/pubs/sp/800/130/final)** — verified the KMS boundary of policies, procedures, components, devices, keys, and metadata.
+- **[NIST SP 800-133 Rev. 2: Recommendation for Cryptographic Key Generation](https://csrc.nist.gov/pubs/sp/800/133/r2/final)** — verified key-generation and random-bit-generator requirements in the NIST federal profile.
+- **[NIST SP 800-38F: Recommendation for Block Cipher Modes of Operation—Methods for Key Wrapping](https://csrc.nist.gov/pubs/sp/800/38/f/final)** — verified approved AES key-wrapping methods.
+- **[OASIS PKCS #11 v3.1](https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html)** — verified the exact meanings of sensitive and extractability attributes.
+- **[OASIS KMIP v2.1](https://docs.oasis-open.org/kmip/kmip-spec/v2.1/kmip-spec-v2.1.html)** — verified the broader managed-object lifecycle and metadata model used for interoperable key management.

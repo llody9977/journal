@@ -67,6 +67,26 @@
       children:
         - title: 3.1 HSM & KMS
           url: /topics/hsm-kms/
+        - title: "3.2 Key Inventory, Classification & Ownership"
+          url: /topics/key-inventory-classification-ownership/
+        - title: 3.3 Key Lifecycle & Cryptoperiods
+          url: /topics/key-lifecycle-cryptoperiods/
+        - title: 3.4 Secure Key Generation & Provisioning
+          url: /topics/secure-key-generation-provisioning/
+        - title: "3.5 Rotation, Versioning, Rewrapping & Re-encryption"
+          url: /topics/key-rotation-versioning-rewrapping-reencryption/
+        - title: "3.6 Authorization, Administration & Audit"
+          url: /topics/key-authorization-administration-audit/
+        - title: "3.7 Backup, Escrow, Recovery, Availability & Destruction"
+          url: /topics/key-backup-recovery-destruction/
+        - title: 3.8 Key Compromise & Emergency Rekeying
+          url: /topics/key-compromise-emergency-rekeying/
+        - title: 3.9 KMS Architecture & Interoperability
+          url: /topics/kms-architecture-interoperability/
+        - title: 3.10 Cryptographic Agility & PQC Operations
+          url: /topics/cryptographic-agility-pqc-operations/
+        - title: "3.11 Keys vs Secrets, Certificates & Tokens"
+          url: /topics/keys-vs-secrets-certificates-tokens/
     - title: 4. Authentication & Authorization
       children:
         - title: 4.1 Digital Identity Assurance Levels (IAL, AAL, FAL)

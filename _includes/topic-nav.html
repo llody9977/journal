@@ -155,12 +155,72 @@
 {% if current_url == '/topics/hsm-kms/' or current_url == '/topics/hsm-kms' %}
   {% assign prev_title = '2.17 Blockchain Cryptography' %}
   {% assign prev_url = '/topics/blockchain-cryptography/' %}
+  {% assign next_title = '3.2 Key Inventory, Classification & Ownership' %}
+  {% assign next_url = '/topics/key-inventory-classification-ownership/' %}
+{% endif %}
+{% if current_url == '/topics/key-inventory-classification-ownership/' or current_url == '/topics/key-inventory-classification-ownership' %}
+  {% assign prev_title = '3.1 HSM & KMS' %}
+  {% assign prev_url = '/topics/hsm-kms/' %}
+  {% assign next_title = '3.3 Key Lifecycle & Cryptoperiods' %}
+  {% assign next_url = '/topics/key-lifecycle-cryptoperiods/' %}
+{% endif %}
+{% if current_url == '/topics/key-lifecycle-cryptoperiods/' or current_url == '/topics/key-lifecycle-cryptoperiods' %}
+  {% assign prev_title = '3.2 Key Inventory, Classification & Ownership' %}
+  {% assign prev_url = '/topics/key-inventory-classification-ownership/' %}
+  {% assign next_title = '3.4 Secure Key Generation & Provisioning' %}
+  {% assign next_url = '/topics/secure-key-generation-provisioning/' %}
+{% endif %}
+{% if current_url == '/topics/secure-key-generation-provisioning/' or current_url == '/topics/secure-key-generation-provisioning' %}
+  {% assign prev_title = '3.3 Key Lifecycle & Cryptoperiods' %}
+  {% assign prev_url = '/topics/key-lifecycle-cryptoperiods/' %}
+  {% assign next_title = '3.5 Rotation, Versioning, Rewrapping & Re-encryption' %}
+  {% assign next_url = '/topics/key-rotation-versioning-rewrapping-reencryption/' %}
+{% endif %}
+{% if current_url == '/topics/key-rotation-versioning-rewrapping-reencryption/' or current_url == '/topics/key-rotation-versioning-rewrapping-reencryption' %}
+  {% assign prev_title = '3.4 Secure Key Generation & Provisioning' %}
+  {% assign prev_url = '/topics/secure-key-generation-provisioning/' %}
+  {% assign next_title = '3.6 Authorization, Administration & Audit' %}
+  {% assign next_url = '/topics/key-authorization-administration-audit/' %}
+{% endif %}
+{% if current_url == '/topics/key-authorization-administration-audit/' or current_url == '/topics/key-authorization-administration-audit' %}
+  {% assign prev_title = '3.5 Rotation, Versioning, Rewrapping & Re-encryption' %}
+  {% assign prev_url = '/topics/key-rotation-versioning-rewrapping-reencryption/' %}
+  {% assign next_title = '3.7 Backup, Escrow, Recovery, Availability & Destruction' %}
+  {% assign next_url = '/topics/key-backup-recovery-destruction/' %}
+{% endif %}
+{% if current_url == '/topics/key-backup-recovery-destruction/' or current_url == '/topics/key-backup-recovery-destruction' %}
+  {% assign prev_title = '3.6 Authorization, Administration & Audit' %}
+  {% assign prev_url = '/topics/key-authorization-administration-audit/' %}
+  {% assign next_title = '3.8 Key Compromise & Emergency Rekeying' %}
+  {% assign next_url = '/topics/key-compromise-emergency-rekeying/' %}
+{% endif %}
+{% if current_url == '/topics/key-compromise-emergency-rekeying/' or current_url == '/topics/key-compromise-emergency-rekeying' %}
+  {% assign prev_title = '3.7 Backup, Escrow, Recovery, Availability & Destruction' %}
+  {% assign prev_url = '/topics/key-backup-recovery-destruction/' %}
+  {% assign next_title = '3.9 KMS Architecture & Interoperability' %}
+  {% assign next_url = '/topics/kms-architecture-interoperability/' %}
+{% endif %}
+{% if current_url == '/topics/kms-architecture-interoperability/' or current_url == '/topics/kms-architecture-interoperability' %}
+  {% assign prev_title = '3.8 Key Compromise & Emergency Rekeying' %}
+  {% assign prev_url = '/topics/key-compromise-emergency-rekeying/' %}
+  {% assign next_title = '3.10 Cryptographic Agility & PQC Operations' %}
+  {% assign next_url = '/topics/cryptographic-agility-pqc-operations/' %}
+{% endif %}
+{% if current_url == '/topics/cryptographic-agility-pqc-operations/' or current_url == '/topics/cryptographic-agility-pqc-operations' %}
+  {% assign prev_title = '3.9 KMS Architecture & Interoperability' %}
+  {% assign prev_url = '/topics/kms-architecture-interoperability/' %}
+  {% assign next_title = '3.11 Keys vs Secrets, Certificates & Tokens' %}
+  {% assign next_url = '/topics/keys-vs-secrets-certificates-tokens/' %}
+{% endif %}
+{% if current_url == '/topics/keys-vs-secrets-certificates-tokens/' or current_url == '/topics/keys-vs-secrets-certificates-tokens' %}
+  {% assign prev_title = '3.10 Cryptographic Agility & PQC Operations' %}
+  {% assign prev_url = '/topics/cryptographic-agility-pqc-operations/' %}
   {% assign next_title = '4.1 Digital Identity Assurance Levels (IAL, AAL, FAL)' %}
   {% assign next_url = '/topics/digital-identity-assurance-levels/' %}
 {% endif %}
 {% if current_url == '/topics/digital-identity-assurance-levels/' or current_url == '/topics/digital-identity-assurance-levels' %}
-  {% assign prev_title = '3.1 HSM & KMS' %}
-  {% assign prev_url = '/topics/hsm-kms/' %}
+  {% assign prev_title = '3.11 Keys vs Secrets, Certificates & Tokens' %}
+  {% assign prev_url = '/topics/keys-vs-secrets-certificates-tokens/' %}
   {% assign next_title = '4.2 Authorization Models: RBAC, ABAC, ReBAC & Zero Trust' %}
   {% assign next_url = '/topics/authorization-models/' %}
 {% endif %}
