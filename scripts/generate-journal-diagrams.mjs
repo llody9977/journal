@@ -872,7 +872,7 @@ fs.writeFileSync(
 
       <!-- Bottom Card: Delivery Methods & Protection -->
       <rect x="50" y="240" width="1100" height="170" rx="12" fill="${colors.tealFill}" stroke="${colors.teal}" stroke-width="2.5"/>
-      <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.teal}">SCT DELIVERY METHODS &amp; SECURITY GUARANTEE</text>
+      <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.teal}">SCT DELIVERY METHODS &amp; BROWSER ENFORCEMENT</text>
       <text x="70" y="294" font-size="15" font-weight="800" fill="${colors.ink}">3 Standardized SCT Delivery Mechanisms &#8212; Browser Acceptance Varies:</text>
       <text x="70" y="320" font-size="13" font-weight="600" fill="${colors.ink}">1. X.509 Extension (Most Common): CA bakes SCTs directly into the certificate during issuance.</text>
       <text x="70" y="342" font-size="13" font-weight="600" fill="${colors.ink}">2. TLS Extension (signed_certificate_timestamp): Web server transmits SCTs during ServerHello handshake.</text>

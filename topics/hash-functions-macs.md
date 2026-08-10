@@ -40,7 +40,7 @@ A secure cryptographic hash exhibits strong **avalanche diffusion**: modifying a
 | Algorithm | Digest Size | Current Security Status | Target Applications |
 |---|---|---|---|
 | **BLAKE3** | Variable (256-bit default) | **NOT NIST-STANDARDIZED**: Fast, modern Merkle tree hash design with extreme multi-core parallelism; independently specified (not FIPS 180-4 / FIPS 202) — NIST's approved hash families remain SHA-2 and SHA-3. | High-throughput file deduplication, supply chain hashing, tree proofs (where FIPS validation is not required). |
-| **KMAC128 / KMAC256** | Variable ([NIST SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | **NIST-SPECIFIED KEYED HASH/PRF**: Built on cSHAKE (a SHA-3 derived function), distinct from HMAC rather than a variant of it. Natively immune to length extension. | High-assurance message authentication without HMAC's nested double-hashing overhead. |
+| **KMAC128 / KMAC256** | Variable ([NIST SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | **NIST-SPECIFIED KEYED HASH/PRF**: Built on cSHAKE (a SHA-3 derived function), distinct from HMAC rather than a variant of it. Natively immune to length extension. | High-assurance message authentication using a native sponge-based construction rather than HMAC's nested construction — SP 800-185 doesn't establish a universal performance advantage over HMAC, so benchmark on your target platform if throughput is the deciding factor. |
 | **MD5** | 128 bits | **CRITICALLY BROKEN**: Practical collisions demonstrated (Flame malware, 2012). | Legacy non-security checksums (*Do not use for security*). |
 | **SHA-1** | 160 bits | **DISALLOWED FOR SIGNATURE GENERATION**: Practical collisions demonstrated ("SHAttered" attack, 2017). Per NIST SP 800-131A and the [NIST Policy on Hash Functions](https://csrc.nist.gov/projects/hash-functions/nist-policy-on-hash-functions), SHA-1 is disallowed for digital signature generation and collision-dependent applications; limited legacy uses remain permitted (such as verifying pre-existing signatures, HMAC, KDFs, and RNGs). | Disallowed for new digital signature generation; legacy verification and non-collision uses only. |
 | **SHA-256 / SHA-512** (SHA-2) | 256 / 512 bits | **APPROVED &amp; STANDARD**: Primary federal and commercial hash standard. | Digital signatures, TLS 1.3, WebAuthn, block headers. |
@@ -266,7 +266,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
   <div>
     <strong>Hash &amp; MAC Summary</strong>
     <ul>
-      <li><strong>Three Security Properties</strong>: Preimage resistance (one-way), Second-preimage resistance (target substitution proof), Collision resistance (any match proof).</li>
+      <li><strong>Three Security Properties</strong>: Preimage resistance (given a digest, infeasible to find any input producing it), Second-preimage resistance (given a specific input, infeasible to find a different input with the same digest), Collision resistance (infeasible to find any two distinct inputs sharing a digest).</li>
       <li><strong>HMAC Construction</strong>: HMAC uses double-nested key hashing (<code>ipad</code> / <code>opad</code>) to prevent Merkle–Damgård length-extension attacks.</li>
       <li><strong>Length-Extension Immunity</strong>: KMAC (SP 800-185, sponge-based) and BLAKE3 (Merkle tree-based, not a NIST standard) are both inherently immune to length extension by design.</li>
     </ul>
