@@ -2,18 +2,18 @@
 title: Hash Functions & MACs
 description: Cryptographic hash properties (Preimage, 2nd-Preimage, Collision resistance), SHA-2/SHA-3 standards, HMAC-SHA256, KMAC, BLAKE3, and length-extension mitigation.
 permalink: /topics/hash-functions-macs/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # Hash Functions & MACs
 
-<p class="lede">Cryptographic hash functions map arbitrary-length data streams into fixed-size digest values, providing integrity verification and avalanche diffusion. Unkeyed hashes prove payload integrity against accidental corruption, whereas Hash-based Message Authentication Codes (HMAC) incorporate a shared secret key to provide origin authentication and protect against active tampering.</p>
+<p class="lede">Cryptographic hash functions map arbitrary-length data streams into fixed-size digest values, providing integrity verification and avalanche diffusion. An unkeyed hash detects accidental corruption when the verifier compares it against a digest obtained through a trusted channel — the hash alone doesn't "prove" anything if an attacker can also tamper with that reference value. Hash-based Message Authentication Codes (HMAC) incorporate a shared secret key to provide origin authentication and protect against active tampering, where an unkeyed hash cannot.</p>
 
 ## The Three Formal Security Properties
 
-Standardized in **[FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)** and **[FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)**, a secure cryptographic hash function **H(x)** must satisfy three formal mathematical properties:
+**[FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)** (SHA-2) and **[FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)** (SHA-3) specify the algorithms themselves, not a formal taxonomy of security properties — the three properties below are the established cryptographic security properties the broader literature expects of any secure hash function, and SHA-2/SHA-3 are designed and analyzed against them. A secure cryptographic hash function **H(x)** is expected to satisfy all three:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/hash-security-properties.svg' | relative_url }}" alt="Comparison of preimage, second-preimage, and collision resistance in cryptographic hash functions.">

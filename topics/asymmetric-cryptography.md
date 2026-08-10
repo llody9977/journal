@@ -2,7 +2,7 @@
 title: Asymmetric Cryptography & Public-Key Infrastructure
 description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and an interactive RSA-OAEP/RSA-PSS playground showing why private keys aren't used to encrypt data.
 permalink: /topics/asymmetric-cryptography/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>

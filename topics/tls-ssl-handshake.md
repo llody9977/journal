@@ -2,7 +2,7 @@
 title: TLS 1.3 Handshake & Network Encryption
 description: Detailed protocol breakdown of the TLS 1.3 1-RTT handshake, ECDHE key exchange, AEAD transport protection, 0-RTT early data replay risks, and Encrypted Client Hello (ECH, RFC 9849).
 permalink: /topics/tls-ssl-handshake/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Protocols</span>
@@ -36,7 +36,7 @@ This is the handshake as it runs directly over TCP for HTTP/2 and earlier. **HTT
 | **SSL 2.0 / SSL 3.0** | 2-RTT | **CRITICALLY BROKEN**: Vulnerable to POODLE, DROWN, and weak MACs. | **PROHIBITED**: Must be disabled across all servers. |
 | **TLS 1.0 / TLS 1.1** | 2-RTT | **DEPRECATED ([RFC 8996](https://www.rfc-editor.org/rfc/rfc8996))**: Lacks modern AEAD ciphers; vulnerable to BEAST and Lucky13. | **PROHIBITED**: Disable per PCI-DSS and [NIST SP 800-52 Rev. 2](https://csrc.nist.gov/pubs/sp/800/52/r2/final). |
 | **TLS 1.2** | 2-RTT | **LEGACY APPROVED**: Secure when restricted to AEAD cipher suites with ephemeral key exchange — ECDHE + AES-GCM ([RFC 5289](https://www.rfc-editor.org/rfc/rfc5289)) or ECDHE + ChaCha20-Poly1305 ([RFC 7905](https://www.rfc-editor.org/rfc/rfc7905)) are both acceptable; avoid static RSA key exchange and CBC-mode suites. | **MAINTAIN FOR COMPATIBILITY**: Phase out in favor of TLS 1.3. |
-| **TLS 1.3** | **1-RTT** | **RECOMMENDED STANDARD**: Mandatory AEAD; (EC)DHE key exchange is required for the full handshake, though PSK-only resumption (without `psk_dhe_ke`) is a permitted mode that forgoes forward secrecy for that resumed session; zero static RSA key exchange ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html), updated by [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html)). | **STANDARD DEFAULT**: Mandate across all production systems. |
+| **TLS 1.3** | **1-RTT** | **RECOMMENDED STANDARD**: Mandatory AEAD; (EC)DHE key exchange is required for the full handshake, though PSK-only resumption (without `psk_dhe_ke`) is a permitted mode that forgoes forward secrecy for that resumed session; zero static RSA key exchange ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html), updated by [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html)). | **DEFAULT FOR NEW DEPLOYMENTS**: Use TLS 1.3 by default; retain a restricted TLS 1.2 profile (AEAD-only, ECDHE-only, as described above) only where client compatibility genuinely requires it, and phase that out over time. |
 
 ## Advanced TLS 1.3 Features & Security Trade-offs
 
@@ -48,7 +48,7 @@ TLS 1.3 allows returning clients to resume sessions and send data in the very fi
   <div class="security-layer-label">0-RTT Security Guidance</div>
   <div>
     <strong>0-RTT Early Data Replay Protection</strong>
-    <p>Per <a href="https://www.rfc-editor.org/rfc/rfc8446.html#section-8">RFC 8446 §8</a>, 0-RTT data carries no non-replay guarantee, so it should only be used for application-defined replay-safe operations. While HTTP idempotence (e.g., standard <code>GET</code> or <code>PUT</code> with idempotency headers) is a primary guideline, HTTP idempotence alone is not always sufficient if backend application logic processes the request non-atomically. State-modifying or non-replay-safe operations must be restricted to 1-RTT transport to prevent transaction replay attacks.</p>
+    <p>Per <a href="https://www.rfc-editor.org/rfc/rfc8446.html#section-8">RFC 8446 §8</a>, 0-RTT data carries no non-replay guarantee, so what's actually safe to send over it has to be decided per application, not inferred from an HTTP method's nominal semantics. HTTP idempotence (a request whose *end state* is the same no matter how many times it's applied — the classic justification for allowing `GET` or `PUT`) is not the same property as replay safety: an idempotent request can still trigger a side effect — sending a notification email, incrementing an audit counter, calling a billing webhook — every time it's replayed, even though the resource's final state doesn't change. Treating "idempotent" as synonymous with "safe to replay" misses that gap. State-modifying operations, and any operation with side effects beyond the resource's own state, should be restricted to 1-RTT transport unless the application explicitly de-duplicates replays (e.g., via a request nonce or idempotency key checked server-side) on top of HTTP idempotence.</p>
   </div>
 </div>
 
@@ -77,7 +77,7 @@ Beyond the core handshake, several mechanisms determine how TLS 1.3 actually beh
     <ul>
       <li><strong>TLS 1.3 1-RTT Speed</strong>: Reduces handshake latency to 1 round-trip time; mandates AEAD ciphers and requires ephemeral key exchange (ECDHE) for the full handshake — PSK-only resumption is a permitted mode but forgoes forward secrecy for that session.</li>
       <li><strong>Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))</strong>: Encrypts the real SNI and selected <code>ClientHello</code> fields inside an encrypted inner payload to prevent passive SNI eavesdropping (though destination IP addresses, unencrypted DNS, and traffic flow analysis may still reveal destination servers).</li>
-      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to application-defined replay-safe operations (per RFC 8446 §8; HTTP idempotence alone is not always sufficient).</li>
+      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to operations the application has explicitly confirmed are replay-safe (per RFC 8446 §8) — HTTP idempotence describes end-state, not freedom from replayable side effects, so it isn't a substitute for that check.</li>
     </ul>
   </div>
 </div>

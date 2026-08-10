@@ -2,7 +2,7 @@
 title: "Symmetric Mode Attacks: ECB, CBC & CTR"
 description: Practical cryptanalysis and runnable CLI demonstrations of ECB pattern leakage, CBC bit-flipping malleability, and CTR two-time pad nonce reuse attacks.
 permalink: /topics/symmetric-mode-attacks/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
@@ -681,7 +681,7 @@ Because unauthenticated CBC mode lacks an authentication tag (AEAD), decryption 
 
 A **padding oracle** is any endpoint that decrypts CBC ciphertext and leaks — via a distinct error message, HTTP status code, or timing difference — whether the resulting **PKCS#7 padding** was valid. PKCS#7 padding fills the final block so its last **n** bytes each equal the value **n** (one padding byte of `0x01`, or two bytes of `0x02 0x02`, and so on).
 
-Because decryption computes **P<sub>i</sub> = D<sub>K</sub>(C<sub>i</sub>) &oplus; C<sub>i-1</sub>**, an attacker who controls **C<sub>i-1</sub>** controls **P<sub>i</sub>** byte-for-byte without ever learning **K**. The attack recovers a target block **C<sub>i</sub>** working backward from its last byte:
+Because decryption computes **P<sub>i</sub> = D<sub>K</sub>(C<sub>i</sub>) &oplus; C<sub>i-1</sub>**, an attacker who controls **C<sub>i-1</sub>** can blindly flip any bit of **P<sub>i</sub>** by flipping the corresponding bit of **C<sub>i-1</sub>** — enough for the bit-flipping attack above — but that alone doesn't let the attacker *set* **P<sub>i</sub>** to a chosen value, since **D<sub>K</sub>(C<sub>i</sub>)** (the intermediate value **I<sub>i</sub>**, before the XOR) is still unknown to them. The padding oracle is what closes that gap: by observing which byte guesses produce valid padding, the attacker recovers **I<sub>i</sub>** one byte at a time, and only once a given byte of **I<sub>i</sub>** is known can they XOR it against any chosen plaintext byte to compute the **C<sub>i-1</sub>** byte that produces it. The attack recovers a target block **C<sub>i</sub>** working backward from its last byte:
 
 1. Replace the last byte of **C<sub>i-1</sub>** with each of the 256 possible values and resend the (unmodified) **C<sub>i</sub>** to the oracle.
 2. The guess that yields a **valid-padding** response reveals the decryption engine's intermediate value: **I<sub>i</sub>[15] = guessed_byte &oplus; 0x01** (a single `0x01` pad byte is the simplest valid case).

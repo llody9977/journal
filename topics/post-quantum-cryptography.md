@@ -2,7 +2,7 @@
 title: Post-Quantum Cryptography (PQC) Migration
 description: Architectural roadmap for migrating to NIST PQC standards (finalized FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA, and draft FIPS 206 FN-DSA), NSA CNSA 2.0 timelines, and hybrid key exchange.
 permalink: /topics/post-quantum-cryptography/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Emerging Topics</span>
@@ -17,10 +17,10 @@ Quantum computing impacts symmetric and asymmetric primitives in fundamentally d
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/quantum-algorithm-impact.svg' | relative_url }}" alt="Comparison of Grover's algorithm halving symmetric key security vs Shor's algorithm breaking RSA and ECC.">
-  <p class="diagram-caption">Grover's algorithm halves symmetric security (mitigated by doubling key sizes); Shor's algorithm completely breaks RSA/ECC</p>
+  <p class="diagram-caption">Grover's algorithm halves symmetric security (mitigated by doubling key sizes); Shor's algorithm reduces RSA/ECC to a polynomial-time problem, once a sufficiently capable quantum computer exists</p>
 </div>
 
-1. **Asymmetric Cryptography (RSA, ECC, ECDSA, ECDH)**: **Completely broken** by **Shor's Algorithm** running on a CRQC. Shor's algorithm solves prime factorization and discrete logarithms in polynomial time (**O(n^3)**).
+1. **Asymmetric Cryptography (RSA, ECC, ECDSA, ECDH)**: Shor's Algorithm solves prime factorization and discrete logarithms in polynomial time (**O(n^3)**) — a genuine asymptotic break, in the sense that the problem's difficulty no longer scales the way RSA/ECC's security relies on. This is a **contingent, not a present-tense, threat**: it requires a sufficiently capable, fault-tolerant Cryptographically Relevant Quantum Computer (CRQC) actually running the algorithm, and no such machine exists today. Once one does exist at sufficient scale, it would render RSA/ECC/ECDSA/ECDH's underlying hard problems tractable.
 2. **Symmetric Ciphers (AES-256)**: Effective key-search security is **halved** by **Grover's Algorithm**. **AES-256 retains 128-bit quantum security**, rendering it quantum-resistant without requiring algorithm replacement.
 3. **Hash Functions (SHA-384/512)**: Grover's Algorithm halves **preimage resistance** (an n-bit hash drops from ~n bits to **~n/2 bits**, e.g., SHA-256's 256-bit preimage resistance falls to ~128 bits). **Collision resistance** degrades differently: it is already ~n/2 bits classically (the birthday bound), and the best known quantum collision attack (the **BHT algorithm**) brings it down further to roughly **~n/3 bits** — a smaller reduction than a naive halving, and one whose practicality is limited by BHT's very large quantum-memory (QRAM) requirements.
 
@@ -30,7 +30,7 @@ Understanding the difference between symmetric and asymmetric post-quantum secur
 
 | Cryptographic Realm | Quantum Threat Algorithm | Quantum Attack Impact | Post-Quantum Mitigation Action |
 |---|---|---|---|
-| **Asymmetric Cryptography** (*RSA, ECC, ECDSA, ECDHE*) | **Shor's Algorithm** | Exponential speedup (**O(n^3)**); **completely breaks** factorization and discrete logs. | **Must migrate to new PQC algorithms** (**FIPS 203 ML-KEM** for key exchange, **FIPS 204 ML-DSA** for signatures). |
+| **Asymmetric Cryptography** (*RSA, ECC, ECDSA, ECDHE*) | **Shor's Algorithm** | Reduces factorization and discrete-log difficulty to polynomial time (**O(n^3)**) — an exponential improvement over the best known classical algorithms — but only once run on a sufficiently capable, fault-tolerant CRQC, which does not exist yet. | **Must migrate to new PQC algorithms** (**FIPS 203 ML-KEM** for key exchange, **FIPS 204 ML-DSA** for signatures), prioritized by each system's confidentiality-lifetime and risk (see above). |
 | **Symmetric Ciphers** (*AES-256, ChaCha20*) | **Grover's Algorithm** | Quadratic speedup (**O(sqrt(N))**); **halves** key-search security bits. | **Use 256-bit keys**. AES-256 itself does NOT need to be replaced with a new algorithm. |
 | **Hash Functions** (*SHA-256/384/512 — no key, so "key size" doesn't apply*) | **Grover's Algorithm** (preimage); **BHT** (collision) | Halves preimage resistance (n bits &rarr; ~n/2); collision resistance drops less sharply, from the classical ~n/2-bit birthday bound to roughly ~n/3 bits under BHT. | **Use a digest of at least 384 bits** (SHA-384/512, SHA3-384/512) where 256-bit-equivalent post-quantum preimage resistance is required; SHA-256 remains fine for uses that don't need that margin. |
 
@@ -116,7 +116,7 @@ Migrating a real system is a program of work, not a library upgrade. Several pra
     <strong>Post-Quantum Cryptography Summary</strong>
     <ul>
       <li><strong>Finalized vs. Draft</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) are <strong>finalized NIST standards (Aug 2024)</strong>. FIPS 206 (FN-DSA) is a <strong>draft standard under development</strong>.</li>
-      <li><strong>Shor's vs. Grover's</strong>: Shor's algorithm completely breaks RSA/ECC. Grover's algorithm only halves symmetric key strength (AES-256 remains secure with 128-bit quantum security).</li>
+      <li><strong>Shor's vs. Grover's</strong>: Shor's algorithm would render RSA/ECC tractable to break, but only once run on a sufficiently capable, fault-tolerant quantum computer that doesn't exist yet. Grover's algorithm only halves symmetric key strength (AES-256 remains secure with 128-bit quantum security).</li>
       <li><strong>Harvest Now, Decrypt Later</strong>: Adversaries record encrypted traffic today to decrypt years later. Prioritize hybrid key exchange (X25519MLKEM768) in proportion to how long the data must stay confidential and how close your CRQC-arrival estimate is.</li>
       <li><strong>CNSA 2.0 Scope</strong>: Applies specifically to U.S. National Security Systems (NSS), Software and firmware signing target 2030; traditional networking equipment targets 2030; web browsers, web servers, cloud services, and operating systems target exclusive CNSA 2.0 deployment by **2033** per [NSA CNSA 2.0 Advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF).</li>
     </ul>

@@ -2,7 +2,7 @@
 title: Recommended Cryptographic Algorithms & Standards
 description: Comprehensive compliance guide mapping NIST SP 800-57, NSA CNSA 2.0, NIST PQC Standards (FIPS 203/204/205/206), and Chinese ShangMi (SM2/3/4) algorithm suites.
 permalink: /topics/recommended-algorithms/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Standards</span>
@@ -17,11 +17,11 @@ Quantum computing impacts symmetric and asymmetric primitives in fundamentally d
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/quantum-algorithm-impact.svg' | relative_url }}" alt="Comparison of Grover's algorithm halving symmetric key security vs Shor's algorithm breaking RSA and ECC.">
-  <p class="diagram-caption">Grover's algorithm halves symmetric security (mitigated by doubling key sizes); Shor's algorithm completely breaks RSA/ECC</p>
+  <p class="diagram-caption">Grover's algorithm halves symmetric security (mitigated by doubling key sizes); Shor's algorithm reduces RSA/ECC to a polynomial-time problem, once a sufficiently capable quantum computer exists</p>
 </div>
 
 1. **Grover's Algorithm & Quantum Collision Bounds**: Provides a quadratic speedup for unstructured brute-force search ($O(2^n) \to O(2^{n/2})$). For symmetric ciphers, 256-bit keys drop to 128-bit quantum security strength. For unkeyed cryptographic hash functions, Grover's algorithm provides a quadratic speedup against preimage search ($O(2^n) \to O(2^{n/2})$), while generic quantum collision algorithms (such as the BHT algorithm, [Brassard et al., 1997](https://arxiv.org/abs/quant-ph/9705002)) can theoretically reduce collision search to $O(2^{n/3})$ under ideal quantum memory assumptions. Deploying SHA-384 and SHA-512 maintains large security margins against both preimage and collision attacks.
-2. **Shor's Algorithm (Asymmetric Public Key Cryptography)**: Solves prime factorization and discrete logarithms in polynomial time (**O(n^3)**). **Completely breaks RSA, ECC, ECDSA, and Diffie-Hellman**. Mitigated by transitioning to NIST Post-Quantum Cryptography (PQC) standards.
+2. **Shor's Algorithm (Asymmetric Public Key Cryptography)**: Solves prime factorization and discrete logarithms in polynomial time (**O(n^3)**), which would render RSA, ECC, ECDSA, and Diffie-Hellman tractable to break — contingent on a sufficiently capable, fault-tolerant quantum computer actually running it, which does not exist today. Mitigated by transitioning to NIST Post-Quantum Cryptography (PQC) standards ahead of that threshold.
 
 ## Cryptographic Standards Matrix: IETF Standards vs. NIST/FIPS Compliance
 

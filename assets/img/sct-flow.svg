@@ -17,7 +17,7 @@
     <text x="65" y="136" font-size="10.5" font-weight="900" letter-spacing="0.5" fill="#2563eb">STEP 1: CERTIFICATE AUTHORITY</text>
     <text x="65" y="158" font-size="13.5" font-weight="800" fill="#0f172a">Submit Pre-Certificate</text>
     <text x="65" y="180" font-size="11.5" font-weight="500" fill="#475569">CA sends pre-cert payload to</text>
-    <text x="65" y="196" font-size="11.5" font-weight="600" fill="#2563eb">≥ 2 Independent CT Logs</text>
+    <text x="65" y="196" font-size="10.5" font-weight="600" fill="#2563eb">Multiple CT Logs (Count Varies)</text>
 
     <!-- Connector 1 -> 2 (x=295 to 335) -->
     <path d="M 300 160 L 330 160" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>

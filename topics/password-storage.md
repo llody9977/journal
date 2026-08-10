@@ -2,7 +2,7 @@
 title: Password Hashing & Key Derivation
 description: Password storage security guidelines, Argon2id (RFC 9106), bcrypt, PBKDF2, salting mechanics, pepper KMS integration, and bcrypt 72-byte truncation workarounds.
 permalink: /topics/password-storage/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Authentication</span>
@@ -228,22 +228,22 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
 | Algorithm | Memory Hardness | GPU / ASIC Resistance | Specification &amp; Recommended Status |
 |---|---|---|---|
-| **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **Strongest of this group at equivalent tuning effort**: memory-hardness raises the cost of GPU/ASIC parallelism more directly than CPU-only designs, though actual resistance still depends on the chosen parameters and the attacker's hardware budget. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
-| **bcrypt** | None (CPU-Hard) | **Weaker against custom ASICs than memory-hard designs**: its fixed, small memory footprint (4 KiB) is cheap to replicate in dedicated hardware, though it still resists commodity GPU cracking better than an unsalted fast hash. | **APPROVED LEGACY**: Acceptable legacy default; watch out for 72-byte truncation limit. |
+| **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **Generally considered strongest of this group when comparably tuned**: memory-hardness raises the cost of GPU/ASIC parallelism more directly than CPU-only designs, though actual resistance depends on the chosen parameters and the attacker's hardware budget, not the algorithm choice alone. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
+| **bcrypt** | None (CPU-Hard) | **Weaker against custom ASICs than memory-hard designs**: its fixed, small memory footprint (4 KiB) is cheap to replicate in dedicated hardware, though it still resists commodity GPU cracking better than an unsalted fast hash. | **COMMONLY ACCEPTED LEGACY OPTION**: Acceptable where already deployed or required for compatibility; watch out for 72-byte truncation limit. |
 | **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **Weakest of this group against GPU/ASIC parallelism**: a high iteration count (600,000+) raises the cost per guess, but with no memory requirement at all, that cost is easy to parallelize across many cheap cores. | **FIPS COMPLIANCE OPTION**: FIPS 140-3 itself does not mandate PBKDF2 — it certifies cryptographic *modules*, not a specific password-hashing choice. Use PBKDF2 (NIST SP 800-132) when your environment requires an algorithm implemented inside a FIPS 140-3 validated module, since Argon2id, bcrypt, and scrypt are not currently NIST-approved primitives eligible for that validation. |
-| **scrypt** (RFC 7914) | **MODERATE** | **Comparable to Argon2id in principle, less tunable in practice**: an earlier memory-hard design with fewer independent cost parameters (no separate parallelism knob distinct from memory/CPU cost), which is part of why RFC 9106 and OWASP now recommend Argon2id first. | **APPROVED ALTERNATIVE**: Acceptable when Argon2id is unavailable. |
+| **scrypt** (RFC 7914) | **MODERATE** | **Comparable to Argon2id in principle, less tunable in practice**: an earlier memory-hard design with fewer independent cost parameters (no separate parallelism knob distinct from memory/CPU cost), which is part of why RFC 9106 and OWASP now recommend Argon2id first. | **ACCEPTABLE FALLBACK**: A reasonable choice when Argon2id isn't available in your stack. |
 
 ## Salting & Peppering Architecture
 
 ### 1. Per-User Salt (Public Metadata)
 
 A **Salt** is a 16-byte (128-bit) CSPRNG random sequence generated uniquely per user account and stored alongside the hash digest in cleartext. Salting enforces two critical controls:
-- **Defeats Precomputed Rainbow Tables**: Rainbow table lookups become impossible because every user hash uses a distinct salt.
+- **Defeats Precomputed Rainbow Tables**: A rainbow table built before the salt is known can't match any of these hashes — the attacker would need a separate precomputed table per salt value, which defeats the entire point of precomputing a table in advance.
 - **Prevents Duplicate Hash Discovery**: Two users sharing the identical password `"Password123!"` yield completely different hash digests.
 
 ### 2. Secret Pepper (KMS Custody)
 
-A **Pepper** is a 32-byte secret key stored outside the primary user database (*e.g., inside an AWS KMS or HSM*). The application combines the pepper with the salted password prior to hashing. If an adversary steals a SQL database dump, they cannot perform offline cracking without the KMS pepper.
+A **Pepper** is a 32-byte secret key stored outside the primary user database (*e.g., inside an AWS KMS or HSM*). The application combines the pepper with the salted password prior to hashing. If an adversary's breach is scoped to a SQL database dump alone (e.g., via SQL injection) and doesn't also expose the pepper, they cannot perform offline cracking without it — but that protection depends on the breach genuinely not reaching the pepper; an attacker with broader access (application-server compromise, KMS misconfiguration) that reaches both the database *and* the pepper isn't stopped by this control.
 
 | Security Control | Storage Location | Entropy Source | Primary Attack Mitigated |
 |---|---|---|---|

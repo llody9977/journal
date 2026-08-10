@@ -2,7 +2,7 @@
 title: Key Exchange & Key Derivation (KDF)
 description: Diffie-Hellman key exchange mechanics, Ephemeral ECDH (X25519), Perfect Forward Secrecy (PFS), HKDF extract-and-expand pipeline, and post-quantum KEMs.
 permalink: /topics/key-exchange-derivation/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -92,7 +92,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
     <p>Understanding key roles resolves common misconceptions between identity authentication and data encryption:</p>
     <ul>
       <li><strong>Server Certificate Key (Typically on Disk, an HSM, or a KMS)</strong>: Used exclusively for <strong>Identity Authentication</strong> (proving to the browser: <em>"I am really bank.com"</em>). The server uses its private key to <strong>sign</strong> the handshake parameters. It is <strong>never used to encrypt bulk data</strong>.</li>
-      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used exclusively for <strong>Data Confidentiality</strong>. Generated in transient RAM for a single connection session, both endpoints combine key shares to derive the ECDH shared secret, which is passed through HKDF to derive symmetric AES traffic keys (<code>0x8f3a91b2...</code>) and IVs, and is discarded when the session closes.</li>
+      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used to establish the shared secret material that makes <strong>Data Confidentiality</strong> possible — it is a key-agreement key, not an encryption key itself. Generated in transient RAM for a single connection session, both endpoints combine key shares to derive the ECDH shared secret, which is passed through HKDF to derive the symmetric AES traffic keys (<code>0x8f3a91b2...</code>) and IVs that actually perform the AEAD encryption; the ECDHE key material is discarded when the session closes.</li>
       <li><strong>Client Certificates</strong>: In the vast majority of ordinary web browsing, <strong>clients do not present certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to derive the shared secret and expanded HKDF traffic keys to encrypt HTTP traffic.</li>
     </ul>
   </div>

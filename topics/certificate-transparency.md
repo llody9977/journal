@@ -2,7 +2,7 @@
 title: Certificate Transparency (CT) & Merkle Audit Proofs
 description: Cryptographic principles of Certificate Transparency (RFC 6962 / RFC 9162), Signed Certificate Timestamps (SCT), Merkle tree audit proofs, and browser CT policies.
 permalink: /topics/certificate-transparency/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
@@ -79,7 +79,7 @@ SCTs can be delivered to the client browser via three distinct transport mechani
     <ul>
       <li><strong>Detection, Not Prevention</strong>: CT does not stop a CA from misissuing a certificate — it makes misissuance publicly loggable and discoverable after the fact, so it enables accountability rather than blocking the act itself.</li>
       <li><strong>Public Append-Only Logs</strong>: In the common embedded-SCT workflow, the CA submits a pre-certificate before final issuance; SCTs may also be delivered through supported TLS mechanisms.</li>
-      <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling.</li>
+      <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling — though Chrome 148+ no longer accepts the OCSP-stapling path toward its CT compliance requirement, leaving the other two as the paths that actually count there.</li>
       <li><strong>Browser Enforcement Policies</strong>: Chrome and Apple enforce distinct CT policies requiring specific SCT counts and log operator diversity rules based on certificate lifetime.</li>
     </ul>
   </div>

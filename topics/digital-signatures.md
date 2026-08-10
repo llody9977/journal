@@ -2,7 +2,7 @@
 title: Digital Signatures & Non-Repudiation
 description: Comprehensive guide to digital signature pipelines, RSA-PSS, ECDSA, Ed25519 (RFC 8032), FIPS 204 ML-DSA, FIPS 205 SLH-DSA, deterministic nonces (RFC 6979), and HSM key custody.
 permalink: /topics/digital-signatures/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>

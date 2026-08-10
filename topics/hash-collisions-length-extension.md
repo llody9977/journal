@@ -2,7 +2,7 @@
 title: Hash Collisions & Length-Extension Attacks
 description: Executable cryptanalytic demonstrations of MD5 and SHA-1 collision pairs and a complete JavaScript length-extension attack against naive hash MACs.
 permalink: /topics/hash-collisions-length-extension/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>

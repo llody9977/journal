@@ -2,7 +2,7 @@
 title: Symmetric Cryptography
 description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), Grover's quantum search, and Node.js envelope encryption.
 permalink: /topics/symmetric-cryptography/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -132,7 +132,7 @@ Nonce uniqueness is necessary but not sufficient — deploying AEAD at scale mea
     <strong>Symmetric Cryptography Summary</strong>
     <ul>
       <li><strong>AES-256-GCM Standard</strong>: Primary AEAD Recommendation cipher for data in transit and at rest. Provides 128-bit quantum security against Grover's algorithm.</li>
-      <li><strong>Nonce Uniqueness Rule</strong>: Reusing a 96-bit GCM nonce under the same key destroys authenticity and allows plaintext recovery.</li>
+      <li><strong>Nonce Uniqueness Rule</strong>: Reusing a 96-bit GCM nonce under the same key destroys authenticity and exposes the XOR of the two plaintexts; recovering either full plaintext from that XOR still requires known or predictable content in the other message.</li>
       <li><strong>ChaCha20-Poly1305 Alternative</strong>: Software-optimized AEAD stream cipher providing exceptional speed on hardware lacking dedicated AES acceleration (e.g., AES-NI or ARMv8 Crypto Extensions).</li>
     </ul>
   </div>

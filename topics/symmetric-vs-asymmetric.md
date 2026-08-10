@@ -2,7 +2,7 @@
 title: Symmetric vs Asymmetric Cryptography
 description: Direct comparative decision guide between symmetric and asymmetric cryptography, hybrid encryption architectures (HPKE), and attribution limits.
 permalink: /topics/symmetric-vs-asymmetric/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Decision Guide</span>
@@ -20,7 +20,7 @@ last_verified: 2026-08-09
 | **Data Size Limits** | Arbitrary message length | Applies to **public-key encryption specifically** (e.g., RSA-OAEP), not to signatures or key agreement: RSA-2048 with OAEP-SHA256 encrypts &le; 190 bytes (modulus_bytes &minus; 2&times;hashLen &minus; 2). ECDSA/EdDSA sign a fixed-size digest regardless of message length, and ECDH/X25519 key agreement has no payload to size-limit at all. | Asymmetric *encryption* wraps symmetric keys rather than encrypting bulk files; signatures and key agreement aren't subject to this limit in the first place. |
 | **Key Architecture** | Single shared secret key (**K**) | Linked Key Pair: Public Key (<b>K<sub>pub</sub></b>) + Private Key (<b>K<sub>priv</sub></b>) | Symmetric keys require secure out-of-band distribution or key agreement. |
 | **Key Distribution Requirement** | Requires pre-shared secret key over secure channel | Public key can be distributed freely; binding requires authentication (PKI) | Public keys eliminate shared secret transport but require X.509 binding. |
-| **Post-Quantum Resilience** | **AES-256** retains 128-bit security under Grover's Algorithm | **RSA and ECC** are completely broken by Shor's Algorithm | Quantum computers break classical asymmetric keys; symmetric keys need doubling to 256 bits. |
+| **Post-Quantum Resilience** | **AES-256** retains 128-bit security under Grover's Algorithm | **RSA and ECC** would be rendered tractable to break by Shor's Algorithm, once a sufficiently capable, fault-tolerant quantum computer exists (none does today) | A future CRQC would break classical asymmetric keys; symmetric keys only need doubling to 256 bits. |
 | **Primary Architectural Role** | Bulk payload encryption at rest and in transit | Key exchange, digital signatures, identity authentication | Complementary paradigms combined in hybrid encryption protocols. |
 | **Primary Primitives** | AES-256-GCM, ChaCha20-Poly1305, HMAC-SHA256 | RSA-OAEP / PSS, ECDSA, Ed25519, X25519 | Modern protocols prefer AEAD (AES-GCM) and ECC (Ed25519 / X25519). |
 
@@ -63,7 +63,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
     <strong>Symmetric vs. Asymmetric Summary</strong>
     <ul>
       <li><strong>Performance Trade-off</strong>: Symmetric encryption (AES-256) is orders of magnitude faster per byte than asymmetric algorithms (RSA/ECC) — the precise ratio depends heavily on algorithm, key size, and hardware acceleration (e.g., AES-NI), so benchmark your target platform rather than relying on one fixed number — and it processes arbitrary payload sizes.</li>
-      <li><strong>Key Distribution Problem</strong>: Asymmetric cryptography solves secret key distribution without requiring an out-of-band secret channel.</li>
+      <li><strong>Key Distribution Problem</strong>: Asymmetric cryptography solves secret key distribution without requiring an out-of-band secret channel — but only once the public key itself is authenticated (via PKI/X.509 or out-of-band fingerprint verification); an unauthenticated public-key exchange is vulnerable to MitM key substitution.</li>
       <li><strong>Hybrid Architecture</strong>: Production systems use asymmetric keys to negotiate or wrap a single-use symmetric DEK, which encrypts bulk data.</li>
     </ul>
   </div>

@@ -450,8 +450,9 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 570" xmlns="http://www
   <rect x="300" y="415" width="600" height="40" rx="6" fill="#15803d"/>
   <text x="600" y="440" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">4. Encrypted Application Data (HTTP/2 over the TLS record layer, or HTTP/3 over QUIC)</text>
 
-  <rect x="120" y="480" width="960" height="40" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="504" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Perfect Forward Secrecy (PFS): Compromise of long-term server cert key cannot decrypt past traffic sessions.</text>
+  <rect x="120" y="480" width="960" height="56" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="600" y="502" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Perfect Forward Secrecy (PFS): long-term cert-key compromise alone can't decrypt past sessions &#8212;</text>
+  <text x="600" y="520" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">requires ephemeral key exchange, timely erasure of ephemeral secrets, and no separate secret compromise.</text>
 </svg>"""
 
 # 10. password-hash-comparison.svg

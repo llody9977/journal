@@ -783,7 +783,7 @@ fs.writeFileSync(
       <text x="455" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.amber}">STEP 3</text>
       <text x="455" y="158" font-size="14" font-weight="800" fill="${colors.ink}">DV Validation</text>
       <text x="455" y="180" font-size="11.5" font-weight="500" fill="${colors.muted}">DNS-01 / HTTP-01</text>
-      <text x="455" y="196" font-size="11" font-weight="600" fill="${colors.amber}">Proves Ownership</text>
+      <text x="455" y="196" font-size="10" font-weight="600" fill="${colors.amber}">Validates Domain Control</text>
 
       <path d="M605 165 L635 165" fill="none" stroke="${colors.amber}" stroke-width="2.5" marker-end="url(#arrow-amber)"/>
 
@@ -841,7 +841,7 @@ fs.writeFileSync(
       <text x="65" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.blue}">STEP 1: CERTIFICATE AUTHORITY</text>
       <text x="65" y="158" font-size="14" font-weight="800" fill="${colors.ink}">Submit Pre-Certificate</text>
       <text x="65" y="180" font-size="12" font-weight="500" fill="${colors.muted}">CA sends pre-cert payload to</text>
-      <text x="65" y="196" font-size="12" font-weight="600" fill="${colors.blue}">≥ 2 Independent CT Logs</text>
+      <text x="65" y="196" font-size="11" font-weight="600" fill="${colors.blue}">Multiple CT Logs (Count Varies)</text>
 
       <path d="M 280 160 L 330 160" fill="none" stroke="${colors.blue}" stroke-width="3" marker-end="url(#arrow-blue)"/>
 
@@ -867,8 +867,8 @@ fs.writeFileSync(
       <rect x="920" y="110" width="230" height="100" rx="10" fill="${colors.blueFill}" stroke="${colors.blue}" stroke-width="2"/>
       <text x="935" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.blue}">STEP 4: CLIENT BROWSER</text>
       <text x="935" y="158" font-size="14" font-weight="800" fill="${colors.ink}">Enforce CT Policy</text>
-      <text x="935" y="180" font-size="12" font-weight="500" fill="${colors.muted}">Browser verifies ≥ 2 SCTs</text>
-      <text x="935" y="196" font-size="12" font-weight="700" fill="${colors.blue}">From Diverse Log Operators</text>
+      <text x="935" y="180" font-size="11" font-weight="500" fill="${colors.muted}">Verifies required SCT count</text>
+      <text x="935" y="196" font-size="11" font-weight="700" fill="${colors.blue}">&amp; log diversity (policy-dependent)</text>
 
       <!-- Bottom Card: Delivery Methods & Protection -->
       <rect x="50" y="240" width="1100" height="170" rx="12" fill="${colors.tealFill}" stroke="${colors.teal}" stroke-width="2.5"/>

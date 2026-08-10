@@ -2,7 +2,7 @@
 title: Public Key Infrastructure (PKI) & X.509 Certificates
 description: X.509 v3 certificate structure, Certificate Authority (CA) hierarchies, automated ACME issuance (RFC 8555 / ARI), CRL/OCSP revocation, and PQC hybrid certificates.
 permalink: /topics/certificates/
-last_verified: 2026-08-09
+last_verified: 2026-08-10
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
@@ -339,7 +339,7 @@ X.509 certificates and private keys are distributed across four primary format e
       groupOut.style.display = 'block'; labelOut.innerText = 'Output CSR File:';
       groupKey.style.display = 'block'; labelKey.innerText = 'Output Private Key File:';
       groupChain.style.display = 'none';
-      cmd = `openssl req -newkey rsa:2048 -keyout ${valKey} -out ${valOut}`;
+      cmd = `openssl req -newkey rsa:3072 -keyout ${valKey} -out ${valOut}`;
     } else if (task === 'match-mod') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File:';
       groupOut.style.display = 'none';
@@ -380,7 +380,7 @@ X.509 certificates and private keys are distributed across four primary format e
 
 ## Certificate & Public Key Pinning (Mobile & Native App Defense)
 
-Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** in an OS trust store to issue certificates for your domain. **Certificate Pinning** (or **Public Key Pinning**) adds an additional restriction *on top of* standard X.509 path validation and hostname verification — it does not replace or skip them. A pinned connection still must pass ordinary chain building, signature verification, and name checking; pinning then further requires that a specific, pre-declared public key hash also appear in the chain, narrowing acceptance from "any of the ~150+ trusted Root CAs" down to a pre-declared set.
+Standard PKI path validation trusts **any pre-installed Root CA** in an OS trust store to issue certificates for your domain — the exact count varies by platform and OS version, but is commonly on the order of 100+ roots. **Certificate Pinning** (or **Public Key Pinning**) adds an additional restriction *on top of* standard X.509 path validation and hostname verification — it does not replace or skip them. A pinned connection still must pass ordinary chain building, signature verification, and name checking; pinning then further requires that a specific, pre-declared public key hash also appear in the chain, narrowing acceptance from "any trusted Root CA in the OS store" down to a pre-declared set (often the server's own SPKI plus one or more backup pins, not necessarily a single key).
 
 ### Pinning Target Strategies
 
@@ -394,7 +394,7 @@ Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** 
 
 Certificate pinning applies to both Public PKI and Private PKI environments, addressing distinct threat vectors:
 
-- **Public CAs (e.g. Let's Encrypt, DigiCert, Sectigo)**: Mobile OS trust stores pre-install **~150+ commercial Root CAs**. If a single Public CA is compromised or coerced into issuing a fake certificate for your domain (`api.example.com`), standard TLS path validation accepts the forged cert. Pinning your server's **SPKI key hash** forces native apps to ignore all other 150+ Public CAs, ensuring only your specific server key is trusted.
+- **Public CAs (e.g. Let's Encrypt, DigiCert, Sectigo)**: Mobile OS trust stores pre-install a large number of commercial Root CAs — the exact count is platform- and version-specific. If a single Public CA is compromised or coerced into issuing a fake certificate for your domain (`api.example.com`), standard TLS path validation accepts the forged cert. Pinning your server's **SPKI key hash** (plus at least one backup pin) forces native apps to reject any chain that doesn't present one of the pinned keys, regardless of which of those Root CAs signed it — narrowing trust to the pinned set rather than to a single key.
 - **Private CAs (Internal / Enterprise PKI)**: Used inside corporate networks, mTLS microservice meshes, and IoT fleets (e.g. HashiCorp Vault PKI, AWS Private CA). Pinning the **Private CA Root/Intermediate key** inside native apps prevents corporate SSL decryption proxies (e.g. Zscaler, Charles Proxy) or user-installed custom root certificates from eavesdropping on enterprise API traffic.
 
 ### Security Risks & Threat Vectors of Pinning
