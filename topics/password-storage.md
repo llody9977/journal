@@ -128,14 +128,27 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
       else hasNonAscii = true; // outside this model's scope — see note below
     }
 
+    if (hasNonAscii) {
+      // No defensible fixed pool size exists for arbitrary Unicode scripts — the
+      // "reasonable" alphabet size varies by orders of magnitude between, say,
+      // Vietnamese and Chinese. Rather than invent a number, suppress the estimate.
+      poolVal.innerText = 'N/A';
+      bitsVal.innerText = 'N/A';
+      statusBar.innerHTML = '&#8505;&#65039; Non-ASCII character detected — this simplified calculator only models a fixed printable-ASCII pool and has no defensible pool size for other scripts, so no numeric estimate is shown.';
+      statusBar.style.background = 'rgba(36, 87, 214, 0.08)';
+      statusBar.style.color = 'var(--accent)';
+      statusBar.style.borderColor = 'var(--accent)';
+      crackTime.innerText = 'N/A';
+      return;
+    }
+
     let R = 0;
     if (hasLower) R += 26;
     if (hasUpper) R += 26;
     if (hasDigit) R += 10;
     if (hasSpecial) R += 33; // Standard printable special characters
-    if (hasNonAscii && R === 0) R = 33; // avoid log2(0) if the input is entirely non-ASCII
 
-    poolVal.innerText = hasNonAscii ? `${R}+ (non-ASCII present)` : R;
+    poolVal.innerText = R;
 
     // Idealized Uniform Search-Space Upper Bound: E = L * log2(R)
     const E = len * (Math.log(R) / Math.log(2));
@@ -169,9 +182,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
       borderColor = 'var(--teal)';
     }
 
-    statusBar.innerHTML = hasNonAscii
-      ? rating + ' &mdash; note: this simplified pool model only sizes printable ASCII; non-ASCII characters are each counted as one character but not assigned a realistic pool size, so treat this number as a loose floor, not an accurate estimate.'
-      : rating;
+    statusBar.innerHTML = rating;
     statusBar.style.background = bgColor;
     statusBar.style.color = textColor;
     statusBar.style.borderColor = borderColor;
@@ -217,10 +228,10 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
 | Algorithm | Memory Hardness | GPU / ASIC Resistance | Specification &amp; Recommended Status |
 |---|---|---|---|
-| **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **MAXIMUM**: Hybrid memory-hard design resists GPU and side-channel attacks. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
-| **bcrypt** | None (CPU-Hard) | **MODERATE**: Blowfish key schedule resists GPUs; vulnerable to custom ASICs. | **APPROVED LEGACY**: Acceptable legacy default; watch out for 72-byte truncation limit. |
-| **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **LOW**: High iteration count (600,000+) but easily parallelized on GPUs. | **FIPS COMPLIANCE OPTION**: FIPS 140-3 itself does not mandate PBKDF2 — it certifies cryptographic *modules*, not a specific password-hashing choice. Use PBKDF2 (NIST SP 800-132) when your environment requires an algorithm implemented inside a FIPS 140-3 validated module, since Argon2id, bcrypt, and scrypt are not currently NIST-approved primitives eligible for that validation. |
-| **scrypt** (RFC 7914) | **MODERATE** | **HIGH**: Early memory-hard function; superseded by Argon2id. | **APPROVED ALTERNATIVE**: Acceptable when Argon2id is unavailable. |
+| **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **Strongest of this group at equivalent tuning effort**: memory-hardness raises the cost of GPU/ASIC parallelism more directly than CPU-only designs, though actual resistance still depends on the chosen parameters and the attacker's hardware budget. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
+| **bcrypt** | None (CPU-Hard) | **Weaker against custom ASICs than memory-hard designs**: its fixed, small memory footprint (4 KiB) is cheap to replicate in dedicated hardware, though it still resists commodity GPU cracking better than an unsalted fast hash. | **APPROVED LEGACY**: Acceptable legacy default; watch out for 72-byte truncation limit. |
+| **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **Weakest of this group against GPU/ASIC parallelism**: a high iteration count (600,000+) raises the cost per guess, but with no memory requirement at all, that cost is easy to parallelize across many cheap cores. | **FIPS COMPLIANCE OPTION**: FIPS 140-3 itself does not mandate PBKDF2 — it certifies cryptographic *modules*, not a specific password-hashing choice. Use PBKDF2 (NIST SP 800-132) when your environment requires an algorithm implemented inside a FIPS 140-3 validated module, since Argon2id, bcrypt, and scrypt are not currently NIST-approved primitives eligible for that validation. |
+| **scrypt** (RFC 7914) | **MODERATE** | **Comparable to Argon2id in principle, less tunable in practice**: an earlier memory-hard design with fewer independent cost parameters (no separate parallelism knob distinct from memory/CPU cost), which is part of why RFC 9106 and OWASP now recommend Argon2id first. | **APPROVED ALTERNATIVE**: Acceptable when Argon2id is unavailable. |
 
 ## Salting & Peppering Architecture
 
@@ -247,7 +258,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and recommen
   <div class="demo-header">
     <span class="demo-badge">Interactive Parameter Tuner</span>
     <h3>Argon2id Cost Estimator & Parameter Tuner</h3>
-    <p>Adjust memory, time, and thread parameters to generate and copy the optimal Node.js Argon2 config conforming to OWASP and RFC 9106 guidelines.</p>
+    <p>Adjust memory, time, and thread parameters to generate and copy a Node.js Argon2 config that meets OWASP or RFC 9106 guidance — the right values depend on your deployment's available memory and request volume, not a single universally "optimal" setting.</p>
   </div>
 
   <div class="demo-body">
@@ -406,7 +417,7 @@ async function hashUserPassword(password) {
 
 <div class="callout warn">
   <span class="callout-title">Do Not Pre-Hash With Plain, Unkeyed SHA-256</span>
-  <p>A tempting mitigation is to pre-hash long passwords with plain <code>SHA-256(password)</code> — producing a fixed 32-byte digest — before passing them to <code>bcrypt</code>. The <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pre-hashing-passwords-with-bcrypt">OWASP Password Storage Cheat Sheet</a> advises against this because of a technique known as <strong>password shucking</strong> — but the risk isn't that possessing the <code>bcrypt(SHA-256(password))</code> database alone lets an attacker skip bcrypt's cost. Attacking that stored value directly still requires one full bcrypt computation per guess, exactly as intended, regardless of what the inner hash is. The actual danger is <strong>cross-referencing</strong>: because <code>SHA-256(password)</code> is fast, unkeyed, and produces the same output for the same password everywhere it's used, if that <em>intermediate</em> digest ever becomes independently known — leaked from a different breach that stored it raw, exposed by a debug log, a caching layer, or another service using the identical pre-hash-then-store pattern — an attacker can crack that separately-leaked SHA-256 value at GPU speed (since nothing here needs bcrypt-level cost) to recover the password, then confirm it against your bcrypt hash with a <em>single</em> bcrypt operation. That second step is what "shucks off" the bcrypt shell — but only once the attacker already has the plaintext from somewhere the bcrypt cost factor never protected. Without that separate leak, unkeyed SHA-256 pre-hashing on its own doesn't hand an attacker a shortcut against the bcrypt-protected database.</p>
+  <p>A tempting mitigation is to pre-hash long passwords with plain <code>SHA-256(password)</code> — producing a fixed 32-byte digest — before passing them to <code>bcrypt</code>. The <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pre-hashing-passwords-with-bcrypt">OWASP Password Storage Cheat Sheet</a> advises against this because of a technique known as <strong>password shucking</strong> — but the risk isn't that possessing the <code>bcrypt(SHA-256(password))</code> database alone lets an attacker skip bcrypt's cost. Attacking that stored value directly still requires one full bcrypt computation per guess, exactly as intended, regardless of what the inner hash is. The actual danger is <strong>cross-referencing</strong>: because <code>SHA-256(password)</code> is fast, unkeyed, and produces the same output for the same password everywhere it's used, if that <em>intermediate</em> digest ever becomes independently known — leaked from a different breach that stored it raw, exposed by a debug log, a caching layer, or another service using the identical pre-hash-then-store pattern — an attacker can feed that leaked <code>SHA-256</code> value directly into <code>bcrypt</code> and compare the result to your stored hash, with a single bcrypt operation. They do <strong>not</strong> need to first crack that digest back to the plaintext password to make the comparison — simply knowing the intermediate hash value is enough to confirm the match. That direct-comparison shortcut is what "shucks off" the bcrypt shell, and it works with or without the attacker ever recovering the literal password. Without that separately-leaked intermediate digest, unkeyed SHA-256 pre-hashing on its own doesn't hand an attacker a shortcut against the bcrypt-protected database — attacking the bcrypt hash directly still costs one full bcrypt computation per guess.</p>
   <p>OWASP's recommended construction instead uses a <strong>keyed</strong> pre-hash: <code>bcrypt(base64(HMAC-SHA-384(password, pepper)), salt, cost)</code>. Because HMAC-SHA-384 is keyed with a secret <strong>pepper</strong> (see "Salting &amp; Peppering Architecture" above), an attacker without that pepper cannot reuse generic public SHA-2 cracking infrastructure against the pre-hash at all — they would first need the pepper itself, which is why the pepper should live in KMS/HSM custody separate from the password database. Base64-encoding the HMAC output (rather than feeding bcrypt the raw binary digest) also avoids embedded null bytes, which some bcrypt implementations treat as a C-style string terminator and truncate on.</p>
   <p><strong>Pepper-management implications</strong>: this construction only helps if the pepper stays secret and available. Plan for pepper rotation (version peppers so old hashes can still be verified during a rotation window, then rehash on next login), a pepper backup/recovery strategy (losing the pepper makes every stored hash unverifiable — unlike a compromised per-user salt, which only affects that one user), and awareness that a single shared pepper is a single point of failure: its compromise affects the whole user base at once, which is why it belongs in a KMS/HSM rather than application config.</p>
 </div>

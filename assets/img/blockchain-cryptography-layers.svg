@@ -10,7 +10,8 @@
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Cryptographic Primitives Layering in Blockchains</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Distinct cryptographic primitives compose to provide tamper-evidence, inclusion proofs, and transaction authorization &#8212; ordering and finality are decided by the separate consensus layer</text>
+  <text x="50" y="80" font-size="14.5" fill="#475569">Distinct cryptographic primitives compose to provide tamper-evidence, inclusion proofs, and transaction authorization</text>
+  <text x="50" y="99" font-size="13" fill="#64748b">Ordering and finality are decided separately, by the consensus layer</text>
 
   <!-- Outer Container Panel -->
   <rect x="40" y="110" width="1120" height="450" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />

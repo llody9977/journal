@@ -331,7 +331,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
 
 Naive MAC constructions like **MAC = H(Secret || Message)** built on Merkle–Damgård hash functions (MD5, SHA-1, SHA-256) are vulnerable to **length-extension attacks**.
 
-Because a Merkle–Damgård hash output exposes the internal compression state **H**, an adversary who knows the message and the length of the secret can resume hashing from that state to append malicious payload bytes **Appended_Data** without knowing **Secret**.
+Because a Merkle–Damgård hash output exposes the internal compression state **H**, an adversary who knows the message and the length of the secret — whether from prior knowledge or simply by guessing it (secret lengths are typically drawn from a small, brute-forceable range, e.g. common key sizes) — can resume hashing from that state to append malicious payload bytes **Appended_Data** without knowing **Secret** itself.
 
 
 

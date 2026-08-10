@@ -51,7 +51,7 @@ These are two distinct constructions, not one shared formula, though both elimin
 
 ## Hardware Key Custody: HSMs & Secure Enclaves
 
-Cryptographic key custody relies on reducing private key extraction and cloning risks. Production architectures store signing keys inside **Hardware Security Modules (HSMs)**, **AWS KMS**, or **TPM 2.0 / Secure Enclaves** to enforce non-exportable hardware boundaries. Applications request cryptographic sign operations over secure APIs without exposing private key bytes in application memory.
+Cryptographic key custody relies on reducing private key extraction and cloning risks. Production architectures can store signing keys inside **Hardware Security Modules (HSMs)**, **AWS KMS**, or **TPM 2.0 / Secure Enclaves** and configure them as non-exportable, so applications request cryptographic sign operations over secure APIs without private key bytes ever entering application memory. Non-exportability is a configuration choice these platforms *support*, though — a key created or imported with export permitted remains exportable despite living in an HSM, so verify the actual key policy rather than assuming HSM-backed implies non-exportable.
 
 <div class="callout warn">
   <span class="callout-title">Cryptographic Non-Repudiation Is Not Automatically Legal Non-Repudiation</span>
@@ -65,7 +65,7 @@ Cryptographic key custody relies on reducing private key extraction and cloning 
   <div>
     <strong>Digital Signatures Summary</strong>
     <ul>
-      <li><strong>Signature Pipeline</strong>: Signatures sign a cryptographic hash digest (<code>H(M)</code>) using <code>K<sub>priv</sub></code>; verifiers check the signature tag against <code>K<sub>pub</sub></code>.</li>
+      <li><strong>Signature Pipeline</strong>: RSA-PSS and ECDSA sign an externally computed hash digest (<code>H(M)</code>) using <code>K<sub>priv</sub></code>; Ed25519/Ed448 hash the message internally as part of signing rather than taking a pre-computed digest. Either way, verifiers check the signature tag against <code>K<sub>pub</sub></code>.</li>
       <li><strong>ECDSA Nonce Hazard</strong>: Reusing a random nonce <code>k</code> across two ECDSA signatures leaks the private key. Use RFC 6979 deterministic nonces or Ed25519.</li>
       <li><strong>Post-Quantum Signatures</strong>: FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) are finalized post-quantum signature standards.</li>
       <li><strong>Legal vs. Cryptographic Non-Repudiation</strong>: A valid signature proves the signing key was used, not legal attribution to a person — legal non-repudiation depends on jurisdiction and evidentiary law (e.g., ESIGN Act/UETA, eIDAS), not the cryptography alone.</li>

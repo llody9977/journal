@@ -27,7 +27,7 @@
     <text x="350" y="136" font-size="10.5" font-weight="900" letter-spacing="0.5" fill="#b45309">STEP 2: CT LOG SERVERS</text>
     <text x="350" y="158" font-size="13.5" font-weight="800" fill="#0f172a">Generate &amp; Return SCT</text>
     <text x="350" y="180" font-size="11.5" font-weight="500" fill="#475569">Log signs a promise to include —</text>
-    <text x="350" y="196" font-size="11.5" font-weight="600" fill="#b45309">actual Merkle append follows within MMD</text>
+    <text x="350" y="196" font-size="11" font-weight="600" fill="#b45309">Merkle append follows within MMD</text>
 
     <!-- Connector 2 -> 3 (x=580 to 620) -->
     <path d="M 585 160 L 615 160" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>
@@ -52,10 +52,10 @@
     <!-- Bottom Card: Delivery Methods & Protection -->
     <rect x="50" y="240" width="1100" height="170" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
     <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SCT DELIVERY METHODS &amp; BROWSER ENFORCEMENT</text>
-    <text x="70" y="294" font-size="15" font-weight="800" fill="#0f172a">3 Approved SCT Delivery Methods in TLS Connections:</text>
+    <text x="70" y="294" font-size="15" font-weight="800" fill="#0f172a">3 Standardized SCT Delivery Mechanisms — Browser Acceptance Varies:</text>
     <text x="70" y="320" font-size="12.5" font-weight="600" fill="#0f172a">1. X.509 Extension (Most Common): CA bakes SCTs directly into certificate extensions during issuance.</text>
     <text x="70" y="342" font-size="12.5" font-weight="600" fill="#0f172a">2. TLS Extension (signed_certificate_timestamp): Transmitted in TLS handshake (TLS 1.3 Certificate extension / TLS 1.2 ServerHello).</text>
-    <text x="70" y="364" font-size="12.5" font-weight="600" fill="#0f172a">3. OCSP Stapling: Web server includes SCTs wrapped inside the signed OCSP response stapling payload.</text>
-    <text x="70" y="392" font-size="12" font-weight="700" fill="#0f766e">Browser Enforcement: Publicly trusted TLS server certificates lacking valid SCTs are rejected by Chrome/Apple root program CT policies.</text>
+    <text x="70" y="364" font-size="12.5" font-weight="600" fill="#0f172a">3. OCSP Stapling: SCTs wrapped in the stapled OCSP response — Chrome 148+ no longer accepts this path.</text>
+    <text x="70" y="392" font-size="12" font-weight="700" fill="#0f766e">Browser Enforcement: Chrome/Apple require valid SCTs via their currently-accepted delivery paths; specifics differ per policy.</text>
   </g>
 </svg>

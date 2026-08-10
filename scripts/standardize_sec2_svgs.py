@@ -438,7 +438,7 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 570" xmlns="http://www
   <rect x="270" y="250" width="660" height="85" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="600" y="273" font-size="12" font-weight="800" fill="#15803d" text-anchor="middle">2. ServerHello: Selected Cipher + Server Key Share g<sup>y</sup></text>
   <text x="600" y="293" font-size="11.5" fill="#166534" text-anchor="middle">[Encrypted Handshake Extensions: Certificate + CertificateVerify + Finished]</text>
-  <text x="600" y="313" font-size="11" fill="#475569" text-anchor="middle">Both endpoints derive the handshake secret via HKDF, then the master secret --&gt; Traffic Keys</text>
+  <text x="600" y="313" font-size="11" fill="#475569" text-anchor="middle">Handshake Secret --&gt; Main Secret (derived before Finished) --&gt; Traffic Keys</text>
 
   <!-- Step 3: Client Finished (Flight 3) -->
   <path d="M 190 365 L 1000 365" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>

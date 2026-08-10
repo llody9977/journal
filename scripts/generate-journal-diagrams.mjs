@@ -873,11 +873,11 @@ fs.writeFileSync(
       <!-- Bottom Card: Delivery Methods & Protection -->
       <rect x="50" y="240" width="1100" height="170" rx="12" fill="${colors.tealFill}" stroke="${colors.teal}" stroke-width="2.5"/>
       <text x="70" y="268" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.teal}">SCT DELIVERY METHODS &amp; SECURITY GUARANTEE</text>
-      <text x="70" y="294" font-size="15" font-weight="800" fill="${colors.ink}">3 Approved SCT Delivery Methods in TLS Connections:</text>
+      <text x="70" y="294" font-size="15" font-weight="800" fill="${colors.ink}">3 Standardized SCT Delivery Mechanisms &#8212; Browser Acceptance Varies:</text>
       <text x="70" y="320" font-size="13" font-weight="600" fill="${colors.ink}">1. X.509 Extension (Most Common): CA bakes SCTs directly into the certificate during issuance.</text>
       <text x="70" y="342" font-size="13" font-weight="600" fill="${colors.ink}">2. TLS Extension (signed_certificate_timestamp): Web server transmits SCTs during ServerHello handshake.</text>
-      <text x="70" y="364" font-size="13" font-weight="600" fill="${colors.ink}">3. OCSP Stapling: Web server includes SCTs wrapped inside the signed OCSP response stapling payload.</text>
-      <text x="70" y="392" font-size="12.5" font-weight="700" fill="${colors.teal}">Security Guarantee: If a CA secretly issues a cert without logging it to CT, browsers reject the TLS connection immediately!</text>
+      <text x="70" y="364" font-size="13" font-weight="600" fill="${colors.ink}">3. OCSP Stapling: SCTs wrapped in the stapled OCSP response &#8212; Chrome 148+ no longer accepts this path.</text>
+      <text x="70" y="392" font-size="12.5" font-weight="700" fill="${colors.teal}">Browser Policy: Chrome/Apple root programs require valid SCTs via their currently-accepted delivery paths to trust a cert.</text>
     </g>`
   )
 );

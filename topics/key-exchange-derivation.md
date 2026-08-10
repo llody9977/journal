@@ -31,7 +31,7 @@ To understand how two computers arrive at the exact same secret key without ever
 3. **Public Mixture Exchange**:
    - Client mixes **Red + Yellow → Orange** and sends Orange across the wire.
    - Server mixes **Blue + Yellow → Green** and sends Green across the wire.
-   - Eavesdroppers see Orange and Green crossing the wire, but because *un-mixing paint is mathematically impossible*, they cannot deduce Red or Blue.
+   - Eavesdroppers see Orange and Green crossing the wire, but because *un-mixing paint is computationally infeasible in practice* (the analogy stands in for the discrete-log problem, which is not proven mathematically impossible to solve — just believed intractable with known algorithms and realistic hardware), they cannot deduce Red or Blue.
 4. **Independent Final Mix**:
    - Client mixes received Green (Yellow + Blue) + secret **Red → Brown**.
    - Server mixes received Orange (Yellow + Red) + secret **Blue → Brown**.
@@ -52,7 +52,7 @@ To understand how two computers arrive at the exact same secret key without ever
           <li>Server calculates: <b>S = b × A = b × (a × G) = a × b × G</b></li>
         </ul>
       </li>
-      <li><strong>Identical Shared Secret &amp; Memory Purge</strong>: Both sides arrive at the exact same shared secret <b>S</b>. Neither side uses <b>S</b> directly as a key — each passes it through HKDF (RFC 5869) to derive the actual AES traffic key (e.g. <code>0x8f3a91b2...</code>) and IVs. Once the TLS session closes, both sides wipe the ephemeral keys from RAM.</li>
+      <li><strong>Identical Shared Secret &amp; Memory Purge</strong>: Both sides arrive at the exact same shared secret <b>S</b>. Neither side uses <b>S</b> directly as a key — each passes it through HKDF (RFC 5869) to derive the actual AES traffic key (e.g. <code>0x8f3a91b2...</code>) and IVs. TLS implementations are expected to wipe ephemeral keys from RAM once the session closes, but this is an implementation requirement, not a property the protocol itself guarantees — a buggy or negligent implementation that fails to erase the secret leaves it recoverable from memory even after the session ends.</li>
     </ol>
   </div>
 </div>
@@ -69,7 +69,7 @@ Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffi
 Unauthenticated Diffie-Hellman (Anonymous DH/ECDH) provides confidentiality against passive eavesdroppers, but is **fundamentally vulnerable to active Man-in-the-Middle (MITM) attacks**. An active adversary intercepting the network connection can negotiate independent shared secrets with both parties, decrypting and re-encrypting all traffic transparently.
 
 To prevent MITM key substitution, key exchange protocols MUST be authenticated:
-- **Digital Signatures (TLS 1.3)**: TLS 1.3 does not simply sign the ephemeral ECDH key share in isolation; CertificateVerify signs the complete handshake transcript, which includes and therefore cryptographically binds the exchanged key shares per [RFC 9846](https://www.rfc-editor.org/info/rfc9846/) bound to a verified X.509 certificate (`RSA-PSS` or `Ed25519`).
+- **Digital Signatures (TLS 1.3)**: TLS 1.3 does not simply sign the ephemeral ECDH key share in isolation; `CertificateVerify` signs the complete handshake transcript, which includes and therefore cryptographically binds the exchanged key shares per [RFC 9846](https://www.rfc-editor.org/info/rfc9846/) bound to a verified X.509 certificate (`RSA-PSS`, `ECDSA`, or `Ed25519`, per the negotiated `signature_algorithms`).
 - **Pre-Shared Keys (PSK)**: Both parties share a pre-configured high-entropy secret used to authenticate the key exchange.
 - **Mutual TLS (mTLS)**: Both client and server present X.509 certificates and verify digital signatures over the handshake transcript.
 
@@ -638,7 +638,7 @@ Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Modern
     <ul>
       <li><strong>No Key Transmitted</strong>: Diffie-Hellman math derives matching shared secrets locally in RAM; no secret key ever crosses the network.</li>
       <li><strong>Perfect Forward Secrecy (PFS)</strong>: Ephemeral keys (ECDHE / X25519) are generated in RAM per connection and discarded when done. A later leak of the server's long-term disk key cannot, by itself, decrypt past recorded sessions.</li>
-      <li><strong>HKDF Pipeline (RFC 5869)</strong>: Extracts raw Diffie-Hellman secrets into a master key (Extract) and expands independent sub-keys for client/server encryption (Expand).</li>
+      <li><strong>HKDF Pipeline (RFC 5869)</strong>: Extracts raw Diffie-Hellman secrets into a pseudorandom key (PRK, via Extract) and expands it into independent sub-keys for client/server encryption (Expand).</li>
     </ul>
   </div>
 </div>

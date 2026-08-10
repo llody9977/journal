@@ -55,7 +55,7 @@ For example, **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) co
 
 ## Cryptographic Randomness: PRNG vs. CSPRNG
 
-All cryptographic security ultimately depends on unpredictable randomness. Keys, nonces, Initialization Vectors (IVs), salts, and session tokens must be generated using high-entropy random sources.
+Cryptographic security depends on randomness, but not every value needs the same property from it. **Keys, tokens, and IVs used as nonces in constructions like AES-GCM require unpredictability** — an adversary must not be able to guess the value in advance, which is why they need a CSPRNG. **Many nonces (in the general sense) and salts require only uniqueness**, not unpredictability — a monotonic counter is a perfectly good nonce for some constructions, and a salt's job is to be distinct per record, not to be unguessable. Conflating "must be unpredictable" with "must be random" glosses over this: use a CSPRNG whenever unpredictability is the actual requirement, and don't assume every uniqueness requirement needs one.
 
 ### PRNG vs. CSPRNG Comparison
 

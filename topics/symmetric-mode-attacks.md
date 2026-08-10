@@ -906,8 +906,8 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
     <strong>Symmetric Mode Vulnerabilities Summary</strong>
     <ul>
       <li><strong>ECB Block Leakage</strong>: Identical plaintext blocks produce identical ciphertext blocks. Never use ECB for multi-block payloads.</li>
-      <li><strong>CBC Bit-Flipping</strong>: Modifying ciphertext block <em>C₁</em> flips corresponding bits in decrypted plaintext block <em>P₂</em>. Always enforce AEAD or HMAC.</li>
-      <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce under the same key exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em>, allowing adversaries to recover cleartext payloads.</li>
+      <li><strong>CBC Bit-Flipping</strong>: Modifying ciphertext block <em>C₁</em> flips corresponding bits in decrypted plaintext block <em>P₂</em>. Always enforce AEAD, or correctly composed Encrypt-then-MAC using separate encryption and MAC keys.</li>
+      <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce under the same key exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em> — recovering either full plaintext from that XOR still requires the attacker to know or guess predictable content in the other message, not just observe the reused nonce.</li>
     </ul>
   </div>
 </div>

@@ -62,11 +62,11 @@ Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)*
    - Executes **SubBytes** → **ShiftRows** → **AddRoundKey** (*the MixColumns step is explicitly omitted in the final round*).
 4. **Ciphertext Output**: Emits the transformed 4×4 state matrix as a 128-bit ciphertext block.
 
-| AES Variation | Key Length | Processing Rounds (N) | Total Round Keys Required | Quantum Margin (Grover's Search) |
+| AES Variation | Key Length | Processing Rounds (N) | Total Round Keys Required | Idealized Grover Query Complexity |
 |---|---|---|---|---|
-| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **64 bits effective security** (Below the recommended 128-bit floor; still listed by NIST as an approved algorithm — see caveats below) |
-| **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | 96 bits effective security |
-| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **128 bits effective security (Post-Quantum Recommended)** |
+| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **~2^64 idealized quantum queries** (Below the recommended 128-bit floor; still listed by NIST as an approved algorithm — see caveats below) |
+| **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | ~2^96 idealized quantum queries |
+| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **~2^128 idealized quantum queries (Post-Quantum Recommended)** |
 
 ## Grover's Quantum Algorithm Impact: Why AES-256 is Quantum-Safe
 
@@ -105,7 +105,7 @@ Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but 
 
 ### Critical AEAD Rules & Nonce Safety
 
-1. **Never Reuse Nonces**: Reusing a 96-bit GCM nonce with the same key allows adversaries to recover the GHASH authentication key and forge authentication tags.
+1. **Never Reuse Nonces**: Reusing a 96-bit GCM nonce with the same key destroys authenticity — it allows adversaries to recover the GHASH authentication key and forge authentication tags — and separately destroys confidentiality the same way CTR-mode nonce reuse does: because GCM's encryption core is CTR mode, two ciphertexts under the repeated nonce reveal the XOR of their plaintexts (**P<sub>1</sub> &oplus; P<sub>2</sub>**). Recovering either full plaintext from that XOR still requires the attacker to know or correctly guess predictable content in the other message, not just observe the reused nonce.
 2. **Deploy Synthetic IV (AES-GCM-SIV / RFC 8452) for Misuse Resistance**: When unique nonces cannot be guaranteed (*e.g., distributed stateless microservices*), deploy **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. If a nonce is accidentally repeated, AES-GCM-SIV degrades to deterministically leaking equality of identical messages without exposing the authentication key or plaintext.
 3. **Always Verify Tags Before Decrypting**: Software must compute and verify the authentication tag before exposing plaintext to the application layer.
 

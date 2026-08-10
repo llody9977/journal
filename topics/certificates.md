@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # Public Key Infrastructure (PKI) & X.509 Certificates
 
-<p class="lede">Public Key Infrastructure (PKI) binds public keys to verified entity identities (domain names, servers, users, devices) using digital signatures issued by trusted Certificate Authorities (CAs). X.509 certificates provide the trust anchor for TLS, S/MIME, code signing, and mutual TLS (mTLS) identity verification across open networks.</p>
+<p class="lede">Public Key Infrastructure (PKI) binds public keys to an identifier vetted by a trusted Certificate Authority (CA), using digital signatures. What that identifier actually proves depends on the validation level: the overwhelming majority of publicly-trusted TLS certificates today are **Domain Validated (DV)**, meaning the CA confirmed the applicant controls the domain name — not that it verified any real-world organizational identity behind it. **Organization Validated (OV)** and **Extended Validation (EV)** certificates additionally vet a legal entity, but DV is the default for most web traffic. X.509 certificates provide the trust anchor for TLS, S/MIME, code signing, and mutual TLS (mTLS) identity verification across open networks.</p>
 
 ## Core PKI Components & Trust Model
 
@@ -22,9 +22,9 @@ PKI relies on a hierarchical trust model where trusted Root CAs issue certificat
 
 | PKI Component | Operational Role | Primary Security Property |
 |---|---|---|
-| **Certificate Authority (CA)** | Trusted entity that validates identity and signs X.509 certificates | Private key custody inside HSM; protects root of trust. |
+| **Certificate Authority (CA)** | Trusted entity that vets an identifier and signs X.509 certificates | Private key custody inside HSM; protects root of trust. |
 | **Certificate Revocation List (CRL) / OCSP** | Revocation status mechanisms publishing invalid certificate serial numbers | Best-effort defense against compromised or misissued certificates — most browsers soft-fail (proceed with the connection) when a revocation check is unavailable, so it is not an absolute guarantee. |
-| **Registration Authority (RA)** | Verifies domain ownership or organizational identity prior to issuance | Enforces domain control validation (DNS-01, HTTP-01). |
+| **Registration Authority (RA)** | Verifies domain control (DV) or, for OV/EV issuance, organizational identity, prior to issuance | Enforces domain control validation (DNS-01, HTTP-01) for DV; additional business-registry checks for OV/EV. |
 | **Trust Store** | Pre-installed list of trusted Root CA certificates embedded in OS / browser | Establishes local trust anchors used during path validation (RFC 5280 §6): chain building to a trusted root, signature verification at each hop, validity-period and name-constraint checks, and — where enforced — revocation status. |
 
 ## What "Validating a Certificate" Actually Means
@@ -143,7 +143,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 |---|---|---|
 | **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must never assert `cA: TRUE`. Depending on the issuing CA's profile, they either omit this extension entirely (which defaults to non-CA per [RFC 5280 §4.2.1.9](https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.9)) or include it explicitly set to `cA: FALSE` — either form prevents the leaf key from minting further certificates. |
 | **Extended Key Usage (EKU)** | Specifies allowed certificate roles (*Server Auth, Client Auth, Code Signing*) | Prevents a TLS server certificate from signing executable software binaries. |
-| **Subject Alternative Name (SAN)** | Lists exact FQDN domain names bound to this certificate | Modern browsers validate SAN fields exclusively; commonName (CN) is ignored. |
+| **Subject Alternative Name (SAN)** | Lists the identifiers bound to this certificate — not just exact FQDNs: `dNSName` entries (including wildcards like `*.example.com`), `iPAddress` entries, and other `GeneralName` forms (e.g. `otherName`, email/URI where applicable) per [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525.html) | Modern browsers validate SAN fields exclusively; commonName (CN) is ignored. |
 | **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | For **publicly-trusted TLS subscriber (server/leaf) certificates** specifically, the CA/Browser Forum Baseline Requirements cap maximum validity at 200 days as of March 15, 2026; 100 days as of March 15, 2027; and 47 days as of March 15, 2029. These caps do not apply to private/internal PKI, most S/MIME or code-signing certificates, or CA (root/intermediate) certificates, which follow different lifetime rules. |
 
 ## Certificate Lifecycle & Automated Issuance (ACME & ARI)
@@ -285,7 +285,10 @@ X.509 certificates and private keys are distributed across four primary format e
     const valIn = shQuote(inputIn.value.trim() || 'input.file');
     const valOut = shQuote(inputOut.value.trim() || 'output.file');
     const valKey = shQuote(inputKey.value.trim() || 'private.key');
-    const valChain = shQuote(inputChain.value.trim() || 'ca_chain.pem');
+    // CA chain is optional (bundle12 works without one) — an empty field must
+    // omit -certfile entirely, not silently fall back to a placeholder filename.
+    const chainRaw = inputChain.value.trim();
+    const valChain = chainRaw ? shQuote(chainRaw) : '';
     const isDer = inputFormat && inputFormat.value === 'DER';
     const informFlag = isDer ? '-inform DER ' : '';
 
@@ -310,7 +313,7 @@ X.509 certificates and private keys are distributed across four primary format e
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PKCS#12 Bundle (.p12/.pfx):';
       groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
       groupChain.style.display = 'block'; labelChain.innerText = 'CA Chain File (optional):';
-      cmd = `openssl pkcs12 -export -out ${valOut} -inkey ${valKey} -in ${valIn} -certfile ${valChain}`;
+      cmd = `openssl pkcs12 -export -out ${valOut} -inkey ${valKey} -in ${valIn}` + (valChain ? ` -certfile ${valChain}` : '');
     } else if (task === 'extract12') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#12 Bundle File:';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output Decoded PEM File:';
@@ -385,7 +388,7 @@ Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** 
 |---|---|---|---|
 | **Leaf Certificate Pinning** | Hashes full leaf X.509 certificate | **Highest rotation sensitivity**: Leaf cert expiration or emergency ACME renewal breaks app connectivity unless an app update is deployed. | High-security ephemeral IoT sessions. |
 | **Intermediate / Root CA Pinning** | Hashes public key of issuing CA | **Lower certificate-renewal sensitivity**: Leaf certs can rotate freely, but issuing CA key rotation or intermediate retirement breaks client connections. | Enterprise mobile applications. |
-| **SPKI Public Key Pinning** | Hashes `SubjectPublicKeyInfo` (SPKI) bit string | **Survives certificate renewal only while pinned key remains unchanged**: Re-issuing leaf certs using the same key pair maintains pin validity, but key compromise or key rotation without a valid backup pin breaks connectivity. | Native mobile app transport security. |
+| **SPKI Public Key Pinning** | Hashes the complete DER-encoded `SubjectPublicKeyInfo` structure — the algorithm identifier plus the public key bit string together, per [RFC 7469](https://www.rfc-editor.org/rfc/rfc7469.html), not the bit string alone | **Survives certificate renewal only while pinned key remains unchanged**: Re-issuing leaf certs using the same key pair maintains pin validity, but key compromise or key rotation without a valid backup pin breaks connectivity. | Native mobile app transport security. |
 
 ### Pinning Scope: Public CA vs. Private CA Deployment
 
