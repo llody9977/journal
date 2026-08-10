@@ -792,7 +792,7 @@ fs.writeFileSync(
       <text x="650" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.teal}">STEP 4</text>
       <text x="650" y="158" font-size="14" font-weight="800" fill="${colors.ink}">CA Issuance</text>
       <text x="650" y="180" font-size="11.5" font-weight="500" fill="${colors.muted}">Signs X.509 cert</text>
-      <text x="650" y="196" font-size="11" font-weight="600" fill="${colors.teal}">47-90 Day Lifetime</text>
+      <text x="650" y="196" font-size="11" font-weight="600" fill="${colors.teal}">&#8804;200 Day Lifetime (2026)</text>
 
       <path d="M800 165 L830 165" fill="none" stroke="${colors.teal}" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
 
@@ -822,7 +822,7 @@ fs.writeFileSync(
       <text x="70" y="348" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.red}">EMERGENCY EXCEPTION: REVOCATION (CRL / OCSP STAPLING)</text>
       <text x="70" y="374" font-size="16" font-weight="800" fill="${colors.ink}">Key Compromise or Mis-Issuance Trigger</text>
       <text x="70" y="398" font-size="13" font-weight="600" fill="${colors.muted}">CA revokes certificate serial number; browser checks status via OCSP Stapling or Certificate Revocation Lists (CRL)</text>
-      <text x="70" y="416" font-size="12" font-weight="700" fill="${colors.red}">Revocation breaks trust immediately before expiration date is reached</text>
+      <text x="70" y="416" font-size="12" font-weight="700" fill="${colors.red}">Revocation is best-effort, not guaranteed-immediate: many clients soft-fail when status is unavailable</text>
     </g>`
   )
 );

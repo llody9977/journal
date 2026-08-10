@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # What Is Cryptography?
 
-<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit, at rest, and in processing or storage over untrusted networks and storage environments. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
+<p class="lede">Cryptography is the mathematical and architectural discipline of securing data in transit and at rest over untrusted networks and storage environments. Standard encryption does not by itself protect data actively being processed—plaintext held in memory during computation is exposed to anyone with access to that memory or execution environment; protecting data in use typically requires separate techniques such as confidential computing enclaves or hardware-isolated execution, layered on top of the primitives described here. System evaluations begin by defining the required security property—Confidentiality, Integrity, Authenticity, or Non-Repudiation—and selecting reviewed, standardized algorithms and protocols that enforce those properties under explicit threat models.</p>
 
 ## The Open Network Threat Problem
 
@@ -33,8 +33,10 @@ Cryptography provides mathematical primitives designed to withstand these attack
 |---|---|---|---|
 | **Authenticity** | Verifies that data originated from an entity controlling a specific key | **Digital Signatures** (*Ed25519, FIPS 204 ML-DSA*) &amp; **Public Key Infrastructure (PKI)** | Man-in-the-middle impersonation and payload spoofing |
 | **Confidentiality** | Restricts payload reading exclusively to authorized key holders | **Symmetric Ciphers** (*AES-128-GCM / AES-256-GCM, ChaCha20-Poly1305*), **Key Encapsulation Mechanisms (KEMs)** (*FIPS 203 ML-KEM, hybrid X25519MLKEM768*), &amp; **Hybrid Frameworks** (*RFC 9180 HPKE combining KEM, KDF, and AEAD*) | Cleartext exfiltration of PII, passwords, or financial transactions |
-| **Integrity** | Ensures payload modification or bit-rot is detected and rejected | **Cryptographic Hashes** (*SHA-256, SHA3-256*) &amp; **MACs** (*HMAC-SHA256*) | Unauthorized alteration of database fields or transaction amounts |
+| **Integrity** | Ensures payload modification or bit-rot is detected against a digest obtained through a trusted channel | **Cryptographic Hashes** (*SHA-256, SHA3-256*) for accidental corruption; **MACs** (*HMAC-SHA256*) when an adversary may control the data | Unauthorized alteration of database fields or transaction amounts |
 | **Non-Repudiation** | Generates cryptographic evidence, computationally unforgeable under the signature scheme, tying an action to a private key—supporting but not by itself constituting legal non-repudiation | **Asymmetric Digital Signatures** (*Ed25519, FIPS 205 SLH-DSA*) with timestamping and key custody logs | Disavowal of financial commitments or administrative actions |
+
+An unkeyed hash only detects change when the verifier compares against a digest obtained through a channel the attacker cannot also tamper with (e.g., a value published separately or embedded in a signed document). An attacker who can replace both the data and its accompanying digest simply recomputes the hash over the modified data, so the check silently passes. Detecting *unauthorized* alteration by an adversary who controls the channel requires a keyed construction—a MAC or a digital signature—not a bare hash.
 
 ## Real-World Protocol Composition: How TLS 1.3 Combines Primitives
 
@@ -60,7 +62,7 @@ All cryptographic security ultimately depends on unpredictable randomness. Keys,
 | Generator Class | Internal Mechanics | Security Properties | Target Application Use Case |
 |---|---|---|---|
 | **Non-Cryptographic PRNG** | Fast deterministic algorithms (*Linear Congruential Generators, Mersenne Twister*). | **INSECURE**: Observing a few outputs exposes internal state, allowing attackers to predict all future values. | Game physics, Monte Carlo simulations, UI shuffling. (*Do NOT use for security*). |
-| **CSPRNG** (Cryptographically Secure PRNG) | OS entropy pool expanded via SHA-256 / AES-CTR-DRBG ([NIST SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)). | **SECURE when properly seeded**: Satisfies **Next-Bit Unpredictability** and **Backtracking Resistance** (state compromise cannot reveal past keys), provided the entropy source supplies sufficient min-entropy at initialization. | Generating AES keys, RSA/ECC key pairs, IVs, salts, and API tokens. |
+| **CSPRNG** (Cryptographically Secure PRNG) | OS entropy pool expanded via SHA-256 / AES-CTR-DRBG ([NIST SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)). | **SECURE when properly seeded**: Satisfies **Next-Bit Unpredictability**, provided the entropy source supplies sufficient min-entropy at initialization. **Backtracking Resistance** (state compromise cannot reveal past outputs) is a property of the specific DRBG construction—the SP 800-90A Hash_DRBG, HMAC_DRBG, and CTR_DRBG designs provide it, but it is not automatic for every CSPRNG implementation. | Generating AES keys, RSA/ECC key pairs, IVs, salts, and API tokens. |
 
 <div class="security-layer security-layer-direct">
   <div class="security-layer-label">Randomness Pitfalls &amp; Language API Guide</div>

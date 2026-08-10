@@ -404,17 +404,17 @@ To achieve a given **Symmetric Security Strength** (measured in bits of brute-fo
 | **112-bit Security** (Legacy Minimum) | **2,048 bits** | **224 bits** | ECC key is ~9x smaller than RSA. Legacy minimum strength. |
 | **128-bit Security** (Current Standard) | **3,072 bits** | **256 bits** (Curve25519 / P-256) | ECC key is **12x smaller** than RSA. Standard for web TLS/SSL. |
 | **192-bit Security** (High Security) | **7,680 bits** (Exponential Spike!) | **384 bits** (P-384) | ECC key is **20x smaller** than RSA. RSA-7680 causes severe CPU overhead. |
-| **256-bit Security** (Maximum Strength) | **15,360 bits** | **512 bits** (P-521) | ECC key is **30x smaller** than RSA. RSA-15360 is unviable for production TLS. |
+| **256-bit Security** (Maximum Strength) | **15,360 bits** | **521 bits** (P-521) | ECC key is **~29x smaller** than RSA. RSA-15360 is unviable for production TLS. |
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Comparison chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, 192-bit, and 256-bit security strengths. RSA key sizes spike exponentially while ECC key sizes scale compactly.">
+  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Comparison chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, 192-bit, and 256-bit security strengths. RSA key sizes grow sub-exponentially while ECC key sizes scale compactly.">
   <p class="diagram-caption">Comparison of required RSA vs. ECC key lengths in bits across NIST security strength levels (112-bit to 256-bit security)</p>
 </div>
 
-### Why the RSA Key Size Spikes Exponentially
+### Why RSA Key Sizes Grow Much Faster Than ECC
 
 1. **Security Strength Scaling**: The chart compares the required key lengths in bits to achieve equivalent NIST symmetric security levels.
-2. **Sub-Exponential Attacks on RSA**: General Number Field Sieve (GNFS) algorithms allow attackers to factor RSA primes faster than pure brute-force. To counter this, increasing RSA's security strength requires **exponentially larger RSA key sizes** (2,048 bits → 3,072 bits → 7,680 bits → 15,360 bits).
+2. **Sub-Exponential Attacks on RSA**: General Number Field Sieve (GNFS) algorithms allow attackers to factor RSA primes faster than pure brute-force. GNFS runs in **sub-exponential time** — faster than exponential, but slower than any polynomial — so counteracting it requires RSA key sizes to grow sub-exponentially with the target security level (2,048 bits → 3,072 bits → 7,680 bits → 15,360 bits). This growth is not literally "exponential," but it is still far steeper than ECC's scaling.
 3. **Linear Scaling of ECC**: Elliptic Curve Discrete Logarithms (ECDLP) have no sub-exponential attack algorithm. Doubling ECC's security strength requires only doubling the curve key size (224 bits → 256 bits → 384 bits → 512 bits).
 4. **Engineering Consequence**: At 192-bit security, RSA requires a towering **7,680-bit key** (a 2.5x spike from 3,072 bits!), rendering RSA handshakes extremely slow and CPU-intensive compared to a compact **384-bit ECC key**.
 
@@ -422,7 +422,17 @@ To achieve a given **Symmetric Security Strength** (measured in bits of brute-fo
 
 Specified in **[RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)**, **Ed25519** offers major advantages over legacy ECDSA:
 - **Deterministic Nonce Derivation**: Ed25519 derives its per-signature nonce deterministically from the private key and message hash, eliminating catastrophic ECDSA private key leaks caused by weak random number generators.
-- **Side-Channel &amp; Timing Attack Resistance**: Implemented using complete addition formulas on Edwards curves without conditional branching.
+- **Side-Channel &amp; Timing Attack Resistance (Implementation-Dependent)**: Ed25519's Edwards-curve arithmetic admits complete addition formulas that avoid conditional branching on secret data, making constant-time implementations easier to write correctly than for curves lacking this property. This is a property the algorithm *enables*, not a guarantee every implementation delivers — a careless or unoptimized implementation can still leak key material through cache-timing, power analysis, or other side channels.
+
+## Public-Key Input Validation: Why Accepting a Key Isn't Enough
+
+Asymmetric protocols must validate peer-supplied key material before using it, not just successfully parse its encoding — several well-known attack classes exploit implementations that skip this step:
+
+- **Invalid-curve attacks**: An attacker sends an elliptic-curve point that doesn't actually satisfy the expected curve equation. Without a curve-membership check before scalar multiplication, the arithmetic silently proceeds using a different, often much weaker, effective curve that shares some parameters with the real one — letting the attacker leak bits of the victim's static private key across repeated queries. Validated ECDH implementations check curve membership on every received point.
+- **Small-subgroup attacks**: Curve groups with a cofactor greater than 1 contain small-order subgroups alongside the main large-order group. A point of small order forces the resulting shared secret into a tiny, enumerable set of values; against a responder that reuses a static key and doesn't detect this, an attacker can recover the static private key modulo that small subgroup's order through repeated probes, and combine several such probes (with different small subgroups) to reconstruct more of the key via the Chinese Remainder Theorem.
+- **Low-order X25519 inputs**: X25519 has a handful of publicly known low-order points that decode to fixed, attacker-predictable shared-secret outputs (including an all-zero output) regardless of the other party's private key. [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) permits implementations to skip full point validation for performance, since X25519's Montgomery-ladder design tolerates invalid inputs without leaking the private key — but implementations **must** still reject a resulting all-zero (or other known low-order) shared secret before using it as key material, since silently accepting it produces a session key the attacker already knows.
+- **RSA-OAEP message-size limits**: RSA-OAEP's maximum plaintext length is bounded by the modulus and hash sizes — `mLen &le; k - 2&times;hLen - 2` bytes, where **k** is the RSA modulus size in bytes and **hLen** is the hash output size. This is not a soft limit; a well-formed OAEP implementation rejects an oversized message outright rather than silently truncating it. Treating RSA-OAEP as capable of encrypting arbitrary-length payloads directly is a common integration mistake — it's why RSA-OAEP is used to wrap a short symmetric key (see Hybrid Encryption below), never a raw payload.
+- **Key confirmation**: A successfully computed shared secret proves the arithmetic executed, not that the peer is who they claim to be, or even that both sides actually derived the *same* value — an implementation bug could have each side silently compute a different secret. Protocols add an explicit key-confirmation step (a MAC or `Finished`-style message computed over the derived key material, exchanged and checked before either side trusts the channel) specifically to catch key-agreement mismatches, rather than assuming a completed exchange implies a working, authenticated channel.
 
 ## What I Need to Remember
 

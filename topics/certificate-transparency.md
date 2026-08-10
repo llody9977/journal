@@ -9,7 +9,7 @@ last_verified: 2026-08-09
 
 # Certificate Transparency (CT) & Merkle Audit Proofs
 
-<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework that forces Certificate Authorities (CAs) to log publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. CT does not prevent a CA from misissuing a certificate; instead, by requiring Signed Certificate Timestamps (SCTs) before browsers will trust a publicly trusted TLS connection, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
+<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework for logging publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. The CT protocol itself (RFC 6962/9162) does not compel a CA to log anything — logging is effectively mandatory only because major browsers (Chrome, Safari) refuse to trust publicly trusted TLS connections that lack qualifying Signed Certificate Timestamps (SCTs); that browser/root-program policy layer, not the CT protocol, is what forces CAs' hand. CT does not prevent a CA from misissuing a certificate; instead, by making SCTs a practical prerequisite for browser trust, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
 
 ## The Problem: Rogue CA Misissuance
 
@@ -68,7 +68,7 @@ Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trus
 SCTs can be delivered to the client browser via three distinct transport mechanisms:
 1. **Embedded X.509 v3 Extension** (OID `1.3.6.1.4.1.11129.2.4.2`): Pre-certificates are submitted to logs by the CA before final issuance, and the received SCTs are statically baked directly into the certificate. This is the overwhelmingly common pattern.
 2. **TLS Extension** (`signed_certificate_timestamp`): The web server transmits SCTs during the TLS handshake—in TLS 1.3, carried within the `Certificate` message extensions for the target certificate entry; in TLS 1.2, delivered via `ServerHello` extension.
-3. **OCSP Stapling**: The web server includes SCTs wrapped inside a stapled OCSP response (`OCSPResponse`).
+3. **OCSP Stapling**: The web server includes SCTs wrapped inside a stapled OCSP response (`OCSPResponse`). This delivery path has lost currency: per [Chrome's CT Policy](https://googlechrome.github.io/CertificateTransparency/ct_policy.html), Chrome no longer accepts OCSP-delivered SCTs toward its compliance requirement starting with Chrome 148, leaving embedded X.509 extensions and the TLS extension as the paths CAs and servers can actually rely on.
 
 ## What I Need to Remember
 

@@ -209,7 +209,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 |---|---|---|---|
 | **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **MAXIMUM**: Hybrid memory-hard design resists GPU and side-channel attacks. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
 | **bcrypt** | None (CPU-Hard) | **MODERATE**: Blowfish key schedule resists GPUs; vulnerable to custom ASICs. | **APPROVED LEGACY**: Acceptable legacy default; watch out for 72-byte truncation limit. |
-| **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **LOW**: High iteration count (600,000+) but easily parallelized on GPUs. | **FIPS COMPLIANCE OPTION**: Use only when strict FIPS 140-3 compliance mandates it. |
+| **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **LOW**: High iteration count (600,000+) but easily parallelized on GPUs. | **FIPS COMPLIANCE OPTION**: FIPS 140-3 itself does not mandate PBKDF2 — it certifies cryptographic *modules*, not a specific password-hashing choice. Use PBKDF2 (NIST SP 800-132) when your environment requires an algorithm implemented inside a FIPS 140-3 validated module, since Argon2id, bcrypt, and scrypt are not currently NIST-approved primitives eligible for that validation. |
 | **scrypt** (RFC 7914) | **MODERATE** | **HIGH**: Early memory-hard function; superseded by Argon2id. | **APPROVED ALTERNATIVE**: Acceptable when Argon2id is unavailable. |
 
 ## Salting & Peppering Architecture
@@ -231,7 +231,7 @@ A **Pepper** is a 32-byte secret key stored outside the primary user database (*
 
 ## Argon2id Recommended Parameters (RFC 9106)
 
-Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and recommended by **[OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)**, **Argon2id** is a memory-hard password-hashing function designed to resist parallel cracking while balancing side-channel considerations. The current **[OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)** lists several single-lane (p=1) configurations, from **m=47104 KiB (46 MiB), t=1, p=1** as the strongest down to its minimum recommendation of **m=19456 KiB (19 MiB), t=2, p=1**. RFC 9106 separately recommends **m=65536 KiB (64 MiB), t=3, p=4** as its own memory-constrained profile (the tuner's default below), which spreads the work across four parallel lanes rather than OWASP's single lane:
+Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and recommended by **[OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)**, **Argon2id** is a memory-hard password-hashing function designed to resist parallel cracking while balancing side-channel considerations. The current **[OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)** lists several single-lane (p=1) configurations trading memory for time cost rather than ranking strongest-to-weakest — options range from **m=47104 KiB (46 MiB), t=1, p=1** (more memory, fewer passes) to **m=19456 KiB (19 MiB), t=2, p=1** (less memory, more passes); pick based on the memory your deployment can dedicate per concurrent hash operation, since under-provisioning memory on a busy auth endpoint can matter as much as the specific numbers chosen. RFC 9106 separately recommends **m=65536 KiB (64 MiB), t=3, p=4** as its own memory-constrained profile (the tuner's default below), which spreads the work across four parallel lanes rather than OWASP's single lane:
 
 <div class="interactive-demo-card">
   <div class="demo-header">
@@ -315,12 +315,12 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and recommen
     let borderColor = '';
 
     if (threadsVal === 1 && memMiB >= 46 && timeVal >= 1) {
-      statusHtml = '&#9989; Meets OWASP Strongest Listed Single-Lane Profile (m&#8805;46 MiB, t&#8805;1, p=1)';
+      statusHtml = '&#9989; Meets OWASP Higher-Memory Single-Lane Profile (m&#8805;46 MiB, t&#8805;1, p=1)';
       bgColor = 'rgba(15, 118, 110, 0.08)';
       textColor = 'var(--teal)';
       borderColor = 'var(--teal)';
     } else if (threadsVal === 1 && memMiB >= 19 && timeVal >= 2) {
-      statusHtml = '&#9888; Meets OWASP Minimum Recommended Single-Lane Profile (m&#8805;19 MiB, t&#8805;2, p=1)';
+      statusHtml = '&#9888; Meets OWASP Lower-Memory Single-Lane Profile (m&#8805;19 MiB, t&#8805;2, p=1)';
       bgColor = 'rgba(161, 76, 0, 0.08)';
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
@@ -390,9 +390,26 @@ async function hashUserPassword(password) {
   <div class="security-layer-label">Bcrypt Truncation Vulnerability</div>
   <div>
     <strong>Bcrypt 72-Byte Truncation Limit</strong>
-    <p>The standard <code>bcrypt</code> algorithm silently truncates input password strings at <strong>72 bytes</strong>. Any characters beyond byte 72 are ignored during authentication. A common mitigation is to pre-hash long passwords with <code>SHA-256</code> (producing a fixed 32-byte digest) before passing them to <code>bcrypt</code> &mdash; but the raw binary digest must not be fed in directly: it can contain embedded null bytes, which many <code>bcrypt</code> implementations treat as a C-style string terminator and truncate on, silently weakening the hash. Base64-encode the digest first, per the <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage Cheat Sheet</a>'s <code>bcrypt(base64(hmac-sha384(...)), salt, cost)</code> pattern.</p>
+    <p>The standard <code>bcrypt</code> algorithm silently truncates input password strings at <strong>72 bytes</strong>. Any characters beyond byte 72 are ignored during authentication.</p>
   </div>
 </div>
+
+<div class="callout warn">
+  <span class="callout-title">Do Not Pre-Hash With Plain, Unkeyed SHA-256</span>
+  <p>A tempting mitigation is to pre-hash long passwords with plain <code>SHA-256(password)</code> — producing a fixed 32-byte digest — before passing them to <code>bcrypt</code>. The <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage Cheat Sheet</a> advises against this: because SHA-256 is fast, unkeyed, and public, an attacker who obtains the database can attack the pre-hash independently of bcrypt's cost factor — a technique known as <strong>password shucking</strong>. If the attacker can find <em>any</em> password whose <code>SHA-256</code> digest matches the pre-hash value (using GPU-scale generic SHA-256 cracking infrastructure, entirely unrelated to your bcrypt cost setting), a single bcrypt verification confirms the match — the expensive memory/CPU-hard step bcrypt was supposed to force is bypassed almost entirely, because the pre-hash step that actually gates the attacker's search is cheap and requires no application secret.</p>
+  <p>OWASP's recommended construction instead uses a <strong>keyed</strong> pre-hash: <code>bcrypt(base64(HMAC-SHA-384(password, pepper)), salt, cost)</code>. Because HMAC-SHA-384 is keyed with a secret <strong>pepper</strong> (see "Salting &amp; Peppering Architecture" above), an attacker without that pepper cannot reuse generic public SHA-2 cracking infrastructure against the pre-hash at all — they would first need the pepper itself, which is why the pepper should live in KMS/HSM custody separate from the password database. Base64-encoding the HMAC output (rather than feeding bcrypt the raw binary digest) also avoids embedded null bytes, which some bcrypt implementations treat as a C-style string terminator and truncate on.</p>
+  <p><strong>Pepper-management implications</strong>: this construction only helps if the pepper stays secret and available. Plan for pepper rotation (version peppers so old hashes can still be verified during a rotation window, then rehash on next login), a pepper backup/recovery strategy (losing the pepper makes every stored hash unverifiable — unlike a compromised per-user salt, which only affects that one user), and awareness that a single shared pepper is a single point of failure: its compromise affects the whole user base at once, which is why it belongs in a KMS/HSM rather than application config.</p>
+</div>
+
+## Password Lifecycle Beyond Initial Storage
+
+Choosing a hashing algorithm is only the starting point — the hash's parameters and the surrounding authentication flow need ongoing maintenance:
+
+- **Rehash-on-login**: Because you don't have the plaintext password to re-hash a user's credential in bulk, cost-parameter upgrades (bumping Argon2id's memory or time cost, or migrating between algorithms) roll out gradually: check the stored hash's embedded parameters at every successful login, and if they're below the current target, re-hash the just-verified plaintext with the new parameters and overwrite the stored value. Inactive accounts stay on old parameters until they next log in — an accepted trade-off, not an oversight.
+- **Legacy-hash migration**: The same rehash-on-login mechanism handles migrating between algorithms entirely (e.g., an old system storing plain salted SHA-256, or MD5, moving to Argon2id): verify against the legacy scheme on login, and on success, immediately compute and store the new Argon2id hash of the same plaintext. Accounts that never log back in either get force-reset or stay flagged as needing migration — silently leaving them on a broken legacy scheme indefinitely is the failure mode to design against.
+- **Unicode handling**: Password inputs should be normalized (typically Unicode NFC) before hashing, and the byte encoding must be both consistent and well-defined (UTF-8 is standard) — an application that hashes raw, unnormalized bytes risks legitimate users being locked out when the same password is typed on a different keyboard layout, IME, or OS that produces a different Unicode normalization form for visually identical text. Length limits (see the bcrypt 72-byte discussion above) should also be measured in bytes after encoding, not in characters, since multi-byte UTF-8 sequences can hit a byte-based truncation limit well before a naive character count would suggest.
+- **Authentication DoS limits**: Memory-hard functions are expensive by design — that's the point against attackers, but it also means a login endpoint doing Argon2id verification on every request is a much easier target for a resource-exhaustion DoS than a stateless endpoint. Rate-limit authentication attempts per account and per source, and size Argon2id's memory/time parameters with your expected peak concurrent-login load in mind, not just against offline-cracking resistance in isolation — the parameters that are "strong" against an offline attacker can still be tuned so a login storm doesn't exhaust server memory.
+- **Privacy-preserving breached-password checks**: [NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)'s breached-password blacklisting requirement (see above) shouldn't be implemented by sending plaintext passwords to a third-party API. The [Have I Been Pwned Pwned Passwords API](https://haveibeenpwned.com/API/v3#PwnedPasswords) supports a **k-anonymity** model: the client hashes the candidate password with SHA-1, sends only the first 5 hex characters of the digest, and receives back all breached-password suffixes sharing that prefix — the client checks the full digest locally, so the full password (or its full hash) never leaves the client/server boundary being checked.
 
 ## What I Need to Remember
 
@@ -402,7 +419,7 @@ async function hashUserPassword(password) {
     <strong>Password Storage Summary</strong>
     <ul>
       <li><strong>Argon2id (RFC 9106)</strong>: Winner of Password Hashing Competition; primary recommendation for password storage (memory-hard against GPU/ASIC attacks).</li>
-      <li><strong>Bcrypt 72-Byte Truncation Limit</strong>: Bcrypt silently ignores characters beyond byte 72. If pre-hashing long inputs (e.g. with SHA-256), base64-encode the digest first &mdash; raw binary output can contain null bytes that truncate the input in some bcrypt implementations.</li>
+      <li><strong>Bcrypt 72-Byte Truncation Limit</strong>: Bcrypt silently ignores characters beyond byte 72. Do not pre-hash with plain unkeyed SHA-256 — it enables password shucking. If pre-hashing is needed, use OWASP's keyed <code>base64(HMAC-SHA-384(password, pepper))</code> construction, with the pepper held in KMS/HSM custody.</li>
       <li><strong>Salts &amp; Peppers</strong>: 128-bit CSPRNG unique salt per user prevents rainbow tables; HSM pepper protects against database exfiltration.</li>
     </ul>
   </div>

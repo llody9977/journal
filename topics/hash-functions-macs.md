@@ -23,7 +23,7 @@ Standardized in **[FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)** an
 | Security Property | Mathematical &amp; Search Definition | Failure Consequence | Target Engineering Mitigation |
 |---|---|---|---|
 | **Collision Resistance** | Infeasible to find *any* pair **x ≠ x'** such that **H(x) = H(x')**. | Attacker generates two distinct documents (one benign, one malicious) sharing an identical hash. | Migrate from MD5 / SHA-1 to SHA-256 or SHA3-256. |
-| **Preimage Resistance** (One-Way) | Given **y = H(x)**, infeasible to compute original **x**. | Attacker reverses a stored password digest or token hash to recover the secret plaintext. | Deploy salted password hashes (**Argon2id**) or CSPRNG secret tokens. |
+| **Preimage Resistance** (One-Way) | Given **y = H(x)**, infeasible to find *any* input **x\*** — not necessarily the original **x** — such that **H(x\*) = y**. | Attacker finds *some* input that reproduces a stored password digest or token hash, sufficient to authenticate even if it isn't the victim's literal original secret. | Deploy salted password hashes (**Argon2id**) or CSPRNG secret tokens. |
 | **Second-Preimage Resistance** | Given **x**, infeasible to find **x' ≠ x** such that **H(x) = H(x')**. | Attacker substitutes a malicious software binary for a target release while matching its published hash. | Verify cryptographic signatures over releases rather than plain unkeyed hashes. |
 
 ### The Avalanche Effect
@@ -58,6 +58,8 @@ Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, *
   <img src="{{ '/assets/img/hmac-flow.svg' | relative_url }}" alt="HMAC nested hash flow diagram showing inner and outer key padding blocks.">
   <p class="diagram-caption">HMAC-SHA256 nested construction: double-hashing with inner (ipad) and outer (opad) key padding</p>
 </div>
+
+HMAC's guarantees are specific: it prevents length-extension attacks against the underlying Merkle–Damgård hash, and it authenticates that the tag was produced by a holder of key **K**. It does not protect the key itself — HMAC provides no defense if **K** is compromised through memory disclosure, a side-channel leak, weak key generation, or insecure storage; key protection is a separate concern handled by key management practices, not by the HMAC construction.
 
 ### Why Naive `H(Key || Message)` Fails: Length-Extension Attacks
 

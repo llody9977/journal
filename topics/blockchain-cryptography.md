@@ -22,7 +22,9 @@ Distributed ledgers compose cryptographic primitives across four architectural l
 
 ## 1. Hash-Linked Chains: Tamper-Evident Ordering
 
-Blocks are linked together sequentially by embedding the 256-bit cryptographic hash digest of block **n-1** into the header of block **n**:
+Cryptography's role here is narrower than it might appear: hashing and signatures give you tamper-evident commitments and authorization over what a node holds, but they do not by themselves decide which chain of blocks is "the" chain when nodes disagree, or when a block is final — that ordering and finality guarantee comes from the **consensus protocol** (Nakamoto longest/heaviest-chain PoW, Casper FFG finality, Tendermint BFT, and so on) layered on top of the cryptographic primitives, not from the hashes and signatures alone.
+
+The block-header linking formula below and the "80-byte header" figure are **Bitcoin-specific** — other chains define their own header layouts, and some (e.g., Ethereum post-Merge) do not have a literal proof-of-work `Nonce` field in the block header at all. Bitcoin blocks are linked sequentially by embedding the 256-bit cryptographic hash digest of block **n-1** into the header of block **n**:
 
 <b>Block_Header<sub>n</sub> = H(Block_Header<sub>n-1</sub> ∥ Merkle_Root<sub>n</sub> ∥ Timestamp ∥ Nonce)</b>
 
@@ -36,14 +38,14 @@ To verify that transaction <b>T<sub>x</sub></b> is included in a block containin
 
 <b>Proof Complexity = O(log<sub>2</sub> N) vs Full Block Download = O(N)</b>
 
-Light clients (SPV nodes) download 80-byte block headers and verify transaction inclusion using Merkle inclusion proofs.
+Bitcoin light clients (SPV nodes) download Bitcoin's fixed **80-byte** block headers and verify transaction inclusion using Merkle inclusion proofs; the header size and format are specific to Bitcoin's block structure, not a general property of "SPV" as a technique — other chains' light-client header formats differ.
 
 ## 3. Transaction Authorization & Signature Schemes
 
 | Blockchain Network | Signature Scheme | Elliptic Curve / Primitive | Primary Engineering Characteristics |
 |---|---|---|---|
 | **Bitcoin (Legacy)** | **ECDSA** | `secp256k1` | Requires DER encoding; strict deterministic nonce safety (**[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)**). |
-| **Bitcoin (Taproot / BIP 340)** | **Schnorr Signatures** | `secp256k1` | [BIP 340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) specifies single-signer verification only; its linear algebra is what *enables* separate multi-signature aggregation protocols such as MuSig2 ([BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)), plus Taproot MAST privacy. |
+| **Bitcoin (Taproot / BIP 340)** | **Schnorr Signatures** | `secp256k1` | [BIP 340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) specifies single-signer Schnorr signature verification only; its linear algebra is what *enables* separate multi-signature aggregation protocols such as MuSig2 ([BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)). The Taproot output structure and MAST (Merkelized Alternative Script Trees) privacy/efficiency benefits are defined separately in [BIP 341](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki) (Taproot) and [BIP 342](https://github.com/bitcoin/bips/blob/master/bip-0342.mediawiki) (Tapscript) — BIP 340 supplies the signature scheme those BIPs build on, not the MAST construction itself. |
 | **Ethereum (Consensus Layer)** | **BLS Signatures** | `BLS12-381` | Per-slot committee aggregators compress up to hundreds/thousands of validator attestation signatures into a single aggregate signature under Gasper (LMD-GHOST fork choice + Casper FFG finality). |
 | **Ethereum (EVM Execution)** | **ECDSA** | `secp256k1` | Recovers public key from signature via recovery parameter `v`. Supports legacy `v in {27, 28}`, EIP-155 chain-id-encoded `v = chainId * 2 + 35` or `36`, and EIP-2718 / EIP-1559 typed transaction parity `yParity in {0, 1}` ([EIP-155](https://eips.ethereum.org/EIPS/eip-155)). |
 | **Solana** | **Ed25519** | `Curve25519` | High-throughput signature verification with deterministic nonces. |
@@ -55,6 +57,17 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
 
 1. **zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge)**: Enables a prover to demonstrate to a verifier that a computational statement is true (*e.g., "I know a private key that owns this UTXO and has sufficient balance"*) without revealing any private inputs.
 2. **zk-STARKs (Zero-Knowledge Scalable Transparent Arguments of Knowledge)**: Zero-knowledge proofs relying on hash-based collision-resistant assumptions generally considered post-quantum candidate constructions without requiring a trusted setup ceremony.
+
+## Blockchain Security Boundaries: What Cryptography Does and Doesn't Cover
+
+It's worth being explicit about where cryptographic guarantees end and other assumptions begin, since blockchain systems are frequently described in ways that blur the two:
+
+- **Consensus vs. cryptography, again**: To restate the point made above with the specific failure modes it implies — a hash chain and signatures give you tamper-evidence and authorization, but *which chain wins* and *when a block is final* are consensus-protocol questions. A bug or economic failure in the consensus layer (a liveness stall, a validator cartel, a poorly incentivized fork-choice rule) is not a cryptographic break, even though it can have the same practical impact (double-spends, reorgs) as one.
+- **Probabilistic vs. deterministic finality**: Nakamoto-style PoW chains (Bitcoin) never give absolute finality — every confirmation only reduces the probability of a later reorg, asymptotically, and a sufficiently resourced attacker can in principle still reverse many confirmations. BFT-style finality gadgets (Ethereum's Casper FFG, Tendermint-based chains) instead provide **deterministic finality**: once a block is finalized under the protocol's rules, reverting it requires validators controlling at least the protocol's slashing threshold (e.g., 1/3 of stake) to provably violate the protocol and be slashed — a fundamentally different guarantee than "sufficiently many confirmations," with different assumptions about validator honesty and network synchrony.
+- **Chain-ID / domain separation and replay**: A transaction or signature valid on one chain can be replayable on another chain sharing the same signature scheme and address format unless the protocol explicitly binds signatures to a specific chain — this is exactly why Ethereum's [EIP-155](https://eips.ethereum.org/EIPS/eip-155) (referenced in the table above) encodes the chain ID into the signed transaction hash: without it, a transaction signed for mainnet could be replayed verbatim on a fork or testnet sharing the same account. This is a protocol-level domain-separation problem, not something the signature algorithm itself solves.
+- **Bridge and oracle risks**: Cross-chain bridges and price/data oracles sit outside the cryptographic guarantees of any single chain — a bridge's security reduces to whatever mechanism it uses to attest that an event happened on the source chain (a federated multisig, a light-client proof, an optimistic fraud-proof window), and that mechanism's trust assumptions are frequently much weaker than the underlying chains' consensus security. The large majority of major crypto exploits by value have targeted bridges and oracles specifically, because they concentrate value while inheriting security from something other than the base-layer consensus and cryptography this page covers.
+- **Data availability**: A validity proof (including a ZK proof) can confirm that a state transition was computed correctly without confirming that the underlying transaction *data* was actually published anywhere accessible — if a rollup operator withholds the data behind a valid proof, users can't reconstruct their own account state or exit the system even though the proof itself is sound. This is why rollup designs distinguish **data availability** (is the data published and retrievable?) as a separate property from **validity** (was the computation correct?), with different constructions (on-chain calldata, dedicated DA layers, data availability sampling) addressing it.
+- **Zero-knowledge proof assumptions**: zk-SNARK soundness commonly depends on a **trusted setup ceremony** (a one-time generation of public parameters that is secure only if at least one participant destroyed their secret "toxic waste" — an assumption external to the proof system's math itself), on specific pairing-friendly curve choices, and on the correctness of the circuit compiler translating the claimed statement into the arithmetic circuit actually being proven. zk-STARKs avoid the trusted-setup assumption (relying on collision-resistant hashes instead) at the cost of larger proof sizes. In both cases, "the proof verified" is a statement about the circuit that was proven, not an independent guarantee that the circuit itself correctly encodes the intended real-world statement — a bug in circuit design is a bug a valid proof will not catch.
 
 ## What I Need to Remember
 
@@ -74,6 +87,7 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
 
 - **Bitcoin BIP 340**: *Schnorr Signatures for secp256k1* — [Bitcoin BIP 340 Specification](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
 - **Bitcoin BIP 327**: *MuSig2 for BIP340-compatible Multi-Signatures* — [Bitcoin BIP 327 Specification](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)
+- **Bitcoin BIP 341 / BIP 342**: *Taproot: SegWit version 1 spending rules / Validation of Taproot Scripts (Tapscript)* — [BIP 341](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki), [BIP 342](https://github.com/bitcoin/bips/blob/master/bip-0342.mediawiki)
 - **Ethereum EIP-155**: *Simple Replay Attack Protection* — [EIP-155 Specification](https://eips.ethereum.org/EIPS/eip-155)
 - **Polkadot Cryptography**: *Schnorrkel sr25519 Signatures over Ristretto25519* — [Polkadot Host Specification](https://spec.polkadot.network/#sect-cryptography)
 - **STARKs Specification**: *Scalable, Transparent, and Post-Quantum Secure Computational Integrity* — [IACR Cryptology ePrint 2018/046](https://eprint.iacr.org/2018/046)

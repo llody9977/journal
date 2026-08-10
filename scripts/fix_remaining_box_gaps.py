@@ -183,7 +183,7 @@ SVGS['hmac-flow.svg'] = """<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">HMAC Dual-Nested Key Hashing Pipeline</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Constructs a secure MAC from any cryptographic hash function via inner (ipad) and outer (opad) key-padding passes</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Constructs a secure MAC from a suitable cryptographic hash function (e.g., SHA-256) via inner (ipad) and outer (opad) key-padding passes</text>
 
   <rect x="40" y="110" width="1120" height="185" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
 
@@ -213,7 +213,7 @@ SVGS['hmac-flow.svg'] = """<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/
   <text x="1005" y="185" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">HMAC-SHA256 Tag</text>
   <line x1="910" y1="198" x2="1100" y2="198" stroke="#5eead4" stroke-width="1"/>
   <text x="1005" y="222" font-size="11.5" fill="#ccfbf1" text-anchor="middle">Prevents Length Extension</text>
-  <text x="1005" y="240" font-size="11.5" fill="#ccfbf1" text-anchor="middle">&amp; Key-Leakage Attacks</text>
+  <text x="1005" y="240" font-size="11.5" fill="#ccfbf1" text-anchor="middle">&amp; Authenticates Origin (Keyed)</text>
 </svg>"""
 
 # 6. signature-pipeline.svg
@@ -264,9 +264,10 @@ SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 365" xmlns="http://ww
   <line x1="900" y1="195" x2="1110" y2="195" stroke="#86efac" stroke-width="1"/>
   <text x="1005" y="217" font-size="11.5" fill="#bbf7d0" text-anchor="middle">Verifier computes H(M')</text>
   <text x="1005" y="237" font-size="11.5" fill="#bbf7d0" text-anchor="middle">Validates signature tag S</text>
-  <rect x="900" y="255" width="210" height="42" rx="6" fill="#ffffff"/>
-  <text x="1005" y="274" font-size="11.5" font-weight="900" fill="#15803d" text-anchor="middle">VALID: PASS</text>
-  <text x="1005" y="289" font-size="10" font-weight="600" fill="#475569" text-anchor="middle">Origin &amp; Integrity Proven</text>
+  <rect x="900" y="253" width="230" height="52" rx="6" fill="#ffffff"/>
+  <text x="1005" y="270" font-size="11.5" font-weight="900" fill="#15803d" text-anchor="middle">VALID: PASS</text>
+  <text x="1005" y="284" font-size="9.5" font-weight="600" fill="#475569" text-anchor="middle">Key Control &amp; Integrity Proven</text>
+  <text x="1005" y="298" font-size="8.5" font-weight="600" fill="#166534" text-anchor="middle">Identity needs a trusted key binding (PKI)</text>
 </svg>"""
 
 def main():

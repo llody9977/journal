@@ -648,13 +648,15 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
 
 
 
-### Defensive Countermeasure: Use Standard HMAC or Sponge Hashes
+### Defensive Countermeasure: Use a Proper Keyed MAC, Not a Naive Keyed Hash
 
 Deploying **HMAC-SHA256** ([FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)) neutralizes length-extension attacks by executing a nested double-hash algorithm:
 
 **HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))**
 
-Furthermore, modern hash constructions avoid this vulnerability by design through two distinct mechanisms. Sponge-based functions (**SHA-3** / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final) and **KMAC** / [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) squeeze outputs through an internal capacity state that the attacker cannot observe or extend. **BLAKE3** ([BLAKE3 Specification](https://github.com/BLAKE3-team/BLAKE3-specs)) is not sponge-based — it is a Merkle-tree hash built over a compression function, and it resists length extension by construction because each chunk/node is processed with an explicit finalization flag that only the root node receives, so an attacker cannot extend a digest into a valid continuation of the tree.
+Modern hash constructions also resist length extension at the algorithm level, for two distinct structural reasons. Sponge-based functions (**SHA-3** / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)) squeeze outputs through an internal capacity state that the attacker cannot observe or extend. **BLAKE3** ([BLAKE3 Specification](https://github.com/BLAKE3-team/BLAKE3-specs)) is not sponge-based — it is a Merkle-tree hash built over a compression function, and it resists length extension by construction because each chunk/node is processed with an explicit finalization flag that only the root node receives, so an attacker cannot extend a digest into a valid continuation of the tree.
+
+That structural resistance describes the *hash function*, not a ready-made MAC — plain unkeyed `SHA3-256(message)` or unqualified `BLAKE3(message)` still authenticate nothing, since anyone can compute either without a secret. For actual message authentication, pair the key with the hash through a construction designed for it: **KMAC128 / KMAC256** ([SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) for the SHA-3 family, **HMAC** for Merkle–Damgård hashes (SHA-2), or BLAKE3's own built-in keyed mode (`keyed_hash`) — not a hand-rolled `H(key || message)` or `H(key || message)` substitute using SHA-3 or BLAKE3 in place of `H`.
 
 ## What I Need to Remember
 
@@ -663,9 +665,9 @@ Furthermore, modern hash constructions avoid this vulnerability by design throug
   <div>
     <strong>Hash Attacks Summary</strong>
     <ul>
-      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance and are prohibited for digital signatures and other collision-resistance-dependent uses (NIST SP 800-131A Rev. 2). This does not ban SHA-1 outright — HMAC-SHA1 remains acceptable in many protocols because HMAC's security does not rely on collision resistance the same way, and non-security uses (e.g., git's historical object hashing) are unaffected.</li>
+      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance and are prohibited for digital signatures and other collision-resistance-dependent uses (NIST SP 800-131A Rev. 2). This does not ban SHA-1 outright — HMAC-SHA1 remains acceptable in many protocols because HMAC's security does not rely on collision resistance the same way. Git's historical use of SHA-1 for object hashing was affected in principle (the SHAttered collision technique was demonstrated against crafted Git objects) but not in practice for ordinary use, because Git added collision detection and, separately, is migrating toward SHA-256 object hashing; "unaffected" should be read as "not exploited under normal, non-adversarial use," not as a blanket immunity claim.</li>
       <li><strong>Length-Extension Vulnerability</strong>: Naive MACs like <code>H(key \|\| message)</code> allow attackers to append data and forge valid tags without learning the key.</li>
-      <li><strong>Mitigation Standard</strong>: Deploy HMAC-SHA256, KMAC, SHA-3, or BLAKE3 to resist length extension by construction.</li>
+      <li><strong>Mitigation Standard</strong>: For message authentication, deploy a keyed construction — HMAC-SHA256, KMAC (SHA-3 family), or BLAKE3's keyed mode — not a raw unkeyed SHA-3 or BLAKE3 digest, which resist length extension as hash functions but are not themselves MACs.</li>
     </ul>
   </div>
 </div>

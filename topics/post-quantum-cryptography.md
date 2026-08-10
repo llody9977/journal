@@ -48,8 +48,8 @@ Adversaries may be collecting and storing encrypted high-value enterprise traffi
 <div class="security-layer security-layer-direct">
   <div class="security-layer-label">Harvest Now, Decrypt Later Mitigation</div>
   <div>
-    <strong>Immediate Action Required for Data with Long Lifespans</strong>
-    <p>Systems protecting data with long confidentiality lifetimes (commonly cited as 5+ years, though the right threshold depends on which CRQC-timeline estimate you plan against) should prioritize deploying <strong>hybrid post-quantum key exchange (X25519MLKEM768)</strong> to reduce exposure to retroactive decryption of harvested traffic.</p>
+    <strong>Migration Urgency Scales With Data Confidentiality Lifetime</strong>
+    <p>This is a risk-based, not a one-size-fits-all, decision: compare your data's required confidentiality lifetime against your organization's CRQC-arrival estimate and remaining migration lead time. Systems protecting data with long confidentiality lifetimes (commonly cited as 5+ years, though the right threshold depends on which CRQC-timeline estimate you plan against) should prioritize deploying <strong>hybrid post-quantum key exchange (X25519MLKEM768)</strong> soonest to reduce exposure to retroactive decryption of harvested traffic; systems handling only short-lived data can migrate on a longer timeline without immediate risk from harvest-now-decrypt-later.</p>
   </div>
 </div>
 
@@ -61,7 +61,7 @@ On August 13, 2024, NIST officially published the **finalized Federal Informatio
 
 | FIPS Standard | Algorithm Name | Mathematical Paradigm | Target Function | Status & Primary Engineering Role |
 |---|---|---|---|---|
-| **FIPS 203** | **ML-KEM** (Kyber) | Module Lattice (ML-WE) | General Key Encapsulation (KEM) | **FINALIZED (Aug 2024)**: Primary standard for public-key encryption and TLS 1.3 key exchange ([NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)). |
+| **FIPS 203** | **ML-KEM** (Kyber) | Module Lattice (ML-WE) | Key Encapsulation Mechanism (KEM) | **FINALIZED (Aug 2024)**: Primary standard for establishing a shared symmetric secret — the basis for TLS 1.3 key exchange and, wrapped in a KEM/DEM hybrid construction, general-purpose public-key encryption ([NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)). ML-KEM is a KEM, not a drop-in replacement for RSA-OAEP-style direct message encryption — it only encapsulates/decapsulates a symmetric key. |
 | **FIPS 204** | **ML-DSA** (Dilithium) | Module Lattice (ML-SIS) | General Digital Signatures | **FINALIZED (Aug 2024)**: Primary standard for general-purpose digital signatures and PKI ([NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final)). |
 | **FIPS 205** | **SLH-DSA** (SPHINCS+) | Stateless Hash Trees | Backup Digital Signatures | **FINALIZED (Aug 2024)**: Purely hash-based signature scheme providing conservative fallback safety ([NIST FIPS 205](https://csrc.nist.gov/pubs/fips/205/final)). |
 
@@ -70,6 +70,10 @@ On August 13, 2024, NIST officially published the **finalized Federal Informatio
 | Draft Standard | Algorithm Name | Mathematical Paradigm | Target Function | Status & Primary Engineering Role |
 |---|---|---|---|---|
 | **Draft FIPS 206** | **FN-DSA** (Falcon) | Fast-Fourier Lattice | Compact Digital Signatures | **UNDER DEVELOPMENT**: Draft standard optimized for compact signatures in constrained memory environments. |
+
+### Backup KEM: HQC
+
+In March 2025, NIST [selected **HQC** (Hamming Quasi-Cyclic)](https://www.nist.gov/news-events/news/2025/03/nist-selects-hqc-fifth-algorithm-post-quantum-encryption) as a fifth PQC algorithm, intended as a structurally independent backup to ML-KEM. Where ML-KEM's security rests on module-lattice problems, HQC is code-based — built on error-correcting codes rather than lattices — so a future cryptanalytic advance against lattice problems would not automatically compromise HQC as well. NIST has not yet finalized an HQC FIPS standard; a draft is expected to work through the standard NIST public-review process. Treat HQC as a diversification hedge for the KEM layer rather than a near-term deployment target until a finalized standard exists.
 
 ## NSA CNSA 2.0 Timeline & Transition Strategy (National Security Systems)
 
@@ -90,6 +94,19 @@ To hedge against implementation bugs in new lattice-based algorithms, production
 
 In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA codepoint `0x11EC`), combining classical Curve25519 ECDH with FIPS 203 ML-KEM-768.
 
+The hybrid formula above is intentionally simplified: production hybrid combiners bind more than the two raw secrets. `X25519MLKEM768`'s actual construction concatenates the ML-KEM shared secret and the X25519 shared secret in a fixed order (PQC secret first) as input to TLS 1.3's existing HKDF pipeline — the ordering and the fact that *both* transcripts are bound into the handshake matter for the combiner's security proof; swapping the concatenation order or feeding the two secrets through independent unlinked KDF calls does not give the same downgrade-resistance guarantee.
+
+## Crypto Agility & PQC Migration: Engineering Practicalities
+
+Migrating a real system is a program of work, not a library upgrade. Several practical constraints determine how long that program actually takes:
+
+- **Cryptographic inventory first**: Before scheduling any migration, an organization needs a current inventory of *where* classical algorithms are used — TLS termination points, VPN concentrators, code-signing pipelines, embedded device firmware, archived long-term backups, hardware tokens — because PQC readiness varies wildly across these categories and a migration plan without an inventory tends to discover the hardest cases (firmware that can't be updated, HSMs without PQC firmware) last, not first.
+- **Downgrade prevention**: A hybrid deployment that negotiates PQC when both sides support it but silently falls back to classical-only key exchange when either side doesn't is only as strong as its downgrade resistance — an active attacker who can manipulate the handshake to make both sides believe the peer lacks PQC support forces the classical-only path, reintroducing harvest-now-decrypt-later exposure. TLS 1.3's transcript-hash-covered `ServerHello`/`HelloRetryRequest` mechanics are what make such downgrades detectable; ad hoc hybrid retrofits onto older protocols may not have an equivalent binding and need explicit design attention.
+- **Hybrid-combiner semantics**: As shown above, *how* two shared secrets are combined is itself a security-relevant design decision, not an implementation detail — a hybrid combiner needs to guarantee security if *either* input secret is strong (so a break in ML-KEM alone, or in X25519 alone via a future classical advance, doesn't compromise the session). Rolling a custom combiner instead of using a standardized one (like TLS 1.3's HKDF-based construction) risks losing that guarantee.
+- **Certificate and message-size impact**: PQC public keys and signatures are substantially larger than their classical counterparts — an ML-DSA-65 public key is roughly 2 KB versus ~32 bytes for an Ed25519 key, and ML-DSA signatures run several KB versus Ed25519's 64 bytes. Composite or dual-algorithm certificates compound this further. This inflates TLS handshake sizes, certificate chain sizes, and any protocol that embeds public keys or signatures inline (DNSSEC records, code-signing manifests, blockchain transactions).
+- **MTU fragmentation**: The larger handshake messages above can push a single TLS flight past a single IP packet's MTU, forcing fragmentation at the UDP/QUIC layer (where TLS 1.3 key exchange messages traditionally fit in one packet) or triggering TCP segmentation behavior that some middleboxes handle poorly. Networks and load balancers tuned for classical-sized handshakes may need MTU or buffer-size adjustments as PQC and hybrid key exchange roll out.
+- **Validation-module readiness**: Regulated environments requiring FIPS 140-3 validated cryptographic modules are gated by NIST's validation program timeline for PQC implementations specifically — an algorithm being a finalized FIPS standard (203/204/205) does not mean every vendor's *module* implementing it has completed FIPS validation yet. Procurement and compliance timelines should track module-level validation status, not just algorithm standardization status.
+
 ## What I Need to Remember
 
 <div class="security-layer security-layer-direct">
@@ -99,7 +116,7 @@ In TLS 1.3, the IETF standardized the **`X25519MLKEM768`** hybrid group (IANA co
     <ul>
       <li><strong>Finalized vs. Draft</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) are <strong>finalized NIST standards (Aug 2024)</strong>. FIPS 206 (FN-DSA) is a <strong>draft standard under development</strong>.</li>
       <li><strong>Shor's vs. Grover's</strong>: Shor's algorithm completely breaks RSA/ECC. Grover's algorithm only halves symmetric key strength (AES-256 remains secure with 128-bit quantum security).</li>
-      <li><strong>Harvest Now, Decrypt Later</strong>: Adversaries record encrypted traffic today to decrypt years later. Long-lived data requires immediate deployment of hybrid key exchange (X25519MLKEM768).</li>
+      <li><strong>Harvest Now, Decrypt Later</strong>: Adversaries record encrypted traffic today to decrypt years later. Prioritize hybrid key exchange (X25519MLKEM768) in proportion to how long the data must stay confidential and how close your CRQC-arrival estimate is.</li>
       <li><strong>CNSA 2.0 Scope</strong>: Applies specifically to U.S. National Security Systems (NSS), Software and firmware signing target 2030; traditional networking equipment targets 2030; web browsers, web servers, cloud services, and operating systems target exclusive CNSA 2.0 deployment by **2033** per [NSA CNSA 2.0 Advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF).</li>
     </ul>
   </div>

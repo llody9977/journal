@@ -164,14 +164,14 @@ NEW_SVGS['ecb-pattern-leak.svg'] = """<svg viewBox="0 0 1200 370" xmlns="http://
 
   <!-- Panel 3: CBC / GCM Mode Encryption (x=790, y=110, w=370, h=235) -->
   <rect x="790" y="110" width="370" height="235" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" />
-  <text x="810" y="135" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">3. AES-GCM / CBC MODE (SECURE)</text>
+  <text x="810" y="135" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">3. RANDOMIZED ENCRYPTION (E.G. AES-GCM)</text>
   <rect x="840" y="155" width="270" height="130" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
   <pattern id="noise" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
     <rect x="0" y="0" width="5" height="5" fill="#15803d" opacity="0.3"/>
     <rect x="5" y="5" width="5" height="5" fill="#15803d" opacity="0.3"/>
   </pattern>
   <rect x="840" y="155" width="270" height="130" rx="8" fill="url(#noise)"/>
-  <text x="975" y="308" font-size="12" font-weight="800" fill="#15803d" text-anchor="middle">IV/Counter Randomization Yields Pure Uniform Noise</text>
+  <text x="975" y="308" font-size="12" font-weight="800" fill="#15803d" text-anchor="middle">Unique IV/Counter Hides Patterns (Authentication Is Separate)</text>
 </svg>"""
 
 # 4. hash-avalanche.svg
@@ -223,7 +223,7 @@ NEW_SVGS['hmac-flow.svg'] = """<svg viewBox="0 0 1200 360" xmlns="http://www.w3.
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">HMAC Dual-Nested Key Hashing Pipeline</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Constructs a secure MAC from any cryptographic hash function via inner (ipad) and outer (opad) key-padding passes</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Constructs a secure MAC from a suitable cryptographic hash function (e.g., SHA-256) via inner (ipad) and outer (opad) key-padding passes</text>
 
   <rect x="40" y="110" width="1120" height="225" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
 
@@ -255,7 +255,7 @@ NEW_SVGS['hmac-flow.svg'] = """<svg viewBox="0 0 1200 360" xmlns="http://www.w3.
   <text x="1005" y="205" font-size="16" font-weight="800" fill="#ffffff" text-anchor="middle">HMAC-SHA256 Tag</text>
   <line x1="910" y1="220" x2="1100" y2="220" stroke="#5eead4" stroke-width="1"/>
   <text x="1005" y="245" font-size="11.5" fill="#ccfbf1" text-anchor="middle">Prevents Length Extension</text>
-  <text x="1005" y="265" font-size="11.5" fill="#ccfbf1" text-anchor="middle">&amp; Key-Leakage Attacks</text>
+  <text x="1005" y="265" font-size="11.5" fill="#ccfbf1" text-anchor="middle">&amp; Authenticates Origin (Keyed)</text>
 </svg>"""
 
 # 6. diffie-hellman.svg
@@ -353,9 +353,10 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   <line x1="900" y1="208" x2="1110" y2="208" stroke="#86efac" stroke-width="1"/>
   <text x="1005" y="235" font-size="12" fill="#bbf7d0" text-anchor="middle">Verifier computes H(M')</text>
   <text x="1005" y="257" font-size="12" fill="#bbf7d0" text-anchor="middle">Validates signature tag S</text>
-  <rect x="900" y="280" width="210" height="50" rx="6" fill="#ffffff"/>
-  <text x="1005" y="300" font-size="12" font-weight="900" fill="#15803d" text-anchor="middle">VALID: PASS</text>
-  <text x="1005" y="318" font-size="10.5" font-weight="600" fill="#475569" text-anchor="middle">Origin &amp; Integrity Proven</text>
+  <rect x="900" y="280" width="230" height="60" rx="6" fill="#ffffff"/>
+  <text x="1005" y="298" font-size="12" font-weight="900" fill="#15803d" text-anchor="middle">VALID: PASS</text>
+  <text x="1005" y="314" font-size="10" font-weight="600" fill="#475569" text-anchor="middle">Key Control &amp; Integrity Proven</text>
+  <text x="1005" y="330" font-size="9" font-weight="600" fill="#166534" text-anchor="middle">Identity needs a trusted key binding (PKI)</text>
 </svg>"""
 
 # 8. ca-hierarchy.svg
@@ -401,8 +402,8 @@ NEW_SVGS['ca-hierarchy.svg'] = """<svg viewBox="0 0 1200 440" xmlns="http://www.
 </svg>"""
 
 # 9. tls-handshake.svg
-NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 510" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
-  <rect width="1200" height="510" fill="#ffffff"/>
+NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 570" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+  <rect width="1200" height="570" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
       <path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/>
@@ -415,17 +416,17 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 510" xmlns="http://www
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">TLS 1.3 1-RTT Handshake Architecture</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">Full handshake completed in 1 Round-Trip Time (1-RTT) using Ephemeral ECDHE key shares and AEAD encryption</text>
 
-  <rect x="40" y="110" width="1120" height="370" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
+  <rect x="40" y="110" width="1120" height="430" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
   <!-- Client Column -->
   <rect x="80" y="130" width="220" height="50" rx="8" fill="#1e40af"/>
   <text x="190" y="160" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">CLIENT (BROWSER)</text>
-  <line x1="190" y1="180" x2="190" y2="450" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="190" y1="180" x2="190" y2="510" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
 
   <!-- Server Column -->
   <rect x="900" y="130" width="220" height="50" rx="8" fill="#15803d"/>
   <text x="1010" y="160" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">SERVER (WEB HOST)</text>
-  <line x1="1010" y1="180" x2="1010" y2="450" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="1010" y1="180" x2="1010" y2="510" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
 
   <!-- Step 1: ClientHello (Flight 1) -->
   <path d="M 190 210 L 1000 210" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
@@ -437,15 +438,20 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 510" xmlns="http://www
   <rect x="270" y="250" width="660" height="85" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="600" y="273" font-size="12" font-weight="800" fill="#15803d" text-anchor="middle">2. ServerHello: Selected Cipher + Server Key Share g<sup>y</sup></text>
   <text x="600" y="293" font-size="11.5" fill="#166534" text-anchor="middle">[Encrypted Handshake Extensions: Certificate + CertificateVerify + Finished]</text>
-  <text x="600" y="313" font-size="11" fill="#475569" text-anchor="middle">Both endpoints compute ECDH shared secret --&gt; Pass through HKDF to derive Traffic Keys</text>
+  <text x="600" y="313" font-size="11" fill="#475569" text-anchor="middle">Both endpoints derive the handshake secret via HKDF, then the master secret --&gt; Traffic Keys</text>
 
-  <!-- Step 3: Application Data (Encrypted) -->
-  <path d="M 190 380 L 1000 380" fill="none" stroke="#15803d" stroke-width="3" marker-end="url(#arrow-green)"/>
-  <rect x="340" y="360" width="520" height="40" rx="6" fill="#15803d"/>
-  <text x="600" y="385" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">3. Encrypted Application Data (HTTP/2 or HTTP/3 Traffic over AES-GCM)</text>
+  <!-- Step 3: Client Finished (Flight 3) -->
+  <path d="M 190 365 L 1000 365" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <rect x="300" y="345" width="600" height="40" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="600" y="370" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">3. [Encrypted] Client Finished (+ Certificate/CertificateVerify only if client auth requested)</text>
 
-  <rect x="120" y="420" width="960" height="40" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="444" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Perfect Forward Secrecy (PFS): Compromise of long-term server cert key cannot decrypt past traffic sessions.</text>
+  <!-- Step 4: Application Data (Encrypted) -->
+  <path d="M 190 435 L 1000 435" fill="none" stroke="#15803d" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <rect x="300" y="415" width="600" height="40" rx="6" fill="#15803d"/>
+  <text x="600" y="440" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">4. Encrypted Application Data (HTTP/2 over the TLS record layer, or HTTP/3 over QUIC)</text>
+
+  <rect x="120" y="480" width="960" height="40" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="600" y="504" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Perfect Forward Secrecy (PFS): Compromise of long-term server cert key cannot decrypt past traffic sessions.</text>
 </svg>"""
 
 # 10. password-hash-comparison.svg
@@ -552,14 +558,14 @@ NEW_SVGS['dek-kek.svg'] = """<svg viewBox="0 0 1200 420" xmlns="http://www.w3.or
 NEW_SVGS['key-size-comparison.svg'] = """<svg viewBox="0 0 1200 430" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
   <rect width="1200" height="430" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Asymmetric Key Size Growth vs Symmetric Security Strength</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">NIST Security Strength levels: RSA key sizes scale exponentially compared to ECC linear efficiency</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">NIST Security Strength levels: RSA key sizes scale sub-exponentially compared to ECC linear efficiency</text>
 
   <rect x="40" y="110" width="1120" height="290" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
   <!-- Bar Chart Columns -->
   <!-- Header Row -->
   <text x="160" y="145" font-size="12" font-weight="900" fill="#475569" text-anchor="middle">Symmetric Security Strength</text>
-  <text x="450" y="145" font-size="12" font-weight="900" fill="#dc2626" text-anchor="middle">RSA Key Length (Bits) -- Exponential Spike</text>
+  <text x="450" y="145" font-size="12" font-weight="900" fill="#dc2626" text-anchor="middle">RSA Key Length (Bits) -- Sub-Exponential Growth</text>
   <text x="900" y="145" font-size="12" font-weight="900" fill="#16a34a" text-anchor="middle">ECC Key Length (Bits) -- Linear Efficiency</text>
 
   <!-- Level 1: 112 Bits -->
@@ -600,7 +606,7 @@ NEW_SVGS['key-size-comparison.svg'] = """<svg viewBox="0 0 1200 430" xmlns="http
   <text x="450" y="357" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">RSA 15360 Bits (Extreme CPU Overhead)</text>
 
   <rect x="680" y="330" width="440" height="45" rx="6" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="900" y="357" font-size="13" font-weight="800" fill="#14532d" text-anchor="middle">ECC 521 Bits (P-521 / Ed448)</text>
+  <text x="900" y="357" font-size="13" font-weight="800" fill="#14532d" text-anchor="middle">ECC 521 Bits (P-521)</text>
 </svg>"""
 
 TIGHTEN_HEIGHTS = {

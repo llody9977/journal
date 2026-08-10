@@ -27,6 +27,18 @@ PKI relies on a hierarchical trust model where trusted Root CAs issue certificat
 | **Registration Authority (RA)** | Verifies domain ownership or organizational identity prior to issuance | Enforces domain control validation (DNS-01, HTTP-01). |
 | **Trust Store** | Pre-installed list of trusted Root CA certificates embedded in OS / browser | Establishes local trust anchors used during path validation (RFC 5280 §6): chain building to a trusted root, signature verification at each hop, validity-period and name-constraint checks, and — where enforced — revocation status. |
 
+## What "Validating a Certificate" Actually Means
+
+"Certificate validation" bundles together several distinct checks that a client must perform, and a failure in any one of them is a different failure mode from the others:
+
+1. **Path Building**: Given a leaf certificate, locate a chain of intermediate certificates connecting it to a Root CA already present in the local trust store. A server that omits a required intermediate, or presents intermediates out of order, can cause path building to fail even when a valid chain exists in principle — this is why "include the full intermediate chain" is standard TLS deployment advice.
+2. **Path Validation**: For the chain path building found, cryptographically verify each signature (leaf signed by intermediate, intermediate signed by root), confirm each certificate is within its validity window, and check policy constraints (basic constraints, name constraints, key usage/EKU) at every hop per [RFC 5280 §6](https://www.rfc-editor.org/rfc/rfc5280#section-6). This confirms the chain is cryptographically well-formed and policy-compliant — it does **not** yet confirm the certificate belongs to the host the client is talking to.
+3. **Endpoint (Hostname) Verification**: Separately from chain validation, the client must confirm the hostname it intended to connect to appears in the certificate's Subject Alternative Name (SAN) field, per [RFC 6125](https://www.rfc-editor.org/rfc/rfc6125). This step is easy to omit in custom TLS client code (hence a long history of vulnerabilities where a valid, trusted certificate for *any* domain was accepted for connections to *every* domain) and is worth calling out explicitly: a chain can pass path validation perfectly while still being the wrong certificate for the connection, if hostname verification isn't performed.
+4. **Revocation Checking**: Query CRL or OCSP (see below) to confirm the certificate hasn't been revoked since issuance — a check that is best-effort in most real deployments (see the Trust Store row above) rather than a hard requirement.
+5. **Certificate Transparency**: Separately, confirm the certificate carries the SCTs a given browser vendor's policy requires (see [Certificate Transparency]({{ '/topics/certificate-transparency/' | relative_url }})) — a detection mechanism for rogue issuance, not part of RFC 5280 path validation itself.
+
+Treating these as one monolithic "is this cert valid?" check, rather than as separable phases each with its own failure mode, is a common source of both security bugs (skipped hostname verification) and operational bugs (misdiagnosing a path-building failure as a revocation problem, or vice versa).
+
 ## Anatomy of an X.509 v3 Certificate (RFC 5280)
 
 Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3 certificate structures identity metadata into standard fields signed by a CA:
@@ -132,7 +144,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 | **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must never assert `cA: TRUE`. Depending on the issuing CA's profile, they either omit this extension entirely (which defaults to non-CA per [RFC 5280 §4.2.1.9](https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.9)) or include it explicitly set to `cA: FALSE` — either form prevents the leaf key from minting further certificates. |
 | **Extended Key Usage (EKU)** | Specifies allowed certificate roles (*Server Auth, Client Auth, Code Signing*) | Prevents a TLS server certificate from signing executable software binaries. |
 | **Subject Alternative Name (SAN)** | Lists exact FQDN domain names bound to this certificate | Modern browsers validate SAN fields exclusively; commonName (CN) is ignored. |
-| **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | Enforces maximum validity periods per CA/Browser Forum Baseline Requirements: 200 days as of March 15, 2026; 100 days as of March 15, 2027; and 47 days as of March 15, 2029. |
+| **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | For **publicly-trusted TLS subscriber (server/leaf) certificates** specifically, the CA/Browser Forum Baseline Requirements cap maximum validity at 200 days as of March 15, 2026; 100 days as of March 15, 2027; and 47 days as of March 15, 2029. These caps do not apply to private/internal PKI, most S/MIME or code-signing certificates, or CA (root/intermediate) certificates, which follow different lifetime rules. |
 
 ## Certificate Lifecycle & Automated Issuance (ACME & ARI)
 
@@ -147,7 +159,7 @@ Managing short-lived certificates at scale requires automated enrollment via the
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/certificate-lifetime-timeline.svg' | relative_url }}" alt="Timeline showing X.509 certificate maximum lifetimes shrinking from 825 days down to 47 days.">
-  <p class="diagram-caption">X.509 lifetime evolution: transition from multi-year (825-day) static certificates to automated short-lived certificates, tightening from 200 days today to a 47-day maximum by March 2029</p>
+  <p class="diagram-caption">Publicly-trusted TLS subscriber certificate lifetime evolution: transition from multi-year (825-day) static certificates to automated short-lived certificates, tightening from 200 days today to a 47-day maximum by March 2029</p>
 </div>
 
 ### ACME Renewal Information (ARI, RFC 9773)
@@ -212,6 +224,14 @@ X.509 certificates and private keys are distributed across four primary format e
       <input id="openssl-input-chain" type="text" class="demo-input" value="ca_chain.pem">
     </div>
 
+    <div id="openssl-group-format" class="demo-form-group" style="display: none;">
+      <label id="openssl-label-format" for="openssl-input-format">Input Certificate Encoding:</label>
+      <select id="openssl-input-format" class="demo-input">
+        <option value="PEM" selected>PEM (Base64 text, OpenSSL's default)</option>
+        <option value="DER">DER (binary ASN.1 — adds -inform DER)</option>
+      </select>
+    </div>
+
     <!-- Output Code Container -->
     <div class="demo-form-group" style="margin-top: 1.5rem;">
       <label>Generated OpenSSL Console Command:</label>
@@ -243,69 +263,86 @@ X.509 certificates and private keys are distributed across four primary format e
   const inputKey = document.getElementById('openssl-input-key');
   const inputChain = document.getElementById('openssl-input-chain');
 
+  const groupFormat = document.getElementById('openssl-group-format');
+  const inputFormat = document.getElementById('openssl-input-format');
+
   const codeArea = document.getElementById('openssl-cmd-code');
   const btnCopy = document.getElementById('btn-copy-openssl-cmd');
 
   if (!taskSelect || !codeArea || !btnCopy) return;
 
+  // Quotes a value for safe use inside a POSIX sh/bash single-quoted argument.
+  // Double quotes still let $, `, \, and ! be interpreted by the shell, so a filename
+  // like foo"; rm -rf ~; echo " copied verbatim into a terminal would execute as multiple
+  // commands. Single-quoting disables all of that; embedded single quotes are escaped by
+  // closing the quote, emitting an escaped quote, and reopening it: it's -> 'it'"'"'s'.
+  function shQuote(str) {
+    return "'" + String(str).replace(/'/g, `'"'"'`) + "'";
+  }
+
   function updateCommand() {
     const task = taskSelect.value;
-    const valIn = inputIn.value.trim() || 'input.file';
-    const valOut = inputOut.value.trim() || 'output.file';
-    const valKey = inputKey.value.trim() || 'private.key';
-    const valChain = inputChain.value.trim() || 'ca_chain.pem';
+    const valIn = shQuote(inputIn.value.trim() || 'input.file');
+    const valOut = shQuote(inputOut.value.trim() || 'output.file');
+    const valKey = shQuote(inputKey.value.trim() || 'private.key');
+    const valChain = shQuote(inputChain.value.trim() || 'ca_chain.pem');
+    const isDer = inputFormat && inputFormat.value === 'DER';
+    const informFlag = isDer ? '-inform DER ' : '';
 
     let cmd = '';
 
     // Show/hide groups and set labels based on selection
+    groupFormat.style.display = 'none';
     if (task === 'pem2der') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input PEM File:';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output DER File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -in "${valIn}" -outform DER -out "${valOut}"`;
+      cmd = `openssl x509 -in ${valIn} -outform DER -out ${valOut}`;
     } else if (task === 'der2pem') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input DER File:';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -inform DER -in "${valIn}" -outform PEM -out "${valOut}"`;
+      cmd = `openssl x509 -inform DER -in ${valIn} -outform PEM -out ${valOut}`;
     } else if (task === 'bundle12') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input Certificate File (PEM):';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PKCS#12 Bundle (.p12/.pfx):';
       groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
       groupChain.style.display = 'block'; labelChain.innerText = 'CA Chain File (optional):';
-      cmd = `openssl pkcs12 -export -out "${valOut}" -inkey "${valKey}" -in "${valIn}" -certfile "${valChain}"`;
+      cmd = `openssl pkcs12 -export -out ${valOut} -inkey ${valKey} -in ${valIn} -certfile ${valChain}`;
     } else if (task === 'extract12') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#12 Bundle File:';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output Decoded PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl pkcs12 -in "${valIn}" -out "${valOut}"`;
+      cmd = `openssl pkcs12 -in ${valIn} -out ${valOut}`;
     } else if (task === 'p7b2pem') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Input PKCS#7 File (.p7b):';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output PEM File:';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl pkcs7 -print_certs -in "${valIn}" -out "${valOut}"`;
+      cmd = `openssl pkcs7 -print_certs -in ${valIn} -out ${valOut}`;
     } else if (task === 'view-txt') {
-      groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File (PEM/DER):';
+      groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File:';
       groupOut.style.display = 'none';
       groupKey.style.display = 'none';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -in "${valIn}" -text -noout`;
+      groupFormat.style.display = 'block';
+      cmd = `openssl x509 ${informFlag}-in ${valIn} -text -noout`;
     } else if (task === 'gen-rsa') {
       groupIn.style.display = 'none';
       groupOut.style.display = 'block'; labelOut.innerText = 'Output CSR File:';
       groupKey.style.display = 'block'; labelKey.innerText = 'Output Private Key File:';
       groupChain.style.display = 'none';
-      cmd = `openssl req -newkey rsa:2048 -keyout "${valKey}" -out "${valOut}"`;
+      cmd = `openssl req -newkey rsa:2048 -keyout ${valKey} -out ${valOut}`;
     } else if (task === 'match-mod') {
       groupIn.style.display = 'block'; labelIn.innerText = 'Certificate File:';
       groupOut.style.display = 'none';
       groupKey.style.display = 'block'; labelKey.innerText = 'Private Key File:';
       groupChain.style.display = 'none';
-      cmd = `openssl x509 -noout -pubkey -in "${valIn}" | openssl sha256 && openssl pkey -pubout -in "${valKey}" | openssl sha256`;
+      groupFormat.style.display = 'block';
+      cmd = `openssl x509 ${informFlag}-noout -pubkey -in ${valIn} | openssl sha256 && openssl pkey -pubout -in ${valKey} | openssl sha256`;
     }
 
     codeArea.innerText = cmd;
@@ -338,7 +375,7 @@ X.509 certificates and private keys are distributed across four primary format e
 
 ## Certificate & Public Key Pinning (Mobile & Native App Defense)
 
-Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** in an OS trust store to issue certificates for your domain. **Certificate Pinning** (or **Public Key Pinning**) restricts native client applications (iOS, Android, IoT) to accept **only specific, pre-declared public key hashes**, bypassing untrusted or compromised CAs.
+Standard PKI path validation trusts **any of the ~150+ pre-installed Root CAs** in an OS trust store to issue certificates for your domain. **Certificate Pinning** (or **Public Key Pinning**) adds an additional restriction *on top of* standard X.509 path validation and hostname verification — it does not replace or skip them. A pinned connection still must pass ordinary chain building, signature verification, and name checking; pinning then further requires that a specific, pre-declared public key hash also appear in the chain, narrowing acceptance from "any of the ~150+ trusted Root CAs" down to a pre-declared set.
 
 ### Pinning Target Strategies
 
@@ -440,7 +477,7 @@ As PKI migrates toward quantum safety, Certificate Authorities and standards gro
     <strong>Certificates &amp; PKI Summary</strong>
     <ul>
       <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
-      <li><strong>Automated ACME &amp; ARI (RFC 9773)</strong>: Cert lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI (RFC 9773) is essential in practice.</li>
+      <li><strong>Automated ACME &amp; ARI (RFC 9773)</strong>: For publicly-trusted TLS subscriber certificates, lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI (RFC 9773) is essential in practice.</li>
       <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning carries high operational risk during key rotation. Both Apple and Android guidance recommend against static public key pinning for general web traffic, reserving it for specific threat models with tested backup pins. HPKP is deprecated in web browsers.</li>
     </ul>
   </div>

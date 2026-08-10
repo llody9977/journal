@@ -23,13 +23,13 @@
 
   <!-- Panel 3 -->
   <rect x="790" y="115" width="370" height="215" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" />
-  <text x="810" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">3. AES-GCM / CBC MODE (SECURE)</text>
+  <text x="810" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">3. RANDOMIZED ENCRYPTION (E.G. AES-GCM)</text>
   <rect x="840" y="155" width="270" height="110" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
   <pattern id="noise" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
     <rect x="0" y="0" width="5" height="5" fill="#15803d" opacity="0.3"/>
     <rect x="5" y="5" width="5" height="5" fill="#15803d" opacity="0.3"/>
   </pattern>
   <rect x="840" y="155" width="270" height="110" rx="8" fill="url(#noise)"/>
-  <text x="975" y="285" font-size="11.5" font-weight="800" fill="#15803d" text-anchor="middle">• IV/Counter randomization creates noise</text>
-  <text x="975" y="305" font-size="11" fill="#15803d" text-anchor="middle">• Hides all structural image patterns</text>
+  <text x="975" y="285" font-size="11.5" font-weight="800" fill="#15803d" text-anchor="middle">• Unique IV/counter per message hides patterns</text>
+  <text x="975" y="305" font-size="11" fill="#15803d" text-anchor="middle">• Authentication (AEAD tag) is a separate property</text>
 </svg>

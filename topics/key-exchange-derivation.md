@@ -81,7 +81,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
 
 | Protocol Property | Static Key Exchange (Deprecated) | Ephemeral Key Exchange (PFS Standard) |
 |---|---|---|
-| **Impact of Private Key Leak** | Adversary decrypts **ALL recorded historical traffic** encrypted under that server certificate. | Adversary **cannot derive past session keys from the leaked long-term key alone**; recorded sessions remain protected unless the ephemeral key material was independently compromised. |
+| **Impact of Private Key Leak** | In deployments that use the leaked long-term key to directly transport or derive the session key — static RSA key transport or static (non-ephemeral) Diffie-Hellman — the adversary decrypts **all recorded historical traffic** protected under that key. Modern ephemeral-only deployments (TLS 1.3 mandates ECDHE) are not exposed this way. | Adversary **cannot derive past session keys from the leaked long-term key alone**; recorded sessions remain protected unless the ephemeral key material was independently compromised. |
 | **Key Agreement Mechanics** | RSA Key Transport or Static Diffie-Hellman | Ephemeral Elliptic Curve Diffie-Hellman (**ECDHE / X25519**) |
 | **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Required for every full **TLS 1.3** handshake and mandatory in **SSHv2**. TLS 1.3 PSK-only resumption (without `psk_dhe_ke`) is still permitted and forgoes forward secrecy for that resumed session. |
 
@@ -607,11 +607,19 @@ Extracts uniform pseudorandom key **PRK** from input key material **IKM** and an
 
 ### 2. Expand Phase
 
-Expands **PRK** into arbitrary-length sub-keys using application-specific info context strings:
+Internally, HKDF-Expand builds its output keying material (OKM) block by block, and each block feeds into the next — the formula from [RFC 5869 §2.3](https://www.rfc-editor.org/rfc/rfc5869) is:
 
-**Client_Write_Key = HKDF-Expand(PRK, "tls13 client write", 32)**
+**T(i) = HMAC(PRK, T(i&minus;1) || info || i)**, with **T(0)** defined as the empty string
 
-**Server_Write_Key = HKDF-Expand(PRK, "tls13 server write", 32)**
+Expands **PRK** into arbitrary-length sub-keys using application-specific info context strings. Generic RFC 5869 applications call `HKDF-Expand` with a plain `info` byte string directly, e.g.:
+
+**Traffic_Key = HKDF-Expand(PRK, info, length)**
+
+TLS 1.3 itself does not call raw `HKDF-Expand` with a bare label string like `"tls13 client write"` — [RFC 8446 §7.1](https://www.rfc-editor.org/rfc/rfc8446#section-7.1) defines a wrapper, **HKDF-Expand-Label**, that builds a structured `info` field (encoding the output length, a `"tls13 "`-prefixed label, and an optional context) before calling `HKDF-Expand`:
+
+**HKDF-Expand-Label(Secret, Label, Context, Length) = HKDF-Expand(Secret, HkdfLabel, Length)**
+
+where `HkdfLabel` is the serialized structure `{ Length, "tls13 " + Label, Context }`. Traffic keys are then derived via the further wrapper `Derive-Secret(Secret, Label, Messages) = HKDF-Expand-Label(Secret, Label, Transcript-Hash(Messages), Hash.length)`.
 
 ## Hybrid Public Key Encryption (HPKE / RFC 9180) & Post-Quantum KEMs
 

@@ -16,7 +16,7 @@ last_verified: 2026-08-09
 | Cipher Mode | Vulnerability / Failure Mode | Root Cause | Impact | Defensive Countermeasure |
 |---|---|---|---|---|
 | **AES-CBC** | Bit-Flipping Malleability &amp; Padding Oracles | Ciphertext block **N** XORed into plaintext block **N+1** during decryption | Attacker flips arbitrary bits in block **N+1** without knowing the key | **Use AEAD (AES-GCM)** or apply Encrypt-then-MAC (HMAC-SHA256). |
-| **AES-CTR** | Two-Time Pad Keystream Reuse | Same counter value reused under the same key generates duplicate keystream | **C<sub>1</sub> &oplus; C<sub>2</sub> = P<sub>1</sub> &oplus; P<sub>2</sub>**; recovers plaintext without knowing key | **Never Reuse a (Key, Nonce) Pair**; use a non-repeating 96-bit nonce per key or **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. |
+| **AES-CTR** | Two-Time Pad Keystream Reuse | Same counter value reused under the same key generates duplicate keystream | **C<sub>1</sub> &oplus; C<sub>2</sub> = P<sub>1</sub> &oplus; P<sub>2</sub>** without knowing key; recovering either full plaintext from that XOR sum additionally requires the attacker to already know or correctly guess predictable content in the other message | **Never Reuse a (Key, Nonce) Pair**; use a non-repeating 96-bit nonce per key or **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. |
 | **AES-ECB** | Structural Pattern Leakage | Independent block encryption (**C<sub>i</sub> = E<sub>K</sub>(P<sub>i</sub>)**) | Plaintext patterns and duplicate blocks remain visible in ciphertext | **Do Not Use ECB**; deploy AES-GCM or ChaCha20-Poly1305. |
 
 ## 1. ECB Mode: Structural Pattern Leakage
@@ -52,6 +52,7 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
       <label for="ecb-key-input">Encryption Key / Passphrase:</label>
       <input type="text" id="ecb-key-input" class="demo-input" value="000102030405060708090a0b0c0d0e0f" placeholder="e.g. 000102030405060708090a0b0c0d0e0f or 'ab'">
       <small class="demo-help" id="key-conversion-info">Key format: 32-character Hex key (128 bits).</small>
+      <small class="demo-help">Demonstration-only key handling: a passphrase is zero-padded directly into key bytes, and an empty passphrase falls back to an all-zero key, purely so the playground always has a 16-byte key to encrypt with. Neither behavior is a real key derivation function — production systems must derive keys with a proper KDF (PBKDF2, scrypt, Argon2) and never accept an all-zero key.</small>
     </div>
 
     <div class="demo-actions">

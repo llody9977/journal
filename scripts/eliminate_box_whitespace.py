@@ -181,7 +181,7 @@ SVGS['hkdf-extract-expand.svg'] = """<svg viewBox="0 0 1200 300" xmlns="http://w
   <rect x="339" y="115" width="234" height="155" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
   <text x="354" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">2. HKDF-EXTRACT PASS</text>
   <text x="354" y="165" font-size="13" font-weight="800" fill="#1e40af">HMAC-Hash(Salt, IKM)</text>
-  <text x="354" y="185" font-size="11.5" fill="#475569">• Extracts uniform entropy</text>
+  <text x="354" y="185" font-size="11.5" fill="#475569">• Extracts a pseudorandom key</text>
   <text x="354" y="203" font-size="11.5" fill="#475569">• Outputs fixed PRK</text>
   <rect x="354" y="222" width="204" height="32" rx="6" fill="#1e40af"/>
   <text x="456" y="243" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Pseudorandom Key (PRK)</text>
@@ -191,7 +191,7 @@ SVGS['hkdf-extract-expand.svg'] = """<svg viewBox="0 0 1200 300" xmlns="http://w
   <!-- Box 3 -->
   <rect x="628" y="115" width="234" height="155" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
   <text x="643" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">3. HKDF-EXPAND PASS</text>
-  <text x="643" y="165" font-size="13" font-weight="800" fill="#0f766e">HMAC-Hash(PRK, info || i)</text>
+  <text x="643" y="165" font-size="12.2" font-weight="800" fill="#0f766e">T(i)=HMAC(PRK,T(i-1)||info||i)</text>
   <text x="643" y="185" font-size="11.5" fill="#475569">• Binds context string info</text>
   <text x="643" y="203" font-size="11.5" fill="#475569">• Expands to target length</text>
   <rect x="643" y="222" width="204" height="32" rx="6" fill="#0f766e"/>
@@ -217,19 +217,19 @@ SVGS['certificate-lifetime-timeline.svg'] = """<svg viewBox="0 0 1200 275" xmlns
 
   <!-- 5 Cards -->
   <rect x="50" y="115" width="176" height="135" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
-  <text x="138" y="140" font-size="11" font-weight="900" fill="#475569" text-anchor="middle">PRE-2015</text>
+  <text x="138" y="140" font-size="11" font-weight="900" fill="#475569" text-anchor="middle">MARCH 2018 (SC12)</text>
   <text x="138" y="170" font-size="20" font-weight="800" fill="#0f172a" text-anchor="middle">825 Days</text>
-  <text x="138" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Multi-Year Static Certs</text>
+  <text x="138" y="195" font-size="11.5" fill="#475569" text-anchor="middle">~27-Month Certs</text>
   <text x="138" y="228" font-size="10.5" font-weight="600" fill="#64748b" text-anchor="middle">Manual Renewal</text>
 
   <rect x="281" y="115" width="176" height="135" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="369" y="140" font-size="11" font-weight="900" fill="#2563eb" text-anchor="middle">SEPT 2020</text>
   <text x="369" y="170" font-size="20" font-weight="800" fill="#1e40af" text-anchor="middle">398 Days</text>
   <text x="369" y="195" font-size="11.5" fill="#475569" text-anchor="middle">1-Year Standard Certs</text>
-  <text x="369" y="228" font-size="10.5" font-weight="600" fill="#2563eb" text-anchor="middle">Browser Standard</text>
+  <text x="369" y="228" font-size="10.5" font-weight="600" fill="#2563eb" text-anchor="middle">Browser Root Program Policy</text>
 
   <rect x="512" y="115" width="176" height="135" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.5"/>
-  <text x="600" y="140" font-size="11" font-weight="900" fill="#0f766e" text-anchor="middle">CURRENT 2025</text>
+  <text x="600" y="140" font-size="11" font-weight="900" fill="#0f766e" text-anchor="middle">MARCH 2026 (CURRENT)</text>
   <text x="600" y="170" font-size="20" font-weight="800" fill="#0f766e" text-anchor="middle">200 Days</text>
   <text x="600" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Shortened Lifespan</text>
   <text x="600" y="228" font-size="10.5" font-weight="600" fill="#0f766e" text-anchor="middle">ACME Recommended</text>
@@ -238,13 +238,13 @@ SVGS['certificate-lifetime-timeline.svg'] = """<svg viewBox="0 0 1200 275" xmlns
   <text x="831" y="140" font-size="11" font-weight="900" fill="#b45309" text-anchor="middle">MARCH 2027</text>
   <text x="831" y="170" font-size="20" font-weight="800" fill="#b45309" text-anchor="middle">100 Days</text>
   <text x="831" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Upcoming Requirement</text>
-  <text x="831" y="228" font-size="10.5" font-weight="600" fill="#b45309" text-anchor="middle">Automation Mandate</text>
+  <text x="831" y="228" font-size="10.5" font-weight="600" fill="#b45309" text-anchor="middle">Practically Necessitates Automation</text>
 
   <rect x="974" y="115" width="176" height="135" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
   <text x="1062" y="140" font-size="11" font-weight="900" fill="#dc2626" text-anchor="middle">MARCH 2029</text>
   <text x="1062" y="170" font-size="20" font-weight="800" fill="#991b1b" text-anchor="middle">47 Days</text>
   <text x="1062" y="195" font-size="11.5" fill="#475569" text-anchor="middle">Maximum Cap</text>
-  <text x="1062" y="228" font-size="10.5" font-weight="600" fill="#dc2626" text-anchor="middle">Fully Automated ACME</text>
+  <text x="1062" y="228" font-size="10.5" font-weight="600" fill="#dc2626" text-anchor="middle">Practically Requires Full Automation</text>
 </svg>"""
 
 # 7. ecb-pattern-leak.svg
@@ -273,15 +273,15 @@ SVGS['ecb-pattern-leak.svg'] = """<svg viewBox="0 0 1200 370" xmlns="http://www.
 
   <!-- Panel 3 -->
   <rect x="790" y="115" width="370" height="235" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" />
-  <text x="810" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">3. AES-GCM / CBC MODE (SECURE)</text>
+  <text x="810" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">3. RANDOMIZED ENCRYPTION (E.G. AES-GCM)</text>
   <rect x="840" y="155" width="270" height="110" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
   <pattern id="noise" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
     <rect x="0" y="0" width="5" height="5" fill="#15803d" opacity="0.3"/>
     <rect x="5" y="5" width="5" height="5" fill="#15803d" opacity="0.3"/>
   </pattern>
   <rect x="840" y="155" width="270" height="110" rx="8" fill="url(#noise)"/>
-  <text x="975" y="285" font-size="11.5" font-weight="800" fill="#15803d" text-anchor="middle">• IV/Counter randomization creates noise</text>
-  <text x="975" y="305" font-size="11" fill="#15803d" text-anchor="middle">• Hides all structural image patterns</text>
+  <text x="975" y="285" font-size="11.5" font-weight="800" fill="#15803d" text-anchor="middle">• Unique IV/counter per message hides patterns</text>
+  <text x="975" y="305" font-size="11" fill="#15803d" text-anchor="middle">• Authentication (AEAD tag) is a separate property</text>
 </svg>"""
 
 def main():

@@ -37,7 +37,7 @@ A critical discipline in security architecture is distinguishing between **IETF 
 | **RSA-PSS (3072-bit+)** | [RFC 8017](https://www.rfc-editor.org/rfc/rfc8017) | **NIST APPROVED** ([FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)) | Recommended classical RSA signature padding scheme; deprecate PKCS#1 v1.5. |
 | **SHA-256 / SHA-512 / SHA3-256** | [RFC 6234](https://www.rfc-editor.org/rfc/rfc6234) | **NIST APPROVED** ([FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final) / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)) | Standard cryptographic hash digest algorithms for digital signatures and TLS. |
 | **HKDF-SHA256** | [RFC 5869](https://www.rfc-editor.org/rfc/rfc5869) | **NIST APPROVED** ([NIST SP 800-56C R2](https://csrc.nist.gov/pubs/sp/800/56/c/r2/final)) | Standard Extract-and-Expand key derivation function for key extraction and expansion. |
-| **KMAC256 / KMAC128** | [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final) | **NIST APPROVED** ([NIST SP 800-108 R1](https://csrc.nist.gov/pubs/sp/800/108/r1/final) / [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | NIST-approved KDF construction built on KMAC (SP 800-108 Rev. 1 KDF / SP 800-185). |
+| **KMAC256 / KMAC128** | [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final) | **NIST APPROVED** ([SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | KMAC itself is a keyed hash function / MAC-and-PRF built on cSHAKE — use it directly for message authentication. [SP 800-108 Rev. 1](https://csrc.nist.gov/pubs/sp/800/108/r1/final) separately defines KDF-in-Counter-Mode and similar constructions that can use KMAC as their underlying PRF; that KDF role is a distinct, composed use, not what KMAC does on its own. |
 
 ## Disallowed & Legacy Cryptographic Algorithms
 
@@ -64,11 +64,11 @@ NIST finalized three quantum-resistant FIPS standards in August 2024, with a fou
 
 Under China's Cryptography Law (2020) and technical standards such as **[GB/T 39786-2021](https://std.samr.gov.cn/gb/search/gbDetailed?id=BD89DE8E07393D08E05397BE0A0A4FAD)** (*Baseline for Cryptographic Application in Information Systems*), commercial cryptography evaluation is overseen by the State Cryptography Administration (SCA) and sector regulators. Requirements to adopt the ShangMi algorithm suite depend on the specific system classification level, certification regime, and applicable sector rules (such as for Critical Information Infrastructure, government systems, or financial infrastructure). General commercial software operating outside designated regulatory scopes is not mandated to replace AES, RSA, or ECC.
 
-| SM Algorithm | Cryptographic Primitive | Equivalent Western Primitive | Regulatory Context &amp; Scope |
+| SM Algorithm | Cryptographic Primitive | Comparable Role (Western) | Regulatory Context &amp; Scope |
 |---|---|---|---|
-| **SM2** | Elliptic Curve Public Key | ECC P-256 / Ed25519 | Elliptic-curve public-key algorithm (GB/T 32918); adoption depends on system security classification, regulatory regime, and sector-specific commercial cryptography rules. |
-| **SM3** | Cryptographic Hash | SHA-256 | 256-bit cryptographic hash function (GB/T 32905); used for integrity verification and digital signatures within applicable regulatory scopes. |
-| **SM4** | 128-bit Block Cipher | AES-128-GCM | 128-bit block cipher (GB/T 32907); used for bulk payload and transmission encryption within applicable regulatory scopes. |
+| **SM2** | Elliptic Curve Public Key | Fills the role ECDSA/ECDH/ECIES fill in Western stacks — an ECC-based signature and key-exchange scheme; it is a distinct algorithm design (not interchangeable at the wire-format or math level) and not simply equivalent to Ed25519. | Elliptic-curve public-key algorithm (GB/T 32918); adoption depends on system security classification, regulatory regime, and sector-specific commercial cryptography rules. |
+| **SM3** | Cryptographic Hash | Fills the role SHA-256 fills — comparable digest size and general-purpose use, distinct internal design. | 256-bit cryptographic hash function (GB/T 32905); used for integrity verification and digital signatures within applicable regulatory scopes. |
+| **SM4** | 128-bit Block Cipher | Fills the role the **AES block cipher** fills (128-bit block, 128-bit key) — SM4 is a block cipher, not itself an AEAD mode; it is commonly deployed with GCM (analogous to AES-128-GCM), but "SM4" and "AES-128-GCM" are not the same category of thing. | 128-bit block cipher (GB/T 32907); used for bulk payload and transmission encryption within applicable regulatory scopes. |
 | **SM9** | Identity-Based Encryption | IBE / Identity PKI | Identity-based public-key algorithm (GM/T 0044) using identifier strings as public keys in supported PKI architectures. |
 
 ## What I Need to Remember

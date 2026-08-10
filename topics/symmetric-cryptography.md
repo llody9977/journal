@@ -22,8 +22,8 @@ Symmetric encryption transforms readable plaintext into unreadable ciphertext us
 
 ### Advantages & Limitations
 
-- **High Speed & Low Overhead**: Hardware-accelerated CPU instructions (Intel/AMD AES-NI, ARMv8 Cryptography Extensions) enable gigabytes-per-second encryption throughput.
-- **Key Distribution Problem**: Peer endpoints must securely share key **K** prior to communication. If the transit channel is untrusted, asymmetric key exchange (**[ECDHE]({{ '/topics/key-exchange-derivation/' | relative_url }})**) is required.
+- **High Speed & Low Overhead**: Hardware-accelerated CPU instructions (Intel/AMD AES-NI, ARMv8 Cryptography Extensions) make symmetric ciphers substantially faster than asymmetric operations of comparable security strength.
+- **Key Distribution Problem**: Peer endpoints must securely share key **K** prior to communication. Over an untrusted channel, this is commonly solved with asymmetric key exchange (**[ECDHE]({{ '/topics/key-exchange-derivation/' | relative_url }})**), but it is not the only mechanism — pre-shared keys (PSKs), a trusted key distribution center (KDC, as in Kerberos), or secure out-of-band distribution are also used, particularly where asymmetric infrastructure is unavailable or undesirable.
 - **No Per-Party Non-Repudiation**: Because both parties hold key **K**, either party could have generated a specific MAC tag. Symmetric MACs provide origin authenticity between key holders, but not legal non-repudiation.
 
 ## Block Ciphers vs Stream Ciphers
@@ -108,6 +108,21 @@ Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but 
 1. **Never Reuse Nonces**: Reusing a 96-bit GCM nonce with the same key allows adversaries to recover the GHASH authentication key and forge authentication tags.
 2. **Deploy Synthetic IV (AES-GCM-SIV / RFC 8452) for Misuse Resistance**: When unique nonces cannot be guaranteed (*e.g., distributed stateless microservices*), deploy **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. If a nonce is accidentally repeated, AES-GCM-SIV degrades to deterministically leaking equality of identical messages without exposing the authentication key or plaintext.
 3. **Always Verify Tags Before Decrypting**: Software must compute and verify the authentication tag before exposing plaintext to the application layer.
+
+### AEAD Operational Limits in Production
+
+Nonce uniqueness is necessary but not sufficient — deploying AEAD at scale means respecting several numeric limits baked into the security proof, not just the algorithm's basic correctness:
+
+| Limit | Bound & Rationale | Engineering Consequence |
+|---|---|---|
+| **Per-invocation plaintext size** | AES-GCM: **2^39-256 bits (~64 GiB)** per single encryption call, per [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final) — beyond this, GHASH's internal structure weakens. | Chunk very large payloads (multi-GB backups, disk images) into multiple AEAD-encrypted segments rather than one call. |
+| **Invocations per key (random nonces)** | SP 800-38D recommends staying under roughly **2^32 encryptions** per key when 96-bit nonces are chosen at random, to keep birthday-bound nonce-collision probability acceptably low. | Rotate keys on a volume- or count-based schedule, not just a calendar schedule, for high-throughput services. |
+| **Tag length** | SP 800-38D requires authentication tags of **at least 64 bits**, and recommends 128 bits for most applications; truncating a tag trades authentication strength directly for space. | Don't truncate tags below the algorithm's recommended minimum to save bandwidth — a short tag makes forgery by guessing measurably easier. |
+| **Counter/nonce space exhaustion** | Deterministic (counter-based) nonce constructions have a fixed number of usable values before the counter wraps and repeats. | Monitor counter state and force key rotation before exhaustion — don't rely solely on a time-based rotation policy if traffic volume can outpace it. |
+
+**Nonce allocation across distributed systems**: A single AEAD key shared across many stateless service instances or replicated writers reintroduces collision risk if each instance independently picks random nonces — the effective nonce space shrinks per the birthday bound as the number of concurrent writers grows. The standard fix is deterministic partitioning: reserve high-order nonce bits for a fixed per-instance or per-shard identifier and use a monotonic counter in the low-order bits (this is exactly what TLS 1.3 does with its 64-bit record sequence number XORed into a per-connection IV), or have a coordinator hand out non-overlapping counter ranges. Purely random, uncoordinated nonces from many writers under one key is the failure mode to avoid.
+
+**Separate directional keys**: Protocols like TLS derive distinct "write keys" for client&rarr;server and server&rarr;client traffic specifically so ciphertext produced by one direction can never land in the same (key, nonce) space as the other direction. Reusing a single shared key bidirectionally both halves the effective nonce budget (both directions draw from the same space) and can open reflection-style attacks where a ciphertext captured from one direction is replayed back along the other.
 
 ## What I Need to Remember
 
