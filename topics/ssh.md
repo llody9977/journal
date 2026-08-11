@@ -2,14 +2,14 @@
 title: SSH Architecture & Authentication
 description: Technical breakdown of SSH protocols (RFC 4252/4253), Trust-On-First-Use (TOFU), Ed25519 key pairs, OpenSSH Certificates, and SSH vs TLS comparison.
 permalink: /topics/ssh/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocol</span>
 
 # SSH Architecture & Authentication
 
-<p class="lede">Secure Shell (SSH) provides encrypted remote shell access, command execution, and network tunneling. While SSH and TLS utilize identical cryptographic primitives for transport encryption (ECDHE key agreement, AEAD bulk ciphers), SSH relies on a Trust-On-First-Use (TOFU) or OpenSSH Certificate trust model rather than hierarchical X.509 Certificate Authorities.</p>
+<p class="lede">Secure Shell (SSH) provides encrypted remote shell access, command execution, and network tunneling. SSH and TLS negotiate similar classes of modern cryptographic primitives for transport encryption (ECDHE-family key agreement, AEAD bulk ciphers)—but the concrete algorithm suites, wire framing, and key-derivation constructions differ between the two protocols, so the primitives are analogous, not interchangeable or identical. Where the protocols diverge structurally is server trust: SSH relies on a Trust-On-First-Use (TOFU) or OpenSSH Certificate trust model rather than hierarchical X.509 Certificate Authorities.</p>
 
 ## SSH vs TLS: Architectural Comparison
 
@@ -32,14 +32,14 @@ When a client connects to an SSH server for the first time, the client verifies 
 
 <div class="callout warn">
   <span class="callout-title">The Host Key Changed Security Alert</span>
-  <p>If a host key in <code>~/.ssh/known_hosts</code> mismatches the key presented during a connection, OpenSSH aborts the session immediately. This alerts users to potential Man-in-the-Middle (MitM) key interception or unauthorized server replacement.</p>
+  <p>If a host key in <code>~/.ssh/known_hosts</code> mismatches the key presented during a connection, the OpenSSH client's default configuration (<a href="https://man.openbsd.org/ssh_config.5#StrictHostKeyChecking">StrictHostKeyChecking</a> set to <code>ask</code> or <code>accept-new</code>) refuses to proceed and warns of potential Man-in-the-Middle (MitM) key interception or unauthorized server replacement. This refusal is a client-configuration behavior, not a protocol guarantee: setting <code>StrictHostKeyChecking no</code> instead permits the connection to a changed host key to proceed silently, so the alert only fires when the client is not configured to bypass it.</p>
 </div>
 
 ## OpenSSH Public Key Types & Recommendations
 
 | Algorithm | Key Length / Curve | Recommended Status | Cryptographic Properties |
 |---|---|---|---|
-| **Ed25519** | 256-bit Edwards Curve | **PRIMARY DEFAULT** | Constant-time execution, deterministic signature nonces (RFC 8709). |
+| **Ed25519** | 256-bit Edwards Curve | **PRIMARY DEFAULT** | Deterministic signature nonces derived from the message and secret key, removing reliance on an RNG per signature ([RFC 8032](https://www.rfc-editor.org/rfc/rfc8032), applied to SSH via [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709)); the curve's design also makes constant-time implementations comparatively easy to achieve, but constant-time execution itself is a property of the implementation, not something either RFC mandates. |
 | **RSA-3072 / 4096** | 3,072+ bits | Approved Legacy | High compatibility; larger signatures and slower key generation. |
 | **ECDSA P-256 / P-384** | NIST Curves | Accepted | Requires secure per-signature random nonces (Vulnerable to nonce reuse). |
 | **DSA** | 1024-bit | **PROHIBITED** | Disabled in modern OpenSSH releases due to small key size and weak math. |
@@ -66,10 +66,15 @@ ssh-keygen -t ed25519 -C "admin@enterprise.com" -f ~/.ssh/id_ed25519
 ssh-keygen -lf ~/.ssh/id_ed25519.pub
 # Output: 256 SHA256:zy9q4C7U9Ki5kOv7mwmGxyfVbpbwlJMiqU1tCxoh0cM admin@enterprise.com (ED25519)
 
-# 3. Retrieve remote server host key fingerprints out-of-band
+# 3. Collect a remote server's host key fingerprint for known_hosts
 ssh-keyscan -t ed25519 github.com 2>/dev/null | ssh-keygen -lf -
 # Output: 256 SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU github.com (ED25519)
 ```
+
+<div class="callout warn">
+  <span class="callout-title">ssh-keyscan Is Not an Out-of-Band Verification Method</span>
+  <p><code>ssh-keyscan</code> fetches the host key over the same network path being verified, and it cannot authenticate the key it returns—an attacker positioned on that path can substitute their own key without detection. OpenBSD's <a href="https://man.openbsd.org/ssh-keyscan.1">ssh-keyscan manual</a> states this directly: its output "should be verified out of band, or only used directly for host authentication if the network is trusted." <code>ssh-keyscan</code> is a convenience for <em>collecting</em> a key to add to <code>known_hosts</code>—the collected fingerprint still needs independent out-of-band verification (for example, comparing it against a fingerprint the server operator publishes through a separate channel, such as GitHub's published SSH key fingerprints) before it is trusted.</p>
+</div>
 
 ## What I Need to Remember
 
