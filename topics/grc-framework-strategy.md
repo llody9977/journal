@@ -2,7 +2,7 @@
 title: "GRC Strategy: Framework Stacking & Assessment Models"
 description: Architectural strategy for combining NIST CSF 2.0, ISO 27001, CIS Controls, and SOC 2, featuring risk-driven vs control-driven assessment models.
 permalink: /topics/grc-framework-strategy/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Governance, Risk & Compliance / Deep Dive</span>
@@ -20,7 +20,7 @@ Production GRC programs avoid running parallel compliance audits by layering sta
   <p class="diagram-caption">Frameworks serve different layers of the security program</p>
 </div>
 
-NIST publishes explicit **Online Informative References (OLIR)** mapping NIST CSF subcategories directly to NIST SP 800-53, ISO 27001 Annex A, and CIS Controls. Operating against CIS Controls IG1 automatically satisfies mapped requirements across ISO 27001 and NIST CSF from a single evidence stream.
+NIST publishes explicit **[Online Informative References (OLIR)](https://www.nist.gov/cyberframework/informative-references)** mapping NIST CSF subcategories to NIST SP 800-53, ISO 27001 Annex A, and CIS Controls. NIST describes these mappings as informative rather than normative: NIST performs only limited conformance testing on submitted mappings, does not conduct correctness testing on non-NIST submissions, and states that inclusion in the catalog does not imply NIST endorsement of the mapping's accuracy. Operating against CIS Controls IG1 therefore gives an indicative cross-reference into related ISO 27001 and NIST CSF requirements that can accelerate a gap analysis — it does not by itself satisfy those frameworks' actual requirements, which still need to be verified directly against each target framework's text and audit criteria.
 
 ## Control-Driven vs Risk-Driven Assessment Models
 
@@ -48,7 +48,7 @@ Quantifying risk in financial figures enables security leadership to justify con
 
 ## Defensive Implementation Roadmap for Emerging Organizations
 
-For an emerging enterprise or startup establishing a security program from scratch, the optimal implementation roadmap progresses in five stages:
+For an emerging enterprise or startup establishing a security program from scratch, a common and reasonable implementation sequence progresses through five stages. The exact ordering and pace should still be adjusted for the organization's actual risk profile, industry, regulatory exposure, and resourcing — this is one illustrative starting sequence, not a universally optimal path:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/security-program-roadmap.svg' | relative_url }}" alt="Security program roadmap from essential technical hygiene through governance, product security, customer assurance, and an information security management system.">
@@ -70,7 +70,7 @@ For an emerging enterprise or startup establishing a security program from scrat
     <ul>
       <li><strong>Three Lines Model</strong>: Line 1 (Operational Management), Line 2 (Risk &amp; Compliance Oversight), Line 3 (Internal Audit).</li>
       <li><strong>Risk Appetite &amp; Tolerance</strong>: Establish quantitative risk thresholds approved by board governance before defining technical policies.</li>
-      <li><strong>Policy Enforcement</strong>: Policies must map directly to automated technical guardrails (AWS SCPs, OPA policies) to guarantee compliance.</li>
+      <li><strong>Policy Enforcement</strong>: Policies must map directly to automated technical guardrails (AWS SCPs, OPA policies) to reduce drift and provide continuous assurance — automated guardrails lower compliance risk but do not by themselves guarantee compliance, since they can miss checks outside their scope, contain bugs or gaps, be bypassed, or leave process and administrative controls uncovered.</li>
     </ul>
   </div>
 </div>
