@@ -2,14 +2,14 @@
 title: WebAuthn & Passkeys Deep-Dive
 description: FIDO2/WebAuthn ceremony mechanics, public-key credentials, Attestation vs Assertion, and syncable passkeys vs hardware security keys.
 permalink: /topics/webauthn-passkeys/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Authentication & Authorization / Concepts</span>
 
 # WebAuthn & Passkeys Deep-Dive
 
-<p class="lede">WebAuthn (W3C Web Authentication) and FIDO2 replace passwords with asymmetric public-key cryptography bound to a specific origin. Passkeys eliminate phishing by design because the browser and authenticator enforce origin binding at the cryptographic protocol layer—a lookalike phishing site cannot trick an authenticator into signing a challenge for a domain it does not control.</p>
+<p class="lede">WebAuthn (W3C Web Authentication) and FIDO2 replace passwords with asymmetric public-key cryptography bound to a specific origin. Passkeys provide verifier-name-bound (origin-bound) phishing resistance by design because the browser and authenticator enforce origin binding at the cryptographic protocol layer—a lookalike phishing site cannot trick an authenticator into signing a challenge for a domain it does not control. This blocks credential replay against a lookalike domain specifically; it does not cover weaker account-recovery fallbacks, post-authentication session compromise, or fraudulent credential registration (see below).</p>
 
 ## What is WebAuthn: origin-bound public key authentication
 
@@ -54,7 +54,7 @@ Passkeys come in two distinct operational models:
 | **Phishing Resistance** | **Phishing Resistant** | **Phishing Resistant** |
 | **NIST AAL Level** | Satisfies **NIST AAL2** | Satisfies **NIST AAL3** (due to non-exportable private key requirement) |
 
-## Why WebAuthn is immune to phishing
+## Why WebAuthn resists phishing through origin binding
 
 In traditional password or TOTP authentication, a user can be tricked into entering credentials on `examp1e.com`.
 
@@ -62,7 +62,14 @@ In WebAuthn:
 1. The browser automatically inspects the actual TLS origin (`https://examp1e.com`).
 2. The browser packages `https://examp1e.com` into `clientDataJSON`.
 3. The signature is computed over that exact origin.
-4. When the attacker forwards the signature to `example.com`, the server checks `clientDataJSON.origin`, detects the mismatch (`examp1e.com` != `example.com`), and rejects the authentication instantly.
+4. When the attacker forwards the signature to `example.com`, the server checks `clientDataJSON.origin`, detects the mismatch (`examp1e.com` != `example.com`), and rejects the authentication.
+
+Per [NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/), this property is called **verifier impersonation resistance** (verifier-name binding): the authenticator cryptographically binds each assertion to the exact relying-party origin it was registered for, so a credential registered for the real site cannot be replayed against a lookalike domain. It is a strong, specific defense against real-time credential-relay phishing, but it does not make the account itself immune to takeover. It does not protect against:
+
+- **Weaker account-recovery fallbacks**: an account-recovery flow that falls back to email or SMS can be phished or hijacked independently of the passkey.
+- **Post-authentication compromise**: malware or a hijacked session on the device after a legitimate WebAuthn login is unaffected by origin binding.
+- **Fraudulent credential registration**: an attacker who tricks a user (or a support/helpdesk agent) into registering the attacker's own passkey on the account bypasses origin binding entirely.
+- **Upstream domain or certificate failures**: a compromised CA or DNS hijack that points the real origin at attacker-controlled infrastructure operates above the layer WebAuthn protects.
 
 ## What I Need to Remember
 
@@ -71,7 +78,7 @@ In WebAuthn:
   <div>
     <strong>WebAuthn &amp; Passkeys Summary</strong>
     <ul>
-      <li><strong>Phishing-Resistant FIDO2</strong>: WebAuthn binds public keys directly to origin domain names (<code>origin</code> field), completely immune to credential harvesting sites.</li>
+      <li><strong>Phishing-Resistant FIDO2</strong>: WebAuthn binds public keys directly to origin domain names (<code>origin</code> field), giving verifier-name-bound phishing resistance against credential harvesting/relay sites—it does not cover weaker recovery fallbacks, post-authentication session compromise, or fraudulent credential registration.</li>
       <li><strong>Hardware Signature Verification</strong>: Authenticator signs server <code>challenge</code> using device private key; server verifies signature with stored public key.</li>
       <li><strong>Passkeys (Synced vs. Hardware)</strong>: Synced passkeys (iCloud Keychain, 1Password) provide seamless UX; Hardware keys (YubiKey) provide non-extractable key custody.</li>
     </ul>
@@ -82,3 +89,4 @@ In WebAuthn:
 
 - **W3C WebAuthn Level 3**: *Web Authentication: An API for accessing Public Key Credentials* — [W3C WebAuthn Spec](https://www.w3.org/TR/webauthn-3/)
 - **FIDO Alliance Passkeys**: *Passkeys Standard & Specifications* — [FIDO Alliance](https://fidoalliance.org/passkeys/)
+- **NIST SP 800-63B**: *Digital Identity Guidelines — Authentication and Authenticator Management*, verifier impersonation resistance definition — [NIST 800-63B](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/)

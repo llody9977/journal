@@ -2,7 +2,7 @@
 title: Machine-to-Machine API Authentication
 description: Technical breakdown of M2M API authentication patterns (API Keys, OAuth Client Credentials, mTLS, AWS SigV4, DPoP RFC 9449).
 permalink: /topics/api-security/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Authentication & Authorization / Decision Guide</span>
@@ -17,9 +17,9 @@ last_verified: 2026-08-06
 |---|---|---|---|
 | **API Keys** | Static secret token in HTTP Header (`X-API-Key`) | **No** (Bearer credential) | High leakage risk (committed to repos, logged in cleartext). No expiration by default. |
 | **OAuth 2.0 Client Credentials** | `client_id` + `client_secret` exchanged for Access Token (RFC 6749) | **No** (Unless using mTLS/DPoP) | Shared secret exfiltration allows full client impersonation across token lifetime. |
-| **Mutual TLS (mTLS)** | Bi-directional X.509 certificate validation (RFC 8705) | **Yes** (Bound to TLS connection) | Requires PKI infrastructure; immune to bearer token theft. |
+| **Mutual TLS (mTLS)** | Bi-directional X.509 certificate validation ([RFC 8705](https://datatracker.ietf.org/doc/html/rfc8705)) | **Yes** (Bound to TLS connection) | Requires PKI infrastructure; a stolen bearer token is useless without the bound client certificate's private key, but compromise of that private key (or the client machine holding it) defeats the binding, and it protects only if the server checks certificate binding on every request. |
 | **HMAC Request Signing** | Per-request HMAC digest over headers/body (*AWS SigV4, Stripe*) | **Yes** (Bound to request payload) | Prevents payload tampering and replay attacks via timestamps and nonces. |
-| **DPoP (RFC 9449)** | Demonstrating Proof-of-Possession signed JWT header | **Yes** (Bound to client private key) | Prevents token replay; Access Token is cryptographically bound to client key pair. |
+| **DPoP ([RFC 9449](https://datatracker.ietf.org/doc/rfc9449/))** | Demonstrating Proof-of-Possession signed JWT header | **Yes** (Bound to client private key) | Replay resistance depends on the server validating proof-of-possession, proof freshness (`iat` + server-supplied nonce), and that the proof's `jti` has not already been seen; a captured proof can be replayed within its validity window if the server skips those checks. |
 
 ## AWS Signature Version 4 (SigV4) Signing Protocol
 
@@ -72,3 +72,4 @@ Traditional bearer tokens can be intercepted and replayed by unauthorized third 
 
 - **OWASP API Security Top 10:2023**: *Top 10 API Security Risks* — [OWASP API Security Top 10](https://owasp.org/API-Security/)
 - **RFC 7519**: *JSON Web Token (JWT)* — [IETF RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
+- **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)*, verified for the proof-freshness (`iat`), nonce, and `jti` replay-check requirements — [IETF RFC 9449](https://datatracker.ietf.org/doc/rfc9449/)
