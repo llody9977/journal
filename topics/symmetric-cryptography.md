@@ -101,7 +101,7 @@ AES alone only encrypts a single 128-bit block. Modes of operation chain multipl
 
 ## Authenticated Encryption with Associated Data (AEAD)
 
-Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but leaves payload bytes vulnerable to bit-flipping and padding oracle attacks. **AEAD constructions** generate a 128-bit cryptographic authentication tag over both the ciphertext and unencrypted header metadata (Associated Data).
+Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but leaves payload bytes vulnerable to bit-flipping and padding oracle attacks. **AEAD constructions** generate a cryptographic authentication tag over both the ciphertext and unencrypted header metadata (Associated Data); the permitted tag length depends on the specific construction and protocol profile (see the tag-length table below) rather than being fixed at 128 bits universally.
 
 ### Associated Data (AAD): Authenticated, Not Encrypted
 

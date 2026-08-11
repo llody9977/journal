@@ -58,11 +58,11 @@ For certificates evaluated under [Chrome's CT Policy](https://googlechrome.githu
 
 ### 2. Apple CT Policy Rules
 
-Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trusted server certificates must present SCTs depending on certificate validity period, with the required SCTs drawn from logs run by more than one distinct operator:
+Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trusted server certificates must satisfy Apple's SCT requirements before Apple platforms will trust them. The best-documented path uses **embedded SCTs**, with counts set by certificate validity period and SCTs drawn from logs run by more than one distinct operator:
 - **Lifetime ≤ 180 days**: At least 2 SCTs, from logs operated by at least 2 distinct log operators.
 - **Lifetime > 180 days up to 398 days**: At least 3 SCTs, from logs operated by at least 2 distinct log operators.
 
-The counts above describe Apple's **embedded-SCT** compliance path specifically. Apple's policy also documents a separate path for certificates that don't carry embedded SCTs, based on delivering SCTs from currently-qualified logs via the TLS `signed_certificate_timestamp` extension or OCSP stapling rather than baked into the certificate itself. Apple's policy defines the exact operator-diversity mechanics precisely (which log-operator combinations qualify, how many SCTs the non-embedded path requires, and how Apple's own list of recognized operators factors in) — treat the counts above as the load-bearing numbers for the common embedded-SCT case, and consult the [current policy document](https://support.apple.com/en-us/103214) directly for the alternate path's exact requirements, since CT policies are revised periodically.
+These counts describe the embedded-SCT path specifically — not a single universal SCT requirement that applies regardless of delivery method. Apple's policy also documents an alternate path built on SCTs delivered via the TLS `signed_certificate_timestamp` extension or OCSP stapling rather than embedded in the certificate, with its own count and currently-qualified-log requirements that aren't necessarily identical to the embedded-path numbers above (and the two paths aren't necessarily restricted to disjoint certificate populations the way "embedded vs. non-embedded" might suggest). Treat the counts above as the load-bearing numbers for the common embedded-SCT case, and consult the [current policy document](https://support.apple.com/en-us/103214) directly for the alternate path's exact count and log-qualification rules, since CT policies are revised periodically.
 
 ### 3. TLS-Delivered SCTs vs. X.509 Embedded SCTs
 
