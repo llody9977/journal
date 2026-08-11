@@ -2,7 +2,7 @@
 title: Symmetric Cryptography
 description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), Grover's quantum search, and Node.js envelope encryption.
 permalink: /topics/symmetric-cryptography/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -36,7 +36,7 @@ Symmetric ciphers operate under two distinct mathematical paradigms:
 | Dimension | Block Ciphers (*e.g., AES*) | Stream Ciphers (*e.g., ChaCha20*) | Engineering Trade-off & Guidance |
 |---|---|---|---|
 | **Execution Mechanics** | Permutation-Substitution network per 128-bit block | Generates pseudo-random keystream XORed with plaintext | Block ciphers require complex S-Box substitutions; stream ciphers perform fast bitwise XOR. |
-| **Modern Standards** | **AES-256-GCM** ([FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) / [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | **ChaCha20-Poly1305** ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)) | AES-256-GCM is a NIST FIPS-approved AEAD construction. ChaCha20-Poly1305 is an IETF-standardized AEAD (RFC 8439) that is not itself a NIST-approved algorithm under FIPS 140, though it is widely permitted and deployed, e.g., as a TLS 1.3 cipher suite. |
+| **Modern Standards** | **AES-256-GCM** ([FIPS 197](https://csrc.nist.gov/pubs/fips/197/final) / [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | **ChaCha20-Poly1305** ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)) | AES-256-GCM is a NIST FIPS-approved AEAD construction. ChaCha20-Poly1305 is an IRTF/CFRG-defined AEAD ([RFC 8439](https://www.rfc-editor.org/rfc/rfc8439), an Informational RFC — not IETF Standards Track) that is not itself a NIST-approved algorithm under FIPS 140, though it is widely permitted and deployed, e.g., as a TLS 1.3 cipher suite. |
 | **Operational Unit** | Fixed-size data blocks (128 bits / 16 bytes) | Continuous byte/bit stream | Stream ciphers accept arbitrary payload lengths without block alignment overhead. |
 | **Padding Requirements** | Required for block modes like CBC; not required for GCM/CTR | None required | Padding oracle attacks occur when unauthenticated block padding is parsed. |
 | **Primary Real-World Use Cases** | Database field encryption, cloud storage volumes (EBS/LUKS2 via AES-XTS), high-throughput server TLS 1.3 with hardware AES acceleration (AES-NI / ARMv8 Crypto Extensions). | Real-time video/audio streaming, low-latency mobile apps, VPN tunnels (WireGuard), embedded IoT microcontrollers lacking hardware AES acceleration. | Select AES-256-GCM on hardware with AES acceleration (Intel/AMD AES-NI or ARMv8 Cryptography Extensions — present in most modern server and mobile CPUs, including Apple Silicon and AWS Graviton); select ChaCha20-Poly1305 for CPUs without hardware AES support (e.g., budget or embedded cores). |
@@ -105,7 +105,7 @@ Unauthenticated encryption (such as plain AES-CBC) provides confidentiality but 
 
 ### Associated Data (AAD): Authenticated, Not Encrypted
 
-The "AD" in AEAD is easy to gloss over, but it's doing real work. **Associated Additional Data (AAD)** is data the tag authenticates without encrypting — it travels alongside the ciphertext in plaintext, readable by anyone, but any change to it (by even one bit) makes tag verification fail on decryption, exactly like tampering with the ciphertext itself would. This is the mechanism protocols use to bind unencrypted framing to an encrypted payload: a TLS record's header (content type, version, length), a packet's sequence number, a protocol version tag, or a routing header that a middlebox needs to read can all ride as AAD — visible where they need to be, but not silently swappable without breaking authentication.
+The "AD" in AEAD is easy to gloss over, but it's doing real work. **Additional Authenticated Data (AAD)** — also called Associated Data — is data the tag authenticates without encrypting — it travels alongside the ciphertext in plaintext, readable by anyone, but any change to it (by even one bit) makes tag verification fail on decryption, exactly like tampering with the ciphertext itself would. This is the mechanism protocols use to bind unencrypted framing to an encrypted payload: a TLS record's header (content type, version, length), a packet's sequence number, a protocol version tag, or a routing header that a middlebox needs to read can all ride as AAD — visible where they need to be, but not silently swappable without breaking authentication.
 
 Two engineering details matter in practice:
 - **AAD must be reproduced byte-for-byte at decryption time.** The decrypting side doesn't receive the AAD "inside" the ciphertext — it must independently supply the exact same AAD bytes it expects to have been authenticated, and the AEAD primitive checks that they match what was used at encryption time. Any mismatch (including a subtly different serialization of logically identical data — see canonical serialization) fails the tag check.

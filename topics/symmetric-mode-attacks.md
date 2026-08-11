@@ -2,7 +2,7 @@
 title: "Symmetric Mode Attacks: ECB, CBC & CTR"
 description: Practical cryptanalysis and runnable CLI demonstrations of ECB pattern leakage, CBC bit-flipping malleability, and CTR two-time pad nonce reuse attacks.
 permalink: /topics/symmetric-mode-attacks/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
@@ -675,7 +675,7 @@ Because **C<sub>i-1</sub>** is XORed directly into decrypted plaintext **P<sub>i
 })();
 </script>
 
-Because unauthenticated CBC mode lacks an authentication tag (AEAD), decryption succeeds without raising an integrity exception, granting unauthorized administrative privileges.
+Because unauthenticated CBC mode lacks an authentication tag (AEAD), decryption succeeds without raising an integrity exception — the tampered plaintext is accepted as valid. Granting unauthorized administrative privileges is this simulator's chosen scenario, not a property CBC inherently grants; the general lesson is that unauthenticated CBC lets an attacker flip bits in decrypted plaintext undetected, and what that plaintext controls in a real system (an admin flag, a price, a redirect URL) determines the actual impact.
 
 ### Padding Oracle Attack Mechanics (Vaudenay's Attack)
 

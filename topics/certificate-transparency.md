@@ -2,7 +2,7 @@
 title: Certificate Transparency (CT) & Merkle Audit Proofs
 description: Cryptographic principles of Certificate Transparency (RFC 6962 / RFC 9162), Signed Certificate Timestamps (SCT), Merkle tree audit proofs, and browser CT policies.
 permalink: /topics/certificate-transparency/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
@@ -62,7 +62,7 @@ Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trus
 - **Lifetime ≤ 180 days**: At least 2 SCTs, from logs operated by at least 2 distinct log operators.
 - **Lifetime > 180 days up to 398 days**: At least 3 SCTs, from logs operated by at least 2 distinct log operators.
 
-Apple's policy defines the exact operator-diversity mechanics precisely (which log-operator combinations qualify, and how Apple's own list of recognized operators factors in) — treat the counts above as the load-bearing numbers and consult the current policy document directly for the precise diversity rule text, since CT policies are revised periodically.
+The counts above describe Apple's **embedded-SCT** compliance path specifically. Apple's policy also documents a separate path for certificates that don't carry embedded SCTs, based on delivering SCTs from currently-qualified logs via the TLS `signed_certificate_timestamp` extension or OCSP stapling rather than baked into the certificate itself. Apple's policy defines the exact operator-diversity mechanics precisely (which log-operator combinations qualify, how many SCTs the non-embedded path requires, and how Apple's own list of recognized operators factors in) — treat the counts above as the load-bearing numbers for the common embedded-SCT case, and consult the [current policy document](https://support.apple.com/en-us/103214) directly for the alternate path's exact requirements, since CT policies are revised periodically.
 
 ### 3. TLS-Delivered SCTs vs. X.509 Embedded SCTs
 

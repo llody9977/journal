@@ -2,7 +2,7 @@
 title: Asymmetric Cryptography & Public-Key Infrastructure
 description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and an interactive RSA-OAEP/RSA-PSS playground showing why private keys aren't used to encrypt data.
 permalink: /topics/asymmetric-cryptography/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -13,7 +13,7 @@ last_verified: 2026-08-10
 
 ## Asymmetric Paradigm: Linked Key Pairs
 
-Unlike symmetric ciphers which rely on a single shared key, asymmetric ciphers generate a key pair (<b>K<sub>pub</sub></b>, <b>K<sub>priv</sub></b>). Operations executed with one key can only be inverted or verified by the corresponding key in the pair.
+Unlike symmetric ciphers which rely on a single shared key, asymmetric cryptography generates a key pair (<b>K<sub>pub</sub></b>, <b>K<sub>priv</sub></b>) with complementary, non-interchangeable roles. For encryption/decryption and sign/verify schemes specifically, an operation performed with one key is inverted or verified by the corresponding key in the pair. Key Encapsulation Mechanisms (KEMs, e.g. ML-KEM) and key-agreement protocols (ECDH/X25519) use the pair differently: encapsulation/decapsulation and Diffie-Hellman-style agreement each compute a shared value from both parties' key material rather than one key simply inverting an operation the other key performed — the "one key locks, the other unlocks" framing describes encryption and signing, not every asymmetric operation.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Diagram showing asymmetric cryptography: encryption using public key, decryption using private key, signing using private key, verification using public key.">
@@ -441,7 +441,7 @@ Asymmetric protocols must validate peer-supplied key material before using it, n
   <div>
     <strong>Asymmetric Cryptography Summary</strong>
     <ul>
-      <li><strong>Private Keys Aren't Used to Encrypt Data</strong>: Standardized asymmetric encryption (HPKE, RSA-OAEP) always locks data under a recipient's Public Key — private keys are used for Digital Signing and for decryption, not encryption.</li>
+      <li><strong>Private Keys Aren't Used to Encrypt Data</strong>: Standardized asymmetric encryption (HPKE, RSA-OAEP) always locks data under a recipient's Public Key — private keys are used for Digital Signing, for decryption, for KEM decapsulation, and as one input to key-agreement (ECDH/X25519) computations, never for encryption itself.</li>
       <li><strong>RSA vs. ECC Efficiency</strong>: 256-bit Elliptic Curve keys (Curve25519 / P-256) provide equivalent security to 3072-bit RSA with 12× smaller key sizes.</li>
       <li><strong>HPKE (RFC 9180)</strong>: Standardized hybrid public-key encryption API combining KEM key exchange, HKDF expansion, and AEAD encryption.</li>
     </ul>

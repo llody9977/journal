@@ -2,7 +2,7 @@
 title: Key Exchange & Key Derivation (KDF)
 description: Diffie-Hellman key exchange mechanics, Ephemeral ECDH (X25519), Perfect Forward Secrecy (PFS), HKDF extract-and-expand pipeline, and post-quantum KEMs.
 permalink: /topics/key-exchange-derivation/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -627,7 +627,7 @@ Specified in **[RFC 9180](https://www.rfc-editor.org/rfc/rfc9180)**, **HPKE** st
 
 ### Post-Quantum KEM Transition (FIPS 203 ML-KEM)
 
-Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Modern protocols deploy **[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)** (Kyber) or hybrid **X25519MLKEM768** key exchange to establish post-quantum shared secrets.
+Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Protocols are transitioning to post-quantum-secure key exchange, though adoption varies and is not yet universal. TLS 1.3 is a concrete, already-standardized example: [RFC 10024](https://www.rfc-editor.org/info/rfc10024) defines the hybrid **X25519MLKEM768** group, combining classical X25519 ECDH with **[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**-768 (Kyber), to establish post-quantum-resistant shared secrets.
 
 ## What I Need to Remember
 

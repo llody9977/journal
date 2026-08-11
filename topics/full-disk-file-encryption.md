@@ -2,7 +2,7 @@
 title: Full-Disk & File-Level Encryption
 description: Data at rest protection architectures, AES-XTS (IEEE 1619), LUKS2 with Argon2id, TPM 2.0 / Secure Enclave binding, envelope key hierarchies (DEK/KEK), and CMEK cloud storage.
 permalink: /topics/full-disk-file-encryption/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Storage Security</span>
@@ -56,7 +56,7 @@ To encrypt millions of database fields or S3 objects efficiently, systems implem
     <strong>CMEK, DEK, KEK &amp; Key Rotation Under the Hood</strong>
     <p>To secure massive data stores efficiently, envelope encryption divides responsibilities between local fast data keys and centralized master key custody:</p>
     <ul>
-      <li><strong>Data Encryption Key (DEK)</strong>: A 256-bit AES symmetric key generated in memory. It encrypts the raw file or database payload. The plaintext DEK is <strong>never written to disk</strong>; it encrypts the file, gets wrapped by the KEK into an <strong>Encrypted DEK (EDEK)</strong>, and the EDEK is stored alongside the payload file.</li>
+      <li><strong>Data Encryption Key (DEK)</strong>: A 256-bit AES symmetric key generated in memory. It encrypts the raw file or database payload. In a correctly implemented envelope-encryption scheme, the plaintext DEK is <strong>designed never to be written to disk</strong> — that's the architecture's security objective, not a property guaranteed automatically by calling something "envelope encryption"; a buggy or misconfigured implementation can still leak it (e.g., via a swap file, crash dump, or logging path). It encrypts the file, gets wrapped by the KEK into an <strong>Encrypted DEK (EDEK)</strong>, and the EDEK is stored alongside the payload file.</li>
       <li><strong>Key Encryption Key (KEK) / CMEK</strong>: A master key stored inside a Hardware Security Module (HSM) or Cloud KMS (e.g. AWS KMS, GCP KMS). A <strong>Customer-Managed Encryption Key (CMEK)</strong> is a KEK where the customer controls access policies, rotation schedules, and revocation. In non-exportable HSM-backed architectures, the KEK remains within the HSM security boundary, used primarily to wrap and unwrap key material such as local DEKs.</li>
     </ul>
     <strong>What Key Is Actually Being Rotated?</strong>

@@ -33,7 +33,7 @@
   <text x="465" y="152" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
   <text x="465" y="174" font-size="13" font-weight="800" fill="#0f172a">Sign H(M) with K<sub>priv</sub></text>
   <line x1="465" y1="184" x2="735" y2="184" stroke="#ddd6fe" stroke-width="1"/>
-  <text x="465" y="202" font-size="10.5" fill="#475569">• ECDSA nonce: random (default) or RFC 6979 opt-in</text>
+  <text x="465" y="202" font-size="10.5" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
   <text x="465" y="220" font-size="11" fill="#475569">• EdDSA internal SHA-512/SHAKE256</text>
   <rect x="465" y="236" width="270" height="34" rx="6" fill="#f5f3ff"/>
   <text x="600" y="258" font-size="11.5" font-weight="800" fill="#5b21b6" text-anchor="middle">Signature S = Sign(K<sub>priv</sub>, H(M))</text>

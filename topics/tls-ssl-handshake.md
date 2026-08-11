@@ -2,7 +2,7 @@
 title: TLS 1.3 Handshake & Network Encryption
 description: Detailed protocol breakdown of the TLS 1.3 1-RTT handshake, ECDHE key exchange, AEAD transport protection, 0-RTT early data replay risks, and Encrypted Client Hello (ECH, RFC 9849).
 permalink: /topics/tls-ssl-handshake/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Protocols</span>
@@ -34,7 +34,7 @@ This is the handshake as it runs directly over TCP for HTTP/2 and earlier. **HTT
 | Version | Handshake Latency | Security Status &amp; Cryptographic Changes | Recommended Action |
 |---|---|---|---|
 | **SSL 2.0 / SSL 3.0** | 2-RTT | **CRITICALLY BROKEN**: Vulnerable to POODLE, DROWN, and weak MACs. | **PROHIBITED**: Must be disabled across all servers. |
-| **TLS 1.0 / TLS 1.1** | 2-RTT | **DEPRECATED ([RFC 8996](https://www.rfc-editor.org/rfc/rfc8996))**: Lacks modern AEAD ciphers; vulnerable to BEAST and Lucky13. | **PROHIBITED**: Disable per PCI-DSS and [NIST SP 800-52 Rev. 2](https://csrc.nist.gov/pubs/sp/800/52/r2/final). |
+| **TLS 1.0 / TLS 1.1** | 2-RTT | **DEPRECATED ([RFC 8996](https://www.rfc-editor.org/rfc/rfc8996))**: Lacks modern AEAD ciphers; TLS 1.0 specifically is vulnerable to the BEAST CBC-chaining attack, and CBC-mode suites in either version are susceptible to Lucky13-style timing attacks — see RFC 8996 for the complete deprecation rationale. | **PROHIBITED**: Disable per PCI-DSS and [NIST SP 800-52 Rev. 2](https://csrc.nist.gov/pubs/sp/800/52/r2/final). |
 | **TLS 1.2** | 2-RTT | **LEGACY APPROVED**: Secure when restricted to AEAD cipher suites with ephemeral key exchange — ECDHE + AES-GCM ([RFC 5289](https://www.rfc-editor.org/rfc/rfc5289)) or ECDHE + ChaCha20-Poly1305 ([RFC 7905](https://www.rfc-editor.org/rfc/rfc7905)) are both acceptable; avoid static RSA key exchange and CBC-mode suites. | **MAINTAIN FOR COMPATIBILITY**: Phase out in favor of TLS 1.3. |
 | **TLS 1.3** | **1-RTT** | **RECOMMENDED STANDARD**: Mandatory AEAD; (EC)DHE key exchange is required for the full handshake, though PSK-only resumption (without `psk_dhe_ke`) is a permitted mode that forgoes forward secrecy for that resumed session; zero static RSA key exchange ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html), updated by [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html)). | **DEFAULT FOR NEW DEPLOYMENTS**: Use TLS 1.3 by default; retain a restricted TLS 1.2 profile (AEAD-only, ECDHE-only, as described above) only where client compatibility genuinely requires it, and phase that out over time. |
 

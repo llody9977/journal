@@ -117,7 +117,7 @@ SVGS['quantum-algorithm-impact.svg'] = """<svg viewBox="0 0 1200 420" xmlns="htt
 
   <!-- Summary Footer -->
   <rect x="50" y="365" width="1100" height="40" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Key Takeaway: Prioritize PQC migration for asymmetric PKI by data confidentiality lifetime and risk, once a CRQC exists; AES-256 stays resilient today.</text>
+  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Key Takeaway: Prioritize PQC migration for asymmetric PKI by data confidentiality lifetime and risk, before a CRQC exists, not after; AES-256 stays resilient today.</text>
 </svg>"""
 
 # 4. hash-security-properties.svg

@@ -117,7 +117,7 @@ NEW_SVGS['asymmetric-flow.svg'] = """<svg viewBox="0 0 1200 390" xmlns="http://w
 
   <rect x="820" y="148" width="320" height="72" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="980" y="176" font-size="13" font-weight="800" fill="#1e40af" text-anchor="middle">Decrypt with Bob's Private Key (K<sub>priv</sub>)</text>
-  <text x="980" y="196" font-size="11" fill="#1e40af" text-anchor="middle">ONLY Bob can decrypt (Kept Secret)</text>
+  <text x="980" y="196" font-size="11" fill="#1e40af" text-anchor="middle">Only whoever holds Bob's private key can decrypt</text>
 
   <!-- Bottom Panel: Digital Signature / Verification (y=245, h=125) -->
   <rect x="40" y="245" width="1120" height="125" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2" />
@@ -338,7 +338,7 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   <text x="480" y="168" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
   <text x="480" y="196" font-size="14" font-weight="800" fill="#0f172a">Sign H(M) with K<sub>priv</sub></text>
   <line x1="480" y1="208" x2="780" y2="208" stroke="#ddd6fe" stroke-width="1"/>
-  <text x="480" y="232" font-size="11" fill="#475569">• ECDSA nonce: random (default) or RFC 6979 opt-in</text>
+  <text x="480" y="232" font-size="11" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
   <text x="480" y="254" font-size="12" fill="#475569">• EdDSA uses internal SHA-512/SHAKE256</text>
   <text x="480" y="276" font-size="12" fill="#475569">• Produces unforgeable signature tag S</text>
   <rect x="480" y="295" width="300" height="36" rx="6" fill="#f5f3ff"/>
@@ -464,6 +464,7 @@ NEW_SVGS['password-hash-comparison.svg'] = """<svg viewBox="0 0 1200 410" xmlns=
   <rect x="40" y="110" width="1120" height="270" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
   <!-- Y-Axis (Qualitative Tiers) -->
+  <text x="60" y="128" font-size="10" font-style="italic" fill="#64748b">Illustrative attacker cost tier (qualitative, not a measured throughput scale)</text>
   <line x1="200" y1="140" x2="200" y2="330" stroke="#64748b" stroke-width="2"/>
   <text x="190" y="150" font-size="11" fill="#475569" text-anchor="end" font-weight="700">Extremely High</text>
   <text x="190" y="210" font-size="11" fill="#475569" text-anchor="end" font-weight="700">High (CPU-Bound)</text>

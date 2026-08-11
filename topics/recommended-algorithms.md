@@ -2,7 +2,7 @@
 title: Recommended Cryptographic Algorithms & Standards
 description: Comprehensive compliance guide mapping NIST SP 800-57, NSA CNSA 2.0, NIST PQC Standards (FIPS 203/204/205/206), and Chinese ShangMi (SM2/3/4) algorithm suites.
 permalink: /topics/recommended-algorithms/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Standards</span>
@@ -30,12 +30,12 @@ A critical discipline in security architecture is distinguishing between **IETF 
 | Primitive / Algorithm | IETF / Industry Specification | NIST / FIPS Compliance Status | Target Engineering Guidance & Use Case |
 |---|---|---|---|
 | **AES-256-GCM** | [RFC 5288](https://www.rfc-editor.org/rfc/rfc5288) | **NIST APPROVED** ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | Widely deployed NIST-approved AEAD standard for TLS 1.3, IPsec, and cloud data at rest. |
-| **AES-GCM-SIV** | [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) | **NOT FIPS/NIST APPROVED** (IETF Standard) | Nonce-misuse-resistant AEAD mode preventing catastrophic plaintext leak on IV reuse. |
-| **ECDHE-X25519** | [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) / [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) | **NOT SP 800-56A APPROVED** (IETF Standard) | Modern, high-speed Ephemeral ECDH key agreement used across TLS 1.3 and SSHv2. |
+| **AES-GCM-SIV** | [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) | **NOT FIPS/NIST APPROVED** (IRTF/CFRG Informational RFC, not IETF Standards Track) | Nonce-misuse-resistant AEAD mode that avoids GCM's catastrophic full-plaintext-recovery failure on nonce reuse; repeated encryption of the identical (key, plaintext, AAD) tuple still reveals ciphertext equality to an observer. |
+| **ECDHE-X25519** | [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) / [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) | **NOT SP 800-56A APPROVED** (RFC 7748 is IRTF/CFRG Informational; incorporated into IETF Standards-Track RFC 8446) | Modern, high-speed Ephemeral ECDH key agreement used across TLS 1.3 and SSHv2. |
 | **ECDHE (NIST P-384 / P-256)** | [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) | **NIST APPROVED** ([NIST SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)) | NIST-approved options for FIPS 140-3 and FedRAMP boundaries, subject to the applicable profile (SP 800-52 Rev. 2 accepts either P-256 or P-384; CNSA 2.0 requires P-384). |
 | **Ed25519 / Ed448** | [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) | **NIST APPROVED** ([FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)) | Modern fast digital signature scheme for SSH, WebAuthn, and software signing. |
 | **RSA-PSS (3072-bit+)** | [RFC 8017](https://www.rfc-editor.org/rfc/rfc8017) | **NIST APPROVED** ([FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)) | Preferred RSA signature padding for new designs; continued PKCS#1 v1.5 use is protocol- and profile-dependent rather than universally prohibited. |
-| **SHA-256 / SHA-512 / SHA3-256** | [RFC 6234](https://www.rfc-editor.org/rfc/rfc6234) | **NIST APPROVED** ([FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final) / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)) | Standard cryptographic hash digest algorithms for digital signatures and TLS. |
+| **SHA-256 / SHA-512 / SHA3-256** | [RFC 6234](https://www.rfc-editor.org/rfc/rfc6234) (SHA-256/SHA-512 only — RFC 6234 predates SHA-3) / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final) (SHA3-256) | **NIST APPROVED** ([FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final) / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)) | Standard cryptographic hash digest algorithms for digital signatures and TLS. |
 | **HKDF-SHA256** | [RFC 5869](https://www.rfc-editor.org/rfc/rfc5869) | **NIST APPROVED** ([NIST SP 800-56C R2](https://csrc.nist.gov/pubs/sp/800/56/c/r2/final)) | Standard Extract-and-Expand key derivation function for key extraction and expansion. |
 | **KMAC256 / KMAC128** | [SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final) | **NIST APPROVED** ([SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) | KMAC itself is a keyed hash function / MAC-and-PRF built on cSHAKE — use it directly for message authentication. [SP 800-108 Rev. 1](https://csrc.nist.gov/pubs/sp/800/108/r1/final) separately defines KDF-in-Counter-Mode and similar constructions that can use KMAC as their underlying PRF; that KDF role is a distinct, composed use, not what KMAC does on its own. |
 

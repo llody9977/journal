@@ -2,7 +2,7 @@
 title: Post-Quantum Cryptography (PQC) Migration
 description: Architectural roadmap for migrating to NIST PQC standards (finalized FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA, and draft FIPS 206 FN-DSA), NSA CNSA 2.0 timelines, and hybrid key exchange.
 permalink: /topics/post-quantum-cryptography/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Emerging Topics</span>
@@ -93,7 +93,7 @@ To hedge against implementation bugs in new lattice-based algorithms, production
 
 `Shared Secret S = KDF(Classical_ECDH_Secret || PostQuantum_KEM_Secret)`
 
-In TLS 1.3, the IETF has defined the **`X25519MLKEM768`** hybrid group (IANA codepoint `0x11EC`, combining classical Curve25519 ECDH with FIPS 203 ML-KEM-768) in [`draft-ietf-tls-ecdhe-mlkem`](https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-mlkem/history/). As of this writing that document is still progressing through the RFC Editor's publication process — it is IETF-defined and already widely deployed in practice (major browsers and TLS libraries support it pre-publication, which is common for IETF work with an assigned codepoint), but it is not yet a published RFC; check the datatracker link for current status before citing it as a numbered RFC.
+In TLS 1.3, the IETF has defined the **`X25519MLKEM768`** hybrid group (IANA codepoint `0x11EC`, combining classical Curve25519 ECDH with FIPS 203 ML-KEM-768) in **[RFC 10024](https://www.rfc-editor.org/info/rfc10024)**, *"Post-Quantum Traditional (PQ/T) Hybrid Key Agreement Mechanisms for TLS 1.3"* — published as a Proposed Standard on August 10, 2026. The same document also defines `SecP256r1MLKEM768` and `SecP384r1MLKEM1024` as related hybrid groups; `X25519MLKEM768` is the one marked "Recommended."
 
 The hybrid formula above is intentionally simplified: production hybrid combiners bind more than the two raw secrets. `X25519MLKEM768`'s actual construction concatenates the ML-KEM shared secret and the X25519 shared secret in a fixed order (PQC secret first) as input to TLS 1.3's existing HKDF pipeline — the ordering matters for the combiner's security proof, and both key shares/secrets are incorporated into the TLS key schedule and covered by the handshake transcript (authenticated as part of the overall handshake, per the mechanics described on the TLS Handshake page); swapping the concatenation order or feeding the two secrets through independent unlinked KDF calls does not give the same downgrade-resistance guarantee.
 
@@ -130,4 +130,4 @@ Migrating a real system is a program of work, not a library upgrade. Several pra
 - **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST CSRC FIPS 204 Final](https://csrc.nist.gov/pubs/fips/204/final)
 - **NIST FIPS 205**: *Stateless Hash-Based Digital Signature Standard (SLH-DSA)* — [NIST CSRC FIPS 205 Final](https://csrc.nist.gov/pubs/fips/205/final)
 - **NSA CNSA 2.0**: *Commercial National Security Algorithm Suite 2.0 Cybersecurity Advisory (Version 1.0, September 2022; current hosted copy)* — [NSA CNSA 2.0 Advisory PDF](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF)
-- **IETF TLS 1.3 Hybrid Group**: *Hybrid key exchange in TLS 1.3 (X25519MLKEM768 and related groups)* — [IETF Datatracker: draft-ietf-tls-ecdhe-mlkem](https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-mlkem/) (RFC Editor queue as of this writing; check the datatracker page for its current RFC number once assigned)
+- **RFC 10024**: *Post-Quantum Traditional (PQ/T) Hybrid Key Agreement Mechanisms for TLS 1.3 (X25519MLKEM768 and related groups)* — [RFC Editor: RFC 10024](https://www.rfc-editor.org/info/rfc10024)

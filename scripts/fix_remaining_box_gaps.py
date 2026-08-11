@@ -250,7 +250,7 @@ SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 365" xmlns="http://ww
   <text x="480" y="160" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
   <text x="480" y="185" font-size="14" font-weight="800" fill="#0f172a">Sign H(M) with K<sub>priv</sub></text>
   <line x1="480" y1="195" x2="780" y2="195" stroke="#ddd6fe" stroke-width="1"/>
-  <text x="480" y="217" font-size="10.5" fill="#475569">• ECDSA nonce: random (default) or RFC 6979 opt-in</text>
+  <text x="480" y="217" font-size="10.5" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
   <text x="480" y="237" font-size="11.5" fill="#475569">• EdDSA uses internal SHA-512/SHAKE256</text>
   <rect x="480" y="257" width="300" height="34" rx="6" fill="#f5f3ff"/>
   <text x="630" y="279" font-size="11.5" font-weight="800" fill="#5b21b6" text-anchor="middle">Signature Tag S = Sign(K<sub>priv</sub>, H(M))</text>
