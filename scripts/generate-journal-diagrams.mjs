@@ -1032,22 +1032,22 @@ rows({
 
     <!-- Governance Container: Risk Management Engine -->
     <rect x="65" y="208" width="1070" height="360" rx="18" fill="${colors.amberFill}" stroke="${colors.amber}" stroke-width="2.5" />
-    <text x="90" y="236" font-size="12" font-weight="900" letter-spacing="1.5" fill="${colors.amber}">UNIVERSAL RISK MANAGEMENT ENGINE (NIST SP 800-39 / ISO 27005)</text>
+    <text x="90" y="236" font-size="12" font-weight="900" letter-spacing="1.5" fill="${colors.amber}">COMMON RISK MANAGEMENT APPROACH (NIST SP 800-39 / ISO 27005)</text>
     <text x="90" y="258" font-size="12" font-weight="600" fill="${colors.ink}">Common decision bridge connecting all domains:</text>
-    <text x="90" y="276" font-size="12" font-weight="600" fill="${colors.ink}">Frame Risk  ──&gt;  Assess Exposure  ──&gt;  Select Response (Avoid, Reduce, Transfer, Accept)</text>
+    <text x="90" y="276" font-size="12" font-weight="600" fill="${colors.ink}">Frame Risk  ──&gt;  Assess Exposure  ──&gt;  Select Response (Avoid, Mitigate, Share, Transfer, Accept)</text>
 
     <!-- Scope Container: InfoSec & Cybersecurity -->
     <rect x="90" y="294" width="1020" height="254" rx="16" fill="${colors.blueFill}" stroke="${colors.blue}" stroke-width="2.5" />
     <text x="115" y="320" font-size="12" font-weight="900" letter-spacing="1.5" fill="${colors.blue}">DOMAIN SCOPES &amp; BOUNDARIES</text>
-    <text x="115" y="342" font-size="12" font-weight="700" fill="${colors.ink}">• Information Security (FISMA 44 U.S.C. 3542 / ISO 27001): Preserves CIA across all info</text>
+    <text x="115" y="342" font-size="12" font-weight="700" fill="${colors.ink}">• Information Security (FISMA 44 U.S.C. §3552 / ISO 27001): Preserves CIA across all info</text>
     <text x="127" y="360" font-size="12" font-weight="500" fill="${colors.muted}">assets (paper, digital, verbal, GRC policy frameworks)</text>
     <text x="115" y="380" font-size="12" font-weight="700" fill="${colors.ink}">• Cybersecurity (NIST CSF 2.0 / ISO 27032): Preserves CIA &amp; Resilience across digital infrastructure,</text>
     <text x="127" y="398" font-size="12" font-weight="500" fill="${colors.muted}">software applications, cloud services, and networks in cyberspace</text>
 
     <!-- Core Container: Security Objectives -->
     <rect x="115" y="415" width="970" height="118" rx="14" fill="${colors.violetFill}" stroke="${colors.violet}" stroke-width="2.5" />
-    <text x="600" y="438" text-anchor="middle" font-size="11.5" font-weight="900" letter-spacing="1.5" fill="${colors.violet}">CORE SECURITY OBJECTIVES (NIST FIPS 199)</text>
-    <text x="600" y="458" text-anchor="middle" font-size="14" font-weight="800" fill="${colors.ink}">Preserving Confidentiality, Integrity, Availability (CIA) + Safety &amp; Resilience</text>
+    <text x="600" y="438" text-anchor="middle" font-size="11.5" font-weight="900" letter-spacing="1.5" fill="${colors.violet}">CORE SECURITY OBJECTIVES (CIA TRIAD — NIST FIPS 199)</text>
+    <text x="600" y="458" text-anchor="middle" font-size="14" font-weight="800" fill="${colors.ink}">Preserving Confidentiality, Integrity, Availability (CIA)</text>
     <line x1="140" y1="470" x2="1060" y2="470" stroke="${colors.violet}" stroke-opacity="0.3" stroke-width="1" />
     <text x="270" y="492" text-anchor="middle" font-size="12.5" font-weight="800" fill="${colors.ink}">Confidentiality</text>
     <text x="270" y="510" text-anchor="middle" font-size="11.5" font-weight="500" fill="${colors.muted}">Authorized access only</text>
@@ -1077,7 +1077,8 @@ rows({
     <text x="55" y="354" font-size="11" font-weight="600" fill="${colors.ink}">• Asset</text>
     <text x="55" y="372" font-size="11" font-weight="600" fill="${colors.ink}">• Threat Source/Event</text>
     <text x="55" y="390" font-size="11" font-weight="600" fill="${colors.ink}">• Vulnerability</text>
-    <text x="55" y="408" font-size="11" font-weight="600" fill="${colors.ink}">• Consequential Impact</text>
+    <text x="55" y="408" font-size="11" font-weight="600" fill="${colors.ink}">• Predisposing Condition</text>
+    <text x="55" y="426" font-size="11" font-weight="600" fill="${colors.ink}">• Consequential Impact</text>
 
     <!-- Arrow 1 -> 2 -->
     ${arrow(250, 295, 270, 295)}
@@ -1089,7 +1090,8 @@ rows({
     <text x="285" y="194" font-size="10.5" font-weight="600" fill="${colors.muted}">(NIST SP 800-30 Rev. 1)</text>
     <line x1="285" y1="206" x2="465" y2="206" stroke="${colors.amber}" stroke-opacity="0.3" stroke-width="1" />
     <text x="285" y="228" font-size="11.5" font-weight="700" fill="${colors.ink}">Calculate Exposure:</text>
-    <text x="285" y="250" font-size="12" font-weight="800" fill="${colors.amber}">Risk = Likelihood × Impact</text>
+    <text x="285" y="250" font-size="12" font-weight="800" fill="${colors.amber}">Risk ≈ Likelihood × Impact</text>
+    <text x="285" y="262" font-size="10.5" font-weight="600" fill="${colors.muted}">(journal working model)</text>
     <line x1="285" y1="264" x2="465" y2="264" stroke="${colors.amber}" stroke-opacity="0.3" stroke-width="1" />
     <text x="285" y="286" font-size="11.5" font-weight="500" fill="${colors.muted}">• Threat Plausibility</text>
     <text x="285" y="304" font-size="11.5" font-weight="500" fill="${colors.muted}">• Impact Harm Severity</text>
@@ -1116,8 +1118,8 @@ rows({
     <text x="518" y="300" font-size="10.5" font-weight="700" fill="${colors.ink}">Triggers Stage 4 Controls</text>
 
     <rect x="510" y="325" width="200" height="42" rx="6" fill="#ffffff" stroke="${colors.rule}" stroke-width="1" />
-    <text x="518" y="342" font-size="11" font-weight="800" fill="${colors.ink}">3. Transfer / Share:</text>
-    <text x="518" y="357" font-size="10.5" font-weight="500" fill="${colors.muted}">Shift via insurance / SLAs</text>
+    <text x="518" y="342" font-size="11" font-weight="800" fill="${colors.ink}">3. Share / Transfer:</text>
+    <text x="518" y="357" font-size="10.5" font-weight="500" fill="${colors.muted}">Shift or distribute via insurance / SLAs</text>
 
     <rect x="510" y="375" width="200" height="42" rx="6" fill="#ffffff" stroke="${colors.rule}" stroke-width="1" />
     <text x="518" y="392" font-size="11" font-weight="800" fill="${colors.ink}">4. Accept:</text>
@@ -1142,7 +1144,8 @@ rows({
     <text x="755" y="358" font-size="10.5" font-weight="500" fill="${colors.muted}">  Backups, DR failover</text>
     <line x1="755" y1="372" x2="945" y2="372" stroke="${colors.teal}" stroke-opacity="0.3" stroke-width="1" />
     <text x="755" y="394" font-size="11" font-weight="800" fill="${colors.teal}">LEAVES OUTCOME:</text>
-    <text x="755" y="412" font-size="11.5" font-weight="700" fill="${colors.ink}">Residual Risk Requiring a Recorded Response or Decision</text>
+    <text x="755" y="412" font-size="11.5" font-weight="700" fill="${colors.ink}">Residual Risk Requiring a</text>
+    <text x="755" y="428" font-size="11.5" font-weight="700" fill="${colors.ink}">Recorded Response</text>
 
     <!-- Arrow 4 -> 5 -->
     ${arrow(960, 295, 980, 295)}
@@ -1171,7 +1174,7 @@ rows({
     <!-- Clean Vertical Return Loop Arrows -->
     ${arrow(1070, 465, 1070, 485)}
     ${arrow(145, 485, 145, 465)}`;
-  write("risk-management-lifecycle.svg", documentSvg("The Continuous Risk Management Lifecycle", "Inputs (Threat Modeling, Scans, Intel) lead to Risk Assessment, 4 Risk Response Strategies (Avoid, Reduce, Transfer, Accept), Security Control Execution, and Continuous Risk Monitoring feedback loop.", 570, body));
+  write("risk-management-lifecycle.svg", documentSvg("The Continuous Risk Management Lifecycle", "Inputs (Threat Modeling, Scans, Intel) lead to Risk Assessment, 5 Risk Response Strategies (Avoid, Mitigate, Share, Transfer, Accept), Security Control Execution, and Continuous Risk Monitoring feedback loop.", 570, body));
 }
 
 // Security Program Implementation Roadmap Diagram (SECURITY PROGRAM -> GOVERN -> TECHNICAL)
@@ -1192,7 +1195,7 @@ rows({
     <line x1="180" y1="298" x2="1020" y2="298" stroke="${colors.amber}" stroke-opacity="0.3" stroke-width="1" />
     <text x="180" y="322" font-size="12" font-weight="600" fill="${colors.ink}">• Define Business Context, Scope &amp; Risk Appetite (NIST SP 800-39 / SP 800-37)</text>
     <text x="180" y="342" font-size="12" font-weight="600" fill="${colors.ink}">• Adopt ISMS &amp; Cybersecurity Frameworks (ISO/IEC 27001:2022 / NIST CSF 2.0 / CIS IG1)</text>
-    <text x="180" y="362" font-size="12" font-weight="600" fill="${colors.ink}">• Ensure Regulatory &amp; Privacy Mandates (SOC 2 Type II, PCI-DSS v4.0, GDPR, Singapore PDPA)</text>
+    <text x="180" y="362" font-size="12" font-weight="600" fill="${colors.ink}">• Ensure Compliance, Assurance &amp; Privacy Requirements (SOC 2, PCI DSS, GDPR, PDPA)</text>
 
     <!-- Bi-Directional Connectors Between GOVERN and TECHNICAL (y=375 to y=435) -->
     <!-- Top-Down Arrow (Left: x=450) -->
@@ -1203,7 +1206,7 @@ rows({
     <!-- Bottom-Up Arrow (Right: x=750) -->
     <path d="M 750 435 L 750 375" fill="none" stroke="${colors.teal}" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
     <rect x="765" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="${colors.teal}" stroke-width="1.5"/>
-    <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="${colors.teal}">BOTTOM-UP: TELEMETRY &amp; PROOF ↑</text>
+    <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="${colors.teal}">BOTTOM-UP: TELEMETRY &amp; EVIDENCE ↑</text>
 
     <!-- Bottom Tier Card: TECHNICAL (x=150, y=435, w=900) -->
     <rect x="150" y="435" width="900" height="140" rx="16" fill="${colors.tealFill}" stroke="${colors.teal}" stroke-width="2.5" />
@@ -1280,7 +1283,7 @@ rows({
     <!-- Bottom Bar: Mechanism Alignment (y=505, w=1120, h=45) -->
     <text x="600" y="525" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.blue}">TECHNICAL SAFEGUARD ALIGNMENT (NIST SP 800-53 REV. 5)</text>
     <text x="600" y="540" text-anchor="middle" font-size="10.5" font-weight="600" fill="${colors.ink}">Technical mechanisms enforce specific properties. No single mechanism satisfies all objectives in isolation.</text>`;
-  write("security-objectives-properties-matrix.svg", documentSvg("Security Objectives & System Properties Matrix", "Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative &amp; Physical Safeguards.", 565, body));
+  write("security-objectives-properties-matrix.svg", documentSvg("Security Objectives & System Properties Matrix", "Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative & Physical Safeguards.", 565, body));
 }
 
 // Identity & Access Management Architecture Diagram (NIST SP 800-63 & 800-207 Zero Trust)
@@ -1293,23 +1296,23 @@ rows({
     <text x="60" y="162" font-size="14" font-weight="800" fill="${colors.ink}">Applicant Identity Verification</text>
     <line x1="60" y1="174" x2="375" y2="174" stroke="${colors.blue}" stroke-opacity="0.3" stroke-width="1" />
     <text x="60" y="194" font-size="10.5" font-weight="500" fill="${colors.muted}">• Facial biometrics &amp; document proofing (NIST 800-63A)</text>
-    <text x="60" y="212" font-size="10.5" font-weight="500" fill="${colors.muted}">• IAL1 (Self-asserted) → IAL2 (Verified) → IAL3 (Biometric)</text>
+    <text x="60" y="212" font-size="10.5" font-weight="500" fill="${colors.muted}">• IAL1 (Basic Evidence) → IAL2 (Strong Evidence) → IAL3 (In-Person Attended)</text>
 
     <!-- Card 2: AAL Authenticator Binding (x=422, w=355) -->
     <rect x="422" y="115" width="355" height="135" rx="14" fill="${colors.tealFill}" stroke="${colors.teal}" stroke-width="2.5" />
     <text x="442" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.teal}">2. AUTHENTICATOR BINDING (AAL1 - AAL3)</text>
-    <text x="442" y="162" font-size="14" font-weight="800" fill="${colors.ink}">Phishing-Resistant Authenticator Pairing</text>
+    <text x="442" y="162" font-size="14" font-weight="800" fill="${colors.ink}">Single-Factor to Multi-Factor Binding</text>
     <line x1="442" y1="174" x2="757" y2="174" stroke="${colors.teal}" stroke-opacity="0.3" stroke-width="1" />
     <text x="442" y="194" font-size="10.5" font-weight="500" fill="${colors.muted}">• WebAuthn / FIDO2 Passkeys &amp; PKI Keys (NIST 800-63B)</text>
-    <text x="442" y="212" font-size="10.5" font-weight="500" fill="${colors.muted}">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Hardware Key)</text>
+    <text x="442" y="212" font-size="10.5" font-weight="500" fill="${colors.muted}">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Phishing-Resistant)</text>
 
     <!-- Card 3: FAL Federation Assurance (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="135" rx="14" fill="${colors.amberFill}" stroke="${colors.amber}" stroke-width="2.5" />
     <text x="825" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.amber}">3. FEDERATION ASSURANCE (FAL1 - FAL3)</text>
     <text x="825" y="162" font-size="14" font-weight="800" fill="${colors.ink}">Secure Token &amp; Assertion Exchange</text>
     <line x1="825" y1="174" x2="1140" y2="174" stroke="${colors.amber}" stroke-opacity="0.3" stroke-width="1" />
-    <text x="825" y="194" font-size="10.5" font-weight="500" fill="${colors.muted}">• OpenID Connect (OIDC), OAuth 2.1 &amp; DPoP (NIST 800-63C)</text>
-    <text x="825" y="212" font-size="10.5" font-weight="500" fill="${colors.muted}">• FAL1 (Bearer) → FAL2 (Signed) → FAL3 (Holder-Bound)</text>
+    <text x="825" y="194" font-size="10.5" font-weight="500" fill="${colors.muted}">• OpenID Connect (OIDC), OAuth 2.0 &amp; DPoP (NIST 800-63C)</text>
+    <text x="825" y="212" font-size="10.5" font-weight="500" fill="${colors.muted}">• FAL1 (Bearer) → FAL2 (Injection-Protected) → FAL3 (Holder-of-Key)</text>
 
     <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=265, h=145) -->
     <!-- Card 1: PEP (x=40, w=355) -->
@@ -1328,7 +1331,7 @@ rows({
     <line x1="442" y1="324" x2="757" y2="324" stroke="${colors.line}" stroke-opacity="0.4" stroke-width="1" />
     <text x="442" y="344" font-size="10.5" font-weight="500" fill="${colors.muted}">• Evaluates OPA / Rego &amp; OpenFGA policy rules</text>
     <text x="442" y="362" font-size="10.5" font-weight="500" fill="${colors.muted}">• Evaluates RBAC roles, ABAC attributes &amp; ReBAC</text>
-    <text x="442" y="380" font-size="10.5" font-weight="500" fill="${colors.muted}">• NIST SP 800-207 Zero Trust risk scoring</text>
+    <text x="442" y="380" font-size="10.5" font-weight="500" fill="${colors.muted}">• NIST SP 800-207 Zero Trust policy evaluation</text>
 
     <!-- Card 3: Protected Resource (x=805, w=355) -->
     <rect x="805" y="265" width="355" height="145" rx="14" fill="${colors.greenFill}" stroke="${colors.green}" stroke-width="2.5" />
@@ -1337,7 +1340,7 @@ rows({
     <line x1="825" y1="324" x2="1140" y2="324" stroke="${colors.green}" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="344" font-size="10.5" font-weight="500" fill="${colors.muted}">• Executes authorized application logic</text>
     <text x="825" y="362" font-size="10.5" font-weight="500" fill="${colors.muted}">• Enforces fine-grained field level filters</text>
-    <text x="825" y="380" font-size="10.5" font-weight="500" fill="${colors.muted}">• Emits tamper-evident SIEM telemetry</text>
+    <text x="825" y="380" font-size="10.5" font-weight="500" fill="${colors.muted}">• Emits structured SIEM telemetry</text>
 
     <!-- Bottom Stage: Revocation & Governance (y=425, h=55) -->
     <!-- Left Box: Revocation (x=40, w=545) -->
@@ -1348,7 +1351,7 @@ rows({
     <!-- Right Box: Audit (x=615, w=545) -->
     <rect x="615" y="425" width="545" height="55" rx="12" fill="${colors.blueFill}" stroke="${colors.blue}" stroke-width="2" />
     <text x="635" y="445" font-size="10.5" font-weight="900" letter-spacing="1" fill="${colors.blue}">CROSS-CUTTING AUDIT &amp; ACCOUNTABILITY</text>
-    <text x="635" y="463" font-size="10.5" font-weight="600" fill="${colors.muted}">• Structured SIEM Audit Logging &amp; Immutable Hashes (NIST SP 800-92)</text>`;
+    <text x="635" y="463" font-size="10.5" font-weight="600" fill="${colors.muted}">• Structured SIEM Audit Logging (NIST SP 800-92)</text>`;
   write("identity-access-architecture.svg", documentSvg("Identity & Access Management Architecture", "IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement (PEP/PDP), and Lifecycle Revocation & Audit (NIST SP 800-63 & 800-207).", 500, body));
 }
 
@@ -1391,7 +1394,7 @@ rows({
     <!-- Card 2: Process 1 API Gateway -->
     <rect x="395" y="165" width="390" height="100" rx="12" fill="#ffffff" stroke="${colors.blue}" stroke-width="2" />
     <text x="410" y="190" font-size="11" font-weight="900" fill="${colors.blue}">PROCESS 1: API GATEWAY &amp; PEP</text>
-    <text x="410" y="210" font-size="13" font-weight="800" fill="${colors.ink}">OAuth 2.1 Verification &amp; WAF Rate Limiting</text>
+    <text x="410" y="210" font-size="13" font-weight="800" fill="${colors.ink}">OAuth 2.0 Token Verification &amp; WAF Rate Limiting</text>
     <line x1="410" y1="220" x2="770" y2="220" stroke="${colors.blue}" stroke-opacity="0.3" stroke-width="1" />
     <text x="410" y="238" font-size="11" font-weight="500" fill="${colors.muted}">• Validates JWT Bearer Tokens &amp; DPoP Proofs</text>
     <text x="410" y="254" font-size="11" font-weight="500" fill="${colors.muted}">• Sanitizes Input &amp; Blocks Attack Payloads</text>

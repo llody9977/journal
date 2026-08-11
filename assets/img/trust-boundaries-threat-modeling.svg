@@ -51,7 +51,7 @@
     <!-- Card 2: Process 1 API Gateway -->
     <rect x="395" y="165" width="390" height="100" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
     <text x="410" y="190" font-size="11" font-weight="900" fill="#2563eb">PROCESS 1: API GATEWAY &amp; PEP</text>
-    <text x="410" y="210" font-size="13" font-weight="800" fill="#0f172a">OAuth 2.1 Verification &amp; WAF Rate Limiting</text>
+    <text x="410" y="210" font-size="13" font-weight="800" fill="#0f172a">OAuth 2.0 Token Verification &amp; WAF Rate Limiting</text>
     <line x1="410" y1="220" x2="770" y2="220" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="410" y="238" font-size="11" font-weight="500" fill="#475569">• Validates JWT Bearer Tokens &amp; DPoP Proofs</text>
     <text x="410" y="254" font-size="11" font-weight="500" fill="#475569">• Sanitizes Input &amp; Blocks Attack Payloads</text>

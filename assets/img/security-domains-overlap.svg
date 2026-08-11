@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 610" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Defining Security Domains: Architecture &amp; Scopes</title>
-  <desc id="description">Security engineering operates across nested structures: CIA Core Objectives at center, InfoSec and Cybersecurity domain scopes, Risk Management Engine, and Security Controls Execution.</desc>
+  <desc id="description">Security engineering operates across nested structures: CIA Core Objectives at center, InfoSec and Cybersecurity domain scopes, Risk Management approach, and Security Controls Execution.</desc>
   <rect width="1200" height="610" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -12,8 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Defining Security Domains: Architecture &amp; Scopes</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Security engineering operates across nested structures: CIA Core Objectives at and</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">center, InfoSec Cybersecurity domain scopes, Risk Management Engine, and Security Controls Execution.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Security engineering operates across nested structures: CIA Core Objectives at center, InfoSec and Cybersecurity domain scopes,</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">Risk Management approach, and Security Controls Execution.</text>
   
     <!-- Outer Container: Technical Execution & Security Controls -->
     <rect x="40" y="115" width="1120" height="475" rx="22" fill="#f8fafc" stroke="#0f172a" stroke-width="3" />
@@ -23,22 +23,22 @@
 
     <!-- Governance Container: Risk Management Engine -->
     <rect x="65" y="208" width="1070" height="360" rx="18" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
-    <text x="90" y="236" font-size="12" font-weight="900" letter-spacing="1.5" fill="#b45309">UNIVERSAL RISK MANAGEMENT ENGINE (NIST SP 800-39 / ISO 27005)</text>
+    <text x="90" y="236" font-size="12" font-weight="900" letter-spacing="1.5" fill="#b45309">COMMON RISK MANAGEMENT APPROACH (NIST SP 800-39 / ISO 27005)</text>
     <text x="90" y="258" font-size="12" font-weight="600" fill="#0f172a">Common decision bridge connecting all domains:</text>
-    <text x="90" y="276" font-size="12" font-weight="600" fill="#0f172a">Frame Risk  ──&gt;  Assess Exposure  ──&gt;  Select Response (Avoid, Reduce, Transfer, Accept)</text>
+    <text x="90" y="276" font-size="12" font-weight="600" fill="#0f172a">Frame Risk  ──&gt;  Assess Exposure  ──&gt;  Select Response (Avoid, Mitigate, Share, Transfer, Accept)</text>
 
     <!-- Scope Container: InfoSec & Cybersecurity -->
     <rect x="90" y="294" width="1020" height="254" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
     <text x="115" y="320" font-size="12" font-weight="900" letter-spacing="1.5" fill="#2563eb">DOMAIN SCOPES &amp; BOUNDARIES</text>
-    <text x="115" y="342" font-size="12" font-weight="700" fill="#0f172a">• Information Security (FISMA 44 U.S.C. 3542 / ISO 27001): Preserves CIA across all info</text>
+    <text x="115" y="342" font-size="12" font-weight="700" fill="#0f172a">• Information Security (FISMA 44 U.S.C. §3552 / ISO 27001): Preserves CIA across all info</text>
     <text x="127" y="360" font-size="12" font-weight="500" fill="#475569">assets (paper, digital, verbal, GRC policy frameworks)</text>
     <text x="115" y="380" font-size="12" font-weight="700" fill="#0f172a">• Cybersecurity (NIST CSF 2.0 / ISO 27032): Preserves CIA &amp; Resilience across digital infrastructure,</text>
     <text x="127" y="398" font-size="12" font-weight="500" fill="#475569">software applications, cloud services, and networks in cyberspace</text>
 
     <!-- Core Container: Security Objectives -->
     <rect x="115" y="415" width="970" height="118" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
-    <text x="600" y="438" text-anchor="middle" font-size="11.5" font-weight="900" letter-spacing="1.5" fill="#7c3aed">CORE SECURITY OBJECTIVES (NIST FIPS 199)</text>
-    <text x="600" y="458" text-anchor="middle" font-size="14" font-weight="800" fill="#0f172a">Preserving Confidentiality, Integrity, Availability (CIA) + Safety &amp; Resilience</text>
+    <text x="600" y="438" text-anchor="middle" font-size="11.5" font-weight="900" letter-spacing="1.5" fill="#7c3aed">CORE SECURITY OBJECTIVES (CIA TRIAD — NIST FIPS 199)</text>
+    <text x="600" y="458" text-anchor="middle" font-size="14" font-weight="800" fill="#0f172a">Preserving Confidentiality, Integrity, Availability (CIA)</text>
     <line x1="140" y1="470" x2="1060" y2="470" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
     <text x="270" y="492" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Confidentiality</text>
     <text x="270" y="510" text-anchor="middle" font-size="11.5" font-weight="500" fill="#475569">Authorized access only</text>

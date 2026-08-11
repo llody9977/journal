@@ -2,7 +2,7 @@
 title: Where Should I Start?
 description: Practical architectural roadmap for security engineering—choosing implementation pathways (system threat modeling vs enterprise ISMS governance), establishing mission context, asset inventory and data classification, and selecting standards.
 permalink: /topics/where-should-i-start/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security / Starting Map</span>
@@ -41,8 +41,8 @@ When building or auditing an organizational security program, governance teams f
 2. **Catalog Assets & Threats**: Inventory critical data repositories, production workloads, key personnel, and third-party vendor dependencies.
 3. **Adopt Standard Frameworks**: Implement an industry standard framework (**[NIST CSF 2.0](https://www.nist.gov/cyberframework)** for outcome-driven cybersecurity, **[ISO/IEC 27001](https://www.iso.org/standard/27001)** for certifiable InfoSec governance).
 4. **Audit Baseline Controls**: Assess existing safeguards against prioritized baselines such as **[CIS Controls IG1](https://www.cisecurity.org/controls/implementation-groups)**.
-5. **Prioritize Remediation**: Prioritize security engineering gaps based on evaluated risk severity (likelihood and impact, per **NIST SP 800-30 Rev. 1**).
-6. **Deploy & Assure Controls**: Implement administrative and technical controls, configure continuous monitoring (**NIST SP 800-137**), and collect audit compliance evidence.
+5. **Prioritize Remediation**: Prioritize security engineering gaps based on evaluated risk severity (likelihood and impact, per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)**).
+6. **Deploy & Assure Controls**: Implement administrative and technical controls, configure continuous monitoring (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), and collect audit compliance evidence.
 
 ## Top-Down & Bottom-Up Operational Feedback Loops
 
@@ -104,4 +104,6 @@ The full catalog of NIST/FIPS publication mappings, application/supply-chain sta
 - **NIST Cybersecurity Framework 2.0**: *Framework for Improving Critical Infrastructure Cybersecurity* — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
 - **OWASP Top 10:2025**: *The Ten Most Critical Web Application Security Risks* — [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
+- **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
+- **NIST SP 800-137**: *Information Security Continuous Monitoring (ISCM)* — [NIST CSRC SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)
 - **CIS Controls v8.1** — [CIS Controls](https://www.cisecurity.org/controls)

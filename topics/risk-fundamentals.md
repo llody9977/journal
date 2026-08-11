@@ -2,7 +2,7 @@
 title: Threats, Vulnerabilities & Risk
 description: Technical framework for evaluating threat sources, vulnerability prioritization signals (CVSS v4.0, EPSS, CISA KEV), risk states (inherent/current/target/residual), appetite vs tolerance, risk ownership roles, and treatment strategies (NIST SP 800-39).
 permalink: /topics/risk-fundamentals/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -30,7 +30,7 @@ The table below is a journal working model informed by **[NIST SP 800-30 Rev. 1]
 | **Likelihood** | Plausibility that a threat event occurs and succeeds (**NIST SP 800-30**). | Rated High if exploit code is public and endpoint is routable. | Exploitation probability factor. |
 | **Impact** | Extent of harm resulting from a threat event—successful vulnerability exploitation is one cause, alongside operational failure, human error, dependency loss, or an environmental event with no software vulnerability involved. | Financial loss, regulatory fine, operational downtime, breach notification. | Magnitude of potential harm. |
 | **Risk Exposure** | Overall significance of potential harm. **NIST SP 800-30** describes risk as a function of threat likelihood and impact without mandating a specific formula; `Risk ≈ Likelihood × Impact` used below is a simplified journal working model, not a normative NIST equation. | Qualitative rating (*Low/Med/High*) or quantitative FAIR financial loss (USD). | Decision metric for risk treatment. |
-| **Security Control** | A technical, physical, or administrative/managerial safeguard deployed to alter risk likelihood or impact (**NIST SP 800-53**). | Web Application Firewall (WAF), WebAuthn MFA, AES-256 encryption (technical); badge access (physical); separation-of-duties policy (administrative). | Mitigating countermeasure. |
+| **Security Control** | A technical, physical, or administrative/managerial safeguard deployed to alter risk likelihood or impact (**[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)**). | Web Application Firewall (WAF), WebAuthn MFA, AES-256 encryption (technical); badge access (physical); separation-of-duties policy (administrative). | Mitigating countermeasure. |
 | **Residual Risk** | Exposure remaining after security controls operate (**NIST SP 800-39**). Residual risk is simply what's left—it still requires an explicit response (accept, further mitigate, avoid, or share/transfer); it is not already accepted by default. | Exposure formally reviewed and, where accepted, formally approved by the acceptance authority defined in organizational policy and severity thresholds. | Net organization risk posture. |
 
 Where the qualitative `Likelihood × Impact` model above is too coarse for financial decision-making, **[Open FAIR (Factor Analysis of Information Risk)](https://www.opengroup.org/certifications/openfair)**—maintained by The Open Group under the O-RA (Risk Analysis) and O-RT (Risk Taxonomy) standards—offers a quantitative alternative: it decomposes risk into loss event frequency and loss magnitude distributions to produce a probable financial loss range (e.g., USD), rather than a Low/Medium/High label.
@@ -41,7 +41,7 @@ The same risk scenario carries a different exposure level depending on which poi
 
 | Risk State | What It Measures | Relationship to Controls |
 |---|---|---|
-| **Inherent Risk** | Exposure assuming no controls exist at all—the raw combination of asset, threat, and vulnerability. | An estimated uncontrolled baseline, not a floor—typically the higher end of the exposure range, though not strictly guaranteed to be the maximum possible (a poorly implemented control can occasionally introduce its own new exposure). Rarely the actual state of a running system, but useful for showing how much a control program is worth by comparison against Current Risk. |
+| **Inherent Risk** | Exposure assuming no controls exist at all—the raw combination of asset value, threat source/event, and—where applicable—vulnerability or predisposing condition. | An estimated uncontrolled baseline, not a floor—typically the higher end of the exposure range, though not strictly guaranteed to be the maximum possible (a poorly implemented control can occasionally introduce its own new exposure). Rarely the actual state of a running system, but useful for showing how much a control program is worth by comparison against Current Risk. |
 | **Current Risk** | Exposure given the controls actually operating today. | A snapshot—this is what "residual risk" (below) usually refers to at the present moment, before any further planned mitigation. |
 | **Target Risk** | The exposure level the organization intends to reach, set by its risk appetite and tolerance (below). | The gap between Current and Target risk defines the mitigation backlog and its priority. |
 | **Residual Risk** | Exposure remaining after a defined set of controls—existing or newly deployed—operate, evaluated at a stated point in time (**NIST SP 800-39**). | Functionally the same measurement as Current Risk, but the term specifically frames it as the input to an explicit response decision—not a closed, permanent state; further treatment may still follow. |
@@ -94,7 +94,7 @@ Relying solely on CVSS severity leads to patch fatigue. Modern vulnerability-man
 | **CVSS v4.0 BTE (Base + Threat + Environmental)** | FIRST.org (**[CVSS v4.0 Spec](https://www.first.org/cvss/v4.0/specification-document)**). | Combines Base Flaw Severity + the **Threat metric group** (CVSS v4.0 defines a single Threat metric, **Exploit Maturity (E)**, with defined values including *Attacked (A)*; a CISA KEV listing is direct evidence supporting an Attacked assessment, while EPSS's 30-day exploitation-probability forecast is a related but distinct predictive signal best treated as a separate prioritization input rather than folded into E—neither KEV nor EPSS is itself a CVSS metric) + the **Environmental metric group** (Base metrics re-scored for the local environment, plus Confidentiality/Integrity/Availability Requirements; a compensating control such as mTLS can *inform* how an assessor re-scores a Modified metric, but "mTLS" is not itself a CVSS metric). | Composite score (0.0 to 10.0) reflecting real-world environment risk rather than theoretical severity. |
 | **EPSS + CVSS Triage Matrix** *(journal working model)* | Not an official FIRST or CISA-published matrix—this is a locally defined triage heuristic built from EPSS and CVSS, useful for illustration only. | Dual-axis matrix mapping **CVSS Base Score** (≥ 7.0) against **EPSS Exploit Probability** (> 10%) and **CISA KEV** active attack status. | Illustrative categorization into **Emergency Patch** (CVSS ≥ 7 + EPSS > 10% + KEV), **Scheduled Patch**, or **Monitor**—thresholds are locally chosen, not standardized. |
 | **Risk-Based Vulnerability Management (RBVM)** | Gartner analyst category describing this class of tooling. | Dynamic, vendor-specific algorithm combining **CVE Flaw Severity**, **Exploit Threat Telemetry**, **Asset Criticality**, and **Network Reachability**—the exact weighting is proprietary per vendor, not a disclosed or standardized formula. | Dynamic, vendor-specific risk score driving automated ticket escalation in CI/CD and ITSM workflows—see specific vendor scales below. |
-| ↳ **[Tenable Vulnerability Priority Rating (VPR)](https://docs.tenable.com/vulnerability-priority-rating/Content/VPRAbout.htm)** | Tenable proprietary scoring model. | Combines a CVSS-like technical severity component with Tenable's own threat intelligence feed. | Score range **0.1 to 10.0** (distinct scale from Base CVSS despite the similar range). |
+| ↳ **[Tenable Vulnerability Priority Rating (VPR)](https://docs.tenable.com/vulnerability-management/Content/Lumin/LuminMetrics.htm)** | Tenable proprietary scoring model. | Combines a CVSS-like technical severity component with Tenable's own threat intelligence feed. | Score range **0.1 to 10.0** (distinct scale from Base CVSS despite the similar range). |
 | ↳ **[Qualys TruRisk](https://www.qualys.com/trurisk/)** | Qualys proprietary scoring model. | Combines vulnerability severity, threat intelligence, and asset criticality into a single index. | Score range **0 to 1000**—not directly comparable to Tenable VPR's 0.1–10.0 scale. |
 
 ## Vulnerability vs Actual Risk Exposure Matrix
@@ -110,7 +110,7 @@ A software vulnerability score (CVSS) does not equal total risk exposure. Actual
 
 ## Risk Response Strategies (NIST SP 800-39 / ISO 31000)
 
-When a risk assessment identifies exposure exceeding organizational risk appetite, security leadership selects a risk treatment. **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** names five response types: **accept, avoid, mitigate, share,** and **transfer**—"share" and "transfer" are distinct (share distributes part of the loss, transfer shifts it entirely, e.g., to an insurer), though they are often grouped together informally as below:
+When a risk assessment identifies exposure exceeding organizational risk appetite, security leadership selects a risk treatment. **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** names five response types: **accept, avoid, mitigate, share,** and **transfer**—"share" and "transfer" are distinct (share distributes part of the loss, transfer shifts it, e.g., to an insurer), though they are often grouped together informally as below:
 
 | Risk Treatment Strategy | Strategic Objective | Governing Mechanism | Technical Realization Example |
 |---|---|---|---|
@@ -126,11 +126,11 @@ When evaluating an enterprise risk assessment or vulnerability management pipeli
 | Diagnostic Focus Area | Key Architectural Evaluation Question | Target Verification &amp; Audit Evidence |
 |---|---|---|
 | **Contextual Reachability** | Is network reachability, identity boundaries, and compensating-control context captured via CVSS Threat/Environmental metrics or a separate contextual risk score—preserving the Base score rather than informally overwriting it? | Network topology maps, mTLS sidecar configs, SAST reachability audits &amp; documented CVSS Environmental/Threat scoring. |
-| **Continuous Monitoring** | Is there an automated trigger to re-evaluate risk when major architectural changes or new CVEs occur? | Continuous Monitoring reports (**NIST SP 800-137**) &amp; CI/CD security triggers. |
+| **Continuous Monitoring** | Is there an automated trigger to re-evaluate risk when major architectural changes or new CVEs occur? | Continuous Monitoring reports (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**) &amp; CI/CD security triggers. |
 | **Control Efficacy** | Are existing security controls verified as actively operating before calculating residual risk? | Automated SIEM telemetry logs, penetration test reports &amp; SAST/DAST evidence. |
 | **Acceptance Governance** | Is all accepted residual risk formally signed off by the acceptance authority defined in organizational policy and severity thresholds—not assumed to always be an executive (**NIST SP 800-39**)? | Risk sign-off records at the appropriate authority level &amp; GRC risk register approval trails. |
 | **Exploit Intelligence** | Are vulnerability patch priorities driven by real-world exploitation telemetry (**EPSS &amp; CISA KEV**)? | Vulnerability management SLA reports &amp; EPSS prioritization dashboards. |
-| **Scenario Completeness** | Does the risk assessment evaluate all six components (*Asset, Threat Source, Event, Vulnerability, Likelihood, Impact*)? | Documented Risk Register matrices (**NIST SP 800-30 Rev. 1**). |
+| **Scenario Completeness** | Does the risk assessment evaluate the applicable components (*Asset, Threat Source, Event, Vulnerability or predisposing condition where applicable, Likelihood, Impact*)? | Documented Risk Register matrices (**NIST SP 800-30 Rev. 1**). |
 
 ## What I Need to Remember
 
@@ -155,3 +155,5 @@ When evaluating an enterprise risk assessment or vulnerability management pipeli
 - **FIRST EPSS** — [FIRST EPSS](https://www.first.org/epss/)
 - **CISA Known Exploited Vulnerabilities Catalog** — [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
 - **CISA / CMU SEI SSVC Guide** — [CISA SSVC](https://www.cisa.gov/stakeholder-specific-vulnerability-categorization-ssvc)
+- **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
+- **NIST SP 800-137**: *Information Security Continuous Monitoring (ISCM)* — [NIST CSRC SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)

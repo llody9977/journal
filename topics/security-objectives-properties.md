@@ -2,7 +2,7 @@
 title: Security Objectives & Properties
 description: Architectural framework for security objectives, FIPS 199 impact categorization, extended properties, safeguard mechanics, and the objective-to-verified-control traceability chain.
 permalink: /topics/security-objectives-properties/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -18,7 +18,7 @@ last_verified: 2026-08-09
 
 ## System Criticality & FIPS 199 / FIPS 200 Impact Categorization
 
-Rather than treating security objectives as arbitrary choices, system architectures evaluate **system criticality** based on potential magnitude of harm. **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** and **[NIST SP 800-60 Rev. 1](https://csrc.nist.gov/pubs/sp/800/60/r1/final)** are U.S. federal standards—mandatory for federal information systems, not a universal classification scheme—but the Low/Moderate/High impact model they define is a useful, widely borrowed structure for reasoning about system criticality in any organization. Under that model, system categorization follows a 4-step progression:
+Rather than treating security objectives as arbitrary choices, system architectures evaluate **system criticality** based on potential magnitude of harm. **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** is a U.S. federal standard—mandatory for federal information systems. **[NIST SP 800-60 Vol. 1 Rev. 1](https://csrc.nist.gov/pubs/sp/800/60/v1/r1/final)** is supplemental NIST guidance that assists agencies in mapping information types to FIPS 199 categories; it is not itself a mandatory standard, but the Low/Moderate/High impact model they define is a useful, widely borrowed structure for reasoning about system criticality in any organization. Under that model, system categorization follows a 4-step progression:
 
 1. **Inventory Information Types & System Functions**: Identify all data types (*e.g., PII, medical records, financial transactions, system credentials*) processed or stored by the system.
 2. **Assess Potential Impact Severity**: Evaluate potential harm magnitude across Confidentiality (**SC Confidentiality**), Integrity (**SC Integrity**), and Availability (**SC Availability**) if compromised.
@@ -45,7 +45,7 @@ System impact categorization establishes the minimum security baseline required 
 
 Comprehensive security engineering across all systems—whether cloud-native microservices or legacy enterprise infrastructure—may require enforcing operational security properties beyond the core CIA invariants, depending on what the system actually does: a system with no personal data has no meaningful Privacy property to enforce, and one with no life-safety implications has no Safety property to enforce.
 
-| Extended Property | Target System Invariant | Governing Specification | Primary Engineering Application |
+| Extended Property | Target System Invariant | Representative Specification / Mechanism | Primary Engineering Application |
 |---|---|---|---|
 | **[Accountability](https://csrc.nist.gov/glossary/term/accountability)** | Producing evidence that supports tracing system actions to an authenticated identity—strength of attribution depends on log integrity and identity binding, not the logging mechanism alone. | **[NIST SP 800-92](https://csrc.nist.gov/pubs/sp/800/92/final)** | SIEM audit trails, made tamper-evident via added cryptographic chaining or WORM storage, & attributable identity context. |
 | **[Authenticity](https://csrc.nist.gov/glossary/term/authenticity)** | Verifying identity, message, or payload origin is genuine. | **[NIST SP 800-63-4](https://pages.nist.gov/800-63-4/)** / **FIDO2** | Mutual TLS (mTLS) microservice identity & WebAuthn passkey authentication. |
@@ -91,7 +91,7 @@ A security objective by itself is not actionable—"Confidentiality" does not te
 | **4. Verification Evidence** | The artifact that demonstrates the control is actually implemented and operating, not merely designed. | Passing unit test asserting ciphertext-only storage; SAST rule confirming no plaintext PII in log statements; periodic access-log review. | Control-specific test/audit tooling; see the validation pipeline in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**. |
 | **5. Residual-Risk Decision** | What remains unaddressed after the verified control, and who is accountable for accepting, further mitigating, avoiding, or transferring it. | Key-management compromise is not addressed by column encryption alone; the risk owner accepts this with a documented KMS access-audit compensating control. | **[Threats, Vulnerabilities & Risk]({{ '/topics/risk-fundamentals/' | relative_url }})**. |
 
-Skipping link 4 is the most common failure: a control that was designed and deployed but never verified provides insufficient assurance that it operates as intended—the control may well be working, but nothing confirms it behaves as intended under real conditions, so it cannot be relied on for a risk decision.
+Skipping link 4 is a common failure: a control that was designed and deployed but never verified provides insufficient assurance that it operates as intended—the control may well be working, but nothing confirms it behaves as intended under real conditions, so it cannot be relied on for a risk decision.
 
 ## Essential Security Property Diagnostic Checklist
 

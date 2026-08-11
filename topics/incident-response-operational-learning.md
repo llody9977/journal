@@ -2,7 +2,7 @@
 title: Monitoring, Incident Response & Operational Learning
 description: Continuous security monitoring, the incident response lifecycle (NIST SP 800-61 Rev. 3 / CSF 2.0), severity classification, incident roles, and post-incident operational learning that closes the loop back to risk and control decisions.
 permalink: /topics/incident-response-operational-learning/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -28,6 +28,16 @@ Incident response is triggered when an anomaly or breach is surfaced—whether t
 | User & entity behavior signals | Deviations from a subject's established access pattern (geo-velocity, unusual data volume). | Risk-based authentication triggers and SOC alert triage. |
 
 A high volume of monitoring signal is not the same as effective detection—alert fatigue and unparsed log formats are real failure modes for this stage, as already noted for Detective Controls generally.
+
+## From Event to Incident: Decision Boundaries
+
+Not every monitoring signal enters the incident response process. Three terms define the decision boundary between normal operations and an active incident:
+
+- **Event**: An observable occurrence in a system or network—a login, a configuration change, a DNS query. Most events are routine.
+- **Alert**: A tool or analyst indication that an event may require investigation. An alert can be a true positive (an actual security concern) or a false positive (benign activity that matched a detection rule). Alert volume without triage quality produces alert fatigue, not security.
+- **Cybersecurity incident**: An occurrence that actually or imminently jeopardizes, without lawful authority, the confidentiality, integrity, or availability of information or an information system; or constitutes a violation or imminent threat of violation of law, security policies, or acceptable use policies (**[NIST definition](https://csrc.nist.gov/glossary/term/cybersecurity_incident)**).
+
+The triage step in the lifecycle below is where an alert crosses (or does not cross) the threshold into an incident. Severity assignment, staffing decisions, and notification obligations apply only after that declaration—which is why defining the organization's incident criteria explicitly, before an event occurs, is part of preparation.
 
 ## The Incident Response Lifecycle: Rev. 2's Phases vs. Rev. 3's Current Structure
 
@@ -55,7 +65,7 @@ Having an incident response plan on paper is distinct from being operationally p
 
 1. **Tabletop Exercises & Playbook Validation**: Regularly execute simulated threat scenarios (tabletop exercises and red/blue-team drills) to stress-test escalation paths, validate playbook accuracy, and identify operational friction under realistic time constraints.
 2. **Forensic Evidence Preservation & Chain of Custody**: Establish immutable, write-once-read-many (WORM) evidence vaults for raw disk images, memory dumps, and network PCAPs. Document a verifiable chain of custody (timestamp, hash, collector identity) to preserve evidence admissibility for legal or regulatory proceedings.
-3. **Notification & Escalation Decision Records**: Pre-define legal, regulatory (e.g., SEC 4-day, GDPR 72-hour), and customer notification criteria. Maintain documented decision logs whenever notification thresholds are evaluated during an incident—whether the decision is to notify or not.
+3. **Notification & Escalation Decision Records**: Pre-define legal, regulatory, and customer notification criteria. Key examples: the **[SEC cybersecurity disclosure rule](https://www.sec.gov/newsroom/press-releases/2023-139)** generally requires covered public-company registrants to disclose a material cybersecurity incident within four business days after determining the incident is material (not four days after discovery); **[GDPR Article 33](https://eur-lex.europa.eu/eli/reg/2016/679/oj)** generally requires a controller to notify the supervisory authority within 72 hours after becoming aware of a personal-data breach, unless the breach is unlikely to result in a risk to individuals' rights and freedoms. Maintain documented decision logs whenever notification thresholds are evaluated during an incident—whether the decision is to notify or not.
 4. **Time Synchronization & Telemetry Integrity**: Enforce Network Time Protocol (NTP / IEEE 1588 PTP) synchronization across all servers, microservices, and network devices. Consistent, synchronized timestamps are essential for accurate cross-system log correlation and timeline reconstruction during forensic investigation.
 
 ## Incident Severity Classification (Journal Working Example)
@@ -124,3 +134,5 @@ When auditing an incident response program or reviewing a specific incident's ha
 
 - **NIST SP 800-61 Rev. 3**: *Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile* — [NIST CSRC SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
 - **NIST Cybersecurity Framework 2.0** — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
+- **SEC Cybersecurity Disclosure Rule** (Form 8-K Item 1.05) — [SEC Press Release 2023-139](https://www.sec.gov/newsroom/press-releases/2023-139)
+- **GDPR Article 33** — Notification of a personal data breach to the supervisory authority — [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2016/679/oj)

@@ -30,7 +30,7 @@
     <line x1="180" y1="298" x2="1020" y2="298" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
     <text x="180" y="322" font-size="12" font-weight="600" fill="#0f172a">• Define Business Context, Scope &amp; Risk Appetite (NIST SP 800-39 / SP 800-37)</text>
     <text x="180" y="342" font-size="12" font-weight="600" fill="#0f172a">• Adopt ISMS &amp; Cybersecurity Frameworks (ISO/IEC 27001:2022 / NIST CSF 2.0 / CIS IG1)</text>
-    <text x="180" y="362" font-size="12" font-weight="600" fill="#0f172a">• Ensure Regulatory &amp; Privacy Mandates (SOC 2 Type II, PCI-DSS v4.0, GDPR, Singapore PDPA)</text>
+    <text x="180" y="362" font-size="12" font-weight="600" fill="#0f172a">• Ensure Compliance, Assurance &amp; Privacy Requirements (SOC 2, PCI DSS, GDPR, PDPA)</text>
 
     <!-- Bi-Directional Connectors Between GOVERN and TECHNICAL (y=375 to y=435) -->
     <!-- Top-Down Arrow (Left: x=450) -->
@@ -41,7 +41,7 @@
     <!-- Bottom-Up Arrow (Right: x=750) -->
     <path d="M 750 435 L 750 375" fill="none" stroke="#0f766e" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
     <rect x="765" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
-    <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#0f766e">BOTTOM-UP: TELEMETRY &amp; PROOF ↑</text>
+    <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#0f766e">BOTTOM-UP: TELEMETRY &amp; EVIDENCE ↑</text>
 
     <!-- Bottom Tier Card: TECHNICAL (x=150, y=435, w=900) -->
     <rect x="150" y="435" width="900" height="140" rx="16" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />

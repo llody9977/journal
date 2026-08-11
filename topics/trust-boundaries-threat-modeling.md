@@ -2,7 +2,7 @@
 title: Trust Boundaries & Threat Modeling
 description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question), and 4-stage execution pipelines.
 permalink: /topics/trust-boundaries-threat-modeling/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -61,7 +61,7 @@ Engineering teams select threat modeling frameworks based on system complexity, 
 |---|---|---|---|
 | **Stage 1: Architecture Decomposition** | Deconstruct system into Data Flow Diagrams (DFDs), mapping external entities, processes, data stores, and trust boundaries. Static structure diagrams such as the **[C4 model](https://c4model.com/)** describe software components and their relationships and can usefully complement this step, but C4 is not itself a DFD and does not model data flows or trust boundaries. | DFD Modeling (optionally complemented by C4 Model Architecture) | System Data Flow Diagram &amp; Entry Point Inventory. |
 | **Stage 2: Threat Identification** | Evaluate misuse, human error, system or dependency failure, environmental events, and adversarial attack vectors against system components—not adversarial threats alone. | STRIDE / PASTA / OWASP Question 2 | Threat Register listing component vulnerabilities &amp; vectors. |
-| **Stage 3: Mitigation & Control Selection** | Select and implement appropriate controls or design changes—technical, administrative, physical, or architectural, depending on the threat—that reduce the likelihood or impact of identified high-risk threats; a non-adversarial threat like structural or environmental failure may call for redundancy or process changes rather than a technical control. Controls lower risk, they do not universally neutralize it. | NIST SP 800-53 / OWASP ASVS 5.0.0 | Applied security controls (WAF, mTLS, WebAuthn, AES-256). |
+| **Stage 3: Mitigation & Control Selection** | Select and implement appropriate controls or design changes—technical, administrative, physical, or architectural, depending on the threat—that reduce the likelihood or impact of identified high-risk threats; a non-adversarial threat like structural or environmental failure may call for redundancy or process changes rather than a technical control. Controls lower risk, they do not universally neutralize it. | [NIST SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final) / OWASP ASVS 5.0.0 | Applied security controls (WAF, mTLS, WebAuthn, AES-256). |
 | **Stage 4: Retrospective & Verification** | Validate coverage of scope, assumptions, and scenarios; confirm controls are actually implemented as designed; and record residual risk—automated testing (SAST/DAST) checks implementation but does not by itself confirm scope or assumption completeness. | OWASP Question 4 &amp; [NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final) | Verification record covering scope/assumption review, automated SAST/DAST regression tests, and threat model sign-off with documented residual risk. |
 
 ## What a Complete Threat Model Records, Beyond the Diagram
@@ -110,4 +110,5 @@ When evaluating a threat model for a new architecture or system refactor, evalua
 - **OWASP Threat Modeling Project**: *Threat Modeling Process, STRIDE Framework, the 4-Question Framework, and the scope/assumptions/dependencies inputs a complete threat model should record* — [OWASP Threat Modeling](https://owasp.org/www-project-threat-modeling/)
 - **OWASP ASVS 5.0.0**: *Application Security Verification Standard* — [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
 - **SLSA v1.2**: *Supply-chain Levels for Software Artifacts* — [SLSA Specification](https://slsa.dev/spec/v1.2/)
+- **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
 - **IETF OAuth 2.1 Internet-Draft**: *Current draft status (not yet a finalized RFC)* — [OAuth 2.1 Draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1)

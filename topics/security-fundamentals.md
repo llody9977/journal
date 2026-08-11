@@ -2,7 +2,7 @@
 title: What Is Security?
 description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and a journal working model of the risk management lifecycle.
 permalink: /topics/security-fundamentals/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security / Overview</span>
@@ -17,7 +17,7 @@ While the term "Security" is used casually as a general heading, technical engin
 
 | Security Domain | Representative Standard / Law | Primary Scope & Focus |
 |---|---|---|
-| **Security** (Generic) | No single standard defines generic "Security" universally; **[CNSSI 4009](https://csrc.nist.gov/glossary)** and **NIST SP 800-37** (an RMF-specific publication) each use working definitions within their own scope, used here as a practical starting point. | The general condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
+| **Security** (Generic) | No single standard defines generic "Security" universally; **[CNSSI 4009](https://csrc.nist.gov/glossary)** and **[NIST SP 800-37](https://csrc.nist.gov/pubs/sp/800/37/r2/final)** (an RMF-specific publication) each use working definitions within their own scope, used here as a practical starting point. | The general condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
 | **Information Security** (InfoSec) | **[FISMA (44 U.S.C. § 3552)](https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title44-section3552)** / **ISO/IEC 27001** | Protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to preserve **Confidentiality, Integrity, and Availability (CIA)**. |
 | **Cybersecurity** | **NIST CSF 2.0** / **ISO/IEC 27032** | Protecting digital infrastructure, software applications, cloud services, and network data streams connected to cyberspace against cyber threats. |
 | **System Security Engineering** | **[NIST SP 800-160 Vol. 1 Rev. 1](https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final)** | The engineering discipline of building trustworthy secure systems across the full system lifecycle—requirements, architecture, hardware, software, and cryptographic design—so they function predictably under hostile conditions. |
@@ -44,7 +44,7 @@ Comprehensive security engineering expands beyond the CIA triad to address addit
 - **Authenticity**: Verifying that a user, process, system, or payload is genuine (**[NIST SP 800-63-4](https://pages.nist.gov/800-63-4/sp800-63.html)**).
 - **Accountability**: Producing evidence—via audit logging (**[NIST SP 800-92](https://csrc.nist.gov/pubs/sp/800/92/final)**)—that supports tracing system actions to an authenticated identity; the strength of that attribution still depends on identity binding, log integrity, access controls to the logs, time synchronization, and investigative context, not the logging mechanism alone.
 - **Privacy**: Ensuring data processing respects individual rights and regulatory boundaries (**[NIST Privacy Framework](https://www.nist.gov/privacy-framework)**).
-- **Safety**: Ensuring system operational failures do not cause physical injury, environmental damage, or loss of life (**ISO 26262 / NIST SP 800-160**).
+- **Safety**: Ensuring system operational failures do not cause physical injury, environmental damage, or loss of life (**[ISO 26262](https://www.iso.org/standard/68383.html) / NIST SP 800-160**).
 - **Resilience**: The capacity of a system to withstand, adapt to, and recover from adverse conditions or attacks (**NIST SP 800-160 Vol. 2**).
 
 ## A Common Decision Engine: Continuous Risk Management
@@ -55,7 +55,7 @@ The five-stage breakdown below is a practical synthesis for this journal, inform
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/risk-management-lifecycle.svg' | relative_url }}" alt="The Continuous Risk Management Lifecycle diagram showing Stage 1 Problem Inputs, Stage 2 Risk Assessment, Stage 3 Risk Responses, Stage 4 Security Controls Execution, and Stage 5 Continuous Monitoring Feedback Loop.">
-  <p class="diagram-caption">A practical risk-management workflow informed by NIST SP 800-39 / SP 800-37, not a literal reproduction of either lifecycle: Inputs → Assessment → Strategic Response Selection → Controls Execution → Continuous Monitoring Feedback Loop</p>
+  <p class="diagram-caption">A practical risk-management workflow informed by NIST SP 800-39 / SP 800-37, not a literal reproduction of either lifecycle: Inputs → Assessment → Strategic Response Selection (Share and Transfer are grouped in Stage 3 only for compact presentation—NIST SP 800-39 treats them as distinct) → Controls Execution → Continuous Monitoring Feedback Loop</p>
 </div>
 
 ### Operational Lifecycle Breakdown
@@ -65,7 +65,7 @@ The five-stage breakdown below is a practical synthesis for this journal, inform
 | **Stage 1: Inputs**<br>*(Problem Domain)* | Gathers inputs from **Threat Modeling**, **CVSS Vulnerability Scans**, **Threat Intel**, Asset Inventories, and Gap Audits to construct scenario components (*Asset, Threat, Vulnerability, Impact*). | Unauthenticated public API route exposing customer database queries without rate limiting. |
 | **Stage 2: Evaluation**<br>*(Risk Assessment)* | Calculates exposure severity per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** by rating threat plausibility and harm consequence—commonly approximated as a simplified working model, `Risk ≈ Likelihood × Impact`, though SP 800-30 itself does not mandate multiplication. | Rating data exfiltration likelihood as **High** and financial harm as **Critical**. |
 | **Stage 3: Strategy**<br>*(Response Selection)* | Selects a response type; **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** names five: **Accept**, **Avoid** (redesign feature), **Mitigate** (deploy controls), **Share**, and **Transfer** (insurance/SLAs)—share and transfer are distinct but often grouped together informally. | Selecting **Mitigate** to deploy technical security controls. |
-| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** control catalog (organized into 20 control families, not a 4-function taxonomy). This journal groups implemented controls by a practical functional lens—**Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*)—for reasoning about defense in depth. This page introduces a four-stage execution lens—**Preventive**, **Detective**, **Corrective / Responsive**, and **Recovery**—which maps directly into the broader five-type operational taxonomy in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})** (**Preventive**, **Detective**, **Corrective**, **Compensating**, **Deterrent**). | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
+| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** control catalog (organized into 20 control families, not a 4-function taxonomy). This journal groups implemented controls by a practical functional lens—**Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*)—for reasoning about defense in depth. This page introduces a four-stage execution lens—**Preventive**, **Detective**, **Corrective / Responsive**, and **Recovery**—which is expanded in the broader five-type operational taxonomy in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})** (**Preventive**, **Detective**, **Corrective**, **Compensating**, **Deterrent**). | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
 | **Stage 5: Loop**<br>*(Continuous Audit)* | Continuously monitors control efficacy (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), tracks new threats, and feeds metrics back into Stage 1 Inputs for re-assessment. | Automated SIEM alerting on brute-force spikes and feeding log metrics into annual audits. |
 
 A vulnerability alone does not constitute a risk. Risk assessment requires determining whether a plausible threat can reach the vulnerability, the magnitude of the resulting impact, and how existing controls alter overall probability. Risk management is never a static, one-time activity—it operates as a continuous feedback loop (**NIST SP 800-37**).
@@ -105,3 +105,5 @@ When evaluating the security posture of any new feature or system architecture, 
 - **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
 - **NIST FIPS 199**: *Standards for Security Categorization of Federal Information and Information Systems* — [NIST CSRC FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)
 - **NIST Cybersecurity Framework 2.0** — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
+- **NIST SP 800-37 Rev. 2**: *Risk Management Framework for Information Systems and Organizations* — [NIST CSRC SP 800-37](https://csrc.nist.gov/pubs/sp/800/37/r2/final)
+- **ISO 26262:2018**: *Road vehicles — Functional safety* — [ISO 26262](https://www.iso.org/standard/68383.html)

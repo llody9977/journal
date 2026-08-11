@@ -2,7 +2,7 @@
 title: Identity & Access Fundamentals
 description: Fundamentals of identity assurance (IAL/AAL/FAL), human/workload/service/device identity types, access control models (RBAC, ABAC, ReBAC), authentication vs authorization failure modes, the complete identity lifecycle, and core IAM design principles.
 permalink: /topics/identity-access-fundamentals/
-last_verified: 2026-08-09
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -20,7 +20,7 @@ last_verified: 2026-08-09
 
 The **NIST SP 800-63** Digital Identity Guidelines decompose identity architecture into three independent assurance dimensions:
 
-- **Identity Assurance Level (IAL)**: how confident enrollment is that the applicant is who they claim to be under NIST SP 800-63-4 (IAL1 involves basic identity-evidence and attribute validation/verification → IAL2 involves remote verification with strong evidence → IAL3 requires in-person or supervised remote verification). Accounts with no identity proofing (including self-asserted or pseudonymous accounts) are recorded as **not identity-proofed (unproofed)**, rather than automatically labeled IAL1.
+- **Identity Assurance Level (IAL)**: how confident enrollment is that the applicant is who they claim to be under NIST SP 800-63-4 (IAL1 involves basic identity-evidence and attribute validation/verification → IAL2 involves stronger identity evidence and verification → IAL3 requires in-person attended verification (a proofing agent may participate remotely only through a CSP-controlled on-site kiosk or device)). IAL1 and IAL2 may each be delivered through any proofing type—remote or on-site, attended or unattended; only IAL3 is restricted to on-site attended sessions. Accounts with no identity proofing (including self-asserted or pseudonymous accounts) are recorded as **not identity-proofed (unproofed)**, rather than automatically labeled IAL1.
 - **Authenticator Assurance Level (AAL)**: how confident a login is that the same subject is returning (single factor → multi-factor → multi-factor public-key authenticator with phishing resistance and a non-exportable private key).
 - **Federation Assurance Level (FAL)**: how strongly a relying party can trust an identity assertion forwarded by an identity provider (bearer → injection-protected bearer → holder-of-key).
 
@@ -32,7 +32,7 @@ Not every subject requiring an identity is a verified real-world person. IAM sys
 
 | Identity Type | What It Represents | Typical Credential | IAL Applicability |
 |---|---|---|---|
-| **Human User (Verified)** | A person whose real-world identity has been proofed to a specific IAL. | Passkey/WebAuthn, password + MFA. | IAL applies directly (self-asserted → verified → in-person). |
+| **Human User (Verified)** | A person whose real-world identity has been proofed to a specific IAL. | Passkey/WebAuthn, password + MFA. | IAL applies directly (IAL1 basic evidence → IAL2 strong evidence → IAL3 in-person attended). |
 | **Human User (Pseudonymous)** | A person who authenticates consistently but whose real-world identity is not verified (e.g., a forum or free-tier account). | Password, passkey, social login. | IAL is not meaningfully applicable—the system verifies *consistency* of the subject, not who they are. |
 | **Workload / Service Identity** | A running process, microservice, or application component that authenticates to other systems on its own behalf. | SPIFFE/SPIRE X.509-SVIDs, cloud IAM roles, short-lived OIDC tokens. | Not applicable—no enrollment of a person occurs; the identity is attested by its runtime environment instead. |
 | **Device Identity** | A physical or virtual endpoint, authenticated independently of whichever user is currently operating it. | Device certificates, TPM-backed attestation, MDM enrollment tokens. | Not applicable; device trust is a separate signal from user identity, often combined with it for context-aware authorization. |
