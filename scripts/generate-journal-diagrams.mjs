@@ -991,7 +991,7 @@ verticalFlow({
   labels: ["establish trust", "protect traffic"],
 });
 
-// Envelope Encryption Architecture (KMS trust boundary -> App memory -> Persistent storage)
+// Envelope Encryption Architecture (Key Protection Boundary -> App memory -> Persistent storage)
 {
   const body = `
     <defs>
@@ -1005,7 +1005,7 @@ verticalFlow({
     <text x="105" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#94a3b8">KEY PROTECTION BOUNDARY</text>
     <text x="105" y="176" font-size="13.5" font-weight="800" fill="#ffffff">Key Encryption Key (KEK)</text>
     <line x1="105" y1="186" x2="375" y2="186" stroke="#475569" stroke-width="1"/>
-    <text x="105" y="205" font-size="11" fill="#cbd5e1">• KEK never leaves this boundary</text>
+    <text x="105" y="205" font-size="11" fill="#cbd5e1">• Plaintext KEK stays in boundary, per policy</text>
     <text x="105" y="222" font-size="11" fill="#cbd5e1">• Handles Wrap / Unwrap API calls</text>
     <rect x="105" y="238" width="270" height="32" rx="6" fill="#334155"/>
     <text x="240" y="259" font-size="11" font-weight="800" fill="#fde047" text-anchor="middle">Boundary-Protected KEK</text>
