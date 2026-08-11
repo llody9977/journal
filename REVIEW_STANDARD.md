@@ -19,6 +19,17 @@ Use targeted verification when the request names specific fixes or previously re
 - Report only findings that remain open when that is what the user requests.
 - State that the result is targeted verification. Do not describe it as a fresh, complete, final, or gap-free review.
 
+#### Fix verification and semantic closure
+
+When verifying a reported fix:
+
+- Inspect the complete changed paragraph, table row, diagram region, code block, or section and its immediate context—not only the originally quoted phrase.
+- Treat every new or rewritten material claim introduced by the fix as in scope, including comparisons, causal statements, qualifications, examples, threat-model assumptions, citations, and source-status labels.
+- Apply the relevant mandatory review dimensions to the replacement text as though it were newly authored content.
+- If the fix adds or removes substantial coverage, recheck the page's description, lede, summary, captions, navigation, cross-references, and `Primary References` section.
+- Before reporting, perform a residual-exhaustion pass over the affected content unit and report all remaining issues together. Do not reveal one residual issue per verification cycle when the others are already discoverable.
+- Keep this expansion bounded to the changed content and its direct dependents; it does not convert targeted verification into an unrelated fresh review.
+
 ### Fresh review
 
 Use a fresh review when the request asks for a fresh, clean, full, complete, final, or gap assessment.
@@ -66,6 +77,8 @@ For every in-scope artifact, review:
 13. Front matter, title, description, lede, navigation, caption, alt text, and summary consistency.
 14. Code, script, command, demonstration, and displayed-output correctness.
 15. Whether illustrative, hypothetical, locally defined, or author-created material is clearly identified.
+16. Comparative-claim symmetry: verify every side of claims using "unlike," "whereas," "compared with," "alone," or equivalent wording against the same comparison axis and compromise scope.
+17. Attacker-state precision: distinguish passive observation, active interaction, database-only disclosure, credential-file disclosure, required server-secret disclosure, full server compromise, direct credential reuse, offline recovery, and downstream impersonation.
 
 ## Required review procedure
 
@@ -80,6 +93,10 @@ A fresh review must follow this procedure:
 7. **Run a cross-format and cross-page pass**: compare repeated claims, terminology, metadata, diagrams, captions, examples, and summaries.
 8. **Run a knowledge-gap pass**: compare the content with the applicable gap-analysis dimensions above.
 9. **Run mechanical validation**: execute applicable syntax, link, script, demonstration, and artifact-integrity checks. State what each check does and does not prove.
+   - For diagrams and other rendered assets, inspect the actual output in an applicable target browser or viewer. XML, HTML, or syntax validity does not prove that mathematical notation, text, positioning, clipping, or semantic relationships render correctly.
+   - For downloadable or executable demonstration assets, verify separately:
+     1. the property demonstrated by the asset; and
+     2. the asset's claimed identity, provenance, or official-source attribution.
 10. **Report the result**: separate required corrections, optional coverage, and review limitations. Report only open findings when requested.
 
 ## Closure requirements

@@ -138,6 +138,9 @@ Use a secondary framework only when it materially improves clarity.
 - Simplified formulas, scores, thresholds, multipliers, SLAs, maturity levels, and decision rules must either be supported by a cited specification or clearly labelled as illustrative or locally defined.
 - Verify the applicability of a claim, not only whether the source contains related information. Check jurisdiction, system scope, assurance level, implementation context, version, status, and effective date where relevant.
 - Assumptions are acceptable when necessary. State material assumptions explicitly and verify them where authoritative evidence is available. If they cannot be verified, preserve the uncertainty rather than converting the assumption into a fact.
+- A comparison must define one consistent comparison axis and apply the same scope to every side. Do not compare direct credential reuse on one side with offline password recovery on the other.
+- Security claims involving compromise must state what the attacker obtained, what additional secrets or access are required, and whether the claimed outcome is direct or depends on an intermediate step such as offline recovery.
+- When citing an RFC, distinguish its publication stream and status where authority matters. An RFC number alone does not mean that the document is an IETF Standards Track specification.
 - Never invent or infer citations, standard requirements, legal obligations, algorithm status, numerical thresholds, technical behavior, test results, or implementation guarantees.
 
 ### Cross-format accuracy
