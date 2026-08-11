@@ -15,7 +15,7 @@ last_verified: 2026-08-11
 
 A **hash collision** occurs when two distinct inputs **x ≠ x'** yield identical digests **H(x) = H(x')**.
 
-The two GIF files below (from security researcher Ange Albertini's research repository) contain different binary image data but produce the identical MD5 digest:
+The two GIF files below (from security researcher Ange Albertini's [corkami collision collection](https://github.com/corkami/collisions/tree/e3c2088246bdb2ce377e77fdd4742fc6adea0276/examples/free)) contain different binary image data but produce the identical MD5 digest:
 
 <div class="image-pair-compact">
   <figure>
@@ -171,7 +171,7 @@ If an integrity check relies solely on MD5 to verify file authenticity, an adver
 
 ## 2. SHA-1 Collisions: The SHAttered Attack Strategy
 
-In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrating the first practical SHA-1 collision using two distinct PDF documents sharing an identical SHA-1 hash.
+In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrating the first practical SHA-1 collision using two distinct PDF documents sharing an identical SHA-1 hash. The compact 2,102-byte pair used in the interactive demo below is a separate reproduction, [sourced from the same corkami collision collection](https://github.com/corkami/collisions/tree/e3c2088246bdb2ce377e77fdd4742fc6adea0276/examples/free) — it demonstrates the same underlying collision property (two distinct files, one SHA-1 digest) but is not byte-identical to the original files Google and CWI published.
 
 <div class="image-pair" style="margin-bottom: 1.5rem;">
   <figure>
@@ -186,19 +186,19 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
   </figure>
 </div>
 
-### Client-Side Executable SHA-1 SHAttered Verification
+### Client-Side Executable SHA-1 Collision Verification
 
 <div class="interactive-demo-card">
   <div class="demo-header">
     <span class="demo-badge">Interactive Browser Playground</span>
-    <h3>SHA-1 SHAttered PDF Collision Proof</h3>
+    <h3>SHA-1 Collision Pair Proof</h3>
     <p>Interactively compute SHA-1 digests over a bundled SHA-1 collision pair (two distinct PDFs producing an identical digest, in the spirit of the SHAttered technique — not the exact files from the original published SHAttered pair) and verify binary divergence live via Web Crypto API.</p>
   </div>
 
   <div class="demo-body">
     <div class="demo-form-group">
       <div class="demo-actions" style="margin: 0.5rem 0;">
-        <button id="btn-verify-sha1" class="btn-primary" type="button">⚡ Verify SHA-1 SHAttered Collision Pair</button>
+        <button id="btn-verify-sha1" class="btn-primary" type="button">⚡ Verify SHA-1 Collision Pair</button>
       </div>
     </div>
 
@@ -296,7 +296,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
         <div class="security-layer security-layer-direct" style="margin-top: 1.25rem;">
           <div class="security-layer-label">Cryptanalytic Collision Verified</div>
           <div>
-            <strong>&#128680; SHA-1 SHAttered COLLISION CONFIRMED!</strong>
+            <strong>&#128680; SHA-1 COLLISION CONFIRMED!</strong>
             <p style="margin-bottom:0;">Both PDF files yield the <strong>identical SHA-1 digest</strong> (<code>${sha1_1}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. This is exactly the collision-resistance break NIST SP 800-131A Rev. 2 responds to: SHA-1 is disallowed for <em>generating new</em> digital signatures and other collision-dependent uses, though limited legacy signature verification and non-collision-dependent uses (e.g., HMAC-SHA1) remain permitted.</p>
           </div>
         </div>`;
@@ -675,7 +675,8 @@ That structural resistance describes the *hash function*, not a ready-made MAC �
 ## Primary References
 
 - **NIST SP 800-131A Rev. 2**: *Transitioning the Use of Cryptographic Algorithms and Key Lengths* — [NIST CSRC SP 800-131A](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final)
-- **SHAttered Attack**: *First Practical SHA-1 Collision Announcement* — [SHAttered Google/CWI Paper](https://shattered.io/)
+- **SHAttered Attack**: *Announcing the First SHA-1 Collision* — [Google Security Blog](https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html)
+- **SHAttered Attack (Paper)**: *The First Collision for Full SHA-1* (Stevens, Bursztein, Karpman, Albertini, Markov) — [CWI Institutional Repository](https://ir.cwi.nl/pub/26763/CRPT1111.pdf)
 - **RFC 1321**: *The MD5 Message-Digest Algorithm* — [IETF RFC 1321](https://www.rfc-editor.org/rfc/rfc1321)
 - **FIPS 180-4**: *Secure Hash Standard (SHS)* — [NIST CSRC FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)
 - **FIPS 198-1**: *The Keyed-Hash Message Authentication Code (HMAC)* — [NIST CSRC FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)

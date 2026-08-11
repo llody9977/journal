@@ -301,6 +301,29 @@ X.509 certificates and private keys show up under five commonly seen format mark
     return "'" + String(str).replace(/'/g, `'"'"'`) + "'";
   }
 
+  // Sensible default filenames per operation. Applied only on task change so
+  // switching operations doesn't leave a stale filename (e.g. "cert.der" as the
+  // -out target for a PKCS#12 bundle) from whichever task was selected before.
+  const TASK_DEFAULTS = {
+    pem2der: { in: 'cert.pem', out: 'cert.der' },
+    der2pem: { in: 'cert.der', out: 'cert.pem' },
+    bundle12: { in: 'cert.pem', out: 'cert.p12', key: 'private.key', chain: 'ca_chain.pem' },
+    extract12: { in: 'bundle.p12', out: 'cert.pem' },
+    p7b2pem: { in: 'certs.p7b', out: 'cert.pem' },
+    'view-txt': { in: 'cert.pem' },
+    'gen-rsa': { out: 'cert.csr', key: 'private.key' },
+    'match-mod': { in: 'cert.pem', key: 'private.key' },
+  };
+
+  function applyTaskDefaults(task) {
+    const d = TASK_DEFAULTS[task];
+    if (!d) return;
+    if (d.in !== undefined) inputIn.value = d.in;
+    if (d.out !== undefined) inputOut.value = d.out;
+    if (d.key !== undefined) inputKey.value = d.key;
+    if (d.chain !== undefined) inputChain.value = d.chain;
+  }
+
   function updateCommand() {
     const task = taskSelect.value;
     const valIn = shQuote(inputIn.value.trim() || 'input.file');
@@ -387,7 +410,10 @@ X.509 certificates and private keys show up under five commonly seen format mark
     }
   });
 
-  taskSelect.addEventListener('change', updateCommand);
+  taskSelect.addEventListener('change', () => {
+    applyTaskDefaults(taskSelect.value);
+    updateCommand();
+  });
   inputIn.addEventListener('input', updateCommand);
   inputOut.addEventListener('input', updateCommand);
   inputKey.addEventListener('input', updateCommand);
