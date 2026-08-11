@@ -76,7 +76,7 @@ When auditing vendor certification claims:
     <strong>Security Certifications Summary</strong>
     <ul>
       <li><strong>ISO 27001 vs. SOC 2</strong>: ISO 27001 is a globally recognized cert auditing ISMS processes; SOC 2 Type II is a U.S. report evaluating trust principles over 6+ months.</li>
-      <li><strong>FedRAMP</strong>: Mandatory authorization for U.S. federal cloud providers based on NIST SP 800-53 controls. FedRAMP's impact-level and authorization terminology has continued to evolve—verify current terms at <a href="https://www.fedramp.gov/">fedramp.gov</a> rather than assuming a fixed Low/Moderate/High or ATO framing.</li>
+      <li><strong>FedRAMP</strong>: Authorization based on NIST SP 800-53 controls, required when a federal agency's specific use case for a cloud service falls within FedRAMP's scope — the same service can be in scope for one agency's use case and out of scope for another's; the determination is the agency's to make, not a blanket requirement on the cloud provider or service itself. FedRAMP's impact-level and authorization terminology has continued to evolve—verify current terms at <a href="https://www.fedramp.gov/">fedramp.gov</a> rather than assuming a fixed Low/Moderate/High or ATO framing.</li>
       <li><strong>Common Criteria (CC)</strong>: Evaluates hardware/software assurance levels (EAL1 to EAL7) against defined protection profiles.</li>
     </ul>
   </div>
