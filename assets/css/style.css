@@ -802,6 +802,12 @@ hr {
   .security-layer { grid-template-columns: 1fr; gap: 0.25rem; }
 }
 
+@media (max-width: 560px) {
+  .topic-footer-nav { flex-direction: column; }
+  .topic-nav-link { min-width: 0; width: 100%; }
+  .nav-next { margin-left: 0; }
+}
+
 .image-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
