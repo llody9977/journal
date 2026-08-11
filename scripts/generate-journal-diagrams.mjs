@@ -991,17 +991,52 @@ verticalFlow({
   labels: ["establish trust", "protect traffic"],
 });
 
-rows({
-  filename: "envelope-encryption.svg",
-  title: "Envelope encryption with a KMS",
-  subtitle: "The application encrypts data locally with a DEK and stores only the wrapped DEK beside the ciphertext.",
-  items: [
-    { title: "1 · Generate DEK", lines: ["Create a random symmetric data encryption key for the payload."] },
-    { title: "2 · Encrypt payload", lines: ["Use the plaintext DEK with an AEAD cipher, then remove the plaintext DEK from memory."] },
-    { title: "3 · Wrap DEK", lines: ["KMS protects the DEK under a KEK or customer-managed key without exposing that KEK."] },
-    { title: "4 · Store envelope", lines: ["Persist ciphertext, nonce, tag, metadata, and wrapped DEK together."] },
-  ],
-});
+// Envelope Encryption Architecture (KMS trust boundary -> App memory -> Persistent storage)
+{
+  const body = `
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#16a34a"/></marker>
+    </defs>
+    <!-- Outer Panel Container (1120px wide, equal 50px margins inside) -->
+    <rect x="40" y="110" width="1120" height="195" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
+
+    <!-- Box 1: Key Management Service (300px wide, x=90 to 390) -->
+    <rect x="90" y="130" width="300" height="155" rx="10" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+    <text x="105" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#94a3b8">KEY MANAGEMENT SERVICE (TRUST BOUNDARY)</text>
+    <text x="105" y="176" font-size="13.5" font-weight="800" fill="#ffffff">Key Encryption Key (KEK)</text>
+    <line x1="105" y1="186" x2="375" y2="186" stroke="#475569" stroke-width="1"/>
+    <text x="105" y="205" font-size="11" fill="#cbd5e1">• KEK stays inside the KMS boundary</text>
+    <text x="105" y="222" font-size="11" fill="#cbd5e1">• Handles Wrap / Unwrap API calls</text>
+    <rect x="105" y="238" width="270" height="32" rx="6" fill="#334155"/>
+    <text x="240" y="259" font-size="11" font-weight="800" fill="#fde047" text-anchor="middle">KMS-Managed Key</text>
+
+    <!-- Connector 1 -> 2 (60px gap, x=390 to 450) -->
+    <path d="M 395 207 L 445 207" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+    <!-- Box 2: Application RAM (300px wide, x=450 to 750) -->
+    <rect x="450" y="130" width="300" height="155" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="465" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#2563eb">APPLICATION MEMORY (RAM)</text>
+    <text x="465" y="176" font-size="13.5" font-weight="800" fill="#1e40af">Plaintext DEK (32-byte AES)</text>
+    <line x1="465" y1="186" x2="735" y2="186" stroke="#bfdbfe" stroke-width="1"/>
+    <text x="465" y="205" font-size="11" fill="#475569">• Encrypts/decrypts local bulk data</text>
+    <text x="465" y="222" font-size="11" fill="#475569">• Should be zeroed after use (impl.-dependent)</text>
+    <rect x="465" y="238" width="270" height="32" rx="6" fill="#1e40af"/>
+    <text x="600" y="259" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Ephemeral DEK in Memory</text>
+
+    <!-- Connector 2 -> 3 (60px gap, x=750 to 810) -->
+    <path d="M 755 207 L 805 207" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+
+    <!-- Box 3: Persistent Storage (300px wide, x=810 to 1110) -->
+    <rect x="810" y="130" width="300" height="155" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <text x="825" y="153" font-size="10.5" font-weight="900" letter-spacing="1" fill="#16a34a">PERSISTENT STORAGE (DISK)</text>
+    <text x="825" y="176" font-size="13.5" font-weight="800" fill="#15803d">Encrypted Data + EDEK</text>
+    <line x1="825" y1="186" x2="1095" y2="186" stroke="#86efac" stroke-width="1"/>
+    <text x="825" y="205" font-size="11" fill="#475569">• Bulk Payload Ciphertext</text>
+    <text x="825" y="222" font-size="11" fill="#475569">• Wrapped EDEK Header</text>
+    <rect x="825" y="238" width="270" height="32" rx="6" fill="#15803d"/>
+    <text x="960" y="259" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">EDEK Header on Disk</text>`;
+  write("envelope-encryption.svg", documentSvg("Envelope Encryption Architecture (DEK & KEK)", "Master Key Encryption Key (KEK) inside KMS wraps local Data Encryption Keys (DEKs) protecting bulk payload data", 325, body));
+}
 
 // Certificate Transparency needs a real tree rather than a linear flow.
 {

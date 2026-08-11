@@ -2,7 +2,7 @@
 title: HSM & KMS
 description: How Hardware Security Modules and Key Management Services differ, how their protection boundaries are evaluated, and how they support envelope encryption and custody choices.
 permalink: /topics/hsm-kms/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Key Management / Architecture</span>
@@ -45,7 +45,7 @@ PKCS #11 exposes key-object attributes that a conforming token uses to control A
 | PKCS #11 attribute | Meaning when `CK_TRUE` | Evidence boundary |
 |---|---|---|
 | `CKA_SENSITIVE` | The object is sensitive; secret components cannot be revealed through the PKCS #11 interface in plaintext. | Describes current API treatment. |
-| `CKA_EXTRACTABLE` | The key can be wrapped. When `CK_FALSE`, PKCS #11 wrapping is disallowed. | Governs wrapping through the token interface, not every possible compromise path. |
+| `CKA_EXTRACTABLE` | Required for the key to be wrapped; `CK_TRUE` is necessary but not sufficient — the key type, the requested mechanism, token policy, and other attribute constraints can still disallow it. When `CK_FALSE`, PKCS #11 wrapping is always disallowed. | Governs wrapping through the token interface, not every possible compromise path. |
 | `CKA_ALWAYS_SENSITIVE` | The key has always had `CKA_SENSITIVE=CK_TRUE`. | Records attribute history defined by PKCS #11. |
 | `CKA_NEVER_EXTRACTABLE` | The key has never had `CKA_EXTRACTABLE=CK_TRUE`. | Does not independently prove that the key was never exposed by another mechanism. |
 
@@ -55,7 +55,7 @@ Envelope encryption uses a short-lived or narrowly scoped **data-encryption key 
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Envelope encryption process: generate a DEK, encrypt the payload, wrap the DEK with a KMS key, and store the encrypted envelope.">
-  <p class="diagram-caption">The KMS protects the small DEK while the application encrypts the bulk data locally</p>
+  <p class="diagram-caption">The KMS protects the small DEK while the application encrypts the bulk data locally. This diagram depicts one KMS deployment (a KEK held in an HSM-backed, customer-managed key); the KEK's protection boundary may equally be a software module or an external key service, as described above.</p>
 </div>
 
 1. Generate a DEK with an approved random-bit generator or ask the KMS to generate one.
@@ -105,6 +105,12 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
 
   function bytesToHex(buf) {
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   async function encryptEnvelope() {
@@ -182,7 +188,7 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
           <strong style="color: var(--ink); display: block; margin-bottom: 0.35rem;">&#128274; Step 4: Encrypted Payload &amp; Nonce</strong>
           <span style="color: var(--muted); display: block; font-size: 0.8rem;">GCM Nonce (Hex): <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink);">${bytesToHex(envelopeData.nonce)}</code></span>
           <span style="color: var(--muted); display: block; font-size: 0.8rem; margin-top: 0.25rem;">Authenticated Context (AAD): <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${envelopeData.aadText}</code></span>
-          <span style="color: var(--muted); display: block; font-size: 0.8rem; margin-top: 0.25rem;">Ciphertext (Hex):</span>
+          <span style="color: var(--muted); display: block; font-size: 0.8rem; margin-top: 0.25rem;">Ciphertext + Authentication Tag (Hex) — Web Crypto's AES-GCM output appends the tag to the ciphertext:</span>
           <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${bytesToHex(envelopeData.ciphertext)}</code>
         </div>
       `;
@@ -220,7 +226,7 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
         <div style="background: rgba(15, 118, 110, 0.08); border: 1px solid var(--teal); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; margin-top: 0.5rem;">
           <strong style="color: var(--teal); display: block; margin-bottom: 0.35rem;">&#9989; Step 5: Demo Envelope Decrypted</strong>
           <span style="color: var(--muted); display: block; font-size: 0.8rem;">Decrypted Payload Output:</span>
-          <code style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--teal);">${decryptedText}</code>
+          <code style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--teal);">${escapeHtml(decryptedText)}</code>
         </div>
       `;
     } catch (err) {

@@ -2,7 +2,7 @@
 title: Secure Key Generation & Provisioning
 description: Entropy, random-bit generators, key provenance, in-boundary generation, BYOK import, wrapping, split knowledge, and key ceremonies.
 permalink: /topics/secure-key-generation-provisioning/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Key Management / Provisioning</span>
@@ -23,7 +23,7 @@ The security strength of the process is bounded by its weakest input and mechani
 - Derived keys inherit risk from the ancestor key, derivation function, context separation, and input handling.
 - Password-derived keys remain limited by password entropy and require a password-specific construction rather than being treated as randomly generated keys.
 
-Do not substitute identifiers, timestamps, general-purpose pseudorandom functions, or user passwords for a cryptographic RBG.
+Do not substitute identifiers, timestamps, non-cryptographic (general-purpose) pseudorandom number generators, or user passwords for a cryptographic RBG. This is distinct from a cryptographic pseudorandom function (PRF) — approved KDFs (e.g., [NIST SP 800-108 Rev. 1](https://csrc.nist.gov/pubs/sp/800/108/r1/upd1/final)) are legitimately built on PRFs, provided the PRF is keyed with sufficient entropy in the first place.
 
 ## Choose the generation boundary deliberately
 
