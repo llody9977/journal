@@ -77,7 +77,7 @@ Beyond the core handshake, several mechanisms determine how TLS 1.3 actually beh
     <ul>
       <li><strong>TLS 1.3 1-RTT Speed</strong>: Reduces handshake latency to 1 round-trip time; mandates AEAD ciphers and requires ephemeral key exchange (ECDHE) for the full handshake — PSK-only resumption is a permitted mode but forgoes forward secrecy for that session.</li>
       <li><strong>Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))</strong>: Encrypts the real SNI and selected <code>ClientHello</code> fields inside an encrypted inner payload to prevent passive SNI eavesdropping (though destination IP addresses, unencrypted DNS, and traffic flow analysis may still reveal destination servers).</li>
-      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to operations the application has explicitly confirmed are replay-safe (per RFC 8446 §8) — HTTP idempotence describes end-state, not freedom from replayable side effects, so it isn't a substitute for that check.</li>
+      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to operations the application has explicitly confirmed are replay-safe (per <a href="https://www.rfc-editor.org/rfc/rfc9846.html#section-8">RFC 9846 §8</a>) — HTTP idempotence describes end-state, not freedom from replayable side effects, so it isn't a substitute for that check.</li>
     </ul>
   </div>
 </div>

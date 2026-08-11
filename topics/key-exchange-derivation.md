@@ -615,7 +615,7 @@ Expands **PRK** into arbitrary-length sub-keys using application-specific info c
 
 **Traffic_Key = HKDF-Expand(PRK, info, length)**
 
-TLS 1.3 itself does not call raw `HKDF-Expand` with a bare label string like `"tls13 client write"` — [RFC 8446 §7.1](https://www.rfc-editor.org/rfc/rfc8446#section-7.1) defines a wrapper, **HKDF-Expand-Label**, that builds a structured `info` field (encoding the output length, a `"tls13 "`-prefixed label, and an optional context) before calling `HKDF-Expand`:
+TLS 1.3 itself does not call raw `HKDF-Expand` with a bare label string like `"tls13 client write"` — [RFC 9846 §7.1](https://www.rfc-editor.org/rfc/rfc9846.html#section-7.1) defines a wrapper, **HKDF-Expand-Label**, that builds a structured `info` field (encoding the output length, a `"tls13 "`-prefixed label, and an optional context) before calling `HKDF-Expand`:
 
 **HKDF-Expand-Label(Secret, Label, Context, Length) = HKDF-Expand(Secret, HkdfLabel, Length)**
 
@@ -645,6 +645,6 @@ Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Protoc
 
 ## Primary References
 
-- **RFC 7748**: *Elliptic Curves for Security (X25519)* — [IETF RFC 7748](https://www.rfc-editor.org/rfc/rfc7748)
+- **RFC 7748**: *Elliptic Curves for Security (X25519)* — [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) (IRTF/CFRG Informational)
 - **RFC 5869**: *HMAC-based Extract-and-Expand Key Derivation Function (HKDF)* — [IETF RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)
-- **RFC 8446**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)
+- **RFC 9846**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html)

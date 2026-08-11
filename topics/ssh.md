@@ -13,7 +13,7 @@ last_verified: 2026-08-06
 
 ## SSH vs TLS: Architectural Comparison
 
-| Security Dimension | TLS 1.3 (RFC 8446) | SSH v2 (RFC 4253 / RFC 4252) |
+| Security Dimension | TLS 1.3 (RFC 9846) | SSH v2 (RFC 4253 / RFC 4252) |
 |---|---|---|
 | **Server Authentication** | Hierarchical X.509 Certificate Authority (Root ──> Intermediate ──> Leaf) | **Trust-On-First-Use (TOFU)** via bare host keys or **OpenSSH Certificates** |
 | **Client Authentication** | Optional X.509 Client Certificates (mTLS) | Mandatory User Authentication (Public Key, Password, or OpenSSH Cert) |
