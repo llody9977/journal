@@ -2,7 +2,7 @@
 title: "NTLM, Kerberos & HTTP Authentication Schemes"
 description: Architectural guide to HTTP authentication frameworks (RFC 9110), Basic Auth (RFC 7617), NTLM vs Kerberos, AD FS, and Model Context Protocol (MCP) OAuth 2.1.
 permalink: /topics/http-auth-schemes/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocols</span>
@@ -51,7 +51,7 @@ Active Directory (AD) enterprise environments use two primary authentication pro
 | **Protocol Type** | 3-Way Challenge-Response (Negotiate, Challenge, Authenticate) | Key Distribution Center (KDC) Ticket-Granting Architecture |
 | **Mutual Authentication** | **No**: Server authenticates client; client cannot verify server. | **Yes**: Client and server verify each other's identity via KDC. |
 | **Delegation Support** | No support (Vulnerable to NTLM relay attacks). | Full support via Kerberos constrained delegation (KCD). |
-| **Performance Impact** | Requires Domain Controller round-trip on *every* request. | Client requests reusable Ticket-Granting Ticket (TGT); no DC load per call. |
+| **Performance Impact** | Challenge-response handshake occurs per connection/session, not per individual HTTP request; a domain account may still require a Domain Controller round-trip whenever a new access token is needed unless the server can validate locally (e.g., a local account lookup). | Client requests reusable Ticket-Granting Ticket (TGT); no DC load per call. |
 | **Security Status** | **Deprecated Fallback**: Vulnerable to relay and pass-the-hash attacks. | **Primary AD Standard**: Fast, scalable, mutually authenticated. |
 
 ## Model Context Protocol (MCP) Authorization Profile
@@ -87,3 +87,4 @@ The **Model Context Protocol (MCP)** specification profiles **OAuth 2.1** for se
 
 - **RFC 6750**: *The OAuth 2.0 Authorization Framework: Bearer Token Usage* — [IETF RFC 6750](https://www.rfc-editor.org/rfc/rfc6750)
 - **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)* — [IETF RFC 9449](https://www.rfc-editor.org/rfc/rfc9449)
+- **NTLM overview**: *Microsoft Learn, Windows Server security* — [NTLM overview](https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview) — verified when a resource server contacts a domain controller vs. validates a domain/local account locally.

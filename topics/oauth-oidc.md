@@ -2,7 +2,7 @@
 title: OAuth & OpenID Connect
 description: Comprehensive technical guide to OAuth 2.0, OpenID Connect (OIDC), Authorization Code Flow with PKCE (RFC 7636), JWT claims, and security pitfalls.
 permalink: /topics/oauth-oidc/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocol</span>
@@ -16,7 +16,7 @@ last_verified: 2026-08-06
 | Dimension | OAuth 2.0 (Authorization) | OpenID Connect (Authentication) |
 |---|---|---|
 | **Core Question Answered** | *What API resources is this client allowed to access?* | *Who is the authenticated user operating this client?* |
-| **Primary Token Produced** | **Access Token** (Opaque string or RS256 JWT) | **ID Token** (Signed JWS container format) |
+| **Primary Token Produced** | **Access Token** (a credential representing a specific, limited authorization grant, per RFC 6749; commonly implemented as an opaque string or a signed JWT using any algorithm the authorization server supports, e.g. RS256, ES256, HS256) | **ID Token** (Signed JWS container format) |
 | **Token Intended Audience** | **Resource Server (API Gateway)** | **Client Application (Relying Party)** |
 | **Core RFC Standard** | RFC 6749 / RFC 6750 / RFC 7636 | OpenID Connect Core 1.0 (built on RFC 7519 JWT) |
 
@@ -29,7 +29,7 @@ last_verified: 2026-08-06
 
 ## Modern Standard: Authorization Code Flow with PKCE (RFC 7636)
 
-The **Authorization Code Flow with PKCE (Proof Key for Code Exchange)** is mandatory for public clients (SPAs, Mobile Apps) and recommended for all OAuth 2.1 deployments:
+The **Authorization Code Flow with PKCE (Proof Key for Code Exchange)** is mandatory for public clients (SPAs, Mobile Apps) per the OAuth 2.0 Security Best Current Practice ([RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700)), and RFC 9700 additionally recommends it for confidential clients as defense-in-depth against authorization code injection:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/oauth-auth-code-flow.svg' | relative_url }}" alt="OAuth authorization code flow with PKCE among the client, authorization server, and resource server.">
@@ -86,7 +86,7 @@ print("Signature Valid:", hmac.compare_digest(calc_sig.encode(), sig_b64.encode(
 
 ## Critical Security Checklist
 
-1. **Enforce PKCE for All Clients**: Deploy RFC 7636 PKCE across all authorization code flows.
+1. **Enforce PKCE**: RFC 9700 makes PKCE mandatory for public clients and recommends it for confidential clients; deploy it across all authorization code flows.
 2. **Validate State Parameter**: Enforce cryptographically random `state` parameters to prevent Cross-Site Request Forgery (CSRF) during authorization redirects.
 3. **Verify Token Claims on Resource Servers**: Resource servers MUST validate `iss` (Issuer), `aud` (Audience), `exp` (Expiration), and algorithm headers before granting access. Reject tokens specifying `alg: "none"`.
 4. **Never Send ID Tokens to Resource Servers**: ID Tokens belong to the Client application; Access Tokens belong to the Resource Server API.
@@ -99,7 +99,7 @@ print("Signature Valid:", hmac.compare_digest(calc_sig.encode(), sig_b64.encode(
     <strong>OAuth 2.0 &amp; OIDC Summary</strong>
     <ul>
       <li><strong>OAuth vs. OIDC</strong>: OAuth 2.0 is an <em>Authorization framework</em> (Access Tokens); OIDC is an <em>Authentication layer</em> built on OAuth 2.0 (ID Tokens).</li>
-      <li><strong>Mandatory PKCE (RFC 7636)</strong>: Authorization Code Flow with PKCE is required for all clients (mobile, SPA, backend) to defeat code interception attacks.</li>
+      <li><strong>PKCE (RFC 7636)</strong>: Mandatory for public clients (mobile, SPA) and recommended for confidential clients (backend) per RFC 9700, to defeat code interception attacks.</li>
       <li><strong>Implicit Flow Deprecated</strong>: Never use OAuth 2.0 Implicit Flow (returns access tokens in URL hash fragment).</li>
     </ul>
   </div>
@@ -109,4 +109,5 @@ print("Signature Valid:", hmac.compare_digest(calc_sig.encode(), sig_b64.encode(
 
 - **RFC 6749**: *The OAuth 2.0 Authorization Framework* — [IETF RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)
 - **RFC 7636**: *Proof Key for Code Exchange by OAuth Public Clients (PKCE)* — [IETF RFC 7636](https://www.rfc-editor.org/rfc/rfc7636)
+- **RFC 9700**: *Best Current Practice for OAuth 2.0 Security* — [IETF RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700) — verified PKCE requirement strength for public vs. confidential clients.
 - **OpenID Connect Core 1.0**: *OpenID Connect Specification* — [OpenID Foundation](https://openid.net/specs/openid-connect-core-1_0.html)
