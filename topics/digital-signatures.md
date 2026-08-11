@@ -2,7 +2,7 @@
 title: Digital Signatures & Non-Repudiation
 description: Comprehensive guide to digital signature pipelines, RSA-PSS, ECDSA, Ed25519 (RFC 8032), FIPS 204 ML-DSA, FIPS 205 SLH-DSA, deterministic nonces (RFC 6979), and HSM key custody.
 permalink: /topics/digital-signatures/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -62,6 +62,23 @@ These are two distinct constructions, not one shared formula, though both elimin
 7. **Revocation status (if applicable)**: A certificate can be within its validity window and still have been revoked (key compromise, mis-issuance). See the certificate revocation discussion on the Certificates page for why this check is best-effort in practice, not a guarantee — but it's still a check a careful verifier should attempt.
 8. **Key compromise / rotation awareness**: A signature valid under a key that has since been reported compromised or rotated out shouldn't necessarily be trusted going forward, depending on your system's policy — this is a systems/process concern (key lifecycle tracking) as much as a cryptographic one, but it's part of what "is this signature trustworthy" actually means in production.
 
+## Trusted Timestamping and Long-Term Signature Validation
+
+A timestamp included inside a signed message (item 5 above) is not independent evidence of signing time, because the signer chose that value — it provides freshness only when the surrounding protocol actually checks it against an acceptable time window, nonce, or sequence rule. That's a different guarantee from proving *when* a signature came into existence, which matters once a verifier is checking a signature well after the fact — potentially after the signer's certificate has expired, been revoked, or become unavailable (see the certificate-validity and revocation checks above).
+
+For independent time evidence, a verifier can rely on a trusted **Time-Stamping Authority (TSA)** using the Time-Stamp Protocol defined by [RFC 3161](https://www.rfc-editor.org/info/rfc3161/). The TSA signs a cryptographic imprint (hash) of the signature or signed object and returns a `TimeStampToken`. A valid token is evidence that the submitted data existed **no later than** the TSA's recorded time — it does not prove when the data was originally created, only that it already existed by that point.
+
+Long-term signature validation may require preserving, alongside the signature itself:
+- the original signed object and signature;
+- the signer's certificate chain;
+- applicable certificate-revocation evidence, such as CRLs or OCSP responses (see the revocation discussion on the Certificates page);
+- the TSA's timestamp token and its own certificate chain;
+- the validation policy and algorithms considered acceptable at the asserted time.
+
+A trusted timestamp lets a validation policy establish that a signature existed while the signer's certificate was still valid, even if verification itself happens after that certificate has expired. Revocation still needs careful interpretation in this scenario: the verifier may need to determine whether the signing key was reported compromised *before* or *after* the timestamped signature existed, since a timestamp predating a revocation is treated differently than one postdating it. For retention periods long enough to outlast a TSA's own certificate or the cryptographic algorithms currently in use, the timestamp and validation evidence may themselves need to be renewed (re-timestamped under newer algorithms) before that expiry or algorithmic weakening occurs — [RFC 9921](https://www.rfc-editor.org/rfc/rfc9921.html) is one current mechanism for carrying RFC 3161 timestamp tokens (in both timestamp-then-sign and sign-then-timestamp modes) within COSE-based protocols built around this same long-term-validation problem.
+
+Trusted timestamping strengthens evidence of *existence and timing*. On its own, it does not prove the signer's real-world identity, exclusive key custody, human intent, authorization, or legal non-repudiation — those remain the separate concerns covered elsewhere in this checklist and on the Certificates page.
+
 ## Hardware Key Custody: HSMs & Secure Enclaves
 
 Cryptographic key custody relies on reducing private key extraction and cloning risks. Production architectures can store signing keys inside **Hardware Security Modules (HSMs)**, **AWS KMS**, or **TPM 2.0 / Secure Enclaves** and configure them as non-exportable, so applications request cryptographic sign operations over secure APIs without private key bytes ever entering application memory. Non-exportability is a configuration choice these platforms *support*, though — a key created or imported with export permitted remains exportable despite living in an HSM, so verify the actual key policy rather than assuming HSM-backed implies non-exportable.
@@ -91,3 +108,5 @@ Cryptographic key custody relies on reducing private key extraction and cloning 
 - **NIST FIPS 186-5**: *Digital Signature Standard (DSS)* — [NIST CSRC FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)
 - **RFC 8032**: *Edwards-Curve Digital Signature Algorithm (EdDSA / Ed25519)* — [IETF RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)
 - **RFC 6979**: *Deterministic Usage of the Digital Signature Algorithm (DSA) and ECDSA* — [IETF RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)
+- **RFC 3161**: *Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP)* — [RFC Editor: RFC 3161](https://www.rfc-editor.org/info/rfc3161/)
+- **RFC 9921**: *Time-Stamp Protocol (TSP) Timestamp Tokens for COSE* — [IETF RFC 9921](https://www.rfc-editor.org/rfc/rfc9921.html)
