@@ -287,7 +287,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
         <div class="security-layer-label">API Contract Rejection Confirmed</div>
         <div>
           <strong>Public Key Decryption Rejected by Web Crypto API!</strong>
-          <p style="margin-bottom:0;">Error Message: <code>${escapeHtml(err.message || String(err))}</code>. Asymmetric cryptography standards explicitly prohibit using Public Keys for decryption!</p>
+          <p style="margin-bottom:0;">Error Message: <code>${escapeHtml(err.message || String(err))}</code>. RSA-OAEP's own API contract defines decryption as a private-key operation — this isn't a universal prohibition on every asymmetric primitive, but for RSA-OAEP specifically, only the private key can decrypt.</p>
         </div>
       </div>`;
     }

@@ -2,7 +2,7 @@
 title: Password Hashing & Key Derivation
 description: Password storage security guidelines, Argon2id (RFC 9106), bcrypt, PBKDF2, salting mechanics, pepper KMS integration, and bcrypt 72-byte truncation workarounds.
 permalink: /topics/password-storage/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Authentication</span>
@@ -237,13 +237,13 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
 ### 1. Per-User Salt (Public Metadata)
 
-A **Salt** is a 16-byte (128-bit) CSPRNG random sequence generated uniquely per user account and stored alongside the hash digest in cleartext. Salting enforces two critical controls:
+A **Salt** is a CSPRNG-generated random sequence, generated uniquely per user account and stored alongside the hash digest in cleartext; 16 bytes (128 bits) is a common, sound choice, but the required length depends on the specific password-hashing construction in use (e.g., Argon2id's recommended salt length differs from bcrypt's fixed input) rather than being a universal fixed value. Salting enforces two critical controls:
 - **Defeats Precomputed Rainbow Tables**: A rainbow table built before the salt is known can't match any of these hashes — the attacker would need a separate precomputed table per salt value, which defeats the entire point of precomputing a table in advance.
 - **Prevents Duplicate Hash Discovery**: Two users sharing the identical password `"Password123!"` yield completely different hash digests.
 
 ### 2. Secret Pepper (KMS Custody)
 
-A **Pepper** is a 32-byte secret key stored outside the primary user database (*e.g., inside an AWS KMS or HSM*). The application combines the pepper with the salted password prior to hashing. If an adversary's breach is scoped to a SQL database dump alone (e.g., via SQL injection) and doesn't also expose the pepper, they cannot perform offline cracking without it — but that protection depends on the breach genuinely not reaching the pepper; an attacker with broader access (application-server compromise, KMS misconfiguration) that reaches both the database *and* the pepper isn't stopped by this control.
+A **Pepper** is a secret key stored outside the primary user database (*e.g., inside an AWS KMS or HSM*); 32 bytes (256 bits) is a common, sound choice, but the required length depends on the specific pepper mechanism (a raw HMAC key, an AES key wrapping a per-user value, etc.) rather than being a universal fixed value. The application combines the pepper with the salted password prior to hashing. If an adversary's breach is scoped to a SQL database dump alone (e.g., via SQL injection) and doesn't also expose the pepper, they cannot perform offline cracking without it — but that protection depends on the breach genuinely not reaching the pepper; an attacker with broader access (application-server compromise, KMS misconfiguration) that reaches both the database *and* the pepper isn't stopped by this control.
 
 | Security Control | Storage Location | Entropy Source | Primary Attack Mitigated |
 |---|---|---|---|

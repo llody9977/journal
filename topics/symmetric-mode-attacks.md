@@ -914,7 +914,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
   <div>
     <strong>Symmetric Mode Vulnerabilities Summary</strong>
     <ul>
-      <li><strong>ECB Block Leakage</strong>: Identical plaintext blocks produce identical ciphertext blocks. Never use ECB for multi-block payloads.</li>
+      <li><strong>ECB Block Leakage</strong>: Identical plaintext blocks produce identical ciphertext blocks. Avoid ECB for multi-block payloads outside the narrow specialist exceptions discussed above (e.g., deliberately deterministic per-block encryption of already-uniform, already-authenticated data) — for ordinary payloads, use AEAD instead.</li>
       <li><strong>CBC Bit-Flipping</strong>: Modifying ciphertext block <em>C₁</em> flips corresponding bits in decrypted plaintext block <em>P₂</em>. Always enforce AEAD, or correctly composed Encrypt-then-MAC using separate encryption and MAC keys.</li>
       <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce under the same key exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em> — recovering either full plaintext from that XOR still requires the attacker to know or guess predictable content in the other message, not just observe the reused nonce.</li>
     </ul>
@@ -924,5 +924,5 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 ## Primary References
 
 - **NIST SP 800-38A**: *Recommendation for Block Cipher Modes of Operation* — [NIST CSRC SP 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
-- **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [IETF RFC 8452](https://www.rfc-editor.org/rfc/rfc8452)
+- **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) (IRTF/CFRG Informational)
 - **OWASP WSTG**: *Testing for Padding Oracle* (Vaudenay's CBC padding attack) — [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/02-Testing_for_Padding_Oracle)

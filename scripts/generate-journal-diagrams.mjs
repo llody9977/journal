@@ -765,7 +765,7 @@ fs.writeFileSync(
       <text x="65" y="136" font-size="11" font-weight="900" letter-spacing="1" fill="${colors.blue}">STEP 1</text>
       <text x="65" y="158" font-size="14" font-weight="800" fill="${colors.ink}">Key Generation</text>
       <text x="65" y="180" font-size="11.5" font-weight="500" fill="${colors.muted}">Generate private key</text>
-      <text x="65" y="196" font-size="11" font-weight="600" fill="${colors.teal}">Kept in RAM / HSM</text>
+      <text x="65" y="196" font-size="11" font-weight="600" fill="${colors.teal}">RAM / HSM / Keystore</text>
 
       <path d="M215 165 L245 165" fill="none" stroke="${colors.blue}" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 

@@ -151,7 +151,7 @@ SVGS['hash-avalanche.svg'] = """<svg viewBox="0 0 1200 315" xmlns="http://www.w3
   <!-- Input A -->
   <rect x="70" y="130" width="300" height="55" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
   <text x="90" y="152" font-size="11" font-weight="900" fill="#2563eb">INPUT STRING A</text>
-  <text x="90" y="172" font-size="13.5" font-weight="800" fill="#0f172a">"The quick brown fox..."</text>
+  <text x="90" y="172" font-size="13.5" font-weight="800" fill="#0f172a">"password"</text>
 
   <path d="M 375 157 L 455 157" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
@@ -163,14 +163,14 @@ SVGS['hash-avalanche.svg'] = """<svg viewBox="0 0 1200 315" xmlns="http://www.w3
   <!-- Input B -->
   <rect x="70" y="210" width="300" height="55" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
   <text x="90" y="232" font-size="11" font-weight="900" fill="#dc2626">INPUT STRING B (1 BIT FLIPPED)</text>
-  <text x="90" y="252" font-size="13.5" font-weight="800" fill="#0f172a">"The quick brown fox<tspan fill="#dc2626" font-weight="900">!</tspan>"</text>
+  <text x="90" y="252" font-size="13.5" font-weight="800" fill="#0f172a">"<tspan fill="#dc2626" font-weight="900">q</tspan>assword"</text>
 
   <path d="M 375 237 L 455 237" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <!-- Digest B -->
   <rect x="460" y="210" width="670" height="55" rx="8" fill="#991b1b"/>
   <text x="480" y="232" font-size="11" font-weight="900" fill="#fca5a5">SHA-256 DIGEST B (~50% BITS CHANGED)</text>
-  <text x="480" y="252" font-size="12.5" font-family="monospace" font-weight="700" fill="#ffffff">17a1023a1a6b0c439281f6209e7c3b11823901cf8432a1982b12fe9012cd38f1</text>
+  <text x="480" y="252" font-size="12.5" font-family="monospace" font-weight="700" fill="#ffffff">500753de1463102324a99774730af64ae33e82ca40569e618bfe157142900d1d</text>
 </svg>"""
 
 # 5. hmac-flow.svg

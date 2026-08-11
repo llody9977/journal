@@ -29,7 +29,7 @@ A critical discipline in security architecture is distinguishing between **RFC-D
 
 | Primitive / Algorithm | IETF / Industry Specification | NIST / FIPS Compliance Status | Target Engineering Guidance & Use Case |
 |---|---|---|---|
-| **AES-256-GCM** | [RFC 5288](https://www.rfc-editor.org/rfc/rfc5288) | **NIST APPROVED** ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)) | Widely deployed NIST-approved AEAD standard for TLS 1.3, IPsec, and cloud data at rest. |
+| **AES-256-GCM** | [RFC 5288](https://www.rfc-editor.org/rfc/rfc5288) (TLS 1.2 GCM cipher suites) / [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) (TLS 1.3 AEAD negotiation) | **NIST APPROVED** ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final) defines the underlying GCM construction) | Widely deployed NIST-approved AEAD standard for TLS 1.3, IPsec, and cloud data at rest. |
 | **AES-GCM-SIV** | [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) | **NOT FIPS/NIST APPROVED** (IRTF/CFRG Informational RFC, not IETF Standards Track) | Nonce-misuse-resistant AEAD mode that avoids GCM's catastrophic full-plaintext-recovery failure on nonce reuse; repeated encryption of the identical (key, plaintext, AAD) tuple still reveals ciphertext equality to an observer. |
 | **ECDHE-X25519** | [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) / [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) | **NOT SP 800-56A APPROVED** (RFC 7748 is IRTF/CFRG Informational; incorporated into IETF Standards-Track RFC 9846, which obsoletes the original RFC 8446) | Modern, high-speed Ephemeral ECDH key agreement used across TLS 1.3 and SSHv2. |
 | **ECDHE (NIST P-384 / P-256)** | [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) | **NIST APPROVED** ([NIST SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)) | NIST-approved options for FIPS 140-3 and FedRAMP boundaries, subject to the applicable profile (SP 800-52 Rev. 2 accepts either P-256 or P-384; CNSA 2.0 requires P-384). |
@@ -43,15 +43,15 @@ A critical discipline in security architecture is distinguishing between **RFC-D
 
 | Algorithm | Legacy Specification | Status &amp; Vulnerability | Migration Action |
 |---|---|---|---|
-| **3DES / TDEA** | 64-bit Block Cipher | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for encryption after Dec 31, 2023; vulnerable to Sweet32 birthday collisions after 2^32 blocks. | Migrate immediately to **AES-256-GCM**. |
+| **3DES / TDEA** | 64-bit Block Cipher | **DISALLOWED**: Disallowed by [NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) for encryption after Dec 31, 2023; vulnerable to Sweet32 birthday collisions after 2^32 blocks. | Migrate immediately to **AES-256-GCM**. |
 | **MD5** | 128-bit Hash Function | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for digital signatures &amp; certificates; practical chosen-prefix collisions have been demonstrated. | Replace with **SHA-256** or **SHA3-256**. |
 | **RC4** | Stream Cipher | **DISALLOWED**: Prohibited by IETF RFC 7465 and NIST SP 800-52 Rev. 2 for TLS; biased keystream bytes allow plaintext recovery. | Replace with **AES-256-GCM** or **ChaCha20-Poly1305**. |
-| **RSA-1024** | Public Key Cipher | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for key transport &amp; digital signatures after Dec 31, 2013 (&lt; 112 bits security strength). | Replace with **Ed25519** or **3072-bit RSA-PSS**. |
+| **RSA-1024** | Public Key Cipher | **DISALLOWED FOR GENERATION**: Disallowed by [NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) for key transport and generating new digital signatures after Dec 31, 2013 (&lt; 112 bits security strength). 1024–2047-bit RSA remains permitted for legacy signature *verification* — this is not a blanket ban on accepting existing RSA-1024 signatures. | Replace with **Ed25519** or **3072-bit RSA-PSS** for anything generating new keys or signatures. |
 | **SHA-1** | 160-bit Hash Function | **DISALLOWED FOR NEW SIGNATURE GENERATION**: Disallowed by NIST SP 800-131A Rev. 2 for generating new digital signatures &amp; certificates after Dec 31, 2013, and for other collision-dependent uses; practical collision demonstrated (SHAttered, 2017). Limited legacy signature verification and non-collision-dependent uses (e.g., HMAC-SHA1) remain permitted — this is not a blanket ban on SHA-1 in every context. | Replace with **SHA-256** for anything generating new signatures or requiring collision resistance. |
 
 ## NIST Post-Quantum Cryptography (PQC) Standards (FIPS 203, 204, 205 & Draft 206)
 
-NIST finalized three quantum-resistant FIPS standards in August 2024, with a fourth draft standard under development:
+NIST finalized three quantum-resistant FIPS standards in August 2024 — [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final), [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final), and [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final) — with a fourth draft standard (FIPS 206, tracked on [NIST's PQC project page](https://csrc.nist.gov/projects/post-quantum-cryptography)) under development:
 
 | Standard Number | Algorithm Name | Mathematical Paradigm | Target Cryptographic Function | NIST Status |
 |---|---|---|---|---|

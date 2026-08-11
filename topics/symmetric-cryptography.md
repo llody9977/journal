@@ -149,4 +149,4 @@ Nonce uniqueness is necessary but not sufficient — deploying AEAD at scale mea
 ## Primary References
 
 - **NIST SP 800-38D**: *Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM)* — [NIST CSRC SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)
-- **RFC 8439**: *ChaCha20 and Poly1305 for IETF Protocols* — [IETF RFC 8439](https://www.rfc-editor.org/rfc/rfc8439)
+- **RFC 8439**: *ChaCha20 and Poly1305 for IETF Protocols* — [RFC 8439](https://www.rfc-editor.org/rfc/rfc8439) (IRTF/CFRG Informational)

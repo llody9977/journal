@@ -29,6 +29,12 @@ CT logs organize certificates into append-only Merkle hash trees. Standardized i
 1. **Inclusion Proof (Audit Path)**: Proves in **O(log N)** time that a specific certificate exists inside a log tree containing **N** entries without revealing the full log.
 2. **Consistency Proof**: Proves in **O(log N)** time that an updated tree with **N + M** entries is a pure append-only extension of an earlier tree with **N** entries, ensuring past entries were never mutated or deleted.
 
+### Split-View (Equivocation) Risk
+
+Inclusion and consistency proofs are only as trustworthy as the **Signed Tree Head (STH)** they're checked against — and both proof types verify a claim relative to *whatever tree the log presented to the requester at that moment*, not relative to some single, globally-agreed tree state. A dishonest or compromised log operator can, in principle, **equivocate**: present one tree (and STH) to one set of clients and a different, conflicting tree (and STH) to another, with each proof independently checking out as valid against the STH it was paired with. Neither an inclusion proof nor a consistency proof, taken in isolation, detects this — they prove internal consistency of *a* presented view, not that all clients are seeing *the same* view.
+
+Detecting a split-view requires an independent mechanism: **gossip protocols** and **monitors/auditors** that fetch and compare STHs from a log across many independent vantage points (different networks, different clients, different times), looking for two STHs from the same log that cannot both be consistent extensions of a common earlier tree. [RFC 9162 §11.3](https://www.rfc-editor.org/rfc/rfc9162.html#section-11.3) discusses this gossip/detection requirement explicitly as part of CT's overall security model — it's a structural gap the Merkle-tree cryptography alone doesn't close, which is why production CT deployments depend on a broader ecosystem of monitors and auditors, not just on individual clients checking individual proofs.
+
 ## Signed Certificate Timestamps (SCT) & Flow
 
 When a domain owner or automated ACME agent requests a certificate, the CA submits the pre-certificate to multiple independent CT log servers. Each log returns a **Signed Certificate Timestamp (SCT)** promising inclusion within a Maximum Merge Delay (MMD, typically 24 hours):

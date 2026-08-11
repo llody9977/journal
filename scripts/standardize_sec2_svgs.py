@@ -191,7 +191,7 @@ NEW_SVGS['hash-avalanche.svg'] = """<svg viewBox="0 0 1200 340" xmlns="http://ww
   <!-- Input A -->
   <rect x="70" y="140" width="300" height="60" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
   <text x="90" y="165" font-size="11" font-weight="900" fill="#2563eb">INPUT STRING A</text>
-  <text x="90" y="186" font-size="14" font-weight="800" fill="#0f172a">"The quick brown fox..."</text>
+  <text x="90" y="186" font-size="14" font-weight="800" fill="#0f172a">"password"</text>
 
   <path d="M 375 170 L 455 170" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
@@ -203,14 +203,14 @@ NEW_SVGS['hash-avalanche.svg'] = """<svg viewBox="0 0 1200 340" xmlns="http://ww
   <!-- Input B (1 bit modified) -->
   <rect x="70" y="225" width="300" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
   <text x="90" y="250" font-size="11" font-weight="900" fill="#dc2626">INPUT STRING B (1 BIT FLIPPED)</text>
-  <text x="90" y="271" font-size="14" font-weight="800" fill="#0f172a">"The quick brown fox<tspan fill="#dc2626" font-weight="900">!</tspan>"</text>
+  <text x="90" y="271" font-size="14" font-weight="800" fill="#0f172a">"<tspan fill="#dc2626" font-weight="900">q</tspan>assword"</text>
 
   <path d="M 375 255 L 455 255" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <!-- Digest B -->
   <rect x="460" y="225" width="670" height="60" rx="8" fill="#991b1b"/>
   <text x="480" y="248" font-size="11" font-weight="900" fill="#fca5a5">SHA-256 DIGEST B (~50% BITS CHANGED)</text>
-  <text x="480" y="271" font-size="13" font-family="monospace" font-weight="700" fill="#ffffff">17a1023a1a6b0c439281f6209e7c3b11823901cf8432a1982b12fe9012cd38f1</text>
+  <text x="480" y="271" font-size="13" font-family="monospace" font-weight="700" fill="#ffffff">500753de1463102324a99774730af64ae33e82ca40569e618bfe157142900d1d</text>
 </svg>"""
 
 # 5. hmac-flow.svg
@@ -414,7 +414,7 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 570" xmlns="http://www
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">TLS 1.3 1-RTT Handshake Architecture</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Full handshake completed in 1 Round-Trip Time (1-RTT) using Ephemeral ECDHE key shares and AEAD encryption</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Full handshake completed in 1 Round-Trip Time (1-RTT) using ephemeral ECDHE key shares (or a hybrid ECDH+ML-KEM share) and AEAD encryption</text>
 
   <rect x="40" y="110" width="1120" height="430" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
