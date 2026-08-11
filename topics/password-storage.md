@@ -429,7 +429,7 @@ async function hashUserPassword(password) {
   <div class="security-layer-label">Bcrypt Truncation Vulnerability</div>
   <div>
     <strong>Bcrypt 72-Byte Truncation Limit</strong>
-    <p>The standard <code>bcrypt</code> algorithm silently truncates input password strings at <strong>72 bytes</strong>. Any characters beyond byte 72 are ignored during authentication.</p>
+    <p>The traditional (OpenBSD-style) <code>bcrypt</code> algorithm silently truncates input password strings at <strong>72 bytes</strong>, ignoring any characters beyond that during authentication — but this is implementation-dependent, not a universal behavior of every bcrypt library. For example, current versions of the widely used <a href="https://github.com/pyca/bcrypt">pyca/bcrypt</a> Python library raise a <code>ValueError</code> on a password longer than 72 bytes instead of truncating it. Verify your specific implementation's actual behavior rather than assuming silent truncation.</p>
   </div>
 </div>
 
@@ -458,8 +458,8 @@ Choosing a hashing algorithm is only the starting point — the hash's parameter
     <strong>Password Storage Summary</strong>
     <ul>
       <li><strong>Argon2id (RFC 9106)</strong>: Winner of Password Hashing Competition; primary recommendation for password storage (memory-hard against GPU/ASIC attacks).</li>
-      <li><strong>Bcrypt 72-Byte Truncation Limit</strong>: Bcrypt silently ignores characters beyond byte 72. Do not pre-hash with plain unkeyed SHA-256 — it enables password shucking. If pre-hashing is needed, use OWASP's keyed <code>base64(HMAC-SHA-384(key=pepper, data=password))</code> construction, with the pepper held in KMS/HSM custody.</li>
-      <li><strong>Salts &amp; Peppers</strong>: 128-bit CSPRNG unique salt per stored hash prevents rainbow tables; HSM pepper protects against database exfiltration.</li>
+      <li><strong>Bcrypt 72-Byte Truncation Limit</strong>: Traditional bcrypt silently ignores characters beyond byte 72, but this is implementation-dependent — some libraries (e.g., current pyca/bcrypt) reject oversized input with an error instead, so verify your library's actual behavior. Do not pre-hash with plain unkeyed SHA-256 — it enables password shucking. If pre-hashing is needed, use OWASP's keyed <code>base64(HMAC-SHA-384(key=pepper, data=password))</code> construction, with the pepper held in KMS/HSM custody.</li>
+      <li><strong>Salts &amp; Peppers</strong>: 128-bit CSPRNG unique salt per stored hash prevents rainbow tables; an HSM/KMS-held pepper protects against offline cracking specifically when a breach is scoped to the database alone — it does not help against an attacker who can also reach the pepper (application-server compromise, KMS misconfiguration).</li>
     </ul>
   </div>
 </div>

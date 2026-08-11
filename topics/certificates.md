@@ -528,7 +528,7 @@ As PKI migrates toward quantum safety, Certificate Authorities and standards gro
   <div>
     <strong>Certificates &amp; PKI Summary</strong>
     <ul>
-      <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (SAN fields enforce domain matching).</li>
+      <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (the leaf's SAN field presents the identifiers it's valid for; the TLS client separately performs hostname verification against SAN to enforce the match — a chain can pass path validation while still being the wrong certificate if that step is skipped).</li>
       <li><strong>Automated ACME &amp; ARI (RFC 9773)</strong>: For publicly-trusted TLS subscriber certificates, lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI (RFC 9773) is essential in practice.</li>
       <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning carries high operational risk during key rotation. Both Apple and Android guidance recommend against static public key pinning for general web traffic, reserving it for specific threat models with tested backup pins. HPKP is deprecated in web browsers.</li>
     </ul>

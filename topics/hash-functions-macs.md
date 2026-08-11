@@ -2,7 +2,7 @@
 title: Hash Functions & MACs
 description: Cryptographic hash properties (Preimage, 2nd-Preimage, Collision resistance), SHA-2/SHA-3 standards, HMAC-SHA256, KMAC, BLAKE3, and length-extension mitigation.
 permalink: /topics/hash-functions-macs/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -59,7 +59,7 @@ Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, *
   <p class="diagram-caption">HMAC-SHA256 nested construction: double-hashing with inner (ipad) and outer (opad) key padding</p>
 </div>
 
-HMAC's guarantees are specific: it prevents length-extension attacks against the underlying Merkle–Damgård hash, and it authenticates that the tag was produced by a holder of key **K**. It does not protect the key itself — HMAC provides no defense if **K** is compromised through memory disclosure, a side-channel leak, weak key generation, or insecure storage; key protection is a separate concern handled by key management practices, not by the HMAC construction.
+HMAC's guarantees are specific: it prevents length-extension attacks against the underlying Merkle–Damgård hash, and it authenticates that the tag was produced by a holder of key **K**. Because both communicating parties share the same key **K**, that guarantee is symmetric: *any* holder of **K** — sender or receiver — can produce a tag that verifies correctly, so HMAC cannot tell the two apart, cannot attribute a tag to one specific party over the other, and provides no evidence to a third party who doesn't already trust both key holders (i.e., no non-repudiation). It does not protect the key itself — HMAC provides no defense if **K** is compromised through memory disclosure, a side-channel leak, weak key generation, or insecure storage; key protection is a separate concern handled by key management practices, not by the HMAC construction.
 
 ### Why Naive `H(Key || Message)` Fails: Length-Extension Attacks
 
