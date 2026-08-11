@@ -83,7 +83,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
 |---|---|---|
 | **Impact of Private Key Leak** | In deployments that use the leaked long-term key to directly transport or derive the session key — static RSA key transport or static (non-ephemeral) Diffie-Hellman — the adversary decrypts **all recorded historical traffic** protected under that key. Modern ephemeral-only deployments (TLS 1.3 mandates ECDHE) are not exposed this way. | Adversary **cannot derive past session keys from the leaked long-term key alone**; recorded sessions remain protected unless the ephemeral key material was independently compromised. |
 | **Key Agreement Mechanics** | RSA Key Transport or Static Diffie-Hellman | Ephemeral Elliptic Curve Diffie-Hellman (**ECDHE / X25519**) |
-| **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Required for every full **TLS 1.3** handshake and mandatory in **SSHv2**. TLS 1.3 PSK-only resumption (without `psk_dhe_ke`) is still permitted and forgoes forward secrecy for that resumed session. |
+| **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Required for every full **TLS 1.3** handshake and mandatory in **SSHv2**. TLS 1.3 PSK-only resumption (without `psk_dhe_ke`) is still permitted and forgoes forward secrecy for that resumed session. |
 
 <div class="security-layer security-layer-protect">
   <div class="security-layer-label">Architectural Roles</div>

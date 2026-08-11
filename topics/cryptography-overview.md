@@ -42,7 +42,7 @@ An unkeyed hash only detects change when the verifier compares against a digest 
 
 Production security protocols rarely rely on a single cryptographic primitive. Instead, they combine primitives into a cohesive architecture.
 
-For example, **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) coordinates primitives across three phases:
+For example, **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) coordinates primitives across three phases:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/tls-cryptography-layers.svg' | relative_url }}" alt="TLS cryptographic layers for server authentication, shared-secret establishment, and authenticated encryption of application data.">

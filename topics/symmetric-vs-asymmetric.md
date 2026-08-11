@@ -2,7 +2,7 @@
 title: Symmetric vs Asymmetric Cryptography
 description: Direct comparative decision guide between symmetric and asymmetric cryptography, hybrid encryption architectures (HPKE), and attribution limits.
 permalink: /topics/symmetric-vs-asymmetric/
-last_verified: 2026-08-10
+last_verified: 2026-08-11
 ---
 
 <span class="eyebrow">Cryptography / Decision Guide</span>
@@ -36,7 +36,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 ### Standardized Hybrid Protocols
 
 1. **HPKE (Hybrid Public Key Encryption, [RFC 9180](https://www.rfc-editor.org/rfc/rfc9180))**: Modern standard combining KEM key encapsulation, KDF key derivation, and AEAD symmetric encryption.
-2. **TLS 1.3 ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446))**: Uses ephemeral ECDHE (or hybrid **X25519MLKEM768**) for key agreement and AES-GCM / ChaCha20-Poly1305 for transport encryption.
+2. **TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446))**: Uses ephemeral ECDHE (or hybrid **X25519MLKEM768**) for key agreement and AES-GCM / ChaCha20-Poly1305 for transport encryption.
 3. **OpenPGP ([RFC 9580](https://www.rfc-editor.org/rfc/rfc9580))**: Encrypts files/messages using a symmetric session key wrapped under the recipient's RSA or ECC public key.
 
 ## Cryptographic Objective Selection Matrix
