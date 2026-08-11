@@ -854,6 +854,7 @@ hr {
 
 @media (max-width: 600px) {
   .image-pair { grid-template-columns: 1fr; }
+  .image-pair-compact { flex-wrap: wrap; gap: 1.25rem; }
 }
 
 /* ---------------- Topic cards (landing page) ---------------- */
