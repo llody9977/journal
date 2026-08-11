@@ -397,7 +397,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
 ## Comparative Analysis: RSA vs Elliptic Curve Cryptography (ECC)
 
-To achieve a given **Symmetric Security Strength** (measured in bits of brute-force work), asymmetric algorithm key sizes scale at drastically different rates:
+To achieve a given **Symmetric Security Strength** (measured in bits of brute-force work), asymmetric algorithm key sizes scale at drastically different rates. The bit-strength values and required key sizes below come from [NIST SP 800-57 Part 1 Rev. 5](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final); the parenthetical labels ("Legacy Minimum," "Current Standard," "High Security," "Maximum Strength") are this page's own descriptive shorthand for how each tier is commonly treated in practice, not terminology NIST itself uses:
 
 | Target Security Strength (NIST SP 800-57) | Required RSA Key Size (Prime Factorization) | Required ECC Key Size (Elliptic Curve Discrete Log) | Key Size Efficiency &amp; Guidance |
 |---|---|---|---|

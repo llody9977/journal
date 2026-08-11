@@ -50,9 +50,9 @@ A secure cryptographic hash exhibits strong **avalanche diffusion**: modifying a
 
 Unkeyed hashes like `SHA-256(message)` do not prove origin authenticity; an attacker in the middle can alter both the message payload and the digest.
 
-Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, **HMAC** binds a secret key **K** to the message:
+Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, **HMAC** binds a secret key **K** to the message. Before use, **K** is normalized to the underlying hash function's block size **B**: keys longer than **B** bytes are first hashed down to **L** bytes, and keys shorter than **B** bytes are zero-padded up to **B** bytes — call this normalized value **K₀** ([RFC 2104 §2](https://www.rfc-editor.org/rfc/rfc2104.html#section-2)). **K₀**, not the raw **K**, is what's actually XORed with the inner and outer pads:
 
-**HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))**
+**HMAC(K, M) = H((K₀ ⊕ opad) || H((K₀ ⊕ ipad) || M))**
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/hmac-flow.svg' | relative_url }}" alt="HMAC nested hash flow diagram showing inner and outer key padding blocks.">
@@ -88,14 +88,14 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
         <div>
           <label for="hmac-key-input">2. Sender Secret Key (HMAC Generator):</label>
-          <input type="text" id="hmac-key-input" class="demo-input" value="secret-key-32-bytes" placeholder="Enter shared secret key...">
+          <input type="text" id="hmac-key-input" class="demo-input" value="illustrative-demo-key" placeholder="Enter shared secret key...">
         </div>
         <div>
           <label for="hmac-verify-key-input">3. Receiver Verification Key (Test Authentication):</label>
-          <input type="text" id="hmac-verify-key-input" class="demo-input" value="secret-key-32-bytes" placeholder="Enter key to verify...">
+          <input type="text" id="hmac-verify-key-input" class="demo-input" value="illustrative-demo-key" placeholder="Enter key to verify...">
         </div>
       </div>
-      <small class="demo-help">Try changing the Receiver Verification Key to <code>"wrong-secret-key"</code> to verify invalid authentication rejection!</small>
+      <small class="demo-help">The prefilled key is an illustrative placeholder for this demo, not a production-strength secret — a real HMAC key should be a CSPRNG-generated random value of at least the hash's output length. Try changing the Receiver Verification Key to <code>"wrong-secret-key"</code> to verify invalid authentication rejection!</small>
     </div>
 
     <!-- 3. Actions -->

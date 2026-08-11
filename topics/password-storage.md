@@ -187,32 +187,39 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     statusBar.style.color = textColor;
     statusBar.style.borderColor = borderColor;
 
-    // Crack time estimation: average-case seconds = (2^E / 2) / guessesPerSec
-    const totalPossibilities = Math.pow(2, E);
-    const avgGuesses = totalPossibilities / 2;
+    // Crack time estimation: average-case seconds = (2^E / 2) / guessesPerSec.
+    // Computed in log10 space rather than via Math.pow(2, E) directly, because E
+    // easily exceeds ~1024 for long or high-charset inputs, at which point 2^E
+    // overflows Number.MAX_VALUE (~1.8e308) and silently becomes Infinity.
     const guessesPerSec = 100000;
-    const seconds = avgGuesses / guessesPerSec;
+    const log10Seconds = (E - 1) * Math.log10(2) - Math.log10(guessesPerSec);
 
     let timeText = '';
-    if (seconds < 1) {
-      timeText = 'Instantaneous (under 1 second)';
-    } else if (seconds < 60) {
-      timeText = `~${Math.round(seconds)} seconds`;
-    } else if (seconds < 3600) {
-      timeText = `~${Math.round(seconds / 60)} minutes`;
-    } else if (seconds < 86400) {
-      timeText = `~${Math.round(seconds / 3600)} hours`;
-    } else if (seconds < 31536000) {
-      timeText = `~${Math.round(seconds / 86400)} days`;
-    } else if (seconds < 3153600000) {
-      timeText = `~${Math.round(seconds / 31536000)} years`;
-    } else {
-      const centuries = seconds / (31536000 * 100);
-      if (centuries < 1e6) {
-        timeText = `~${centuries.toExponential(2)} centuries`;
+    if (log10Seconds < 10) {
+      // Safely within the representable range (well under 1e308) for a direct value.
+      const seconds = Math.pow(10, log10Seconds);
+      if (seconds < 1) {
+        timeText = 'Instantaneous (under 1 second)';
+      } else if (seconds < 60) {
+        timeText = `~${Math.round(seconds)} seconds`;
+      } else if (seconds < 3600) {
+        timeText = `~${Math.round(seconds / 60)} minutes`;
+      } else if (seconds < 86400) {
+        timeText = `~${Math.round(seconds / 3600)} hours`;
+      } else if (seconds < 31536000) {
+        timeText = `~${Math.round(seconds / 86400)} days`;
+      } else if (seconds < 3153600000) {
+        timeText = `~${Math.round(seconds / 31536000)} years`;
       } else {
-        timeText = `~${centuries.toExponential(2)} centuries (computationally infeasible)`;
+        timeText = `~${Math.round(seconds / (31536000 * 100))} centuries`;
       }
+    } else {
+      // Beyond ~10 orders of magnitude, express directly as centuries in
+      // scientific notation without ever forming the raw (overflow-prone) seconds value.
+      const log10Centuries = log10Seconds - Math.log10(31536000 * 100);
+      const exponent = Math.floor(log10Centuries);
+      const mantissa = Math.pow(10, log10Centuries - exponent);
+      timeText = `~${mantissa.toFixed(2)}e+${exponent} centuries (computationally infeasible)`;
     }
 
     crackTime.innerText = timeText;

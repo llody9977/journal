@@ -62,7 +62,7 @@ For example, **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html
 
 1. **Authentication**: The server proves ownership of a public key bound to a domain via an X.509 Certificate issued by a trusted CA.
 2. **Ephemeral Key Agreement**: Peer endpoints execute **X25519 / ECDHE** (or hybrid **X25519MLKEM768**) to derive a transient shared secret without transmitting private keys.
-3. **AEAD Bulk Encryption**: All application data is encrypted and authenticated using **AES-128-GCM / AES-256-GCM** or **ChaCha20-Poly1305**.
+3. **AEAD Bulk Encryption**: TLS 1.3 requires implementations to support **AES-128-GCM** (mandatory-to-implement) and commonly negotiates **AES-256-GCM** or **ChaCha20-Poly1305**; the standard also defines **AES-CCM** cipher suites for constrained environments ([RFC 9846 §9.1](https://www.rfc-editor.org/rfc/rfc9846.html#section-9.1)), so "GCM or ChaCha20-Poly1305" describes the common case, not every valid TLS 1.3 negotiation.
 
 ## Cryptographic Randomness: PRNG vs. CSPRNG
 
@@ -79,7 +79,7 @@ Cryptographic security depends on randomness, but not every value needs the same
   <div class="security-layer-label">Randomness Pitfalls &amp; Language API Guide</div>
   <div>
     <strong>The Math.random() Vulnerability &amp; Secure CSPRNG APIs</strong>
-    <p>Using standard non-cryptographic random functions (such as JavaScript <code>Math.random()</code> or Python <code>random.randint()</code>) to generate API tokens or nonces allows adversaries to reconstruct the generator state and hijack user sessions:</p>
+    <p>Using standard non-cryptographic random functions (such as JavaScript <code>Math.random()</code> or Python <code>random.randint()</code>) to generate API tokens or session identifiers allows adversaries to reconstruct the generator state and predict or forge valid tokens, enabling session hijacking or account takeover. Cryptographic nonces are a separate case with construction-specific requirements rather than one blanket rule: GCM nonces need only be unique per key (a non-cryptographic monotonic counter can satisfy that), while CBC IVs additionally need to be unpredictable — see the Uniqueness vs. Unpredictability discussion below for which requirement applies to which construction:</p>
     <ul>
       <li><strong>Node.js / Web Browsers</strong>: Replace <code>Math.random()</code> with <code>crypto.randomBytes(32)</code> or <code>crypto.getRandomValues()</code>.</li>
       <li><strong>Python</strong>: Replace <code>random.choice()</code> with <code>secrets.token_bytes(32)</code> or <code>os.urandom()</code>.</li>

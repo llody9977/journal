@@ -15,10 +15,10 @@
   <!-- Stage 1 (300px wide, x=90 to 390) -->
   <rect x="90" y="130" width="300" height="130" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
   <text x="105" y="152" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">1. INNER HASH PASS</text>
-  <text x="105" y="174" font-size="13" font-weight="800" fill="#0f172a">Key K ⊕ ipad (0x36)</text>
+  <text x="105" y="174" font-size="13" font-weight="800" fill="#0f172a">Key K₀ ⊕ ipad (0x36)</text>
   <text x="105" y="192" font-size="11.5" fill="#475569">• Prepend padded key share</text>
   <rect x="105" y="208" width="270" height="36" rx="6" fill="#ccfbf1"/>
-  <text x="240" y="231" font-size="11.5" font-weight="800" fill="#0f766e" text-anchor="middle">H((K ⊕ ipad) || M)</text>
+  <text x="240" y="231" font-size="11.5" font-weight="800" fill="#0f766e" text-anchor="middle">H((K₀ ⊕ ipad) || M)</text>
 
   <!-- Connector 1 -> 2 (60px gap, x=390 to 450) -->
   <path d="M 395 195 L 445 195" fill="none" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
@@ -26,10 +26,10 @@
   <!-- Stage 2 (300px wide, x=450 to 750) -->
   <rect x="450" y="130" width="300" height="130" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
   <text x="465" y="152" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. OUTER HASH PASS</text>
-  <text x="465" y="174" font-size="13" font-weight="800" fill="#0f172a">Key K ⊕ opad (0x5c)</text>
+  <text x="465" y="174" font-size="13" font-weight="800" fill="#0f172a">Key K₀ ⊕ opad (0x5c)</text>
   <text x="465" y="192" font-size="11.5" fill="#475569">• Prepend outer key share</text>
   <rect x="465" y="208" width="270" height="36" rx="6" fill="#ccfbf1"/>
-  <text x="600" y="231" font-size="11.5" font-weight="800" fill="#0f766e" text-anchor="middle">H((K ⊕ opad) || InnerHash)</text>
+  <text x="600" y="231" font-size="11.5" font-weight="800" fill="#0f766e" text-anchor="middle">H((K₀ ⊕ opad) || InnerHash)</text>
 
   <!-- Connector 2 -> 3 (60px gap, x=750 to 810) -->
   <path d="M 755 195 L 805 195" fill="none" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-teal)"/>

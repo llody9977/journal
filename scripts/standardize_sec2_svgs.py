@@ -230,22 +230,22 @@ NEW_SVGS['hmac-flow.svg'] = """<svg viewBox="0 0 1200 360" xmlns="http://www.w3.
   <!-- Stage 1: Key Prep & Inner Pad -->
   <rect x="70" y="140" width="310" height="165" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
   <text x="85" y="165" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">1. INNER HASH PASS</text>
-  <text x="85" y="188" font-size="13" font-weight="800" fill="#0f172a">Key K ⊕ ipad (0x36)</text>
+  <text x="85" y="188" font-size="13" font-weight="800" fill="#0f172a">Key K₀ ⊕ ipad (0x36)</text>
   <text x="85" y="210" font-size="11.5" fill="#475569">• Prepend padded key share</text>
   <text x="85" y="230" font-size="11.5" fill="#475569">• Append Message payload M</text>
   <rect x="85" y="245" width="280" height="42" rx="6" fill="#ccfbf1"/>
-  <text x="225" y="271" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">H((K ⊕ ipad) || M)</text>
+  <text x="225" y="271" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">H((K₀ ⊕ ipad) || M)</text>
 
   <path d="M 385 222 L 455 222" fill="none" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
 
   <!-- Stage 2: Outer Hash Pass -->
   <rect x="460" y="140" width="340" height="165" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
   <text x="475" y="165" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. OUTER HASH PASS</text>
-  <text x="475" y="188" font-size="13" font-weight="800" fill="#0f172a">Key K ⊕ opad (0x5c)</text>
+  <text x="475" y="188" font-size="13" font-weight="800" fill="#0f172a">Key K₀ ⊕ opad (0x5c)</text>
   <text x="475" y="210" font-size="11.5" fill="#475569">• Prepend outer padded key share</text>
   <text x="475" y="230" font-size="11.5" fill="#475569">• Append Inner Hash Result</text>
   <rect x="475" y="245" width="310" height="42" rx="6" fill="#ccfbf1"/>
-  <text x="630" y="271" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">H((K ⊕ opad) || InnerHash)</text>
+  <text x="630" y="271" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">H((K₀ ⊕ opad) || InnerHash)</text>
 
   <path d="M 805 222 L 875 222" fill="none" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
 
@@ -316,7 +316,7 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Digital Signature Execution Pipeline</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">RSA-PSS / ECDSA external-hash-then-sign pattern shown below; EdDSA (Ed25519/Ed448) hashes internally as one integrated step, not a separate pre-hash stage</text>
+  <text x="50" y="82" font-size="12" fill="#475569">RSA-PSS / ECDSA external-hash-then-sign pattern shown below; EdDSA (Ed25519/Ed448) hashes internally as one integrated step, not a separate pre-hash stage</text>
 
   <rect x="40" y="110" width="1120" height="270" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
@@ -338,7 +338,7 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   <text x="480" y="168" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
   <text x="480" y="196" font-size="14" font-weight="800" fill="#0f172a">Sign H(M) with K<tspan baseline-shift="sub" font-size="70%">priv</tspan></text>
   <line x1="480" y1="208" x2="780" y2="208" stroke="#ddd6fe" stroke-width="1"/>
-  <text x="480" y="232" font-size="11" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
+  <text x="480" y="232" font-size="9.5" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
   <text x="480" y="254" font-size="12" fill="#475569">• EdDSA uses internal SHA-512/SHAKE256</text>
   <text x="480" y="276" font-size="12" fill="#475569">• Produces unforgeable signature tag S</text>
   <rect x="480" y="295" width="300" height="36" rx="6" fill="#f5f3ff"/>

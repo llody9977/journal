@@ -212,7 +212,7 @@ When identical plaintext blocks occur in input data, identical ciphertext blocks
           <div class="security-layer-label">Structural Vulnerability Verified</div>
           <div>
             <strong>ECB Pattern Leakage Active!</strong>
-            <p style="margin-bottom:0;">Identical 16-byte plaintext blocks produced <strong>identical ciphertext blocks</strong>. An adversary observing this ciphertext stream instantly recovers structural boundaries without knowing the encryption key.</p>
+            <p style="margin-bottom:0;">Identical 16-byte plaintext blocks produced <strong>identical ciphertext blocks</strong>. Block boundaries themselves are already visible from the cipher's fixed 16-byte block size — what an adversary observing this ciphertext stream actually learns is that specific blocks repeat, which for structured or predictable payloads reveals repeated, block-aligned plaintext patterns without knowing the encryption key.</p>
           </div>
         </div>`;
       } else {

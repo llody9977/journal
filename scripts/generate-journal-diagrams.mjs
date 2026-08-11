@@ -738,7 +738,7 @@ fs.writeFileSync(
 
 sequence({
   filename: "hybrid-public-key-encryption.svg",
-  title: "Hybrid encryption: asymmetric key transport, symmetric data encryption",
+  title: "Hybrid Encryption Architecture",
   subtitle: "The sender encrypts bulk data with a random DEK and protects only that DEK with the recipient's public key.",
   participants: ["Sender", "Recipient"],
   messages: [

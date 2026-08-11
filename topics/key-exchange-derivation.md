@@ -590,10 +590,10 @@ The PSK row above assumes a **high-entropy** pre-shared secret — one an offlin
       } else {
         outputArea.innerHTML += `
         <div class="security-layer security-layer-direct" style="margin-top: 1rem;">
-          <div class="security-layer-label">PFS Security Protection Verified</div>
+          <div class="security-layer-label">PFS Security Property (Conceptual Result)</div>
           <div>
             <strong>✅ PFS HOLDS: LONG-TERM KEY LEAK DOESN'T EXPOSE PAST TRAFFIC</strong>
-            <p style="margin-bottom:0;">The stolen key only ever signed the handshake — it was never used to encrypt data, so it cannot decrypt anything by itself. Recomputing either session's symmetric traffic key would require the client and server's ephemeral ECDH private keys, which this demo never persisted anywhere the attacker's stolen key can reach. (Note: real TLS stacks additionally take care to explicitly zero that ephemeral key memory; JavaScript itself offers no guaranteed secure-erase primitive.)</p>
+            <p style="margin-bottom:0;">This branch doesn't attempt decryption the way the Static RSA branch above does — there is nothing here for the stolen key to decrypt with, which is precisely the property being demonstrated. The stolen key only ever signed the handshake — it was never used to encrypt data, so it cannot decrypt anything by itself. Recomputing either session's symmetric traffic key would require the client and server's ephemeral ECDH private keys, which this demo never persisted anywhere the attacker's stolen key can reach. (Note: real TLS stacks additionally take care to explicitly zero that ephemeral key memory; JavaScript itself offers no guaranteed secure-erase primitive.)</p>
           </div>
         </div>`;
       }
