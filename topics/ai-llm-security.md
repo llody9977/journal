@@ -2,7 +2,7 @@
 title: AI & LLM Security
 description: Architectural guide to AI/LLM threats, direct and indirect prompt injection (OWASP LLM01:2025), MCP tool poisoning, and model supply chain security.
 permalink: /topics/ai-llm-security/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Emerging Topics / Threat Analysis</span>
@@ -31,31 +31,33 @@ In LLMs, system prompts, user queries, retrieved RAG documents, and tool outputs
 | **Direct Prompt Injection** | User input string | Overrides system prompt instructions via jailbreaks (*e.g., "Ignore system instructions..."*). | System guardrail bypass, unauthorized capability access. |
 | **Indirect Prompt Injection** | Untrusted external data (RAG documents, fetched web pages, emails) | Attacker embeds instructions in data retrieved during background context assembly. | Silent background execution: exfiltrating user data, triggering unauthorized tool calls. |
 
-## Model Context Protocol (MCP) Security: Tool Poisoning
+## Model Context Protocol (MCP) Security: Tool Description Poisoning
 
-The **Model Context Protocol (MCP)** enables AI agents to discover and execute external tools. MCP introduces an agent-specific threat: **MCP Tool Poisoning**.
+The **Model Context Protocol (MCP)** enables AI agents to discover and invoke external tools. During discovery, a client requests the list of available tools and receives each tool's `name`, `description`, and input schema; this metadata is fed into the model's context so the model can decide which tool to call. This creates an agent-specific prompt-injection surface, sometimes called **MCP tool (description) poisoning**: a malicious or compromised MCP server can embed adversarial instructions inside a tool's description text. The [MCP specification](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) itself warns that "clients **MUST** consider tool annotations to be untrusted unless they come from trusted servers." The description is not executed as code — it is ingested as untrusted natural-language content in the model's context, so it can influence the model's behavior or output through the same mechanism as any other prompt-injection vector (see [OWASP LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)), not through literal code execution during tool listing.
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/mcp-tool-poisoning.svg' | relative_url }}" alt="MCP Tool Poisoning diagram showing malicious instructions hidden inside tool metadata.">
-  <p class="diagram-caption">MCP Tool Poisoning: malicious instructions embedded in tool descriptions execute during discovery</p>
+  <p class="diagram-caption">MCP Tool Poisoning: malicious instructions embedded in tool descriptions are ingested into the model's context during discovery and can influence its behavior</p>
 </div>
 
 ### MCP Security Checklist
 
-1. **Validate Tool Descriptions**: Treat tool metadata returned by MCP servers as untrusted input.
+1. **Validate Tool Descriptions**: Treat tool metadata returned by MCP servers as untrusted input, per the MCP specification's own guidance above.
 2. **Restrict Scope via Resource Indicators (RFC 8707)**: Bind client tokens to explicit resource server URIs to prevent "confused deputy" attacks across multi-server agent environments.
 3. **Enforce Human-in-the-Loop (HITL)**: Require explicit human approval before executing destructive or high-privilege tool calls (*e.g., file writes, financial transfers, code execution*).
 
 ## Model Supply Chain Security: Safetensors vs PyTorch Pickle
 
-Model files format choice dictates deserialization safety:
+Model file format choice dictates deserialization safety:
 
 | Model Format | Serialization Mechanism | Remote Code Execution (RCE) Risk | Security Recommendation |
 |---|---|---|---|
-| **PyTorch (`.pth`, `.bin`, `.pkl`)** | Python `pickle` deserialization | **HIGH RISK**: Arbitrary Python code execution during `torch.load()`. | Avoid loading untrusted pickle models; use `weights_only=True`. |
-| **Safetensors (`.safetensors`)** | Pure binary tensor storage | **ZERO RCE RISK**: Contains no code execution hooks or executable logic. | **PRIMARY STANDARD**: Enforce Safetensors for all model distribution. |
+| **PyTorch (`.pth`, `.bin`, `.pkl`)** | Python `pickle` deserialization | **HIGH RISK**: Arbitrary Python code execution during `torch.load()`. | Avoid loading untrusted pickle models; when full module objects are not needed, use [`torch.load(..., weights_only=True)`](https://docs.pytorch.org/docs/main/notes/serialization.html), which restricts unpickling to a safe allowlist of tensor-only types and (from PyTorch 2.6) is the default. It narrows the pickle RCE surface but does not guard against denial-of-service or all memory-corruption scenarios. |
+| **[Safetensors](https://github.com/huggingface/safetensors) (`.safetensors`)** | Header (JSON metadata) + raw tensor byte buffer, no executable payload | Format design eliminates the pickle-deserialization RCE vector specifically: parsing involves no code execution, only reading declared tensor offsets/shapes/dtypes. This does not guarantee zero risk from any implementation bug in a parser, supply-chain compromise, or misuse elsewhere in a pipeline. | Default/recommended format in the Hugging Face ecosystem; not a universally adopted format across all ML tooling (ONNX, framework-native checkpoints, and GGUF for local inference remain common elsewhere). |
 
 ### Scanning Models via ModelScan CLI
+
+[ModelScan](https://github.com/protectai/modelscan) is an open-source scanner from Protect AI that inspects model files for unsafe deserialization operators across several formats (pickle-derived formats such as PyTorch, scikit-learn, and XGBoost; TensorFlow's Protocol Buffer format; and Keras' HDF5 format):
 
 ```bash
 # Scan a PyTorch model for unsafe deserialization operators
@@ -75,7 +77,7 @@ modelscan -p suspicious_model.pkl
     <strong>AI &amp; LLM Security Summary</strong>
     <ul>
       <li><strong>OWASP Top 10 for LLMs</strong>: Primary risks include Prompt Injection (direct/indirect), Insecure Output Handling, Training Data Poisoning, and Model Denial of Service.</li>
-      <li><strong>Indirect Prompt Injection</strong>: Untrusted inputs from websites, emails, or PDFs manipulate LLM behavior during RAG/retrieval ops. Always sanitize LLM context.</li>
+      <li><strong>Indirect Prompt Injection</strong>: Untrusted inputs from websites, emails, or PDFs manipulate LLM behavior during RAG/retrieval ops. Filtering and sanitization reduce exposure but are one layer among several; per <a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">OWASP LLM01:2025</a>, pattern-based filtering and RAG-based approaches alone do not fully mitigate prompt injection, so pair them with least-privilege tool access, human-in-the-loop approval for consequential actions, and output monitoring.</li>
       <li><strong>Human-in-the-Loop</strong>: Never allow LLMs to execute destructive side-effects (database deletes, wire transfers) without explicit human confirmation.</li>
     </ul>
   </div>
