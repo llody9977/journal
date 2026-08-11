@@ -338,7 +338,7 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   <text x="480" y="168" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
   <text x="480" y="196" font-size="14" font-weight="800" fill="#0f172a">Sign H(M) with K<sub>priv</sub></text>
   <line x1="480" y1="208" x2="780" y2="208" stroke="#ddd6fe" stroke-width="1"/>
-  <text x="480" y="232" font-size="12" fill="#475569">• ECDSA uses deterministic nonce (RFC 6979)</text>
+  <text x="480" y="232" font-size="11" fill="#475569">• ECDSA nonce: random (default) or RFC 6979 opt-in</text>
   <text x="480" y="254" font-size="12" fill="#475569">• EdDSA uses internal SHA-512/SHAKE256</text>
   <text x="480" y="276" font-size="12" fill="#475569">• Produces unforgeable signature tag S</text>
   <rect x="480" y="295" width="300" height="36" rx="6" fill="#f5f3ff"/>
@@ -458,43 +458,43 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 570" xmlns="http://www
 # 10. password-hash-comparison.svg
 NEW_SVGS['password-hash-comparison.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
   <rect width="1200" height="410" fill="#ffffff"/>
-  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Password Hashing Throughput &amp; GPU Resistance</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Illustrative logarithmic benchmark throughput across password hashing algorithms (Lower throughput = stronger offline resistance)</text>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Illustrative Password Hashing Relative Cost &amp; GPU Resistance</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Illustrative ordering only, not a benchmark — actual cost depends heavily on chosen parameters and attacker hardware (CPU/GPU/ASIC)</text>
 
   <rect x="40" y="110" width="1120" height="270" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
-  <!-- Y-Axis -->
-  <line x1="120" y1="140" x2="120" y2="330" stroke="#64748b" stroke-width="2"/>
-  <text x="110" y="150" font-size="10.5" fill="#475569" text-anchor="end" font-weight="700">100 Billion / s</text>
-  <text x="110" y="210" font-size="10.5" fill="#475569" text-anchor="end" font-weight="700">1 Million / s</text>
-  <text x="110" y="270" font-size="10.5" fill="#475569" text-anchor="end" font-weight="700">10,000 / s</text>
-  <text x="110" y="325" font-size="10.5" fill="#475569" text-anchor="end" font-weight="700">&lt; 10 / s</text>
+  <!-- Y-Axis (Qualitative Tiers) -->
+  <line x1="200" y1="140" x2="200" y2="330" stroke="#64748b" stroke-width="2"/>
+  <text x="190" y="150" font-size="11" fill="#475569" text-anchor="end" font-weight="700">Extremely High</text>
+  <text x="190" y="210" font-size="11" fill="#475569" text-anchor="end" font-weight="700">High (CPU-Bound)</text>
+  <text x="190" y="270" font-size="11" fill="#475569" text-anchor="end" font-weight="700">Moderate (Memory)</text>
+  <text x="190" y="325" font-size="11" fill="#475569" text-anchor="end" font-weight="700">Configurable Low</text>
 
-  <!-- X-Axis Base -->
-  <line x1="120" y1="330" x2="1100" y2="330" stroke="#64748b" stroke-width="2"/>
+  <!-- X-Axis Base Line -->
+  <line x1="200" y1="330" x2="1090" y2="330" stroke="#64748b" stroke-width="2"/>
 
-  <!-- SHA-256 Bar -->
-  <rect x="180" y="145" width="160" height="185" fill="#dc2626" rx="4"/>
-  <text x="260" y="135" font-size="13" font-weight="800" fill="#dc2626" text-anchor="middle">SHA-256</text>
-  <text x="260" y="235" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">~100 Billion / s</text>
-  <text x="260" y="350" font-size="11" font-weight="700" fill="#dc2626" text-anchor="middle">Vulnerable to GPU Cracking</text>
-  <text x="260" y="365" font-size="10" fill="#475569" text-anchor="middle">Fast General Digest (Unsuitable)</text>
+  <!-- SHA-256 Bar (x=240 to 400, center x=320) -->
+  <rect x="240" y="145" width="160" height="185" fill="#dc2626" rx="4"/>
+  <text x="320" y="135" font-size="13" font-weight="800" fill="#dc2626" text-anchor="middle">SHA-256</text>
+  <text x="320" y="235" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Extremely High</text>
+  <text x="320" y="350" font-size="11" font-weight="700" fill="#dc2626" text-anchor="middle">Vulnerable to GPU Cracking</text>
+  <text x="320" y="365" font-size="10" fill="#475569" text-anchor="middle">Fast General Digest (Unsuitable)</text>
 
-  <!-- bcrypt Bar -->
-  <rect x="420" y="270" width="160" height="60" fill="#d97706" rx="4"/>
-  <text x="500" y="260" font-size="13" font-weight="800" fill="#d97706" text-anchor="middle">bcrypt</text>
-  <text x="500" y="305" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">~10,000 / s</text>
-  <text x="500" y="350" font-size="11" font-weight="700" fill="#d97706" text-anchor="middle">CPU-Bound Slowness</text>
-  <text x="500" y="365" font-size="10" fill="#475569" text-anchor="middle">Approved Legacy (72-byte max)</text>
+  <!-- bcrypt Bar (x=460 to 620, center x=540) -->
+  <rect x="460" y="270" width="160" height="60" fill="#d97706" rx="4"/>
+  <text x="540" y="260" font-size="13" font-weight="800" fill="#d97706" text-anchor="middle">bcrypt</text>
+  <text x="540" y="305" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Low</text>
+  <text x="540" y="350" font-size="11" font-weight="700" fill="#d97706" text-anchor="middle">CPU-Bound Slowness</text>
+  <text x="540" y="365" font-size="10" fill="#475569" text-anchor="middle">Accepted Legacy Option (72-byte max)</text>
 
-  <!-- scrypt Bar -->
-  <rect x="660" y="295" width="160" height="35" fill="#0d9488" rx="4"/>
-  <text x="740" y="285" font-size="13" font-weight="800" fill="#0d9488" text-anchor="middle">scrypt</text>
-  <text x="740" y="318" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">~1,000 / s</text>
-  <text x="740" y="350" font-size="11" font-weight="700" fill="#0d9488" text-anchor="middle">Memory-Hard Defense</text>
-  <text x="740" y="365" font-size="10" fill="#475569" text-anchor="middle">Early Memory-Hard Standard</text>
+  <!-- scrypt Bar (x=680 to 840, center x=760) -->
+  <rect x="680" y="295" width="160" height="35" fill="#0d9488" rx="4"/>
+  <text x="760" y="285" font-size="13" font-weight="800" fill="#0d9488" text-anchor="middle">scrypt</text>
+  <text x="760" y="318" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Very Low</text>
+  <text x="760" y="350" font-size="11" font-weight="700" fill="#0d9488" text-anchor="middle">Memory-Hard Defense</text>
+  <text x="760" y="365" font-size="10" fill="#475569" text-anchor="middle">Early Memory-Hard Standard</text>
 
-  <!-- Argon2id Bar -->
+  <!-- Argon2id Bar (x=900 to 1060, center x=980) -->
   <rect x="900" y="318" width="160" height="12" fill="#1d4ed8" rx="3"/>
   <text x="980" y="308" font-size="13" font-weight="800" fill="#1d4ed8" text-anchor="middle">Argon2id</text>
   <text x="980" y="350" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">RFC 9106 / OWASP Recommended</text>

@@ -161,22 +161,22 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
     let borderColor = '';
 
     if (E < 28) {
-      rating = '&#10060; Low Search-Space Upper Bound (< 28 bits)';
+      rating = '&#10060; Low Search-Space Upper Bound (illustrative tier: < 28 bits)';
       bgColor = 'rgba(159, 18, 57, 0.08)'; // critical-wash
       textColor = 'var(--critical)';
       borderColor = 'var(--critical)';
     } else if (E < 60) {
-      rating = '&#9888; Moderate Search-Space Upper Bound (28-59 bits)';
+      rating = '&#9888; Moderate Search-Space Upper Bound (illustrative tier: 28-59 bits)';
       bgColor = 'rgba(161, 76, 0, 0.08)'; // amber-wash
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
     } else if (E < 80) {
-      rating = '&#128309; High Search-Space Upper Bound (60-79 bits)';
+      rating = '&#128309; High Search-Space Upper Bound (illustrative tier: 60-79 bits)';
       bgColor = 'rgba(36, 87, 214, 0.08)'; // accent-wash
       textColor = 'var(--accent)';
       borderColor = 'var(--accent)';
     } else {
-      rating = '&#9989; Very High Search-Space Upper Bound (80+ bits)';
+      rating = '&#9989; Very High Search-Space Upper Bound (illustrative tier: 80+ bits)';
       bgColor = 'rgba(15, 118, 110, 0.08)'; // teal-wash
       textColor = 'var(--teal)';
       borderColor = 'var(--teal)';
@@ -231,7 +231,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 | **Argon2id** ([RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)) | **HIGH** (Memory-Hard) | **Generally considered strongest of this group when comparably tuned**: memory-hardness raises the cost of GPU/ASIC parallelism more directly than CPU-only designs, though actual resistance depends on the chosen parameters and the attacker's hardware budget, not the algorithm choice alone. | **PRIMARY RECOMMENDATION**: RFC 9106 / OWASP recommended first-choice algorithm for modern applications ([OWASP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)). |
 | **bcrypt** | None (CPU-Hard) | **Weaker against custom ASICs than memory-hard designs**: its fixed, small memory footprint (4 KiB) is cheap to replicate in dedicated hardware, though it still resists commodity GPU cracking better than an unsalted fast hash. | **COMMONLY ACCEPTED LEGACY OPTION**: Acceptable where already deployed or required for compatibility; watch out for 72-byte truncation limit. |
 | **PBKDF2-HMAC-SHA256** | None (CPU-Hard) | **Weakest of this group against GPU/ASIC parallelism**: a high iteration count (600,000+) raises the cost per guess, but with no memory requirement at all, that cost is easy to parallelize across many cheap cores. | **FIPS COMPLIANCE OPTION**: FIPS 140-3 itself does not mandate PBKDF2 — it certifies cryptographic *modules*, not a specific password-hashing choice. Use PBKDF2 (NIST SP 800-132) when your environment requires an algorithm implemented inside a FIPS 140-3 validated module, since Argon2id, bcrypt, and scrypt are not currently NIST-approved primitives eligible for that validation. |
-| **scrypt** (RFC 7914) | **MODERATE** | **An earlier memory-hard design, predating Argon2id's hybrid approach**: scrypt does define independent cost parameters (`N` for CPU/memory cost, `r` for block size, `p` for parallelization), but its memory-access pattern is purely data-dependent, unlike Argon2id's hybrid data-dependent/data-independent design, which was specifically engineered (and vetted through the Password Hashing Competition) to balance GPU/ASIC resistance against side-channel resistance for password hashing. That's the substantive reason RFC 9106 and OWASP now recommend Argon2id first, not a lack of tunable parameters in scrypt. | **ACCEPTABLE FALLBACK**: A reasonable choice when Argon2id isn't available in your stack. |
+| **scrypt** ([RFC 7914](https://www.rfc-editor.org/rfc/rfc7914)) | **MODERATE** | **An earlier memory-hard design, predating Argon2id's hybrid approach**: scrypt defines independent cost parameters (`N` for CPU/memory cost, `r` for block size, and `p` for parallelization), but its memory-access pattern is data-dependent, unlike Argon2id's hybrid data-dependent/data-independent design. Argon2id was engineered and vetted through the Password Hashing Competition to balance GPU/ASIC resistance with side-channel resistance; this is why RFC 9106 and OWASP recommend it first, not because scrypt lacks tunable parameters. | **ACCEPTABLE FALLBACK**: A reasonable choice when Argon2id isn't available in your stack. |
 
 ## Salting & Peppering Architecture
 
@@ -356,7 +356,7 @@ Specified in **[RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)** and recommen
       textColor = 'var(--amber)';
       borderColor = 'var(--amber)';
     } else {
-      statusHtml = '&#10060; Below Minimum Recommended Memory Bound (Vulnerable to Parallel Cracking)';
+      statusHtml = '&#10060; Below the Cited Recommended Memory Baseline';
       bgColor = 'rgba(159, 18, 57, 0.08)';
       textColor = 'var(--critical)';
       borderColor = 'var(--critical)';

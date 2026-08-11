@@ -13,7 +13,7 @@ last_verified: 2026-08-10
 
 ## TLS 1.3 Handshake Architecture (1-RTT)
 
-Unlike TLS 1.2 which required 2 full round-trips (2-RTT) before transmitting encrypted application data, **TLS 1.3** establishes an encrypted channel in just **1-RTT**:
+Unlike a **full** TLS 1.2 handshake, which required 2 round-trips (2-RTT) before transmitting encrypted application data — TLS 1.2's *abbreviated* (session-resumption) handshake could complete in 1-RTT, so "2-RTT" describes the full handshake specifically, not TLS 1.2 as a whole — **TLS 1.3** establishes an encrypted channel in just **1-RTT** for its full handshake:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/tls-handshake.svg' | relative_url }}" alt="TLS 1.3 1-RTT handshake sequence diagram between Client, Server, and CA.">

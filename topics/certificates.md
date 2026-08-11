@@ -47,7 +47,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
   <div class="demo-header">
     <span class="demo-badge">Live CT Issuance Inspector</span>
     <h3>Domain CT Log Issuance Inspector</h3>
-    <p>Enter any public domain name (e.g. google.com, github.com) to query its Certificate Transparency (CT) log issuance records via CertSpotter API.</p>
+    <p>Enter any public domain name (e.g. google.com, github.com) to query its Certificate Transparency (CT) log issuance records via CertSpotter API. Shows the most recent issuance among the certificates returned by a single API page — a domain with an unusually large issuance history could have newer certificates beyond that page (see code comment).</p>
   </div>
 
   <div class="demo-body">
@@ -97,7 +97,16 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
     outputArea.innerHTML = '<div style="color: var(--amber); font-family: var(--font-sans); font-weight: 600;">&#8987; Fetching certificate transparency issuances from CertSpotter...</div>';
 
     try {
-      const url = `https://api.certspotter.com/v1/issuances?domain=${encodeURIComponent(domain)}&expand=dns_names&expand=issuer&limit=1`;
+      // CertSpotter's /issuances endpoint returns results in ascending `id` order
+      // (oldest first), and `limit` alone does not mean "most recent" — per the
+      // CertSpotter API docs, getting the newest entries requires paging forward
+      // with `after=<id>` until the results are exhausted. This demo takes a
+      // pragmatic shortcut: fetch a large single page (the API's max per-request
+      // limit) and take the last entry in it as "most recent". For domains with
+      // more issuances than one page holds, a genuinely newer certificate could
+      // exist beyond this page — full correctness would require paging with `after`
+      // until no results remain.
+      const url = `https://api.certspotter.com/v1/issuances?domain=${encodeURIComponent(domain)}&expand=dns_names&expand=issuer&limit=1000`;
       const res = await fetch(url);
       if (!res.ok) {
         throw new Error(`CT Log API responded with HTTP status ${res.status}`);
@@ -107,7 +116,7 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
         throw new Error("No certificates found in CT logs for this domain.");
       }
 
-      const cert = data[0];
+      const cert = data[data.length - 1];
       const pinBase64 = hexToBase64(cert.pubkey_sha256);
 
       let sans = cert.dns_names.map(name => `DNS:${name}`).join(', ');
@@ -142,8 +151,8 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 | Field Name | Standard Function | Critical Security Check |
 |---|---|---|
 | **Basic Constraints** | Indicates whether subject is a CA (`cA: TRUE` vs `cA: FALSE`) | Leaf certificates must never assert `cA: TRUE`. Depending on the issuing CA's profile, they either omit this extension entirely (which defaults to non-CA per [RFC 5280 §4.2.1.9](https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.9)) or include it explicitly set to `cA: FALSE` — either form prevents the leaf key from minting further certificates. |
-| **Extended Key Usage (EKU)** | Specifies allowed certificate roles (*Server Auth, Client Auth, Code Signing*) | Prevents a TLS server certificate from signing executable software binaries. |
-| **Subject Alternative Name (SAN)** | Lists the identifiers bound to this certificate — not just exact FQDNs: `dNSName` entries (including wildcards like `*.example.com`), `iPAddress` entries, and other `GeneralName` forms (e.g. `otherName`, email/URI where applicable) per [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525.html) | For public Web PKI (browser TLS): SAN's `dNSName`/`iPAddress` entries are validated exclusively for hostname/IP identity matching; commonName (CN) is ignored. Other X.509 use cases (S/MIME, code signing) apply RFC 9525's matching rules differently, per their own governing profile. |
+| **Extended Key Usage (EKU)** | Specifies the purposes relying applications should accept the certificate for (*Server Auth, Client Auth, Code Signing*), per [RFC 5280 §4.2.1.12](https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.12) | Signals that a well-behaved code-signing verifier should reject a signature made with a Server-Auth-only certificate — it constrains what compliant *relying parties* accept, not what the private key is physically capable of signing; the key itself can still produce a mathematically valid signature over anything. |
+| **Subject Alternative Name (SAN)** | Lists the identifiers bound to this certificate — not just exact FQDNs: `dNSName` entries (including wildcards like `*.example.com`), `iPAddress` entries, and other `GeneralName` forms (e.g. `otherName`, email/URI where applicable) | For public Web PKI browser TLS, the requested DNS name or IP address is matched against the corresponding SAN identifier and does not fall back to `commonName` (CN), as described by [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525.html). Other X.509 use cases apply their own governing profiles and are outside RFC 9525's service-identity scope. |
 | **Validity Period** | Defines `Not Before` and `Not After` timestamp bounds | For **publicly-trusted TLS subscriber (server/leaf) certificates** specifically, the CA/Browser Forum Baseline Requirements cap maximum validity at 200 days as of March 15, 2026; 100 days as of March 15, 2027; and 47 days as of March 15, 2029. These caps do not apply to private/internal PKI, most S/MIME or code-signing certificates, or CA (root/intermediate) certificates, which follow different lifetime rules. |
 
 ## Certificate Lifecycle & Automated Issuance (ACME & ARI)
@@ -165,6 +174,18 @@ Managing short-lived certificates at scale requires automated enrollment via the
 ### ACME Renewal Information (ARI, RFC 9773)
 
 To support these shrinking (200-day today, 47-day by 2029) certificate lifetimes without outages, **ACME Renewal Information (ARI)** ([RFC 9773](https://www.rfc-editor.org/info/rfc9773), published as a Proposed Standard in 2025) allows CAs to suggest optimal renewal windows to automated agents dynamically before expiration.
+
+## Revocation in Practice: Why It's Not Uniformly Reliable
+
+Revocation exists to handle the case a certificate's validity period can't: a key compromised, or a certificate mis-issued, *before* it would naturally expire. In practice, no single revocation mechanism gives every client a fast, reliable answer, which is exactly why the "best-effort" framing appears repeatedly on this page rather than a flat guarantee.
+
+- **CRLs (Certificate Revocation Lists)**: A CA-signed, periodically-updated list of revoked certificate serial numbers. Clients that check CRLs must fetch and parse a list that can grow to significant size for a large CA, and the list is only as fresh as its last publication — a certificate revoked minutes ago may not appear until the next scheduled CRL update.
+- **OCSP (Online Certificate Status Protocol)**: A real-time, per-certificate query to the CA (or its OCSP responder) asking "is this serial number revoked?" This avoids downloading a whole list, but introduces its own problems: it leaks browsing metadata to the CA (which domains a client is visiting), it adds a network round-trip (and a failure point) to every connection, and — critically — most browsers **soft-fail** when the OCSP responder is unreachable, meaning an attacker who can block the OCSP request (a common capability for someone already in a position to MitM a connection) can often make a revoked certificate appear valid simply by preventing the revocation check from completing.
+- **OCSP Stapling**: The server itself periodically fetches a signed OCSP response from the CA and "staples" it to the TLS handshake, so the client doesn't need its own round-trip to the CA. This fixes the metadata-leak and latency problems, but only works if the server actually keeps its stapled response current — a server that fails to refresh a stapled response leaves clients trusting stale revocation data, and stapling doesn't solve the soft-fail problem for clients that don't receive a staple at all.
+- **Short-lived certificates as a revocation substitute**: As the CA/Browser Forum's shrinking maximum-lifetime rules (200 days now, 47 days by 2029) take effect, some deployments increasingly treat "the certificate will expire soon anyway" as a partial substitute for timely revocation — a compromised key is only usable until natural expiry, bounding the exposure window without needing every client to check revocation status correctly. This reduces reliance on revocation checking without eliminating the need for it (a 47-day exposure window is still a real window).
+- **Browser-specific mechanisms**: Beyond CRL/OCSP, some browsers maintain their own aggregated revocation data pushed directly to the client — Chrome's CRLSet and Firefox's OneCRL/CRLite are examples — trading comprehensive coverage (these typically cover only a curated subset of "important" revocations, not every revoked certificate) for a fast, always-available local check that doesn't depend on a live network request to the CA at connection time.
+
+The practical upshot: revocation checking is a layered, best-effort defense with real gaps at every layer (staleness, soft-fail, partial coverage), not a single reliable mechanism — which is also why shrinking certificate lifetimes are treated as a complementary mitigation, not a replacement for revocation.
 
 ## Certificate Formats & OpenSSL Encoding Conversions
 

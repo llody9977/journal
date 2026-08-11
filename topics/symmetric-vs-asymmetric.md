@@ -43,7 +43,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 
 | System Engineering Objective | Selected Cryptographic Paradigm | Recommended Standard | Operational Mechanics |
 |---|---|---|---|
-| **Bulk Data Confidentiality at Rest** | Symmetric Encryption | AES-256-GCM | Encrypt database fields, files, or disk volumes using DEK/KEK hierarchy. |
+| **Bulk Data Confidentiality at Rest** | Symmetric Encryption | AES-256-GCM for records, objects, and files; **AES-XTS** (not GCM) for block-device/disk-volume encryption | Encrypt database fields, files, and objects using AES-GCM within a DEK/KEK hierarchy; full-disk/block-device encryption conventionally uses AES-XTS instead (see Full-Disk &amp; File Encryption) since fixed-size disk sectors don't have room for an AEAD tag. |
 | **Key Encapsulation to Single Receiver** | Asymmetric HPKE | HPKE (RFC 9180) | Sender's KEM operation against the receiver's public key yields a shared secret, which HKDF expands into an AEAD context (key + nonce schedule) used to encrypt the payload directly; using that context to wrap a separate DEK is one common application pattern, not HPKE's only mode of operation (RFC 9180 also defines PSK and auth modes). |
 | **Network Transit Confidentiality** | Hybrid Encryption | TLS 1.3 (ECDHE + AES-GCM) | Ephemeral key agreement establishes shared secret for symmetric transport. |
 | **Payload Integrity &amp; Authentication** | Symmetric MAC | HMAC-SHA256 | Both endpoints share secret key; verifier checks HMAC tag over message. |

@@ -61,7 +61,7 @@ To understand how two computers arrive at the exact same secret key without ever
 
 Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffie-Hellman (ECDH)** over Curve25519 (**X25519 / [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748)**) or NIST P-256:
 - **Smaller Public Keys**: 32-byte (256-bit) public keys provide 128-bit security, compared to 3072-bit modular prime groups in finite-field DH.
-- **Fast Execution**: Orders of magnitude faster scalar multiplication with complete, constant-time arithmetic routines.
+- **Fast Execution**: Meaningfully faster scalar multiplication than equivalent-security finite-field DH, with complete, constant-time arithmetic routines — the precise speedup depends on implementation and hardware, so benchmark your target platform rather than treating any fixed multiplier as universal.
 
 
 ## Authenticated Key Exchange & MITM Prevention
@@ -91,7 +91,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
     <strong>Server Certificate Key (Disk/HSM/KMS) vs. Ephemeral ECDHE Keys (RAM)</strong>
     <p>Understanding key roles resolves common misconceptions between identity authentication and data encryption:</p>
     <ul>
-      <li><strong>Server Certificate Key (Typically on Disk, an HSM, or a KMS)</strong>: Within a TLS 1.3 handshake specifically, used exclusively for <strong>Identity Authentication</strong> (proving to the browser: <em>"I am really bank.com"</em>) — the server uses its private key to <strong>sign</strong> the handshake parameters, and it is <strong>never used to encrypt bulk data</strong> in that handshake. (The same key pair's certificate could in principle be issued for other purposes too, like S/MIME, depending on its Extended Key Usage — this describes its role in the TLS handshake, not every possible use of a certificate key in general.)</li>
+      <li><strong>Server Certificate Key (Typically on Disk, an HSM, or a KMS)</strong>: In a certificate-authenticated TLS 1.3 handshake, this key provides <strong>identity authentication</strong> by signing the handshake transcript. It is not the bulk-data encryption key; record-layer traffic keys are derived separately from the key-agreement result. This describes the key's TLS role rather than every use another certificate profile might permit.</li>
       <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used to establish the shared secret material that makes <strong>Data Confidentiality</strong> possible — it is a key-agreement key, not an encryption key itself. Generated in transient RAM for a single connection session, both endpoints combine key shares to derive the ECDH shared secret, which is passed through HKDF to derive the symmetric AES traffic keys (<code>0x8f3a91b2...</code>) and IVs that actually perform the AEAD encryption; the ECDHE key material is discarded when the session closes.</li>
       <li><strong>Client Certificates</strong>: In the vast majority of ordinary web browsing, <strong>clients do not present certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to derive the shared secret and expanded HKDF traffic keys to encrypt HTTP traffic.</li>
     </ul>

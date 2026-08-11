@@ -44,7 +44,7 @@ CT enforcement is set independently by each browser vendor, rolled out on differ
 
 - **Google Chrome**: enforces CT for publicly-trusted TLS certificates issued after April 30, 2018 per [Chrome Certificate Transparency Policy](https://googlechrome.github.io/CertificateTransparency/ct_policy.html).
 - **Apple Safari / macOS / iOS**: enforces CT platform-wide for publicly-trusted certificates issued after October 15, 2018 per [Apple Certificate Transparency Policy](https://support.apple.com/en-us/103214).
-- **Mozilla Firefox**: added CT enforcement on desktop platforms starting with Firefox 135 (February 2025), scoped to certificates chaining to a CA in Mozilla's Root CA Program.
+- **Mozilla Firefox**: added CT enforcement on desktop platforms starting with [Firefox 135](https://www.firefox.com/en-US/firefox/135.0/releasenotes/) (February 2025), per that release's own notes — requiring servers to prove public disclosure of their certificates before Firefox will trust them — scoped to certificates chaining to a CA in Mozilla's Root CA Program.
 - **Microsoft Edge**: as a Chromium-based browser, inherits Chrome's enforcement by default; administrators can disable it for specific CAs or URLs via Edge policy.
 
 ### 1. Chrome Embedded-SCT Policy
@@ -58,10 +58,11 @@ For certificates evaluated under [Chrome's CT Policy](https://googlechrome.githu
 
 ### 2. Apple CT Policy Rules
 
-Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trusted server certificates must present SCTs depending on certificate validity period:
-- **Lifetime ≤ 180 days**: At least 2 SCTs from distinct log operators.
-- **Lifetime > 180 days up to 398 days**: At least 3 SCTs from distinct log operators.
-- **Operator Diversity Requirement**: At least 1 SCT must come from an Apple-recognized log operator, and at least 1 from a different log operator.
+Under [Apple's CT Policy](https://support.apple.com/en-us/103214), publicly trusted server certificates must present SCTs depending on certificate validity period, with the required SCTs drawn from logs run by more than one distinct operator:
+- **Lifetime ≤ 180 days**: At least 2 SCTs, from logs operated by at least 2 distinct log operators.
+- **Lifetime > 180 days up to 398 days**: At least 3 SCTs, from logs operated by at least 2 distinct log operators.
+
+Apple's policy defines the exact operator-diversity mechanics precisely (which log-operator combinations qualify, and how Apple's own list of recognized operators factors in) — treat the counts above as the load-bearing numbers and consult the current policy document directly for the precise diversity rule text, since CT policies are revised periodically.
 
 ### 3. TLS-Delivered SCTs vs. X.509 Embedded SCTs
 

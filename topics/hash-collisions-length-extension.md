@@ -297,7 +297,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
           <div class="security-layer-label">Cryptanalytic Collision Verified</div>
           <div>
             <strong>&#128680; SHA-1 SHAttered COLLISION CONFIRMED!</strong>
-            <p style="margin-bottom:0;">Both PDF files yield the <strong>identical SHA-1 digest</strong> (<code>${sha1_1}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. SHA-1 digital signatures are broken and formally prohibited by NIST SP 800-131A Rev. 2!</p>
+            <p style="margin-bottom:0;">Both PDF files yield the <strong>identical SHA-1 digest</strong> (<code>${sha1_1}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. This is exactly the collision-resistance break NIST SP 800-131A Rev. 2 responds to: SHA-1 is disallowed for <em>generating new</em> digital signatures and other collision-dependent uses, though limited legacy signature verification and non-collision-dependent uses (e.g., HMAC-SHA1) remain permitted.</p>
           </div>
         </div>`;
       } else {
@@ -665,7 +665,7 @@ That structural resistance describes the *hash function*, not a ready-made MAC �
   <div>
     <strong>Hash Attacks Summary</strong>
     <ul>
-      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance and are prohibited for digital signatures and other collision-resistance-dependent uses (NIST SP 800-131A Rev. 2). This does not ban SHA-1 outright — HMAC-SHA1 remains acceptable in many protocols because HMAC's security does not rely on collision resistance the same way. Git's historical use of SHA-1 for object hashing was affected in principle (the SHAttered collision technique was demonstrated against crafted Git objects) but not in practice for ordinary use, because Git added collision detection and, separately, is migrating toward SHA-256 object hashing; "unaffected" should be read as "not exploited under normal, non-adversarial use," not as a blanket immunity claim.</li>
+      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance and are disallowed for <em>generating new</em> digital signatures and other collision-resistance-dependent uses (NIST SP 800-131A Rev. 2) — limited legacy signature verification is still permitted. This does not ban SHA-1 outright — HMAC-SHA1 remains acceptable in many protocols because HMAC's security does not rely on collision resistance the same way. Git's historical use of SHA-1 for object hashing was affected in principle (the SHAttered collision technique was demonstrated against crafted Git objects) but not in practice for ordinary use, because Git added collision detection and, separately, is migrating toward SHA-256 object hashing; "unaffected" should be read as "not exploited under normal, non-adversarial use," not as a blanket immunity claim.</li>
       <li><strong>Length-Extension Vulnerability</strong>: Naive MACs like <code>H(key \|\| message)</code> allow attackers to append data and forge valid tags without learning the key.</li>
       <li><strong>Mitigation Standard</strong>: For message authentication, deploy a keyed construction — HMAC-SHA256, KMAC (SHA-3 family), or BLAKE3's keyed mode — not a raw unkeyed SHA-3 or BLAKE3 digest, which resist length extension as hash functions but are not themselves MACs.</li>
     </ul>

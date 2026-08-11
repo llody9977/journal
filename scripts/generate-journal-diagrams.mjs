@@ -693,7 +693,7 @@ fs.writeFileSync(
   path.join(outputDirectory, "ctr-two-time-pad.svg"),
   documentSvg(
     "CTR Nonce-Reuse Two-Time Pad Attack Mechanics",
-    "Reusing a 96-bit nonce under the same key generates identical keystream (KS₁ = KS₂), enabling XOR cancellation",
+    "Reusing a counter-block input under the same key generates identical keystream (KS₁ = KS₂), enabling XOR cancellation — nonce length is protocol-specific, not a fixed 96 bits",
     440,
     `
     <g>

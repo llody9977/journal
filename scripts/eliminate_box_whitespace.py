@@ -89,19 +89,19 @@ SVGS['full-disk-encryption-scope.svg'] = """<svg viewBox="0 0 1200 420" xmlns="h
 SVGS['quantum-algorithm-impact.svg'] = """<svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
   <rect width="1200" height="420" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Quantum Computing Impact on Modern Cryptography</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Shor's algorithm breaks classical asymmetric ciphers; Grover's algorithm halves symmetric key security</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Contingent on a future Cryptographically Relevant Quantum Computer (CRQC) — none exists today</text>
 
   <!-- Left: Asymmetric (Shor) -->
   <rect x="50" y="115" width="535" height="235" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
-  <text x="75" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#dc2626">ASYMMETRIC CIPHERS (CRITICAL THREAT)</text>
+  <text x="75" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#dc2626">ASYMMETRIC CIPHERS (FUTURE CRQC THREAT)</text>
   <text x="75" y="170" font-size="16" font-weight="800" fill="#0f172a">Shor's Algorithm (Polynomial Time)</text>
   <line x1="75" y1="182" x2="560" y2="182" stroke="#fca5a5" stroke-width="1"/>
   <text x="75" y="204" font-size="12" fill="#475569">• Solves discrete logs &amp; prime factorization efficiently</text>
-  <text x="75" y="224" fill="#475569" font-size="12">• Completely breaks RSA, ECDSA, Ed25519, &amp; ECDH</text>
+  <text x="75" y="224" fill="#475569" font-size="12">• Would break RSA, ECDSA, Ed25519, &amp; ECDH, once run on a CRQC</text>
   <text x="75" y="244" font-size="12" fill="#475569">• Enables retrospective decryption of recorded TLS traffic</text>
   <text x="75" y="264" font-size="12" fill="#475569">• Migration Action: Adopt FIPS 203 (ML-KEM) &amp; FIPS 204 (ML-DSA)</text>
   <rect x="75" y="285" width="485" height="40" rx="8" fill="#dc2626"/>
-  <text x="317" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">BROKEN: Must Migrate to PQC Standards</text>
+  <text x="317" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">NOT YET BROKEN: Migrate Ahead of CRQC Arrival</text>
 
   <!-- Right: Symmetric (Grover) -->
   <rect x="615" y="115" width="535" height="235" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
@@ -109,22 +109,22 @@ SVGS['quantum-algorithm-impact.svg'] = """<svg viewBox="0 0 1200 420" xmlns="htt
   <text x="640" y="170" font-size="16" font-weight="800" fill="#0f172a">Grover's Algorithm (Quadratic Speedup)</text>
   <line x1="640" y1="182" x2="1125" y2="182" stroke="#bbf7d0" stroke-width="1"/>
   <text x="640" y="204" font-size="12" fill="#475569">• Quadratic speedup for unstructured brute-force search</text>
-  <text x="640" y="224" font-size="12" fill="#475569">• Effectively halves key security strength (N bits --&gt; N/2 bits)</text>
+  <text x="640" y="224" font-size="12" fill="#475569">• Halves key-search &amp; preimage strength (N bits --&gt; N/2 bits)</text>
   <text x="640" y="244" font-size="12" fill="#475569">• AES-256 retains 128-bit quantum security strength</text>
-  <text x="640" y="264" font-size="12" fill="#475569">• SHA-256 / SHA-384 / SHA-512 remain collision-resistant</text>
+  <text x="640" y="264" font-size="12" fill="#475569">• Collision resistance falls less sharply (BHT: ~N/3, not ~N/2)</text>
   <rect x="640" y="285" width="485" height="40" rx="8" fill="#15803d"/>
-  <text x="882" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">SAFE: AES-256 Keys &amp; SHA-384+ Digests</text>
+  <text x="882" y="310" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">RESILIENT: AES-256 Keys &amp; Adequately-Sized Digests</text>
 
   <!-- Summary Footer -->
   <rect x="50" y="365" width="1100" height="40" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Key Takeaway: Prioritize PQC migration for asymmetric PKI by data confidentiality lifetime and risk, while AES-256 remains secure.</text>
+  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Key Takeaway: Prioritize PQC migration for asymmetric PKI by data confidentiality lifetime and risk, once a CRQC exists; AES-256 stays resilient today.</text>
 </svg>"""
 
 # 4. hash-security-properties.svg
 SVGS['hash-security-properties.svg'] = """<svg viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
   <rect width="1200" height="320" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Cryptographic Hash Security Properties &amp; Complexities</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Three mandatory security requirements defining cryptographically secure hash functions</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Three core security properties expected of cryptographically secure hash functions</text>
 
   <!-- Box 1 -->
   <rect x="50" y="115" width="330" height="180" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>

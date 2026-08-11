@@ -16,7 +16,7 @@ last_verified: 2026-08-10
 | Cipher Mode | Vulnerability / Failure Mode | Root Cause | Impact | Defensive Countermeasure |
 |---|---|---|---|---|
 | **AES-CBC** | Bit-Flipping Malleability &amp; Padding Oracles | Ciphertext block **N** XORed into plaintext block **N+1** during decryption | Attacker flips arbitrary bits in block **N+1** without knowing the key | **Use AEAD (AES-GCM)** or apply Encrypt-then-MAC (HMAC-SHA256). |
-| **AES-CTR** | Two-Time Pad Keystream Reuse | Same counter value reused under the same key generates duplicate keystream | **C<sub>1</sub> &oplus; C<sub>2</sub> = P<sub>1</sub> &oplus; P<sub>2</sub>** without knowing key; recovering either full plaintext from that XOR sum additionally requires the attacker to already know or correctly guess predictable content in the other message | **Never Reuse a (Key, Nonce) Pair**; use a non-repeating 96-bit nonce per key or **AES-GCM-SIV ([RFC 8452](https://www.rfc-editor.org/rfc/rfc8452))**. |
+| **AES-CTR** | Two-Time Pad Keystream Reuse | Same counter value reused under the same key generates duplicate keystream | **C<sub>1</sub> &oplus; C<sub>2</sub> = P<sub>1</sub> &oplus; P<sub>2</sub>** without knowing key; recovering either full plaintext from that XOR sum additionally requires the attacker to already know or correctly guess predictable content in the other message | **Never Repeat a Counter-Block Input Under the Same Key**: generic CTR mode has no single mandated nonce length — the essential requirement is that every 128-bit counter-block input (however a given protocol splits it into a nonce field and a counter field) is unique per key. GCM's specific construction happens to use a 96-bit nonce plus a 32-bit internal counter, but that's GCM's choice, not a generic AES-CTR requirement. When in doubt, prefer a vetted AEAD construction (AES-GCM per its own spec, or **AES-GCM-SIV / [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452)** for misuse resistance) over hand-rolling raw CTR nonce management. |
 | **AES-ECB** | Structural Pattern Leakage | Independent block encryption (**C<sub>i</sub> = E<sub>K</sub>(P<sub>i</sub>)**) | Plaintext patterns and duplicate blocks remain visible in ciphertext | **Do Not Use ECB**; deploy AES-GCM or ChaCha20-Poly1305. |
 
 ## 1. ECB Mode: Structural Pattern Leakage
@@ -689,6 +689,15 @@ Because decryption computes **P<sub>i</sub> = D<sub>K</sub>(C<sub>i</sub>) &oplu
 4. Fix byte 15 so it forces padding `0x02 0x02`, then brute-force byte 14 the same way, and continue leftward through the block.
 
 Each byte costs at most 256 oracle queries, so a full 16-byte block falls in roughly 4,096 requests — without ever touching **K**. This is Vaudenay's 2002 CBC-padding attack, later automated against real deployments by tools such as **PadBuster**. The fix is to never let padding validity leak as a distinguishable signal: return a generic error for both MAC and padding failures, keep error handling constant-time, or (preferably) verify a MAC over the ciphertext *before* attempting decryption (Encrypt-then-MAC), so a tampered ciphertext never reaches the padding check at all.
+
+### Encrypt-then-MAC: A Concise Correctness Checklist
+
+If you're not using a native AEAD construction and are instead composing a cipher with a separate MAC by hand (legacy systems, protocols that predate widespread AEAD support), get these four things right — getting any one wrong reopens some version of the padding-oracle or bit-flipping attacks above:
+
+1. **Use separate keys for encryption and authentication.** Deriving both from the same key (or reusing one key for both roles) risks interactions between the two uses that neither primitive's individual security proof accounts for — derive two independent keys from a master secret via a KDF (see Key Exchange & Key Derivation).
+2. **Authenticate the ciphertext, not the plaintext** — this is what "Encrypt-**then**-MAC" means, as opposed to MAC-then-Encrypt or MAC-and-Encrypt (encrypting and MACing the plaintext independently). Authenticating post-encryption output is what lets the verifier reject a tampered ciphertext before ever running it through the decryption/padding-removal logic that the Vaudenay attack above exploits.
+3. **Include the IV/nonce and any associated metadata in what's authenticated**, not just the ciphertext bytes — an attacker who can swap the IV while leaving the ciphertext and tag untouched can still manipulate the first decrypted block in CBC-style modes if the IV itself isn't covered by the MAC.
+4. **Verify the MAC before parsing or decrypting anything**, and reject on any mismatch with a generic error, in constant time, before any padding-removal or content-parsing logic runs. Checking the MAC only after decrypting (or only after inspecting the padding) is precisely the ordering mistake that makes the padding-oracle attack above possible.
 
 ## 3. CTR Mode: Nonce Reuse Two-Time Pad Attack
 

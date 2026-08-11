@@ -9,7 +9,7 @@ last_verified: 2026-08-10
 
 # Asymmetric Cryptography & Public-Key Infrastructure
 
-<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives solve the key-distribution problem, enable digital signatures for verifiable evidence of origin and integrity, and establish ephemeral keys for transport security.</p>
+<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives enable public-key distribution without a pre-shared secret channel and establish ephemeral keys for transport security — but distribution alone doesn't establish *whose* key it is; that additionally requires an authenticated binding (a CA-issued certificate, or an out-of-band fingerprint check) tying the public key to an identity, without which the exchange is vulnerable to MitM key substitution. Digital signatures similarly provide verifiable evidence that an action was performed by whoever controls a given private key, which is a weaker claim than "verified real-world identity" unless that same key-to-identity binding is separately established.</p>
 
 ## Asymmetric Paradigm: Linked Key Pairs
 
