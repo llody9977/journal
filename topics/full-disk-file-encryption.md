@@ -104,7 +104,7 @@ Confirming that a disk or object store is encrypted answers a narrower question 
   <div>
     <strong>Disk &amp; File Encryption Summary</strong>
     <ul>
-      <li><strong>IEEE 1619 AES-XTS</strong>: Standard sector block cipher mode preventing pattern leakage without altering sector size.</li>
+      <li><strong>IEEE 1619 AES-XTS</strong>: Standard sector block cipher mode preventing ECB-like pattern leakage across different sector addresses, without altering sector size — encryption of a given sector's contents remains deterministic across repeated writes, so identical writes to the same sector are still detectable across snapshots.</li>
       <li><strong>LUKS2 &amp; Argon2id</strong>: Linux disk encryption header format; Argon2id is the modern `cryptsetup` default KDF for new key slots protecting the volume master key, but individual slots can independently use PBKDF2 or Argon2i instead (see above) — a given header isn't guaranteed to have every slot on Argon2id.</li>
       <li><strong>Envelope Key Rotation</strong>: Re-wrapping DEKs or rotating the Master KEK inside KMS avoids re-encrypting bulk data payloads, though full data re-encryption may still be performed for specific compliance policies.</li>
     </ul>

@@ -42,7 +42,7 @@ To understand how two computers arrive at the exact same secret key without ever
   <div>
     <strong>How Software Handshakes Execute Without Transmitting Keys</strong>
     <p>A common point of confusion is asking <em>"how does the secret key get passed to the client?"</em></p>
-    <p><strong>The secret key is NEVER transmitted across the network.</strong> Neither endpoint sends the secret key. Instead, both software engines exchange public parameters and compute the same shared secret <strong>independently in CPU RAM</strong>:</p>
+    <p><strong>The secret key is NEVER transmitted across the network.</strong> Neither endpoint sends the secret key. Instead, both software engines exchange public values (key shares) derived from previously agreed-upon domain parameters, and compute the same shared secret <strong>independently in CPU RAM</strong>:</p>
     <ol>
       <li><strong>Client Exchange (`ClientHello`)</strong>: Client's crypto engine generates an ephemeral private key <strong>a</strong> in RAM and sends public key <b>A = a × G</b> over the wire.</li>
       <li><strong>Server Exchange (`ServerHello`)</strong>: Server's crypto engine generates an ephemeral private key <strong>b</strong> in RAM and sends public key <b>B = b × G</b> over the wire.</li>
