@@ -229,7 +229,8 @@ SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 365" xmlns="http://ww
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Digital Signature Execution Pipeline</text>
-  <text x="50" y="82" font-size="12" fill="#475569">RSA-PSS / ECDSA operate over a digest computed as part of signing (conceptual stages shown below); EdDSA (Ed25519/Ed448) hashes internally as one integrated step over the full message</text>
+  <text x="50" y="82" font-size="12" fill="#475569">RSA-PSS / ECDSA operate over a digest computed as part of signing (conceptual stages shown below);</text>
+  <text x="50" y="100" font-size="12" fill="#475569">EdDSA (Ed25519/Ed448) hashes internally as one integrated step over the full message</text>
 
   <rect x="40" y="110" width="1120" height="235" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 

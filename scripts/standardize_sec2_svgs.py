@@ -316,7 +316,8 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Digital Signature Execution Pipeline</text>
-  <text x="50" y="82" font-size="12" fill="#475569">RSA-PSS / ECDSA operate over a digest computed as part of signing (conceptual stages shown below); EdDSA (Ed25519/Ed448) hashes internally as one integrated step over the full message</text>
+  <text x="50" y="82" font-size="12" fill="#475569">RSA-PSS / ECDSA operate over a digest computed as part of signing (conceptual stages shown below);</text>
+  <text x="50" y="100" font-size="12" fill="#475569">EdDSA (Ed25519/Ed448) hashes internally as one integrated step over the full message</text>
 
   <rect x="40" y="110" width="1120" height="270" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
 
@@ -327,7 +328,7 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   <line x1="90" y1="208" x2="360" y2="208" stroke="#bfdbfe" stroke-width="1"/>
   <text x="90" y="232" font-size="12" fill="#475569">• Compute SHA-256 / SHA-512 digest</text>
   <text x="90" y="254" font-size="12" fill="#475569">• Ed25519/Ed448 hash internally per RFC 8032</text>
-  <text x="90" y="276" font-size="12" fill="#475569">• Prevents RSA/ECDSA malleability attacks</text>
+  <text x="90" y="276" font-size="12" fill="#475569">• Bounds the signing input to a fixed size</text>
   <rect x="90" y="295" width="270" height="36" rx="6" fill="#eff6ff"/>
   <text x="225" y="318" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">Fixed-Size Digest H(M)</text>
 
