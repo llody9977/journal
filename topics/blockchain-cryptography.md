@@ -95,7 +95,7 @@ It's worth being explicit about where cryptographic guarantees end and other ass
 - **Ethereum EIP-155**: *Simple Replay Attack Protection* — [EIP-155 Specification](https://eips.ethereum.org/EIPS/eip-155)
 - **Polkadot Cryptography**: *Schnorrkel sr25519 Signatures over Ristretto25519* — [Polkadot Host Specification](https://spec.polkadot.network/#sect-cryptography)
 - **STARKs Specification**: *Scalable, Transparent, and Post-Quantum Secure Computational Integrity* — [IACR Cryptology ePrint 2018/046](https://eprint.iacr.org/2018/046)
-- **BLS Signatures Draft**: *BLS Signatures IETF CFRG Draft (Work in Progress — Not an IETF Standard)* — [draft-irtf-cfrg-bls-signature-07](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)
+- **BLS Signatures Draft**: *BLS Signatures IRTF/CFRG Internet-Draft (Work in Progress — Not an IETF Standard)* — [draft-irtf-cfrg-bls-signature-07](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)
 - **Ethereum Consensus Specs**: *Casper FFG / Gasper Finality Gadget Specification* — [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs)
 - **Tendermint BFT**: *The latest gossip on BFT consensus* (Buchman, Kwon, Milosevic) — [arXiv:1807.04938](https://arxiv.org/abs/1807.04938)
 - **Data Availability Proofs**: *Fraud and Data Availability Proofs: Maximising Light Client Security* (Al-Bassam, Sonnino, Buterin) — [arXiv:1809.09044](https://arxiv.org/abs/1809.09044)
