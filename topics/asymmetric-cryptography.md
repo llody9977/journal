@@ -30,9 +30,9 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric cryptogra
 
 | Objective | Public Key Action | Private Key Action | Standard Protocol | Primary Output |
 |---|---|---|---|---|
-| **Confidentiality** (RSA-OAEP direct; HPKE hybrid) | Encrypts payload (RSA-OAEP) / KEM encapsulation (HPKE) | Decrypts payload (RSA-OAEP) / KEM decapsulation (HPKE) | RSA-OAEP; RFC 9180 HPKE = KEM + KDF + AEAD | Unreadable ciphertext; in HPKE the public key only wraps a symmetric key, and an AEAD cipher encrypts the actual payload |
+| **Confidentiality** (RSA-OAEP direct; HPKE hybrid) | Encrypts payload (RSA-OAEP) / KEM encapsulation (HPKE) | Decrypts payload (RSA-OAEP) / KEM decapsulation (HPKE) | RSA-OAEP; RFC 9180 HPKE = KEM + KDF + AEAD | Unreadable ciphertext; in HPKE the KEM encapsulates a shared secret (not a pre-existing symmetric key) using the public key, a KDF derives the AEAD key/nonce from that secret, and the AEAD cipher encrypts the actual payload |
 | **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Verifiable evidence that the signing key was used |
-| **Key Agreement** | Exchanged with peer | Combined with peer public key | Ephemeral ECDH (X25519 / NIST P-256) | Shared symmetric secret key for bulk AEAD encryption |
+| **Key Agreement** | Exchanged with peer | Combined with peer public key | Ephemeral ECDH (X25519 / NIST P-256) | Raw shared-secret material — not yet a usable key; passed through a KDF (see Key Exchange &amp; Derivation page) to derive the actual symmetric AEAD traffic key |
 
 ## Can I Use a Private Key to Encrypt Data?
 
@@ -41,7 +41,7 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric cryptogra
 A **Private Key is used for Digital Signing** (and for decrypting incoming data locked under its matching public key). The popular shorthand *"signing is encrypting with the private key"* is an understandable simplification: for raw/textbook RSA specifically, generating a signature (`m^d mod n`) and decrypting ciphertext (`c^d mod n`) really are the same modular-exponentiation primitive with the key roles swapped — PKCS#1 / RFC 8017 names these RSASP1 and RSADP, and they're defined identically. But treating a signature as "ciphertext" is still inaccurate for three reasons:
 
 1. **Signatures Leave Plaintext Intact**: Digital signing computes a separate signature tag file (*`payload.sig`*) over a message digest while leaving the original payload file (*`payload.txt`*) completely unencrypted and readable in cleartext.
-2. **Standardized Padding Differs and Isn't Interchangeable**: RSA-OAEP (encryption) and RSA-PSS / PKCS#1v1.5 (signing) wrap that shared modular-exponentiation primitive in different, non-interchangeable padding schemes. A valid signature is not a valid OAEP ciphertext, and OAEP padding cannot be produced or verified with a private key.
+2. **Standardized Padding Differs and Isn't Interchangeable**: RSA-OAEP (encryption) and RSA-PSS / PKCS#1v1.5 (signing) wrap that shared modular-exponentiation primitive in different, non-interchangeable padding schemes. A valid signature is not a valid OAEP ciphertext: RSA-PSS/PKCS#1v1.5 signature *verification* is a public-key operation, while RSA-OAEP *decryption* — which does use the private key, applying RSADP followed by OAEP decoding and padding validation ([RFC 8017](https://www.rfc-editor.org/rfc/rfc8017.html)) — is a different operation over a different padding scheme; treating one as a substitute for the other fails.
 3. **Most Modern Signature Schemes Have No Encryption Primitive at All**: Ed25519, ECDSA, and FIPS 204 ML-DSA are not built from an invertible trapdoor function the way RSA is — there is no "decrypt" operation that recovers anything from one of their signatures, so the RSA-specific shorthand doesn't generalize to them.
 
 ### Client-Side Executable RSA Asymmetric Encryption & Digital Signature Playground

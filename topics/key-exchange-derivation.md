@@ -13,7 +13,7 @@ last_verified: 2026-08-11
 
 ## Diffie-Hellman Key Exchange (DH & ECDH)
 
-Standardized by Whitfield Diffie and Martin Hellman, Diffie-Hellman leverages the discrete logarithm problem. Endpoint A and Endpoint B exchange public parameters **g** and **p**, combine them with their private keys, and arrive at the exact same shared secret **S**:
+Standardized by Whitfield Diffie and Martin Hellman, Diffie-Hellman leverages the discrete logarithm problem. Endpoint A and Endpoint B agree on shared public domain parameters **g** and **p** (typically pre-established or drawn from a standardized group, not generated fresh per session), then each compute and exchange a public value derived from them — **A = g<sup>a</sup> mod p** and **B = g<sup>b</sup> mod p** — combining the received value with their own private exponent to arrive at the exact same shared secret **S**:
 
 **S = g^(ab) mod p**
 
@@ -61,8 +61,20 @@ To understand how two computers arrive at the exact same secret key without ever
 
 Modern protocols replace finite-field Diffie-Hellman with **Elliptic Curve Diffie-Hellman (ECDH)** over Curve25519 (**X25519 / [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748)**) or NIST P-256:
 - **Smaller Public Keys**: 32-byte (256-bit) public keys provide 128-bit security, compared to 3072-bit modular prime groups in finite-field DH.
-- **Fast Execution**: Meaningfully faster scalar multiplication than equivalent-security finite-field DH, with complete, constant-time arithmetic routines — the precise speedup depends on implementation and hardware, so benchmark your target platform rather than treating any fixed multiplier as universal.
+- **Fast Execution**: Meaningfully faster scalar multiplication than equivalent-security finite-field DH — the precise speedup depends on implementation and hardware, so benchmark your target platform rather than treating any fixed multiplier as universal. Curve25519 (X25519) was specifically designed so that constant-time, complete-formula arithmetic is straightforward to implement correctly; NIST P-256 can also be implemented in constant time, but its formulas historically made that easier to get wrong, and constant-time-ness is ultimately a property of a given implementation, not a guarantee either curve provides automatically.
 
+
+## Key Establishment Taxonomy: Agreement vs. Transport vs. KEM Encapsulation
+
+"How do two parties end up with a shared key?" covers three distinct mechanisms that this page (and the Asymmetric Cryptography and PQC pages) otherwise use somewhat interchangeably. They differ in who generates the secret and what a private-key compromise exposes:
+
+| Mechanism | Who Generates the Secret | Private-Key Compromise Exposes | Examples |
+|---|---|---|---|
+| **Key Agreement** | Neither party alone — both sides' independent contributions combine into a secret neither could compute without the other's input | Nothing retroactively, *if* the contributions were ephemeral (freshly generated per session, then discarded) — this is what makes forward secrecy possible | Diffie-Hellman, ECDH/X25519 (as described above) |
+| **Key Transport** | The sender — it generates the session key itself and encrypts (transports) it directly under the recipient's long-term public key | Every session key ever transported under that public key, including past ones — a leaked long-term private key retroactively decrypts recorded traffic (this is exactly the "Static Key Exchange" row in the PFS table below) | Static RSA key transport (e.g., classic TLS RSA cipher suites, now prohibited in TLS 1.3) |
+| **KEM Encapsulation** | The encapsulating party — it uses the recipient's public key to produce both a ciphertext and a shared secret in one step; the recipient recovers the same secret via decapsulation | Depends entirely on whether the KEM keypair itself was ephemeral or long-term — a KEM used with a freshly generated keypair per session behaves like agreement for forward-secrecy purposes; one used with a static keypair behaves like transport | ML-KEM (FIPS 203), the hybrid X25519MLKEM768 group's ML-KEM component (see the Post-Quantum Cryptography page) |
+
+The recurring confusion across this section is treating all three as interchangeable "key exchange." They aren't: agreement and (ephemeral) KEM encapsulation both support forward secrecy; transport and (static) KEM encapsulation don't. Whether a given key-establishment step provides forward secrecy is a property of *how the keys involved are generated and reused*, not of which mathematical primitive (DH, RSA, lattice-based KEM) is doing the underlying work.
 
 ## Authenticated Key Exchange & MITM Prevention
 
@@ -83,7 +95,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
 |---|---|---|
 | **Impact of Private Key Leak** | In deployments that use the leaked long-term key to directly transport or derive the session key — static RSA key transport or static (non-ephemeral) Diffie-Hellman — the adversary decrypts **all recorded historical traffic** protected under that key. Modern ephemeral-only deployments (TLS 1.3 mandates ECDHE) are not exposed this way. | Adversary **cannot derive past session keys from the leaked long-term key alone**; recorded sessions remain protected unless the ephemeral key material was independently compromised. |
 | **Key Agreement Mechanics** | RSA Key Transport or Static Diffie-Hellman | Ephemeral Elliptic Curve Diffie-Hellman (**ECDHE / X25519**) |
-| **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Required for every full **TLS 1.3** handshake and mandatory in **SSHv2**. TLS 1.3 PSK-only resumption (without `psk_dhe_ke`) is still permitted and forgoes forward secrecy for that resumed session. |
+| **Modern Standard Requirement** | Prohibited in **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)). | Required for every full **TLS 1.3** handshake. SSHv2 similarly favors ephemeral ECDH/DH key exchange in its default, most widely deployed algorithms, but [RFC 9142](https://www.rfc-editor.org/rfc/rfc9142.html) defines per-algorithm implementation-requirement tiers (MUST/SHOULD/MAY) that also permit some lower-priority, non-ephemeral methods — it isn't a strict ephemeral-only mandate the way TLS 1.3 is. TLS 1.3 PSK-only resumption (without `psk_dhe_ke`) is still permitted and forgoes forward secrecy for that resumed session. |
 
 <div class="security-layer security-layer-protect">
   <div class="security-layer-label">Architectural Roles</div>
@@ -92,7 +104,7 @@ Furthermore, raw Diffie–Hellman produces a shared-secret value, not a ready-to
     <p>Understanding key roles resolves common misconceptions between identity authentication and data encryption:</p>
     <ul>
       <li><strong>Server Certificate Key (Typically on Disk, an HSM, or a KMS)</strong>: In a certificate-authenticated TLS 1.3 handshake, this key provides <strong>identity authentication</strong> by signing the handshake transcript. It is not the bulk-data encryption key; record-layer traffic keys are derived separately from the key-agreement result. This describes the key's TLS role rather than every use another certificate profile might permit.</li>
-      <li><strong>Ephemeral ECDHE Key (Stored in Memory ONLY)</strong>: Used to establish the shared secret material that makes <strong>Data Confidentiality</strong> possible — it is a key-agreement key, not an encryption key itself. Generated in transient RAM for a single connection session, both endpoints combine key shares to derive the ECDH shared secret, which is passed through HKDF to derive the symmetric AES traffic keys (<code>0x8f3a91b2...</code>) and IVs that actually perform the AEAD encryption; the ECDHE key material is discarded when the session closes.</li>
+      <li><strong>Ephemeral ECDHE Key (Expected to Stay in Memory Only)</strong>: Used to establish the shared secret material that makes <strong>Data Confidentiality</strong> possible — it is a key-agreement key, not an encryption key itself. Generated in transient RAM for a single connection session, both endpoints combine key shares to derive the ECDH shared secret, which is passed through HKDF to derive the symmetric AES traffic keys (<code>0x8f3a91b2...</code>) and IVs that actually perform the AEAD encryption; the ECDHE key material is <em>intended</em> to be discarded when the session closes, though that's an implementation goal rather than a guarantee — swap, hibernation, or a crash dump taken while the session is live can still persist it.</li>
       <li><strong>Client Certificates</strong>: In the vast majority of ordinary web browsing, <strong>clients do not present certificates at all</strong>. The browser relies entirely on ephemeral ECDHE keys in RAM to derive the shared secret and expanded HKDF traffic keys to encrypt HTTP traffic.</li>
     </ul>
   </div>
@@ -611,7 +623,7 @@ Internally, HKDF-Expand builds its output keying material (OKM) block by block, 
 
 **T(i) = HMAC(PRK, T(i&minus;1) || info || i)**, with **T(0)** defined as the empty string
 
-Expands **PRK** into arbitrary-length sub-keys using application-specific info context strings. Generic RFC 5869 applications call `HKDF-Expand` with a plain `info` byte string directly, e.g.:
+Expands **PRK** into sub-keys of any length up to `HKDF-Expand`'s own bound — [RFC 5869 §2.3](https://www.rfc-editor.org/rfc/rfc5869.html#section-2.3) caps output at **255 × HashLen** bytes, not an arbitrary length — using application-specific info context strings. Generic RFC 5869 applications call `HKDF-Expand` with a plain `info` byte string directly, e.g.:
 
 **Traffic_Key = HKDF-Expand(PRK, info, length)**
 

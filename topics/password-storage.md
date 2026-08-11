@@ -9,7 +9,7 @@ last_verified: 2026-08-11
 
 # Password Hashing & Key Derivation
 
-<p class="lede">Passwords are low-entropy user secrets highly vulnerable to offline dictionary and GPU brute-force attacks. Secure password storage requires specialized, computationally expensive Password-Based Key Derivation Functions (PBKDF) that incorporate unique per-user salts, high memory hardness, and tunable time cost parameters to render offline cracking economically unviable.</p>
+<p class="lede">Passwords are low-entropy user secrets highly vulnerable to offline dictionary and GPU brute-force attacks. Secure password storage requires specialized, computationally expensive Password-Based Key Derivation Functions (PBKDF) that incorporate unique per-user salts and tunable time cost parameters to render offline cracking economically unviable — memory-hard functions like Argon2id additionally impose memory cost for stronger GPU/ASIC resistance where the deployment can afford it, but accepted constructions also include time-cost-only functions like PBKDF2 and CPU-bound ones like bcrypt.</p>
 
 ## Why Plain Cryptographic Hashes Fail for Passwords
 
@@ -34,7 +34,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 3. **Ban Periodic Expiry / Forced Rotation**:
    * Do not force users to change passwords periodically (e.g., every 90 days) unless a compromise is active. Forced rotation results in users selecting weaker, sequential passwords (e.g., `Winter2025!` to `Spring2025!`).
 4. **Enforce Breached Password Blacklisting**:
-   * Compare new passwords against a dictionary of **known compromised credentials** (breached database lists like HaveIBeenPwned) and block matches during registration.
+   * [NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html) requires checking new passwords against more than just breach lists — it also calls for rejecting commonly used, expected, and context-specific passwords (e.g., the service name, the username, or other account-specific dictionary words), not only credentials from **known compromised databases** (breach lists like HaveIBeenPwned).
 5. **Deprecate Security Questions / Hints**:
    * Knowledge-based authentication (KBA) questions (e.g., *"What was your first pet's name?"*) are forbidden because answers are easily researched using open-source intelligence (OSINT).
 
@@ -73,7 +73,7 @@ Modern password security standards (formalized in **NIST SP 800-63B**) prioritiz
 
     <!-- Estimated Crack Time Card -->
     <div style="margin-top: 1rem; background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
-      <span style="font-size: 0.8rem; color: var(--muted); display: block;">Estimated Uniform Brute-Force Time (at 100,000 guesses/sec):</span>
+      <span style="font-size: 0.8rem; color: var(--muted); display: block;">Estimated Uniform Brute-Force Time (illustrative rate of 100,000 guesses/sec — actual attacker throughput depends heavily on the hashing algorithm and hardware; see the Password Hashing diagram above):</span>
       <span id="password-crack-time" style="font-size: 1.1rem; font-weight: 800; color: var(--ink);">N/A</span>
     </div>
   </div>

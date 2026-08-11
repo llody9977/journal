@@ -1,6 +1,6 @@
 ---
 title: Symmetric Cryptography
-description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), Grover's quantum search, and Node.js envelope encryption.
+description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), and Grover's quantum search.
 permalink: /topics/symmetric-cryptography/
 last_verified: 2026-08-11
 ---
@@ -124,7 +124,7 @@ Nonce uniqueness is necessary but not sufficient — deploying AEAD at scale mea
 | Limit | Bound & Rationale | Engineering Consequence |
 |---|---|---|
 | **Per-invocation plaintext size** | AES-GCM: **2^39-256 bits (~64 GiB)** per single encryption call — this is a defined security/usage bound specified directly by [NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final), not a description of some internal structure degrading past that point; the standard simply doesn't specify or guarantee GCM's security properties beyond it. | Chunk very large payloads (multi-GB backups, disk images) into multiple AEAD-encrypted segments rather than one call. |
-| **Invocations per key (random nonces)** | SP 800-38D recommends staying under roughly **2^32 encryptions** per key when 96-bit nonces are chosen at random, to keep birthday-bound nonce-collision probability acceptably low. | Rotate keys on a volume- or count-based schedule, not just a calendar schedule, for high-throughput services. |
+| **Invocations per key (random nonces)** | [NIST SP 800-38D §8.3](https://csrc.nist.gov/pubs/sp/800/38/d/final) specifies, for the RBG-based (random) 96-bit IV construction, a maximum of roughly **2^32 encryptions** under a given key — this is a stated requirement bounding nonce-collision probability, not merely a suggestion. | Rotate keys on a volume- or count-based schedule, not just a calendar schedule, for high-throughput services. |
 | **Tag length** | SP 800-38D's Table 1 lists **128, 120, 112, 104, or 96 bits** as the normal recommended range; 128 bits is the safe default for most applications. **64- and 32-bit tags are permitted only under Appendix C**, which imposes strict additional constraints — e.g., a hard limit on the number of invalid-tag (forgery) attempts an attacker gets per key before the key must be retired — and are not a general-purpose substitute for the standard range. | Use 128-bit tags unless you have a specific bandwidth-constrained protocol with an Appendix C-compliant invalid-tag budget already designed in; truncating below 96 bits without that budget makes forgery by guessing measurably easier. |
 | **Counter/nonce space exhaustion** | Deterministic (counter-based) nonce constructions have a fixed number of usable values before the counter wraps and repeats. | Monitor counter state and force key rotation before exhaustion — don't rely solely on a time-based rotation policy if traffic volume can outpace it. |
 

@@ -82,7 +82,7 @@ SVGS['full-disk-encryption-scope.svg'] = """<svg viewBox="0 0 1200 420" xmlns="h
 
   <!-- Summary Footer -->
   <rect x="50" y="365" width="1100" height="40" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Summary: FDE is a physical security control. Data-in-use protection requires application-level field encryption.</text>
+  <text x="600" y="390" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Summary: FDE is a cryptographic control mitigating offline physical-access threats. Data-in-use protection requires OS access controls and app-level security.</text>
 </svg>"""
 
 # 3. quantum-algorithm-impact.svg

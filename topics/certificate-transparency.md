@@ -9,7 +9,7 @@ last_verified: 2026-08-11
 
 # Certificate Transparency (CT) & Merkle Audit Proofs
 
-<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework for logging publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. The CT protocol itself (RFC 6962/9162) does not compel a CA to log anything — logging is effectively mandatory only because major browsers (Chrome, Safari) refuse to trust publicly trusted TLS connections that lack qualifying Signed Certificate Timestamps (SCTs); that browser/root-program policy layer, not the CT protocol, is what forces CAs' hand. CT does not prevent a CA from misissuing a certificate; instead, by making SCTs a practical prerequisite for browser trust, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
+<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework for logging publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. The CT protocol itself (RFC 6962/9162) does not compel a CA to log anything — logging is effectively mandatory only because major browsers (Chrome, Safari, and — since Firefox 135 — Firefox) refuse to trust publicly trusted TLS connections that lack qualifying Signed Certificate Timestamps (SCTs); that browser/root-program policy layer, not the CT protocol, is what forces CAs' hand. CT does not prevent a CA from misissuing a certificate; instead, by making SCTs a practical prerequisite for browser trust, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
 
 ## The Problem: Rogue CA Misissuance
 
@@ -17,7 +17,7 @@ Historically, any trusted Root CA in an operating system trust store could issue
 
 ## Merkle Tree Architecture in CT (RFC 6962 / RFC 9162)
 
-CT logs organize certificates into append-only Merkle hash trees. Standardized in **[RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)** and **[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)**, a **Merkle Tree** hashes leaf data pairwise up to a single cryptographic **Root Hash**:
+CT logs organize certificates into append-only Merkle hash trees. Specified in **[RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)** and **[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)** — both published as Experimental RFCs, not IETF Standards Track — a **Merkle Tree** hashes leaf data pairwise up to a single cryptographic **Root Hash**:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/certificate-transparency-merkle-tree.svg' | relative_url }}" alt="Certificate Transparency Merkle tree diagram showing leaf certificates hashed up to a Merkle Root Hash.">
@@ -41,7 +41,7 @@ When a domain owner or automated ACME agent requests a certificate, the CA submi
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/sct-flow.svg' | relative_url }}?v=2" alt="Signed Certificate Timestamp (SCT) workflow showing CA log submission, SCT generation, and TLS embedding.">
-  <p class="diagram-caption">SCT Delivery Workflow: CA submits pre-certificate to CT logs, receives SCTs, and embeds them into the TLS certificate</p>
+  <p class="diagram-caption">SCT Delivery Workflow (embedded-SCT path — the most common of the three delivery mechanisms below): CA submits pre-certificate to CT logs, receives SCTs, and embeds them into the TLS certificate</p>
 </div>
 
 ## Browser CT Enforcement Policies
@@ -87,7 +87,7 @@ SCTs can be delivered to the client browser via three distinct transport mechani
       <li><strong>Detection, Not Prevention</strong>: CT does not stop a CA from misissuing a certificate — it makes misissuance publicly loggable and discoverable after the fact, so it enables accountability rather than blocking the act itself.</li>
       <li><strong>Public Append-Only Logs</strong>: In the common embedded-SCT workflow, the CA submits a pre-certificate before final issuance; SCTs may also be delivered through supported TLS mechanisms.</li>
       <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling — though Chrome 148+ no longer accepts the OCSP-stapling path toward its CT compliance requirement, leaving the other two as the paths that actually count there.</li>
-      <li><strong>Browser Enforcement Policies</strong>: Chrome and Apple enforce distinct CT policies requiring specific SCT counts and log operator diversity rules based on certificate lifetime.</li>
+      <li><strong>Browser Enforcement Policies</strong>: Chrome and Apple enforce distinct CT policies requiring specific SCT counts and log operator diversity rules based on certificate lifetime; Firefox enforces CT separately (since Firefox 135) but via its own mechanism rather than Chrome/Apple's specific SCT-count rules.</li>
     </ul>
   </div>
 </div>

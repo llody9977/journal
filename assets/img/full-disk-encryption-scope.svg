@@ -29,5 +29,5 @@
 
   <!-- Summary Footer -->
   <rect x="50" y="365" width="1100" height="40" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="390" font-size="11.5" font-weight="700" fill="#334155" text-anchor="middle">Summary: FDE is a physical security control. Protecting data in active use depends on OS access controls, app security, and optional field encryption.</text>
+  <text x="600" y="390" font-size="11.5" font-weight="700" fill="#334155" text-anchor="middle">Summary: FDE is a cryptographic control mitigating offline physical-access threats. Protecting data in active use depends on OS access controls and app security.</text>
 </svg>

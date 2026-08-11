@@ -33,22 +33,19 @@
     </aside>
 
     <main class="content">
-      {% if page.last_verified %}
-      <div class="topic-metadata-bar">
-        <span class="meta-item">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Last Verified: <strong>{{ page.last_verified }}</strong>
-        </span>
-        <span class="meta-divider">•</span>
-        <span class="meta-item">Verified against Primary Specifications (NIST, IETF, NSA)</span>
-      </div>
-      {% endif %}
-
       {{ content }}
 
       {% include topic-nav.html %}
 
       <footer class="page-footer">
+        {% if page.last_verified %}
+        <div class="topic-metadata-bar">
+          <span class="meta-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Last updated: <strong>{{ page.last_verified }}</strong>
+          </span>
+        </div>
+        {% endif %}
         <p><strong>Disclaimer:</strong> Technical reference notes for educational and engineering practice. Always verify against authoritative specifications (NIST, ISO/IEC, RFCs) for security-critical production deployments.</p>
       </footer>
     </main>

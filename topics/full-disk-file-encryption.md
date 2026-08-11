@@ -9,7 +9,7 @@ last_verified: 2026-08-11
 
 # Full-Disk & File-Level Encryption
 
-<p class="lede">Data at rest security protects stored information against physical storage theft, unauthorized disk cloning, and cloud infrastructure exfiltration. Architecture decisions span full-disk encryption (FDE) operating at the block-device layer (e.g. Linux LUKS2, encrypting an entire partition under one volume key), file-system encryption (FBE, e.g. Android's fscrypt) enforcing per-file access boundaries, and database field-level encryption using Key Encryption Key (KEK) envelope hierarchies.</p>
+<p class="lede">Data at rest security protects stored information against physical storage theft, unauthorized disk cloning, and exfiltration of storage media, backups, or snapshots taken outside the authorized decryption/key boundary — it does not, by itself, protect against a compromised running workload or a breached cloud control plane that already holds legitimate decrypt access. Architecture decisions span full-disk encryption (FDE) operating at the block-device layer (e.g. Linux LUKS2, encrypting an entire partition under one volume key), file-system encryption (FBE, e.g. Android's fscrypt) enforcing per-file access boundaries, and database field-level encryption using Key Encryption Key (KEK) envelope hierarchies.</p>
 
 ## Threat Scope: Data at Rest Protection Boundaries
 
@@ -32,7 +32,7 @@ Standardized in **[IEEE 1619](https://standards.ieee.org/ieee/1619/6966/)** and 
 
 <b>C = AES-XTS(K<sub>1</sub>, K<sub>2</sub>, Sector Number, Plaintext)</b>
 
-AES-XTS prevents pattern leakage between identical sectors. Per NIST SP 800-38E, modifying a single ciphertext byte completely randomizes the 16-byte AES block containing that byte upon decryption, while leaving the remaining 16-byte blocks in the sector unchanged (XTS provides confidentiality, not authenticity or integrity).
+AES-XTS prevents pattern leakage **across different sector addresses** — the per-sector tweak means two identical plaintext blocks at different sector locations produce different ciphertext, unlike ECB. It is not randomized *within* repeated encryptions of the same sector, though: encrypting the same plaintext to the same sector under the same key is deterministic, so an observer comparing multiple snapshots of the same volume can tell whether a given sector's ciphertext changed between snapshots (revealing that something was written there, even without knowing what), and, if a sector's plaintext space is small or guessable, potentially confirm an equality guess. Per NIST SP 800-38E, modifying a single ciphertext byte completely randomizes the 16-byte AES block containing that byte upon decryption, while leaving the remaining 16-byte blocks in the sector unchanged (XTS provides confidentiality, not authenticity or integrity).
 
 ## Linux LUKS2 & Argon2id Header Security
 

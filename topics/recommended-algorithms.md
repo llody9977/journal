@@ -1,6 +1,6 @@
 ---
 title: Recommended Cryptographic Algorithms & Standards
-description: Comprehensive compliance guide mapping NIST SP 800-57, NSA CNSA 2.0, NIST PQC Standards (FIPS 203/204/205/206), and Chinese ShangMi (SM2/3/4) algorithm suites.
+description: A selected comparison of NIST SP 800-57, NSA CNSA 2.0, NIST PQC Standards (finalized FIPS 203/204/205 and draft FIPS 206), BSI, and Chinese ShangMi (SM2/3/4) guidance — not a comprehensive survey of every jurisdiction's cryptographic compliance regime.
 permalink: /topics/recommended-algorithms/
 last_verified: 2026-08-11
 ---
@@ -70,6 +70,18 @@ Under China's Cryptography Law (2020) and technical standards such as **[GB/T 39
 | **SM3** | Cryptographic Hash | Fills the role SHA-256 fills — comparable digest size and general-purpose use, distinct internal design. | 256-bit cryptographic hash function (GB/T 32905); used for integrity verification and digital signatures within applicable regulatory scopes. |
 | **SM4** | 128-bit Block Cipher | Fills the role the **AES block cipher** fills (128-bit block, 128-bit key) — SM4 is a block cipher, not itself an AEAD mode; it is commonly deployed with GCM (analogous to AES-128-GCM), but "SM4" and "AES-128-GCM" are not the same category of thing. | 128-bit block cipher (GB/T 32907); used for bulk payload and transmission encryption within applicable regulatory scopes. |
 | **SM9** | Identity-Based Encryption | IBE / Identity PKI | Identity-based public-key algorithm (GM/T 0044) using identifier strings as public keys in supported PKI architectures. |
+
+## Algorithm-Selection Workflow
+
+The tables above are a reference, not a decision procedure — picking an algorithm for a specific system means working through several independent constraints, roughly in this order, since an earlier answer can eliminate options a later one would otherwise allow:
+
+1. **Jurisdiction and regulatory regime**: Which compliance framework actually governs this system? U.S. federal or FedRAMP work is bound by NIST FIPS/SP validation; work touching National Security Systems adds NSA CNSA 2.0's stricter timeline and curve requirements (P-384 over P-256, for instance); Chinese Critical Information Infrastructure or government/financial systems may mandate the ShangMi suite depending on classification level; EU or other regional regimes may reference BSI TR-02102 or their own national guidance. A system spanning jurisdictions may need to satisfy more than one regime simultaneously, which can rule out an otherwise-fine algorithm outright.
+2. **Protocol and interoperability constraints**: The algorithm has to be one the *protocol* actually negotiates — TLS 1.3's cipher suite list, SSH's `KexAlgorithms`, or a target library's supported set — not just one that's individually secure. An excellent algorithm nobody on the other end of the connection implements is not a usable choice.
+3. **Required security strength**: Match key/output size to the actual sensitivity and exposure window of what's being protected (see NIST SP 800-57's security-strength categories) — this is also where post-quantum posture enters: does this data need to resist harvest-now-decrypt-later, and if so, over what timeline (see the Post-Quantum Cryptography page)?
+4. **FIPS-module (validation) requirements**: A cryptographically sound, standards-track algorithm can still fail a compliance requirement if the specific software module implementing it hasn't completed FIPS 140-3 validation — algorithm approval and module validation are tracked separately (see the FIPS 140-3 IG reference below), and a procurement or audit requirement often means the *validated module*, not just the algorithm choice.
+5. **Data-protection lifetime**: How long does this data need to stay confidential or tamper-evident after it's created? A short-lived session key has different quantum-readiness and rotation requirements than an archival signature that must remain verifiable for decades — the longer the required protection window, the more conservative the margin (larger keys, PQC readiness, avoiding algorithms already showing cryptanalytic erosion) needs to be.
+
+Treat this as a checklist to work through per system, not a one-time global choice — a payment-processing service, an internal build-signing pipeline, and a public website's TLS termination can legitimately land on different answers even within the same organization.
 
 ## What I Need to Remember
 
