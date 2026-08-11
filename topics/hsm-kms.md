@@ -55,7 +55,7 @@ Envelope encryption uses a short-lived or narrowly scoped **data-encryption key 
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Envelope encryption process: generate a DEK, encrypt the payload, wrap the DEK with a KMS key, and store the encrypted envelope.">
-  <p class="diagram-caption">The KMS protects the small DEK while the application encrypts the bulk data locally. This diagram depicts one KMS deployment (a KEK held in an HSM-backed, customer-managed key); the KEK's protection boundary may equally be a software module or an external key service, as described above.</p>
+  <p class="diagram-caption">A KMS coordinates the KEK's use, but the KEK itself lives in a separate cryptographic protection boundary — an HSM, a software module, or an external key service, as described above — not the KMS as a whole.</p>
 </div>
 
 1. Generate a DEK with an approved random-bit generator or ask the KMS to generate one.
