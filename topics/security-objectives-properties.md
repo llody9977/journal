@@ -2,7 +2,7 @@
 title: Security Objectives & Properties
 description: Architectural framework for security objectives, FIPS 199 impact categorization, extended properties, safeguard mechanics, and the objective-to-verified-control traceability chain.
 permalink: /topics/security-objectives-properties/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -18,7 +18,7 @@ last_verified: 2026-08-11
 
 ## System Criticality & FIPS 199 / FIPS 200 Impact Categorization
 
-Rather than treating security objectives as arbitrary choices, system architectures evaluate **system criticality** based on potential magnitude of harm. **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** is a U.S. federal standard—mandatory for federal information systems. **[NIST SP 800-60 Vol. 1 Rev. 1](https://csrc.nist.gov/pubs/sp/800/60/v1/r1/final)** is supplemental NIST guidance that assists agencies in mapping information types to FIPS 199 categories; it is not itself a mandatory standard, but the Low/Moderate/High impact model they define is a useful, widely borrowed structure for reasoning about system criticality in any organization. Under that model, system categorization follows a 4-step progression:
+Rather than treating security objectives as arbitrary choices, system architectures evaluate **system criticality** based on potential magnitude of harm. **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** is a U.S. federal standard—mandatory for federal information systems, but its applicability statement explicitly excludes national security systems (as defined in 44 U.S.C. § 3542(b)(2)) and classified information; those are categorized under a separate national-security-system process (e.g., CNSSI 1253), not FIPS 199. **[NIST SP 800-60 Vol. 1 Rev. 1](https://csrc.nist.gov/pubs/sp/800/60/v1/r1/final)** is supplemental NIST guidance that assists agencies in mapping information types to FIPS 199 categories; it is not itself a mandatory standard, but the Low/Moderate/High impact model they define is a useful, widely borrowed structure for reasoning about system criticality in any organization. Under that model, system categorization follows a 4-step progression:
 
 1. **Inventory Information Types & System Functions**: Identify all data types (*e.g., PII, medical records, financial transactions, system credentials*) processed or stored by the system.
 2. **Assess Potential Impact Severity**: Evaluate potential harm magnitude across Confidentiality (**SC Confidentiality**), Integrity (**SC Integrity**), and Availability (**SC Availability**) if compromised.

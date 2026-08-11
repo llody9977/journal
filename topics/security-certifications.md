@@ -2,7 +2,7 @@
 title: Security Certifications
 description: Deep technical analysis of FIPS 140-3, Common Criteria (ISO 15408), PCI PTS HSM, and eIDAS EN 419 221-5 hardware certifications.
 permalink: /topics/security-certifications/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Governance, Risk & Compliance / Assurance</span>
@@ -22,14 +22,14 @@ last_verified: 2026-08-06
 
 ## FIPS 140-2 / FIPS 140-3: Cryptographic Module Validation
 
-Operated jointly by NIST and the Canadian Centre for Cyber Security through the **Cryptographic Module Validation Program (CMVP)**, **[FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)** tests cryptographic modules across four security levels:
+Operated jointly by NIST and the Canadian Centre for Cyber Security through the **Cryptographic Module Validation Program (CMVP)**, **[FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)** defines four qualitative security levels across eleven separate requirement areas (module interfaces, roles and authentication, physical security, sensitive security parameter management, self-tests, and others). A certificate's headline overall level is derived as the minimum across those areas—a module can validate higher in some individual areas than its overall rating shows, so the single overall number does not mean every dimension was tested to that same depth. In broad terms, a higher overall level typically adds:
 
 - **Level 1**: Basic security; requires approved algorithms but no physical tamper protection (*e.g., software cryptographic libraries like OpenSSL FIPS provider*).
 - **Level 2**: Adds tamper-evident coatings or seals and role-based authentication.
 - **Level 3**: Adds tamper response (zeroizing keys upon physical casing breach), identity-based authentication, and logical key separation (*e.g., cloud KMS HSMs, AWS CloudHSM, YubiHSM 2*).
 - **Level 4**: Highest physical assurance; protects against environmental attacks (voltage fluctuation, extreme temperature manipulation, side-channel analysis).
 
-FIPS 140 validation applies strictly to the **cryptographic module boundary** (key generation, derivation, storage, and execution), not the surrounding application logic.
+Treat these as the typical overall-level profile, not a guarantee that every one of the eleven requirement areas on a specific certificate was validated at that same level—check the certificate and security policy for the area-by-area detail. FIPS 140 validation applies strictly to the **cryptographic module boundary** (key generation, derivation, storage, and execution), not the surrounding application logic.
 
 ## Common Criteria (ISO/IEC 15408): Product Evaluation
 
@@ -64,7 +64,7 @@ A payment HSM must hold PCI PTS HSM approval before major payment networks (Visa
 When auditing vendor certification claims:
 
 1. **Verify Certificate Numbers**: Search the official **[NIST CMVP Database](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search)** for FIPS 140 claims or the **[Common Criteria Portal](https://www.commoncriteriaportal.org/)** for EAL ratings.
-2. **Distinguish "FIPS Compliant" vs "FIPS Validated"**: Reject marketing phrases like *"FIPS compliant"* or *"FIPS-approved algorithms"*. Only a listed NIST CMVP certificate number guarantees an audited module.
+2. **Distinguish "FIPS Compliant" vs "FIPS Validated"**: Reject marketing phrases like *"FIPS compliant"* or *"FIPS-approved algorithms"*. A listed NIST CMVP certificate number is a pointer to an audited module, not a guarantee by itself—it must be checked against the exact module name, version or part number, operational environment, approved mode, and any certificate caveats before it supports the claim (see the equivalent FIPS 140-3 validation framing in **[HSM & KMS]({{ '/topics/hsm-kms/' | relative_url }})**).
 3. **Inspect the Physical/Software Boundary**: Confirm whether validation covers the entire physical hardware unit or merely an underlying software library module.
 4. **Check Certificate Sunset Dates**: Verify that hardware modules have not moved to NIST's *Historical List* following firmware or hardware updates.
 
@@ -76,7 +76,7 @@ When auditing vendor certification claims:
     <strong>Security Certifications Summary</strong>
     <ul>
       <li><strong>ISO 27001 vs. SOC 2</strong>: ISO 27001 is a globally recognized cert auditing ISMS processes; SOC 2 Type II is a U.S. report evaluating trust principles over 6+ months.</li>
-      <li><strong>FedRAMP High/Moderate</strong>: Mandatory authorization for U.S. federal cloud providers based on NIST SP 800-53 controls.</li>
+      <li><strong>FedRAMP</strong>: Mandatory authorization for U.S. federal cloud providers based on NIST SP 800-53 controls. FedRAMP's impact-level and authorization terminology has continued to evolve—verify current terms at <a href="https://www.fedramp.gov/">fedramp.gov</a> rather than assuming a fixed Low/Moderate/High or ATO framing.</li>
       <li><strong>Common Criteria (CC)</strong>: Evaluates hardware/software assurance levels (EAL1 to EAL7) against defined protection profiles.</li>
     </ul>
   </div>

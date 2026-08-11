@@ -2,7 +2,7 @@
 title: "Cybersecurity Standards & Frameworks"
 description: Comprehensive comparative guide to NIST CSF 2.0, NIST SP 800-53, ISO 27001/27002, OWASP ASVS/SAMM, CIS Controls, CISA CPGs, and SOC 2 audits.
 permalink: /topics/cybersecurity-standards/
-last_verified: 2026-08-09
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Governance, Risk & Compliance / Deep Dive</span>
@@ -16,12 +16,13 @@ last_verified: 2026-08-09
 | Standard / Framework | Type | Primary Purpose | Target Audience | Certification Status |
 |---|---|---|---|---|
 | **NIST CSF 2.0** | Voluntary Framework | Organizing vocabulary & outcome mapping across 6 Functions (Govern, Identify, Protect, Detect, Respond, Recover) | Enterprise leadership & security architects | Self-assessed (No formal certification) |
-| **NIST SP 800-53 Rev. 5** | Control Catalog | Exhaustive catalog of ~1,000 security & privacy controls | Federal agencies, FISMA contractors, high-assurance enterprises | Mandatory for US federal systems |
+| **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | Control Catalog | Exhaustive catalog of ~1,000 security & privacy controls | Federal agencies, FISMA contractors, high-assurance enterprises | The catalog itself is not self-executing; FIPS 200 makes baseline selection from it mandatory for federal information systems (excluding national security systems). Voluntarily adopted elsewhere as a control reference. |
 | **ISO/IEC 27001:2022** | Management Standard | Requirements for an Information Security Management System (ISMS) | Global enterprises requiring verifiable B2B security posture | Certified by accredited 3rd-party auditors |
 | **ISO/IEC 27002:2022** | Implementation Guide | Detailed implementation guidance for ISO 27001 Annex A controls | Security engineers implementing ISO 27001 | Companion guidance (Non-certifiable) |
 | **CIS Controls v8.1** | Prioritized Safeguard List | 153 concrete safeguards grouped into 18 Controls and 3 Implementation Groups (IG1, IG2, IG3) | Resource-constrained security teams needing prioritized actions | Self-assessed / Audit baseline |
 | **CISA CPGs** | Critical Baseline Goals | Minimum high-impact practices for critical infrastructure operators | Critical infrastructure, SMBs establishing a security floor | Voluntary baseline guidance |
-| **FedRAMP** / **CMMC 2.0** | US Federal & Defense Cloud Authorization | Federal & defense cloud authorization baselines built on NIST SP 800-53 / SP 800-171 | Cloud service providers selling to US federal agencies; defense industrial base contractors | Mandatory for in-scope federal/defense contracts |
+| **FedRAMP** | US Federal Cloud Authorization | Authorization framework for cloud service offerings sold to federal agencies, built on NIST SP 800-53 controls | Cloud service providers selling to US federal agencies | Mandatory for in-scope cloud services sold to federal agencies |
+| **CMMC** | Defense Industrial Base Contractor Assessment | Assesses defense industrial base (DIB) contractors' own cybersecurity practices (built on NIST SP 800-171) as a condition of DoD contract eligibility—a contractor assessment program, not a cloud-service authorization scheme like FedRAMP | Defense industrial base contractors bidding on or holding DoD contracts | Phased rollout tied to DoD contract requirements; verify current program status against the [official DoD CMMC page](https://dodcio.defense.gov/CMMC/About/) |
 | **OWASP Top 10** | Awareness Document | Consensus list of critical web application security risks | Web developers, application security engineers | Educational awareness floor |
 | **OWASP ASVS 5.0.0** | Verification Standard | Testable application security requirements across 3 levels (L1, L2, L3) | AppSec engineers, penetration testers, QA auditors | Verifiable software standard |
 | **OWASP SAMM v2** | Maturity Model | Assesses and matures software security practices across 5 business functions | Software engineering leadership | Organizational assessment framework |
@@ -104,7 +105,7 @@ Engineering teams often navigate multiple NIST 800-series publications and Feder
 
 | Standard / Publication | Engineering Domain | Primary Scope &amp; Function | Operational Placement |
 |---|---|---|---|
-| **[NIST FIPS 140-3](https://csrc.nist.gov/pubs/fips/140/3/final)** | Cryptography &amp; Hardware Security | Security requirements for hardware and software cryptographic modules | Validating Hardware Security Modules (HSMs), TPMs, and cryptographic libraries. |
+| **[NIST FIPS 140-3](https://csrc.nist.gov/pubs/fips/140-3/final)** | Cryptography &amp; Hardware Security | Security requirements for hardware and software cryptographic modules | Validating Hardware Security Modules (HSMs), TPMs, and cryptographic libraries. |
 | **[NIST FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)** / **FIPS 200** | Security Categorization | Categorizing system impact (*Low, Moderate, High*) across CIA triad properties | **Risk Assessment &amp; System Categorization**: Defining baseline security requirements based on potential harm severity. |
 | **[NIST SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** / **SP 800-37** / **SP 800-39** | Risk Management Lifecycle | Risk Assessment (800-30), Risk Management Framework (800-37), Risk Governance (800-39) | **Risk Engine**: The continuous decision process connecting threat inputs, risk responses, and control monitoring. |
 | **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** | Control Catalog &amp; Safeguards | Catalog of 20 control families (*Access Control, Audit, Cryptography, Incident Response*) | **Enterprise Governance &amp; Control Execution**: The primary baseline catalog for FedRAMP, DoD, and enterprise risk controls. |
