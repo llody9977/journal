@@ -142,13 +142,26 @@ Use a secondary framework only when it materially improves clarity.
 
 ### Cross-format accuracy
 
-The same accuracy rules apply to all forms of journal content, including prose, tables, diagrams, images, captions, alt text, screenshots, animations, video, narration, code, scripts, commands, and displayed output.
+The same accuracy rules apply to all forms of journal content, including front matter, titles, descriptions, ledes, navigation labels, prose, tables, diagrams, images, captions, alt text, screenshots, animations, video, narration, code, scripts, commands, displayed output, summaries, and downloadable assets.
 
 - A visual must not make a stronger or broader claim than the accompanying text.
 - Clearly label author-created diagrams and models as conceptual or practical models when they are not defined by the cited standard.
 - When a factual or standards-related statement changes, update every table, diagram, caption, example, and summary that repeats it.
 - Code and scripts must demonstrate only what the surrounding explanation claims they demonstrate.
 - Illustrative values and hypothetical outputs must be identified as such when a reader could reasonably mistake them for measured or standardized values.
+
+### Completeness, metadata, and cross-page consistency
+
+- A title, front-matter description, lede, navigation label, summary, and downloadable asset must describe the content that actually exists on the current page. Remove stale promises for examples, tools, formats, or coverage that the page no longer provides.
+- Include the foundational concepts, prerequisites, terminology boundaries, assumptions, limitations, failure modes, and decision context necessary to understand and apply the primary subject correctly. Treat advanced enrichment separately from knowledge required for correctness.
+- Related pages must use consistent terminology, taxonomy, status labels, formulas, and conceptual boundaries. If their scopes intentionally differ, state the distinction where a reader could otherwise infer a contradiction.
+- A page described as comprehensive, complete, compliant, standards-aligned, or equivalent must define its scope and actually cover the material categories necessary to justify that description.
+- When a page introduces several mechanisms under one broad label, distinguish their different security properties and operating models rather than allowing a statement about one mechanism to appear universal.
+- Review coverage and content correctness are separate from automated structural checks. The presence of required headings, metadata, or references does not by itself establish factual accuracy, standards compliance, or knowledge completeness.
+
+## Review requirements
+
+All content reviews must follow [`REVIEW_STANDARD.md`](REVIEW_STANDARD.md). It defines targeted verification, fresh review, mandatory gap analysis, review dimensions, closure requirements, and the evidence required before stating that content is fully reviewed or all issues are fixed.
 
 ## Final self-review
 
@@ -169,4 +182,8 @@ Before considering a page complete, check:
 13. Are numerical scores, thresholds, SLAs, formulas, and performance claims sourced or clearly labelled as illustrative?
 14. Do tables, diagrams, images, captions, code, scripts, video, and summaries preserve the same qualifications as the main text?
 15. Does each cited source directly support the claim beside it rather than merely discussing the same general topic?
-
+16. Do the title, description, lede, navigation label, examples, downloads, and summary accurately describe the current page?
+17. Are related pages using consistent terminology, taxonomy, formulas, status labels, and conceptual boundaries?
+18. Does the page contain the foundational knowledge, assumptions, limitations, failure cases, and decision context required for its stated scope?
+19. Have required foundational gaps been separated from optional advanced coverage?
+20. If the page claims comprehensive, complete, compliant, or standards-aligned coverage, is that scope defined and justified?

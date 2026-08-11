@@ -8,7 +8,7 @@ topics_dir = os.path.join(repo_root, "topics")
 
 files = sorted([f for f in os.listdir(topics_dir) if f.endswith(".md")])
 
-print(f"Running WRITING_STYLE.md automated quality gate across {len(files)} topic files...\n")
+print(f"Running automated page-structure checks across {len(files)} topic files...\n")
 
 errors = []
 
@@ -53,5 +53,6 @@ if errors:
             print(f"    - {err}")
     sys.exit(1)
 
-print(f"✅ All {len(files)} topic files passed the WRITING_STYLE.md quality gate perfectly!")
+print(f"✅ All {len(files)} topic files passed the automated structural checks.")
+print("ℹ️  These checks do not verify factual accuracy, standards applicability, semantic completeness, or cross-format consistency.")
 sys.exit(0)

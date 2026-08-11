@@ -19,6 +19,8 @@ above on every push to `main` — no manual build or deploy step required.
 
 All journal entries follow [`WRITING_STYLE.md`](WRITING_STYLE.md): a concise, recall-first personal voice, US English, primary references, and a writing framework selected for the topic.
 
+All targeted verifications, fresh reviews, final passes, and gap assessments follow [`REVIEW_STANDARD.md`](REVIEW_STANDARD.md). Reviews are read-only by default and may claim complete closure only after satisfying its documented coverage and evidence requirements.
+
 ## Structure
 
 - `index.md` — landing page / overview

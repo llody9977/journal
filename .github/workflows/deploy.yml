@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   quality-gate:
-    name: Verify Writing Style & Standards
+    name: Verify Required Page Structure
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run WRITING_STYLE.md Automated Quality Gate
+      - name: Run Automated Page-Structure Checks
         run: python3 scripts/verify_writing_style.py
 
   build:
