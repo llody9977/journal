@@ -13,7 +13,7 @@ last_verified: 2026-08-12
 
 ## SSH vs TLS: Architectural Comparison
 
-| Security Dimension | TLS 1.3 (RFC 9846) | SSH v2 (RFC 4253 / RFC 4252) |
+| Security Dimension | TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), obsoletes RFC 8446) | SSH v2 (RFC 4253 / RFC 4252) |
 |---|---|---|
 | **Server Authentication** | Hierarchical X.509 Certificate Authority (Root ──> Intermediate ──> Leaf) | **Trust-On-First-Use (TOFU)** via bare host keys or **OpenSSH Certificates** |
 | **Client Authentication** | Optional X.509 Client Certificates (mTLS) | Mandatory User Authentication (Public Key, Password, or OpenSSH Cert) |
@@ -32,7 +32,7 @@ When a client connects to an SSH server for the first time, the client verifies 
 
 <div class="callout warn">
   <span class="callout-title">The Host Key Changed Security Alert</span>
-  <p>If a host key in <code>~/.ssh/known_hosts</code> mismatches the key presented during a connection, the OpenSSH client's default configuration (<a href="https://man.openbsd.org/ssh_config.5#StrictHostKeyChecking">StrictHostKeyChecking</a> set to <code>ask</code> or <code>accept-new</code>) refuses to proceed and warns of potential Man-in-the-Middle (MitM) key interception or unauthorized server replacement. This refusal is a client-configuration behavior, not a protocol guarantee: setting <code>StrictHostKeyChecking no</code> instead permits the connection to a changed host key to proceed silently, so the alert only fires when the client is not configured to bypass it.</p>
+  <p>If a host key in <code>~/.ssh/known_hosts</code> mismatches the key presented during a connection, the OpenSSH client's default configuration (<a href="https://man.openbsd.org/ssh_config.5#StrictHostKeyChecking">StrictHostKeyChecking</a> set to <code>ask</code> or <code>accept-new</code>) refuses to proceed and warns of potential Man-in-the-Middle (MitM) key interception or unauthorized server replacement. This refusal is a client-configuration behavior, not a protocol guarantee: setting <code>StrictHostKeyChecking no</code> instead permits the connection to proceed without requiring interactive confirmation, subject to the restrictions <a href="https://man.openbsd.org/ssh_config.5#StrictHostKeyChecking">documented for that setting</a> — this does not necessarily mean no warning is printed at all, only that the client no longer blocks on one.</p>
 </div>
 
 ## OpenSSH Public Key Types & Recommendations
