@@ -1,8 +1,8 @@
 ---
 title: Network Segmentation & Microsegmentation
-description: How I isolate network workloads using subnets, Security Groups, NACLs, DMZs, and Zero Trust microsegmentation to restrict lateral movement.
+description: Isolating network workloads using subnets, Security Groups, NACLs, DMZs, and Zero Trust microsegmentation to restrict lateral movement.
 permalink: /topics/network-segmentation-microsegmentation/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Network Security / Architecture</span>

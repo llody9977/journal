@@ -2,7 +2,7 @@
 title: DNS Security
 description: Architectural analysis of DNS security primitives, Kaminsky cache poisoning, DNSSEC signature chains (DS/DNSKEY/RRSIG), DoH/DoT encryption, and dangling CNAME risks.
 permalink: /topics/dns-security/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Network Security / Protocol Analysis</span>
@@ -20,7 +20,7 @@ last_verified: 2026-08-06
 | **MX** | Mail Exchanger priority list | Priority `0` represents primary mail server; unauthenticated MX records permit email interception. |
 | **NS** | Nameserver delegation | Compromising or hijacking authoritative NS records hands total zone control to an adversary. |
 | **TXT** | Arbitrary text attributes | Stores **SPF**, **DKIM**, and **DMARC** email authentication policies and SaaS verification tokens. |
-| **CAA** | Certification Authority Authorization | Restricts which public Certificate Authorities are authorized to issue TLS certificates for the zone. |
+| **CAA** | Certification Authority Authorization | Restricts which public Certificate Authorities are authorized to issue TLS certificates for the zone. Its effectiveness depends on issuer enforcement — an Issuer must actually check and observe the CAA record before issuing, as required by the CA/Browser Forum Baseline Requirements — and it does not prevent misissuance by a CA the record already authorizes ([RFC 8659](https://www.rfc-editor.org/rfc/rfc8659.html) Security Considerations). |
 
 ## The Threat: Kaminsky Cache Poisoning Attack (2008)
 
@@ -46,7 +46,7 @@ Modern resolvers mitigate Kaminsky attacks by randomizing UDP source ports and q
 
 - **DNSKEY**: Contains the public key used to verify signatures within the zone (Key Signing Key `KSK` or Zone Signing Key `ZSK`).
 - **RRSIG**: Cryptographic signature over a record set (RRset) created by the ZSK.
-- **DS (Delegation Signer)**: Cryptographic hash of the child zone's DNSKEY published in the parent zone, forging the chain of trust across zone boundaries.
+- **DS (Delegation Signer)**: Cryptographic hash of the child zone's DNSKEY published in the parent zone, forming the chain of trust across zone boundaries.
 
 ## DNSSEC vs Encrypted DNS (DoH / DoT)
 
