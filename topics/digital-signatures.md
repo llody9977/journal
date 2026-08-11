@@ -2,7 +2,7 @@
 title: Digital Signatures & Non-Repudiation
 description: Comprehensive guide to digital signature pipelines, RSA-PSS, ECDSA, Ed25519 (RFC 8032), FIPS 204 ML-DSA, FIPS 205 SLH-DSA, deterministic nonces (RFC 6979), and HSM key custody.
 permalink: /topics/digital-signatures/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -106,7 +106,7 @@ Cryptographic key custody relies on reducing private key extraction and cloning 
 ## Primary References
 
 - **NIST FIPS 186-5**: *Digital Signature Standard (DSS)* — [NIST CSRC FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)
-- **RFC 8032**: *Edwards-Curve Digital Signature Algorithm (EdDSA / Ed25519)* — [IETF RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)
+- **RFC 8032**: *Edwards-Curve Digital Signature Algorithm (EdDSA / Ed25519)* — [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) (IRTF/CFRG Informational, not IETF Standards Track)
 - **RFC 6979**: *Deterministic Usage of the Digital Signature Algorithm (DSA) and ECDSA* — [IETF RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)
 - **RFC 3161**: *Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP)* — [RFC Editor: RFC 3161](https://www.rfc-editor.org/info/rfc3161/)
 - **RFC 9921**: *Time-Stamp Protocol (TSP) Timestamp Tokens for COSE* — [IETF RFC 9921](https://www.rfc-editor.org/rfc/rfc9921.html)
