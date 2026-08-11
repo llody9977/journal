@@ -23,13 +23,13 @@
   <path d="M 285 184 L 375 184" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <rect x="380" y="148" width="340" height="72" rx="8" fill="#1e40af"/>
-  <text x="550" y="176" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Encrypt with Bob's Public Key (K<sub>pub</sub>)</text>
-  <text x="550" y="196" font-size="11" fill="#bfdbfe" text-anchor="middle">Anyone holding K<sub>pub</sub> can encrypt messages to Bob</text>
+  <text x="550" y="176" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Encrypt with Bob's Public Key (K<tspan baseline-shift="sub" font-size="70%">pub</tspan>)</text>
+  <text x="550" y="196" font-size="11" fill="#bfdbfe" text-anchor="middle">Anyone holding K<tspan baseline-shift="sub" font-size="70%">pub</tspan> can encrypt messages to Bob</text>
 
   <path d="M 725 184 L 815 184" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <rect x="820" y="148" width="320" height="72" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="980" y="176" font-size="13" font-weight="800" fill="#1e40af" text-anchor="middle">Decrypt with Bob's Private Key (K<sub>priv</sub>)</text>
+  <text x="980" y="176" font-size="13" font-weight="800" fill="#1e40af" text-anchor="middle">Decrypt with Bob's Private Key (K<tspan baseline-shift="sub" font-size="70%">priv</tspan>)</text>
   <text x="980" y="196" font-size="11" fill="#1e40af" text-anchor="middle">Only whoever holds Bob's private key can decrypt</text>
 
   <!-- Bottom Panel: Digital Signature / Verification (y=245, h=125) -->
@@ -38,17 +38,17 @@
 
   <rect x="60" y="283" width="220" height="72" rx="8" fill="#ffffff" stroke="#ddd6fe" stroke-width="1.5"/>
   <text x="170" y="311" font-size="13" font-weight="800" fill="#5b21b6" text-anchor="middle">Signer (Bob)</text>
-  <text x="170" y="331" font-size="11" fill="#475569" text-anchor="middle">Holds Private Key K<sub>priv</sub></text>
+  <text x="170" y="331" font-size="11" fill="#475569" text-anchor="middle">Holds Private Key K<tspan baseline-shift="sub" font-size="70%">priv</tspan></text>
 
   <path d="M 285 319 L 375 319" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
 
   <rect x="380" y="283" width="340" height="72" rx="8" fill="#6d28d9"/>
-  <text x="550" y="311" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Sign Digest with Bob's Private Key (K<sub>priv</sub>)</text>
+  <text x="550" y="311" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Sign Digest with Bob's Private Key (K<tspan baseline-shift="sub" font-size="70%">priv</tspan>)</text>
   <text x="550" y="331" font-size="11" fill="#ddd6fe" text-anchor="middle">Proves private key holder generated signature tag</text>
 
   <path d="M 725 319 L 815 319" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
 
   <rect x="820" y="283" width="320" height="72" rx="8" fill="#ffffff" stroke="#ddd6fe" stroke-width="1.5"/>
-  <text x="980" y="311" font-size="13" font-weight="800" fill="#5b21b6" text-anchor="middle">Verify with Bob's Public Key (K<sub>pub</sub>)</text>
+  <text x="980" y="311" font-size="13" font-weight="800" fill="#5b21b6" text-anchor="middle">Verify with Bob's Public Key (K<tspan baseline-shift="sub" font-size="70%">pub</tspan>)</text>
   <text x="980" y="331" font-size="11" fill="#5b21b6" text-anchor="middle">Any third party can verify origin &amp; integrity</text>
 </svg>

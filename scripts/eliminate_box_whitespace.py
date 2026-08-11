@@ -133,7 +133,7 @@ SVGS['hash-security-properties.svg'] = """<svg viewBox="0 0 1200 320" xmlns="htt
   <text x="75" y="194" font-size="12" fill="#475569">Given digest h = H(m), it is</text>
   <text x="75" y="214" font-size="12" fill="#475569">computationally infeasible to find m.</text>
   <rect x="75" y="235" width="280" height="36" rx="6" fill="#ffffff" stroke="#93c5fd" stroke-width="1"/>
-  <text x="215" y="258" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">Brute-Force Attack: O(2<sup>n</sup>)</text>
+  <text x="215" y="258" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">Brute-Force Attack: O(2<tspan baseline-shift="super" font-size="70%">n</tspan>)</text>
 
   <!-- Box 2 -->
   <rect x="435" y="115" width="330" height="180" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
@@ -142,7 +142,7 @@ SVGS['hash-security-properties.svg'] = """<svg viewBox="0 0 1200 320" xmlns="htt
   <text x="460" y="194" font-size="12" fill="#475569">Given input m₁, infeasible to find</text>
   <text x="460" y="214" font-size="12" fill="#475569">m₂ ≠ m₁ such that H(m₁) = H(m₂).</text>
   <rect x="460" y="235" width="280" height="36" rx="6" fill="#ffffff" stroke="#5eead4" stroke-width="1"/>
-  <text x="600" y="258" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">Brute-Force Attack: O(2<sup>n</sup>)</text>
+  <text x="600" y="258" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">Brute-Force Attack: O(2<tspan baseline-shift="super" font-size="70%">n</tspan>)</text>
 
   <!-- Box 3 -->
   <rect x="820" y="115" width="330" height="180" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
@@ -151,7 +151,7 @@ SVGS['hash-security-properties.svg'] = """<svg viewBox="0 0 1200 320" xmlns="htt
   <text x="845" y="194" font-size="12" fill="#475569">Infeasible to find ANY two distinct</text>
   <text x="845" y="214" font-size="12" fill="#475569">inputs (m₁, m₂) with H(m₁) = H(m₂).</text>
   <rect x="845" y="235" width="280" height="36" rx="6" fill="#ffffff" stroke="#fcd34d" stroke-width="1"/>
-  <text x="985" y="258" font-size="12" font-weight="800" fill="#b45309" text-anchor="middle">Birthday Attack: O(2<sup>n/2</sup>)</text>
+  <text x="985" y="258" font-size="12" font-weight="800" fill="#b45309" text-anchor="middle">Birthday Attack: O(2<tspan baseline-shift="super" font-size="70%">n/2</tspan>)</text>
 </svg>"""
 
 # 5. hkdf-extract-expand.svg
@@ -168,7 +168,7 @@ SVGS['hkdf-extract-expand.svg'] = """<svg viewBox="0 0 1200 300" xmlns="http://w
 
   <!-- Box 1 -->
   <rect x="50" y="115" width="234" height="155" rx="12" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
-  <text x="65" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#475569">1. INPUT KEYMATTER (IKM)</text>
+  <text x="65" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#475569">1. INPUT KEY MATERIAL (IKM)</text>
   <text x="65" y="165" font-size="13" font-weight="800" fill="#0f172a">ECDH Shared Secret S</text>
   <text x="65" y="185" font-size="11.5" fill="#475569">• Optional Salt input</text>
   <text x="65" y="203" font-size="11.5" fill="#475569">• Variable entropy pool</text>

@@ -31,7 +31,7 @@
   <rect x="70" y="270" width="1060" height="100" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
   <text x="95" y="295" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2 · EFFICIENT INCLUSION (DATA AUDITING)</text>
   <text x="95" y="320" font-size="16" font-weight="800" fill="#0f172a">Merkle Tree Transaction Root Digest</text>
-  <text x="95" y="345" font-size="11.5" fill="#475569">• Binary hash tree commits thousands of transactions into a 32-byte root with O(log N) inclusion proofs.</text>
+  <text x="95" y="345" font-size="11.5" fill="#475569">• Binary hash tree commits thousands of transactions into one fixed-size root (size is algorithm-dependent, e.g. 32 bytes for SHA-256) with O(log N) proofs.</text>
 
   <!-- Connector 2 -> 3 (y=370 to 410) -->
   <path d="M 600 373 L 600 407" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-dasharray="4,3" marker-end="url(#arrow-teal)"/>

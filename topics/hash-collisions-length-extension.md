@@ -192,7 +192,7 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
   <div class="demo-header">
     <span class="demo-badge">Interactive Browser Playground</span>
     <h3>SHA-1 SHAttered PDF Collision Proof</h3>
-    <p>Interactively compute SHA-1 digests over the official SHAttered PDF collision pair and verify binary divergence live via Web Crypto API.</p>
+    <p>Interactively compute SHA-1 digests over a bundled SHA-1 collision pair (two distinct PDFs producing an identical digest, in the spirit of the SHAttered technique — not the exact files from the original published SHAttered pair) and verify binary divergence live via Web Crypto API.</p>
   </div>
 
   <div class="demo-body">

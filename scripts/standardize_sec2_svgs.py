@@ -110,13 +110,13 @@ NEW_SVGS['asymmetric-flow.svg'] = """<svg viewBox="0 0 1200 390" xmlns="http://w
   <path d="M 285 184 L 375 184" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <rect x="380" y="148" width="340" height="72" rx="8" fill="#1e40af"/>
-  <text x="550" y="176" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Encrypt with Bob's Public Key (K<sub>pub</sub>)</text>
-  <text x="550" y="196" font-size="11" fill="#bfdbfe" text-anchor="middle">Anyone holding K<sub>pub</sub> can encrypt messages to Bob</text>
+  <text x="550" y="176" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Encrypt with Bob's Public Key (K<tspan baseline-shift="sub" font-size="70%">pub</tspan>)</text>
+  <text x="550" y="196" font-size="11" fill="#bfdbfe" text-anchor="middle">Anyone holding K<tspan baseline-shift="sub" font-size="70%">pub</tspan> can encrypt messages to Bob</text>
 
   <path d="M 725 184 L 815 184" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <rect x="820" y="148" width="320" height="72" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="980" y="176" font-size="13" font-weight="800" fill="#1e40af" text-anchor="middle">Decrypt with Bob's Private Key (K<sub>priv</sub>)</text>
+  <text x="980" y="176" font-size="13" font-weight="800" fill="#1e40af" text-anchor="middle">Decrypt with Bob's Private Key (K<tspan baseline-shift="sub" font-size="70%">priv</tspan>)</text>
   <text x="980" y="196" font-size="11" fill="#1e40af" text-anchor="middle">Only whoever holds Bob's private key can decrypt</text>
 
   <!-- Bottom Panel: Digital Signature / Verification (y=245, h=125) -->
@@ -125,18 +125,18 @@ NEW_SVGS['asymmetric-flow.svg'] = """<svg viewBox="0 0 1200 390" xmlns="http://w
 
   <rect x="60" y="283" width="220" height="72" rx="8" fill="#ffffff" stroke="#ddd6fe" stroke-width="1.5"/>
   <text x="170" y="311" font-size="13" font-weight="800" fill="#5b21b6" text-anchor="middle">Signer (Bob)</text>
-  <text x="170" y="331" font-size="11" fill="#475569" text-anchor="middle">Holds Private Key K<sub>priv</sub></text>
+  <text x="170" y="331" font-size="11" fill="#475569" text-anchor="middle">Holds Private Key K<tspan baseline-shift="sub" font-size="70%">priv</tspan></text>
 
   <path d="M 285 319 L 375 319" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
 
   <rect x="380" y="283" width="340" height="72" rx="8" fill="#6d28d9"/>
-  <text x="550" y="311" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Sign Digest with Bob's Private Key (K<sub>priv</sub>)</text>
+  <text x="550" y="311" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Sign Digest with Bob's Private Key (K<tspan baseline-shift="sub" font-size="70%">priv</tspan>)</text>
   <text x="550" y="331" font-size="11" fill="#ddd6fe" text-anchor="middle">Proves private key holder generated signature tag</text>
 
   <path d="M 725 319 L 815 319" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
 
   <rect x="820" y="283" width="320" height="72" rx="8" fill="#ffffff" stroke="#ddd6fe" stroke-width="1.5"/>
-  <text x="980" y="311" font-size="13" font-weight="800" fill="#5b21b6" text-anchor="middle">Verify with Bob's Public Key (K<sub>pub</sub>)</text>
+  <text x="980" y="311" font-size="13" font-weight="800" fill="#5b21b6" text-anchor="middle">Verify with Bob's Public Key (K<tspan baseline-shift="sub" font-size="70%">pub</tspan>)</text>
   <text x="980" y="331" font-size="11" fill="#5b21b6" text-anchor="middle">Any third party can verify origin &amp; integrity</text>
 </svg>"""
 
@@ -278,12 +278,12 @@ NEW_SVGS['diffie-hellman.svg'] = """<svg viewBox="0 0 1200 480" xmlns="http://ww
   <rect x="40" y="175" width="530" height="275" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
   <text x="60" y="202" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">PARTY A (ALICE)</text>
   <text x="60" y="228" font-size="13" font-weight="800" fill="#0f172a">1. Generate Ephemeral Private Key: <tspan fill="#dc2626">a</tspan> (Secret RAM)</text>
-  <text x="60" y="255" font-size="13" font-weight="800" fill="#0f172a">2. Compute Public Key Share: <tspan fill="#2563eb">A = g<sup>a</sup> mod p</tspan></text>
+  <text x="60" y="255" font-size="13" font-weight="800" fill="#0f172a">2. Compute Public Key Share: <tspan fill="#2563eb">A = g<tspan baseline-shift="super" font-size="70%">a</tspan> mod p</tspan></text>
   <text x="60" y="282" font-size="12" fill="#475569">3. Transmit A across network to Bob --&gt;</text>
   
   <rect x="60" y="305" width="490" height="125" rx="10" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="75" y="330" font-size="11" font-weight="900" fill="#1e40af">4. SHARED SECRET CALCULATION (ALICE)</text>
-  <text x="75" y="356" font-size="14" font-weight="800" fill="#1e40af">S = B<sup>a</sup> mod p = (g<sup>b</sup>)<sup>a</sup> mod p = g<sup>ab</sup> mod p</text>
+  <text x="75" y="356" font-size="14" font-weight="800" fill="#1e40af">S = B<tspan baseline-shift="super" font-size="70%">a</tspan> mod p = (g<tspan baseline-shift="super" font-size="70%">b</tspan>)<tspan baseline-shift="super" font-size="70%">a</tspan> mod p = g<tspan baseline-shift="super" font-size="70%">ab</tspan> mod p</text>
   <line x1="75" y1="368" x2="535" y2="368" stroke="#bfdbfe" stroke-width="1"/>
   <text x="75" y="392" font-size="12" font-weight="700" fill="#16a34a">Result: Shared Secret S derived in Alice's RAM</text>
   <text x="75" y="412" font-size="11" fill="#475569">Passed through HKDF to derive AES-256 session traffic keys</text>
@@ -292,12 +292,12 @@ NEW_SVGS['diffie-hellman.svg'] = """<svg viewBox="0 0 1200 480" xmlns="http://ww
   <rect x="630" y="175" width="530" height="275" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
   <text x="650" y="202" font-size="11" font-weight="900" letter-spacing="1" fill="#16a34a">PARTY B (BOB)</text>
   <text x="650" y="228" font-size="13" font-weight="800" fill="#0f172a">1. Generate Ephemeral Private Key: <tspan fill="#dc2626">b</tspan> (Secret RAM)</text>
-  <text x="650" y="255" font-size="13" font-weight="800" fill="#0f172a">2. Compute Public Key Share: <tspan fill="#16a34a">B = g<sup>b</sup> mod p</tspan></text>
+  <text x="650" y="255" font-size="13" font-weight="800" fill="#0f172a">2. Compute Public Key Share: <tspan fill="#16a34a">B = g<tspan baseline-shift="super" font-size="70%">b</tspan> mod p</tspan></text>
   <text x="650" y="282" font-size="12" fill="#475569">&lt;-- 3. Transmit B across network to Alice</text>
 
   <rect x="650" y="305" width="490" height="125" rx="10" fill="#ffffff" stroke="#86efac" stroke-width="1.5"/>
   <text x="665" y="330" font-size="11" font-weight="900" fill="#15803d">4. SHARED SECRET CALCULATION (BOB)</text>
-  <text x="665" y="356" font-size="14" font-weight="800" fill="#15803d">S = A<sup>b</sup> mod p = (g<sup>a</sup>)<sup>b</sup> mod p = g<sup>ab</sup> mod p</text>
+  <text x="665" y="356" font-size="14" font-weight="800" fill="#15803d">S = A<tspan baseline-shift="super" font-size="70%">b</tspan> mod p = (g<tspan baseline-shift="super" font-size="70%">a</tspan>)<tspan baseline-shift="super" font-size="70%">b</tspan> mod p = g<tspan baseline-shift="super" font-size="70%">ab</tspan> mod p</text>
   <line x1="665" y1="368" x2="1125" y2="368" stroke="#bbf7d0" stroke-width="1"/>
   <text x="665" y="392" font-size="12" font-weight="700" fill="#16a34a">Result: Identical Shared Secret S derived in Bob's RAM!</text>
   <text x="665" y="412" font-size="11" fill="#475569">Eavesdropper seeing A and B cannot compute S without solving discrete log</text>
@@ -336,20 +336,20 @@ NEW_SVGS['signature-pipeline.svg'] = """<svg viewBox="0 0 1200 410" xmlns="http:
   <!-- Stage 2: Private Key Signing -->
   <rect x="460" y="140" width="340" height="210" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
   <text x="480" y="168" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
-  <text x="480" y="196" font-size="14" font-weight="800" fill="#0f172a">Sign H(M) with K<sub>priv</sub></text>
+  <text x="480" y="196" font-size="14" font-weight="800" fill="#0f172a">Sign H(M) with K<tspan baseline-shift="sub" font-size="70%">priv</tspan></text>
   <line x1="480" y1="208" x2="780" y2="208" stroke="#ddd6fe" stroke-width="1"/>
   <text x="480" y="232" font-size="11" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
   <text x="480" y="254" font-size="12" fill="#475569">• EdDSA uses internal SHA-512/SHAKE256</text>
   <text x="480" y="276" font-size="12" fill="#475569">• Produces unforgeable signature tag S</text>
   <rect x="480" y="295" width="300" height="36" rx="6" fill="#f5f3ff"/>
-  <text x="630" y="318" font-size="12" font-weight="800" fill="#5b21b6" text-anchor="middle">Signature Tag S = Sign(K<sub>priv</sub>, H(M))</text>
+  <text x="630" y="318" font-size="12" font-weight="800" fill="#5b21b6" text-anchor="middle">Signature Tag S = Sign(K<tspan baseline-shift="sub" font-size="70%">priv</tspan>, H(M))</text>
 
   <path d="M 805 245 L 875 245" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
 
   <!-- Stage 3: Public Key Verification -->
   <rect x="880" y="140" width="250" height="210" rx="10" fill="#15803d"/>
   <text x="1005" y="168" font-size="11" font-weight="900" letter-spacing="1" fill="#bbf7d0" text-anchor="middle">STAGE 3: VERIFICATION</text>
-  <text x="1005" y="196" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Verify(K<sub>pub</sub>, H(M'), S)</text>
+  <text x="1005" y="196" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Verify(K<tspan baseline-shift="sub" font-size="70%">pub</tspan>, H(M'), S)</text>
   <line x1="900" y1="208" x2="1110" y2="208" stroke="#86efac" stroke-width="1"/>
   <text x="1005" y="235" font-size="12" fill="#bbf7d0" text-anchor="middle">Verifier computes H(M')</text>
   <text x="1005" y="257" font-size="12" fill="#bbf7d0" text-anchor="middle">Validates signature tag S</text>
@@ -431,12 +431,12 @@ NEW_SVGS['tls-handshake.svg'] = """<svg viewBox="0 0 1200 570" xmlns="http://www
   <!-- Step 1: ClientHello (Flight 1) -->
   <path d="M 190 210 L 1000 210" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
   <rect x="360" y="190" width="480" height="40" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="600" y="215" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">1. ClientHello: Supported Ciphers + Ephemeral Key Share g<sup>x</sup> (+ ECH SNI)</text>
+  <text x="600" y="215" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">1. ClientHello: Supported Ciphers + Ephemeral Key Share g<tspan baseline-shift="super" font-size="70%">x</tspan> (+ ECH SNI)</text>
 
   <!-- Step 2: ServerHello & Handshake Encrypted (Flight 2) -->
   <path d="M 1010 300 L 200 300" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
   <rect x="270" y="250" width="660" height="85" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
-  <text x="600" y="273" font-size="12" font-weight="800" fill="#15803d" text-anchor="middle">2. ServerHello: Selected Cipher + Server Key Share g<sup>y</sup></text>
+  <text x="600" y="273" font-size="12" font-weight="800" fill="#15803d" text-anchor="middle">2. ServerHello: Selected Cipher + Server Key Share g<tspan baseline-shift="super" font-size="70%">y</tspan></text>
   <text x="600" y="293" font-size="11.5" fill="#166534" text-anchor="middle">[Encrypted Handshake Extensions: Certificate + CertificateVerify + Finished]</text>
   <text x="600" y="313" font-size="11" fill="#475569" text-anchor="middle">Handshake Secret --&gt; Main Secret (derived before Finished) --&gt; Traffic Keys</text>
 

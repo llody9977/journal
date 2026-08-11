@@ -11,7 +11,7 @@
 
   <!-- Box 1 -->
   <rect x="50" y="115" width="234" height="155" rx="12" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
-  <text x="65" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#475569">1. INPUT KEYMATTER (IKM)</text>
+  <text x="65" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#475569">1. INPUT KEY MATERIAL (IKM)</text>
   <text x="65" y="165" font-size="13" font-weight="800" fill="#0f172a">ECDH Shared Secret S</text>
   <text x="65" y="185" font-size="11.5" fill="#475569">• Optional Salt input</text>
   <text x="65" y="203" font-size="11.5" fill="#475569">• Variable entropy pool</text>

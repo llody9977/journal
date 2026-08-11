@@ -31,12 +31,12 @@
   <!-- Stage 2 (300px wide, x=450 to 750) -->
   <rect x="450" y="130" width="300" height="160" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
   <text x="465" y="152" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 2: PRIVATE KEY SIGNING</text>
-  <text x="465" y="174" font-size="13" font-weight="800" fill="#0f172a">Sign H(M) with K<sub>priv</sub></text>
+  <text x="465" y="174" font-size="13" font-weight="800" fill="#0f172a">Sign H(M) with K<tspan baseline-shift="sub" font-size="70%">priv</tspan></text>
   <line x1="465" y1="184" x2="735" y2="184" stroke="#ddd6fe" stroke-width="1"/>
   <text x="465" y="202" font-size="10.5" fill="#475569">• ECDSA nonce: fresh random or RFC 6979 deterministic</text>
   <text x="465" y="220" font-size="11" fill="#475569">• EdDSA internal SHA-512/SHAKE256</text>
   <rect x="465" y="236" width="270" height="34" rx="6" fill="#f5f3ff"/>
-  <text x="600" y="258" font-size="11.5" font-weight="800" fill="#5b21b6" text-anchor="middle">Signature S = Sign(K<sub>priv</sub>, H(M))</text>
+  <text x="600" y="258" font-size="11.5" font-weight="800" fill="#5b21b6" text-anchor="middle">Signature S = Sign(K<tspan baseline-shift="sub" font-size="70%">priv</tspan>, H(M))</text>
 
   <!-- Connector 2 -> 3 (60px gap, x=750 to 810) -->
   <path d="M 755 210 L 805 210" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
@@ -44,7 +44,7 @@
   <!-- Stage 3 (300px wide, x=810 to 1110) -->
   <rect x="810" y="130" width="300" height="160" rx="10" fill="#15803d"/>
   <text x="960" y="152" font-size="11" font-weight="900" letter-spacing="1" fill="#bbf7d0" text-anchor="middle">STAGE 3: VERIFICATION</text>
-  <text x="960" y="174" font-size="13.5" font-weight="800" fill="#ffffff" text-anchor="middle">Verify(K<sub>pub</sub>, H(M'), S)</text>
+  <text x="960" y="174" font-size="13.5" font-weight="800" fill="#ffffff" text-anchor="middle">Verify(K<tspan baseline-shift="sub" font-size="70%">pub</tspan>, H(M'), S)</text>
   <line x1="830" y1="184" x2="1090" y2="184" stroke="#86efac" stroke-width="1"/>
   <text x="960" y="202" font-size="11" fill="#bbf7d0" text-anchor="middle">Verifier computes H(M')</text>
   <text x="960" y="220" font-size="11" fill="#bbf7d0" text-anchor="middle">Validates signature tag S</text>
