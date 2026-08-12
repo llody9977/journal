@@ -61,21 +61,12 @@ For an emerging enterprise or startup establishing a security program from scrat
 4. **Stage 4 (Customer Attestation)**: Undergo a **SOC 2 Type II audit** when enterprise B2B sales demand third-party attestation.
 5. **Stage 5 (Global Certification)**: Pursue **ISO/IEC 27001:2022 certification** when expanding into international or heavily regulated markets.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>GRC &amp; Strategy Summary</strong>
-    <ul>
-      <li><strong>Three Lines Model</strong>: Line 1 (Operational Management), Line 2 (Risk &amp; Compliance Oversight), Line 3 (Internal Audit).</li>
-      <li><strong>Risk Appetite &amp; Tolerance</strong>: Establish quantitative risk thresholds approved by board governance before defining technical policies.</li>
-      <li><strong>Policy Enforcement</strong>: Policies must map directly to automated technical guardrails (AWS SCPs, OPA policies) to reduce drift and provide continuous assurance — automated guardrails lower compliance risk but do not by themselves guarantee compliance, since they can miss checks outside their scope, contain bugs or gaps, be bypassed, or leave process and administrative controls uncovered.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>One practical startup sequence is technical hygiene → shared risk vocabulary → product security → customer attestation → certification, adjusted to the organization's risks, obligations, and resources; it is not a universal maturity model. Governance roles and risk appetite guide those choices, while automated guardrails reduce policy drift without proving compliance.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **IIA Three Lines Model**: *The IIA's Three Lines Model for Governance* — [IIA Three Lines](https://www.theiia.org/en/content/position-papers/2020/the-iias-three-lines-model-an-update-of-the-three-lines-of-defense/)
 - **NIST SP 800-39**: *Managing Information Security Risk: Organization, Mission, and Information System View* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)

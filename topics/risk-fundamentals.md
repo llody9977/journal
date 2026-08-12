@@ -132,21 +132,12 @@ When evaluating an enterprise risk assessment or vulnerability management pipeli
 | **Exploit Intelligence** | Are vulnerability patch priorities driven by real-world exploitation telemetry (**EPSS &amp; CISA KEV**)? | Vulnerability management SLA reports &amp; EPSS prioritization dashboards. |
 | **Scenario Completeness** | Does the risk assessment evaluate the applicable components (*Asset, Threat Source, Event, Vulnerability or predisposing condition where applicable, Likelihood, Impact*)? | Documented Risk Register matrices (**NIST SP 800-30 Rev. 1**). |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Risk Fundamentals Summary</strong>
-    <ul>
-      <li><strong>Risk Model</strong>: `Risk ≈ Likelihood × Impact` is a simplified working model, not a normative NIST formula; NIST SP 800-30 defines risk as a function of likelihood and impact without mandating multiplication.</li>
-      <li><strong>Risk Treatment Strategies</strong>: NIST SP 800-39 names five: Accept, Avoid, Mitigate, Share, and Transfer (share and transfer are distinct, often grouped together informally).</li>
-      <li><strong>FAIR Methodology</strong>: Quantitative alternative decomposing risk into loss event frequency and magnitude for financial modeling.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Risk exists when a plausible threat can reach a vulnerability and cause consequential harm; neither a vulnerability nor a high severity score establishes risk alone. Assess likelihood and impact in context, account for existing controls, and record an authorized response.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
 - **ISO 31000:2018**: *Risk management — Guidelines* — [ISO 31000](https://www.iso.org/standard/65694.html)

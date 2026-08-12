@@ -12,8 +12,8 @@ last_verified: 2026-08-11
 <p class="lede">Threat modeling is the structured engineering discipline of decomposing a system architecture to identify assets, data flows, trust boundaries, and plausible failure and attack scenarios. It is most valuable early, before a design ships, but OWASP treats it as a living artifact that should be revisited after significant architectural changes, new features, or incidents—not a one-time pre-deployment gate. Scenarios worth modeling extend beyond deliberate adversarial action to misuse, human error, system or dependency failure, environmental events, and unsafe component interactions. By systematically evaluating how trust transitions can be exploited or can fail, engineering teams select targeted safeguards and validate control efficacy on an ongoing basis.</p>
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/trust-boundaries-threat-modeling.svg' | relative_url }}" alt="Trust Boundaries & Threat Modeling DFD Architecture diagram showing External Untrusted Public Zone, DMZ Application Processing Zone, High-Assurance Data Enclave, and Trust Boundaries 1 & 2.">
-  <p class="diagram-caption">Trust Boundaries &amp; Threat Modeling DFD Architecture: Data Flow Diagram (DFD) → Trust Boundaries (Public Ingress &amp; Data Enclave) → High-Assurance Security Enclaves</p>
+  <img src="{{ '/assets/img/trust-boundaries-threat-modeling.svg' | relative_url }}" alt="Data Flow Diagram showing an untrusted public client, a DMZ and application-processing zone, a high-assurance payroll-data enclave, and an external third-party bank API. Data crosses Trust Boundary 1 at public ingress, Trust Boundary 2 when the payroll service accesses the database, and Trust Boundary 3 when the service calls the external bank API.">
+  <p class="diagram-caption">Trust Boundaries &amp; Threat Modeling DFD Architecture: Public client → API gateway → payroll service → protected payroll database, with a separate outbound flow to an external bank API across Trust Boundary 3. The diagram distinguishes the public zone, application zone, data enclave, and third-party trust domain.</p>
 </div>
 
 ## The System Architecture & Trust Component Model
@@ -91,21 +91,12 @@ When evaluating a threat model for a new architecture or system refactor, evalua
 | **Third-Party Risk** | Are external cloud APIs, IdP dependencies, and open-source packages integrated into the threat model? | Software Bill of Materials (SBOM), dependency vulnerability reports &amp; SLSA provenance. |
 | **Trust Boundary Rigor** | Is every trust boundary crossing evaluated, with explicit input verification and authentication applied where the risk of that crossing warrants it? | API Gateway policy rules, mTLS sidecar configs &amp; input sanitization test suites. |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Threat Modeling Summary</strong>
-    <ul>
-      <li><strong>STRIDE Model</strong>: Categorizes threats into Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, and Elevation of Privilege.</li>
-      <li><strong>No Single Mandated Methodology</strong>: OWASP does not require one official process—STRIDE, PASTA, and VAST are alternative methodologies chosen by system complexity and team cadence, and a threat model should be revisited after major architectural change, not only before initial deployment.</li>
-      <li><strong>Trust Boundaries</strong>: Identify every interface where data transitions between different privilege levels or untrusted networks, and verify each crossing appropriately for its risk.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Threat modeling maps assets, actors, flows, dependencies, trust boundaries, and plausible failure scenarios so controls can target real exposure. Revisit the model after material change or incidents, and record assumptions, ownership, and residual risk.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **OWASP Threat Modeling Project**: *Threat Modeling Process, STRIDE Framework, the 4-Question Framework, and the scope/assumptions/dependencies inputs a complete threat model should record* — [OWASP Threat Modeling](https://owasp.org/www-project-threat-modeling/)
 - **OWASP ASVS 5.0.0**: *Application Security Verification Standard* — [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)

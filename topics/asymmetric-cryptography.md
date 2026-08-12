@@ -2,7 +2,7 @@
 title: Asymmetric Cryptography & Public-Key Infrastructure
 description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and an interactive RSA-OAEP/RSA-PSS playground showing why private keys aren't used to encrypt data.
 permalink: /topics/asymmetric-cryptography/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -434,21 +434,12 @@ Asymmetric protocols must validate peer-supplied key material before using it, n
 - **RSA-OAEP message-size limits**: RSA-OAEP's maximum plaintext length is bounded by the modulus and hash sizes — `mLen &le; k - 2&times;hLen - 2` bytes, where **k** is the RSA modulus size in bytes and **hLen** is the hash output size. This is not a soft limit; a well-formed OAEP implementation rejects an oversized message outright rather than silently truncating it. [RFC 8017 §7.1](https://www.rfc-editor.org/rfc/rfc8017.html#section-7.1) does permit RSA-OAEP to directly encrypt any message within that size bound — the interactive playground above does exactly this for a short demo payload — but treating RSA-OAEP as capable of encrypting arbitrary-length or bulk payloads directly is a common integration mistake: production systems normally use RSA-OAEP to wrap a short symmetric key (see Hybrid Encryption below) rather than encrypt bulk data directly, since the size bound makes direct encryption impractical for anything beyond a small payload.
 - **Key confirmation**: A successfully computed shared secret proves the arithmetic executed, not that the peer is who they claim to be, or even that both sides actually derived the *same* value — an implementation bug could have each side silently compute a different secret. Protocols add an explicit key-confirmation step (a MAC or `Finished`-style message computed over the derived key material, exchanged and checked before either side trusts the channel) specifically to catch key-agreement mismatches, rather than assuming a completed exchange implies a working, authenticated channel.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Asymmetric Cryptography Summary</strong>
-    <ul>
-      <li><strong>Private Keys Aren't Used to Encrypt Data</strong>: Standardized asymmetric encryption (HPKE, RSA-OAEP) always locks data under a recipient's Public Key — private keys are used for Digital Signing, for decryption, for KEM decapsulation, and as one input to key-agreement (ECDH/X25519) computations, never for encryption itself.</li>
-      <li><strong>RSA vs. ECC Efficiency</strong>: 256-bit Elliptic Curve keys (Curve25519 / P-256) provide equivalent security to 3072-bit RSA with 12× smaller key sizes.</li>
-      <li><strong>HPKE (RFC 9180)</strong>: Standardized hybrid public-key encryption API combining KEM key exchange, HKDF expansion, and AEAD encryption.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Private keys sign, decrypt, decapsulate, or contribute to key agreement; standardized signing is not "encryption with the private key." RSA-OAEP directly encrypts only short payloads, while HPKE is a standardized hybrid construction that uses the recipient's public key to derive or encapsulate key material and AEAD to encrypt the payload.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 9180**: *Hybrid Public Key Encryption (HPKE)* — [IETF RFC 9180](https://www.rfc-editor.org/rfc/rfc9180)
 - **NIST SP 800-56B Rev. 2**: *Recommendation for Pair-Wise Key-Establishment Schemes Using Integer Factorization Cryptography* — [NIST CSRC SP 800-56B](https://csrc.nist.gov/pubs/sp/800/56/b/r2/final)

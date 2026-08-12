@@ -55,21 +55,12 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 2. **Symmetric MACs Do Not Provide Non-Repudiation**: A shared-key HMAC tag proves the message was created by *a holder of the key*, which includes both sender and receiver. A private-key digital signature is necessary evidence toward non-repudiation, not a guarantee by itself — the complete outcome also depends on the key-to-identity binding, key custody, and evidence handling (see the attribution row above and the signature-verification checklist on the Digital Signatures page).
 3. **Validate Public Key Identity Bindings**: Exchanging public keys over an unauthenticated channel leaves endpoints vulnerable to Man-in-the-Middle (MitM) key substitution. Bind public keys using PKI X.509 certificates or out-of-band fingerprint verification.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Symmetric vs. Asymmetric Summary</strong>
-    <ul>
-      <li><strong>Performance Trade-off</strong>: Symmetric encryption (AES-256) is orders of magnitude faster per byte than asymmetric algorithms (RSA/ECC) — the precise ratio depends heavily on algorithm, key size, and hardware acceleration (e.g., AES-NI), so benchmark your target platform rather than relying on one fixed number — and it processes arbitrary payload sizes.</li>
-      <li><strong>Key Distribution Problem</strong>: Asymmetric cryptography solves secret key distribution without requiring an out-of-band secret channel — but only once the public key itself is authenticated (via PKI/X.509 or out-of-band fingerprint verification); an unauthenticated public-key exchange is vulnerable to MitM key substitution.</li>
-      <li><strong>Hybrid Architecture</strong>: Production systems use asymmetric keys to negotiate or wrap a single-use symmetric DEK, which encrypts bulk data.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Symmetric encryption is far faster per byte but requires a shared secret; asymmetric cryptography solves distributing that secret, but only once the public key itself is authenticated. Production systems combine both: asymmetric keys negotiate or wrap a single-use symmetric key that then encrypts the bulk data.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-57 Part 1 Rev. 5**: *Recommendation for Key Management: General* — [NIST CSRC SP 800-57](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)
 - **RFC 9846**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html)

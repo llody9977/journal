@@ -27,6 +27,8 @@
           url: /topics/identity-access-fundamentals/
         - title: "1.8 Monitoring, Incident Response & Operational Learning"
           url: /topics/incident-response-operational-learning/
+        - title: "1.9 Operational Resilience, Business Continuity & Disaster Recovery"
+          url: /topics/operational-resilience-business-continuity-disaster-recovery/
     - title: 2. Cryptography
       children:
         - title: 2.1 What Is Cryptography?
@@ -133,7 +135,7 @@
           url: /topics/cybersecurity-standards/
         - title: "8.2 GRC Strategy: Framework Stacking & Assessment Models"
           url: /topics/grc-framework-strategy/
-        - title: 8.3 Regulatory Mandates & Compliance Attestations
+        - title: 8.3 Regulatory Mandates & Private-Sector Assurance
           url: /topics/regulatory-compliance-mandates/
         - title: 8.4 Security Certifications
           url: /topics/security-certifications/

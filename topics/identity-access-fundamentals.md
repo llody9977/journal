@@ -100,21 +100,12 @@ When auditing an identity perimeter, microservice API, or SSO federation flow, e
 | **Session Binding** | Are OAuth tokens sender-constrained via mTLS or cryptographic proof (**DPoP / RFC 9449**), and are browser session cookies separately hardened with `HttpOnly`/`Secure`/`SameSite`? Client-IP binding is brittle (NAT, mobile networks, and CDNs routinely change a legitimate client's IP mid-session) and is not a cryptographic substitute for either mechanism. | DPoP proof-of-possession headers & mTLS client certificate verification logs. |
 | **Subject Identification** | Is the requesting subject a human user, federated identity, or automated non-human workload? | SPIFFE/SPIRE ID certificates, OIDC `sub` claim audits & IAM identity inventories. |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Identity &amp; Access Summary</strong>
-    <ul>
-      <li><strong>Authentication vs. Authorization</strong>: Authentication verifies identity ("Who are you?"); Authorization determines permissions ("What can you do?").</li>
-      <li><strong>Zero Trust Architecture (NIST SP 800-207)</strong>: No implicit trust based on network location; authorization is evaluated per session or per request, with continuous evaluation of signals over the session's lifetime—this does not require a brand-new authentication event on every single request.</li>
-      <li><strong>Principle of Least Privilege</strong>: Grant entities only the minimum permissions required to perform their explicit function.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Authentication establishes confidence in a returning subject, while authorization decides what that subject may do; IAL, AAL, and FAL measure different assurance questions. Zero trust removes implicit location-based trust and combines explicit policy enforcement with lifecycle revocation and continuous evaluation.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-207**: *Zero Trust Architecture* — [NIST CSRC SP 800-207](https://csrc.nist.gov/pubs/sp/800/207/final)
 - **NIST SP 800-63-4**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-4](https://pages.nist.gov/800-63-4/)

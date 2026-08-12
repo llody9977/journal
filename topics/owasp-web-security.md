@@ -2,7 +2,7 @@
 title: "OWASP Web Vulnerabilities: SQLi, XSS, SSRF & IDOR"
 description: Attack mechanics, code-level vulnerability patterns, and defensive engineering controls for the core OWASP web application flaws.
 permalink: /topics/owasp-web-security/
-last_verified: 2026-08-06
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Application Security / Vulnerabilities</span>
@@ -47,10 +47,14 @@ cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (use
 
 #### Defense: Context-Aware Encoding & Content Security Policy (CSP)
 - Use framework auto-escaping (React/Vue JSX automatically escapes HTML text nodes).
+- Use context-appropriate encoding and safe DOM sinks such as <code>textContent</code>; HTML, attribute, URL, CSS, and JavaScript contexts require different handling.
+- Sanitize untrusted content with a maintained HTML sanitizer when the application intentionally allows users to submit HTML.
 - Deploy a strict **Content Security Policy (CSP)** HTTP response header:
   ```http
   Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted-cdn.com; object-src 'none';
   ```
+
+CSP is defense in depth rather than a substitute for encoding, safe sinks, or sanitization. Apply HTTP Strict Transport Security (HSTS) across the HTTPS site. Use CSP's `frame-ancestors` directive or X-Frame-Options for browser-rendered responses that could be framed; these framing controls add no useful protection to JSON API responses that are not rendered as documents.
 
 ### 3. Server-Side Request Forgery (SSRF)
 
@@ -87,21 +91,15 @@ def get_invoice(invoice_id):
     return invoice
 ```
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>OWASP Web Security Summary</strong>
-    <ul>
-      <li><strong>Top Web Vulnerabilities</strong>: Broken Access Control (#1), Cryptographic Failures (#2), Injection (#3), Insecure Design (#4).</li>
-      <li><strong>Defense Against Injection</strong>: Parameterized SQL queries, contextual output encoding (XSS defense), and CSP headers.</li>
-      <li><strong>Security Headers</strong>: Enforce Strict-Transport-Security (HSTS), Content-Security-Policy (CSP), and X-Frame-Options across all endpoints.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Broken Access Control remains OWASP's top web-application risk; enforce object-level authorization for every operation that uses a client-supplied object reference. Prevent SQL injection with parameterized values plus allowlisting where query structure must be dynamic; prevent XSS with context-appropriate encoding, safe sinks, and sanitization where HTML is allowed, using CSP as defense in depth. Apply HSTS site-wide over HTTPS, and apply <code>frame-ancestors</code> or X-Frame-Options where browser-rendered responses can be framed—not indiscriminately to JSON APIs.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **OWASP Top 10:2021**: *Top 10 Web Application Security Risks* — [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - **OWASP ASVS 4.0**: *Application Security Verification Standard* — [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
+- **OWASP SQL Injection Prevention Cheat Sheet** — verified parameterized values and allowlisting for query parts that cannot use bind variables — [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
+- **OWASP Cross Site Scripting Prevention Cheat Sheet** — verified context-specific encoding, safe sinks, sanitization, and CSP's defense-in-depth role — [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+- **OWASP HTTP Headers Cheat Sheet** — verified the scope of HSTS and browser framing controls — [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html)

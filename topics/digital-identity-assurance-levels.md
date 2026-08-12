@@ -51,21 +51,12 @@ For the runtime protocol used to raise a session from a baseline AAL to a higher
 2. **IAL, AAL, and FAL Solve Different Failure Modes**: A system can have strong login assurance (AAL3) with weak identity proofing (IAL1)—e.g., a hardware key registered against a self-asserted email address. Each dimension must be evaluated against the specific harm it is meant to prevent: account takeover (AAL), impersonation at enrollment (IAL), or a forged or replayed federation assertion (FAL).
 3. **SMS &amp; Voice OTP Restriction**: NIST's own status for SMS/voice OTP is "restricted," not a blanket prohibition. Given the SIM-swapping, SS7 interception, and carrier routing hijack risk, this journal's engineering recommendation is still to phase out SMS OTP where feasible in favor of FIDO2 Passkeys or authenticator apps.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Digital Identity Assurance Summary</strong>
-    <ul>
-      <li><strong>Three Independent Dimensions</strong>: IAL (identity proofing), AAL (login assurance), and FAL (federation assertion strength) are chosen independently—none substitutes for the other two.</li>
-      <li><strong>Non-Exportable Key for AAL3</strong>: A hardware-bound WebAuthn passkey can meet AAL3; a syncable/cloud-backed passkey cannot, regardless of platform.</li>
-      <li><strong>SMS/Voice OTP is Restricted, Not Prohibited</strong>: NIST's own status is "restricted"; this journal still recommends phasing it out where feasible.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>IAL, AAL, and FAL are three independent dimensions chosen separately — strong login assurance doesn't imply strong identity proofing, and neither implies federation assertion strength. A hardware-bound WebAuthn passkey can meet AAL3; a syncable, cloud-backed passkey cannot, regardless of platform.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-63-4**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-4](https://pages.nist.gov/800-63-4/)
 - **NIST SP 800-63B § 5.1.3**: *Restricted Authenticators (SMS/Voice OTP)* — [NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b.html)

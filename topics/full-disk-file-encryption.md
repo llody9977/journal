@@ -97,21 +97,12 @@ Confirming that a disk or object store is encrypted answers a narrower question 
 - **Hibernation and cold-boot exposure**: Suspending a device to disk (hibernation) can write the volume's decryption key, or decrypted memory contents including the key, into an unencrypted or separately-protected hibernation file — undermining FDE's powered-off guarantee if that file isn't itself covered by the encrypted volume. Separately, DRAM contents (including keys) don't vanish instantly on power loss; **cold-boot attacks** exploit the brief data-remanence window (extended by physically cooling the RAM chips) to recover keys from a machine that was recently running, even after it's been powered off — a risk FDE's "powered-off state is protected" framing doesn't fully capture for a machine that was unlocked moments before an attacker gained physical access.
 - **Crypto-erasure**: Because FDE's actual protection boundary is the volume key rather than the bulk ciphertext, securely destroying that key (rather than overwriting the entire physical medium) renders the data unrecoverable — a technique called **crypto-erasure** or **crypto-shredding**, and the practical basis for "instant" secure disposal of cloud volumes and self-encrypting drives (where the drive firmware manages the key and erases it on command). This guarantee only holds if *every* copy of the key is actually destroyed — a key that was also escrowed for recovery, backed up, cached by a KMS, or embedded in a snapshot taken before erasure remains a live path back to the plaintext, so a crypto-erasure procedure needs to account for every place the key (or a wrapped copy of it) could exist, not just the primary volume header.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Disk &amp; File Encryption Summary</strong>
-    <ul>
-      <li><strong>IEEE 1619 AES-XTS</strong>: Standard sector block cipher mode preventing ECB-like pattern leakage across different sector addresses, without altering sector size — encryption of a given sector's contents remains deterministic across repeated writes, so identical writes to the same sector are still detectable across snapshots.</li>
-      <li><strong>LUKS2 &amp; Argon2id</strong>: Linux disk encryption header format; Argon2id is the modern `cryptsetup` default KDF for new key slots protecting the volume master key, but individual slots can independently use PBKDF2 or Argon2i instead (see above) — a given header isn't guaranteed to have every slot on Argon2id.</li>
-      <li><strong>Envelope Key Rotation</strong>: Re-wrapping DEKs or rotating the Master KEK inside KMS avoids re-encrypting bulk data payloads, though full data re-encryption may still be performed for specific compliance policies.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>AES-XTS (IEEE 1619) provides confidentiality for block storage without built-in integrity, so a targeted ciphertext modification goes undetected unless a separate authenticated layer is added. Encryption on a live volume doesn't automatically cover its backups, snapshots, or hibernation files — each copy needs its own verified encryption and key-management posture.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **IEEE 1619-2018**: *IEEE Standard for Cryptographic Protection of Data on Block-Oriented Storage Devices* — [IEEE 1619 Standard](https://standards.ieee.org/ieee/1619/6966/)
 - **NIST SP 800-38E**: *Recommendation for Block Cipher Modes of Operation: The XTS-AES Mode for Confidentiality on Storage Devices* — [NIST CSRC SP 800-38E](https://csrc.nist.gov/pubs/sp/800/38/e/final)

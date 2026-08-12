@@ -40,10 +40,11 @@
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; overflow-x: hidden; }
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background: var(--paper);
   color: var(--ink-2);
   font-family: var(--font-sans);
@@ -247,6 +248,7 @@ a:hover { text-decoration: underline; }
   padding: 2.5rem 3rem 5rem;
   max-width: 1280px;
   width: 100%;
+  min-width: 0;
 }
 
 .topic-metadata-bar {
@@ -627,6 +629,8 @@ code {
   color: var(--accent-dark);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 pre {
@@ -654,6 +658,7 @@ th, td {
   padding: 0.55rem 0.75rem;
   text-align: left;
   vertical-align: top;
+  overflow-wrap: break-word;
 }
 
 th {
@@ -756,7 +761,7 @@ hr {
 
 .security-layer {
   display: grid;
-  grid-template-columns: minmax(7.5rem, 0.28fr) 1fr;
+  grid-template-columns: minmax(7.5rem, 0.28fr) minmax(0, 1fr);
   gap: 1rem;
   align-items: center;
   border: 1px solid var(--rule);
@@ -799,7 +804,7 @@ hr {
 
 @media (max-width: 600px) {
   .security-layer-map { padding: 0.9rem; }
-  .security-layer { grid-template-columns: 1fr; gap: 0.25rem; }
+  .security-layer { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
 }
 
 @media (max-width: 560px) {
@@ -957,4 +962,6 @@ a.topic-card:hover {
 
   .content { padding: 2rem 1.25rem 4rem; }
   .content h1 { font-size: 1.9rem; }
+
+  table { display: table; table-layout: fixed; }
 }

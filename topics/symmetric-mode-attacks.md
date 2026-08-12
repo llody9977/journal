@@ -907,21 +907,12 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
 })();
 </script>
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Symmetric Mode Vulnerabilities Summary</strong>
-    <ul>
-      <li><strong>ECB Block Leakage</strong>: Identical plaintext blocks produce identical ciphertext blocks. Avoid ECB for multi-block payloads outside the narrow specialist exceptions discussed above (e.g., deliberately deterministic per-block encryption of already-uniform, already-authenticated data) — for ordinary payloads, use AEAD instead.</li>
-      <li><strong>CBC Bit-Flipping</strong>: Modifying ciphertext block <em>C₁</em> flips corresponding bits in decrypted plaintext block <em>P₂</em>. Always enforce AEAD, or correctly composed Encrypt-then-MAC using separate encryption and MAC keys.</li>
-      <li><strong>CTR Two-Time Pad</strong>: Reusing a counter/nonce under the same key exposes <em>C₁ ⊕ C₂ = P₁ ⊕ P₂</em> — recovering either full plaintext from that XOR still requires the attacker to know or guess predictable content in the other message, not just observe the reused nonce.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>ECB leaks block-level plaintext patterns, CBC without a MAC is vulnerable to bit-flipping and padding-oracle attacks, and CTR nonce reuse exposes the XOR of two plaintexts. Default to AEAD, or correctly composed Encrypt-then-MAC, instead of an unauthenticated mode.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-38A**: *Recommendation for Block Cipher Modes of Operation* — [NIST CSRC SP 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
 - **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) (IRTF/CFRG Informational)

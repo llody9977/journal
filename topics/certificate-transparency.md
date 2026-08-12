@@ -2,7 +2,7 @@
 title: Certificate Transparency (CT) & Merkle Audit Proofs
 description: Cryptographic principles of Certificate Transparency (RFC 6962 / RFC 9162), Signed Certificate Timestamps (SCT), Merkle tree audit proofs, and browser CT policies.
 permalink: /topics/certificate-transparency/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
@@ -77,22 +77,12 @@ SCTs can be delivered to the client browser via three distinct transport mechani
 2. **TLS Extension** (`signed_certificate_timestamp`): The web server transmits SCTs during the TLS handshake—in TLS 1.3, carried within the `Certificate` message extensions for the target certificate entry; in TLS 1.2, delivered via `ServerHello` extension.
 3. **OCSP Stapling**: The web server includes SCTs wrapped inside a stapled OCSP response (`OCSPResponse`). This delivery path has lost currency: per [Chrome's CT Policy](https://googlechrome.github.io/CertificateTransparency/ct_policy.html), Chrome no longer accepts OCSP-delivered SCTs toward its compliance requirement starting with Chrome 148, leaving embedded X.509 extensions and the TLS extension as the paths CAs and servers can actually rely on.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Certificate Transparency Summary</strong>
-    <ul>
-      <li><strong>Detection, Not Prevention</strong>: CT does not stop a CA from misissuing a certificate — it makes misissuance publicly loggable and discoverable after the fact, so it enables accountability rather than blocking the act itself.</li>
-      <li><strong>Public Append-Only Logs</strong>: In the common embedded-SCT workflow, the CA submits a pre-certificate before final issuance; SCTs may also be delivered through supported TLS mechanisms.</li>
-      <li><strong>Signed Certificate Timestamps (SCTs)</strong>: CAs receive SCT promises from CT logs and deliver them via X.509 extensions, TLS extensions, or OCSP stapling — though Chrome 148+ no longer accepts the OCSP-stapling path toward its CT compliance requirement, leaving the other two as the paths that actually count there.</li>
-      <li><strong>Browser Enforcement Policies</strong>: Chrome and Apple enforce distinct CT policies requiring specific SCT counts and log operator diversity rules based on certificate lifetime; Firefox enforces CT separately (since Firefox 135) but via its own mechanism rather than Chrome/Apple's specific SCT-count rules.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>For publicly trusted TLS certificates under browser CT policy, Certificate Transparency does not prevent CA misissuance; it makes submitted certificates or precertificates monitorable and log behavior auditable. Under current Chrome policy, embedded or TLS-delivered SCTs count toward CT compliance, while OCSP-stapled SCTs do not.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 6962**: *Certificate Transparency* — [IETF RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)
 - **RFC 9162**: *Certificate Transparency Version 2.0* — [IETF RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)

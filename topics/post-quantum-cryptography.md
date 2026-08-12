@@ -108,23 +108,12 @@ Migrating a real system is a program of work, not a library upgrade. Several pra
 - **MTU fragmentation**: The larger handshake messages above matter differently depending on the transport. Over plain TCP, a bigger `ClientHello`/`ServerHello` flight can trigger TCP segmentation that some middleboxes handle poorly. Over QUIC specifically, [RFC 9001](https://www.rfc-editor.org/rfc/rfc9001.html) already divides the TLS handshake into `CRYPTO` frames that QUIC packetizes independently of any single IP MTU, and [RFC 9000 §14](https://www.rfc-editor.org/rfc/rfc9000.html#section-14) directs QUIC implementations to avoid IP-layer fragmentation in the first place (via Datagram Packetization Layer PMTU Discovery) — so larger PQC handshakes don't inherently "force fragmentation at the UDP/QUIC layer" the way they can over raw TCP; they do mean more packets/frames and a larger overall handshake byte count, which is its own capacity-planning concern. Networks and load balancers tuned for classical-sized handshakes may still need buffer-size or packet-count adjustments as PQC and hybrid key exchange roll out.
 - **Validation-module readiness**: Regulated environments requiring FIPS 140-3 validated cryptographic modules are gated by NIST's validation program timeline for PQC implementations specifically — an algorithm being a finalized FIPS standard (203/204/205) does not mean every vendor's *module* implementing it has completed FIPS validation yet. Procurement and compliance timelines should track module-level validation status, not just algorithm standardization status.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Post-Quantum Cryptography Summary</strong>
-    <ul>
-      <li><strong>Finalized vs. Draft</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) are <strong>finalized NIST standards (Aug 2024)</strong>. FIPS 206 (FN-DSA) is a <strong>draft standard under development</strong>.</li>
-      <li><strong>Shor's vs. Grover's</strong>: Shor's algorithm would render RSA/ECC tractable to break, but only once run on a sufficiently capable, fault-tolerant quantum computer that doesn't exist yet. Grover's algorithm only halves symmetric key strength (AES-256 remains secure with 128-bit quantum security).</li>
-      <li><strong>Harvest Now, Decrypt Later</strong>: Adversaries record encrypted traffic today to decrypt years later. Prioritize hybrid key exchange (X25519MLKEM768) in proportion to how long the data must stay confidential and how close your CRQC-arrival estimate is.</li>
-      <li><strong>CNSA 2.0 Scope</strong>: Applies specifically to U.S. National Security Systems (NSS), Software and firmware signing target 2030; traditional networking equipment targets 2030; web browsers, web servers, cloud services, and operating systems target exclusive CNSA 2.0 deployment by **2033** per [NSA CNSA 2.0 Advisory](https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>FIPS 203/204/205 are finalized post-quantum standards; a cryptographically relevant quantum computer capable of running Shor's algorithm against RSA/ECC doesn't exist yet, but harvest-now-decrypt-later risk means long-lived confidential data needs hybrid PQC migration planning now. CNSA 2.0's stricter timeline applies specifically to U.S. National Security Systems, not systems generally.</p>
 </div>
 
-## Primary References
-
+## Primary references
 
 - **NIST FIPS 203**: *Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)* — [NIST CSRC FIPS 203 Final](https://csrc.nist.gov/pubs/fips/203/final)
 - **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST CSRC FIPS 204 Final](https://csrc.nist.gov/pubs/fips/204/final)

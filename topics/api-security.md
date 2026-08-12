@@ -54,21 +54,12 @@ Traditional bearer tokens can be intercepted and replayed by unauthorized third 
   <p class="diagram-caption">Sender-constrained tokens require proof of the bound private key</p>
 </div>
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>API Security Summary</strong>
-    <ul>
-      <li><strong>BOLA / IDOR (#1 Risk)</strong>: Broken Object Level Authorization happens when APIs rely on user-supplied IDs without verifying object ownership.</li>
-      <li><strong>Token Validation</strong>: Always validate JWT signature, expiration (<code>exp</code>), audience (<code>aud</code>), and issuer (<code>iss</code>) on every API request.</li>
-      <li><strong>Rate Limiting &amp; Throttling</strong>: Enforce token-bucket or leaky-bucket rate limits per client IP / API key to prevent DoS and credential stuffing.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Machine-to-machine API authentication must match the caller and threat model: bearer credentials are replayable, while request signing, mTLS-bound tokens, and DPoP-bound tokens add sender proof under their stated verification preconditions. For JWT access tokens, validate the signature and algorithm plus every claim required by the applicable token profile and resource server, including issuer, audience, and time bounds. DPoP still permits limited same-endpoint proof replay unless single-use or nonce checks are enforced.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **OWASP API Security Top 10:2023**: *Top 10 API Security Risks* — [OWASP API Security Top 10](https://owasp.org/API-Security/)
 - **RFC 7519**: *JSON Web Token (JWT)* — [IETF RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)

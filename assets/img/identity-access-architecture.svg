@@ -21,24 +21,27 @@
     <text x="60" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">1. IDENTITY PROOFING (IAL1 - IAL3)</text>
     <text x="60" y="162" font-size="14" font-weight="800" fill="#0f172a">Applicant Identity Verification</text>
     <line x1="60" y1="174" x2="375" y2="174" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-    <text x="60" y="194" font-size="10.5" font-weight="500" fill="#475569">• Facial biometrics &amp; document proofing (NIST 800-63A)</text>
-    <text x="60" y="212" font-size="10.5" font-weight="500" fill="#475569">• IAL1 (Basic Evidence) → IAL2 (Strong Evidence) → IAL3 (In-Person Attended)</text>
+    <text x="60" y="192" font-size="10" font-weight="800" letter-spacing="0.5" fill="#2563eb">IAL:</text>
+    <text x="60" y="210" font-size="10.5" font-weight="500" fill="#475569">• IAL1: Basic proofing → IAL2: Stronger proofing</text>
+    <text x="60" y="228" font-size="10.5" font-weight="500" fill="#475569">• IAL3: On-site, attended identity proofing</text>
 
     <!-- Card 2: AAL Authenticator Binding (x=422, w=355) -->
     <rect x="422" y="115" width="355" height="135" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
     <text x="442" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. AUTHENTICATOR BINDING (AAL1 - AAL3)</text>
     <text x="442" y="162" font-size="14" font-weight="800" fill="#0f172a">Single-Factor to Multi-Factor Binding</text>
     <line x1="442" y1="174" x2="757" y2="174" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-    <text x="442" y="194" font-size="10.5" font-weight="500" fill="#475569">• WebAuthn / FIDO2 Passkeys &amp; PKI Keys (NIST 800-63B)</text>
-    <text x="442" y="212" font-size="10.5" font-weight="500" fill="#475569">• AAL1 (Password) → AAL2 (MFA) → AAL3 (Phishing-Resistant)</text>
+    <text x="442" y="192" font-size="10" font-weight="800" letter-spacing="0.5" fill="#0f766e">AAL:</text>
+    <text x="442" y="210" font-size="10.5" font-weight="500" fill="#475569">• AAL1: Single- or multi-factor → AAL2: MFA</text>
+    <text x="442" y="228" font-size="10.5" font-weight="500" fill="#475569">• AAL3: Phishing-resistant MFA + non-exportable key</text>
 
     <!-- Card 3: FAL Federation Assurance (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="135" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
     <text x="825" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">3. FEDERATION ASSURANCE (FAL1 - FAL3)</text>
     <text x="825" y="162" font-size="14" font-weight="800" fill="#0f172a">Secure Token &amp; Assertion Exchange</text>
     <line x1="825" y1="174" x2="1140" y2="174" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-    <text x="825" y="194" font-size="10.5" font-weight="500" fill="#475569">• OpenID Connect (OIDC), OAuth 2.0 &amp; DPoP (NIST 800-63C)</text>
-    <text x="825" y="212" font-size="10.5" font-weight="500" fill="#475569">• FAL1 (Bearer) → FAL2 (Injection-Protected) → FAL3 (Holder-of-Key)</text>
+    <text x="825" y="192" font-size="10" font-weight="800" letter-spacing="0.5" fill="#b45309">FAL:</text>
+    <text x="825" y="210" font-size="10.5" font-weight="500" fill="#475569">• FAL1: Bearer → FAL2: Injection-protected</text>
+    <text x="825" y="228" font-size="10.5" font-weight="500" fill="#475569">• FAL3: Holder-of-key</text>
 
     <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=265, h=145) -->
     <!-- Card 1: PEP (x=40, w=355) -->

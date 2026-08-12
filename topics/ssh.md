@@ -76,21 +76,12 @@ ssh-keyscan -t ed25519 github.com 2>/dev/null | ssh-keygen -lf -
   <p><code>ssh-keyscan</code> fetches the host key over the same network path being verified, and it cannot authenticate the key it returns—an attacker positioned on that path can substitute their own key without detection. OpenBSD's <a href="https://man.openbsd.org/ssh-keyscan.1">ssh-keyscan manual</a> states this directly: its output "should be verified out of band, or only used directly for host authentication if the network is trusted." <code>ssh-keyscan</code> is a convenience for <em>collecting</em> a key to add to <code>known_hosts</code>—the collected fingerprint still needs independent out-of-band verification (for example, comparing it against a fingerprint the server operator publishes through a separate channel, such as GitHub's published SSH key fingerprints) before it is trusted.</p>
 </div>
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>SSH &amp; Key Management Summary</strong>
-    <ul>
-      <li><strong>Deprecate Static Authorized_Keys</strong>: Managing static public keys on host disk scale poorly and causes key sprawl.</li>
-      <li><strong>SSH User Certificates (OpenSSH CA)</strong>: Sign short-lived SSH user certificates using a central SSH CA key; hosts verify signatures against CA public key.</li>
-      <li><strong>Modern Key Algorithms</strong>: Enforce Ed25519 (<code>ssh-ed25519</code>) or RSA-4096; disable legacy <code>ssh-rsa</code> (SHA-1 signature scheme).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Static keys scattered across <code>authorized_keys</code> files scale poorly and cause key sprawl; short-lived SSH certificates signed by a central CA let hosts verify against one CA public key instead. <code>ssh-keyscan</code> fetches a host key over the same network path being verified, so its output still needs independent out-of-band verification before it's trusted.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **OpenSSH Certificates**: *OpenSSH Certificate Architecture Protocol* — [OpenSSH Specs](https://www.openssh.com/specs.html)
 - **RFC 4253**: *The Secure Shell (SSH) Transport Layer Protocol* — [IETF RFC 4253](https://www.rfc-editor.org/rfc/rfc4253)

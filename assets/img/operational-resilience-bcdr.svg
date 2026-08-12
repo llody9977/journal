@@ -1,0 +1,77 @@
+<svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Operational Resilience, Business Continuity &amp; Disaster Recovery Flow</title>
+  <desc id="description">Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection, which splits into a business-continuity lane (people, process, workarounds) and a disaster-recovery lane (systems, data, identity, keys) that converge on validating recovered service and controlled failback, with exercises and lessons feeding back into the business impact analysis.</desc>
+  <rect width="1200" height="780" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="28" font-weight="850" fill="#0f172a">Operational Resilience, Business Continuity &amp; Disaster Recovery</text>
+  <text x="50" y="82" font-size="14" fill="#475569">Business Impact Analysis and recovery objectives drive strategy selection, which splits into coordinated</text>
+  <text x="50" y="100" font-size="14" fill="#475569">continuity and disaster-recovery lanes, converges on validated recovery, and feeds exercises back to the BIA.</text>
+
+  <!-- Row 1: BIA -->
+  <rect x="300" y="120" width="600" height="85" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="600" y="150" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">1. BUSINESS IMPACT ANALYSIS</text>
+  <text x="600" y="172" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Critical Services, Dependencies, MTD, RTO &amp; RPO</text>
+  <text x="600" y="190" text-anchor="middle" font-size="11" font-weight="500" fill="#475569">NIST SP 800-34 Rev. 1</text>
+
+  <path d="M600 205 L600 228" fill="none" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Row 2: Strategy Selection -->
+  <rect x="300" y="230" width="600" height="85" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
+  <text x="600" y="260" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">2. CONTINUITY &amp; RECOVERY STRATEGY SELECTION</text>
+  <text x="600" y="282" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Backup/Restore → Pilot Light → Warm Standby → Active/Active</text>
+  <text x="600" y="300" text-anchor="middle" font-size="11" font-weight="500" fill="#475569">Cost, complexity, and recovery-speed trade-offs</text>
+
+  <!-- Split arrows -->
+  <path d="M600 315 L340 350" fill="none" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <path d="M600 315 L860 350" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#arrow-amber)"/>
+
+  <!-- Row 3: Two lanes -->
+  <rect x="90" y="352" width="460" height="125" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="110" y="378" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">3A. BUSINESS-CONTINUITY LANE</text>
+  <text x="110" y="400" font-size="13.5" font-weight="700" fill="#0f172a">People, Process &amp; Manual Workarounds</text>
+  <line x1="110" y1="410" x2="530" y2="410" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="110" y="430" font-size="11" font-weight="500" fill="#475569">• Declaration authority, succession &amp; role ownership</text>
+  <text x="110" y="448" font-size="11" font-weight="500" fill="#475569">• Rehearsed manual workarounds &amp; alternate facilities</text>
+  <text x="110" y="466" font-size="11" font-weight="500" fill="#475569">• Customer, regulator &amp; supplier communications</text>
+
+  <rect x="650" y="352" width="460" height="125" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+  <text x="670" y="378" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">3B. DISASTER-RECOVERY LANE</text>
+  <text x="670" y="400" font-size="13.5" font-weight="700" fill="#0f172a">Systems, Data, Identity &amp; Keys</text>
+  <line x1="670" y1="410" x2="1090" y2="410" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+  <text x="670" y="430" font-size="11" font-weight="500" fill="#475569">• Isolated / immutable backup copies</text>
+  <text x="670" y="448" font-size="11" font-weight="500" fill="#475569">• Separate recovery identities &amp; known-good images</text>
+  <text x="670" y="466" font-size="11" font-weight="500" fill="#475569">• Clean-room recovery &amp; integrity validation</text>
+
+  <!-- Converge arrows -->
+  <path d="M340 477 L600 503" fill="none" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <path d="M860 477 L600 503" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#arrow-amber)"/>
+
+  <!-- Row 4: Validate -->
+  <rect x="300" y="505" width="600" height="75" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2.5" />
+  <text x="600" y="533" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#15803d">4. VALIDATE RECOVERED SERVICE</text>
+  <text x="600" y="555" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0f172a">Integrity Checks Against Recovery Objectives, Not Just "Working"</text>
+
+  <path d="M600 580 L600 600" fill="none" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Row 5: Failback -->
+  <rect x="300" y="602" width="600" height="65" rx="14" fill="#f8fafc" stroke="#64748b" stroke-width="2.5" />
+  <text x="600" y="628" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#334155">5. CONTROLLED FAILBACK</text>
+  <text x="600" y="648" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">Return to Primary Without Losing or Corrupting Accumulated Data</text>
+
+  <path d="M600 667 L600 687" fill="none" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Row 6: Feedback banner -->
+  <rect x="40" y="689" width="1120" height="65" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
+  <text x="600" y="716" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">6. EXERCISES &amp; LESSONS FEED BACK ↺</text>
+  <text x="600" y="738" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0f172a">Tabletop → Component Restore → Regional/Full Failover → Failback → Supplier-Loss — results and corrective actions feed back into Stage 1's Business Impact Analysis.</text>
+
+  <path d="M1090 689 L1140 689 L1140 162 L900 162" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+</svg>

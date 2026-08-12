@@ -2,7 +2,7 @@
 title: Hash Collisions & Length-Extension Attacks
 description: Executable cryptanalytic demonstrations of MD5 and SHA-1 collision pairs and a complete JavaScript length-extension attack against naive hash MACs.
 permalink: /topics/hash-collisions-length-extension/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
@@ -658,21 +658,12 @@ Modern hash constructions also resist length extension at the algorithm level, f
 
 That structural resistance describes the *hash function*, not a ready-made MAC — plain unkeyed `SHA3-256(message)` or unqualified `BLAKE3(message)` still authenticate nothing, since anyone can compute either without a secret. For actual message authentication, pair the key with the hash through a construction designed for it: **KMAC128 / KMAC256** ([SP 800-185](https://csrc.nist.gov/pubs/sp/800/185/final)) for the SHA-3 family, **HMAC** for Merkle–Damgård hashes (SHA-2), or BLAKE3's own built-in keyed mode (`keyed_hash`) — not a hand-rolled `H(key || message)` or `H(key || message)` substitute using SHA-3 or BLAKE3 in place of `H`.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Hash Attacks Summary</strong>
-    <ul>
-      <li><strong>Broken Hashes</strong>: MD5 and SHA-1 have broken collision resistance and are disallowed for <em>generating new</em> digital signatures and other collision-resistance-dependent uses (NIST SP 800-131A Rev. 2) — limited legacy signature verification is still permitted. This does not ban SHA-1 outright — HMAC-SHA1 remains acceptable in many protocols because HMAC's security does not rely on collision resistance the same way. Git's historical use of SHA-1 for object hashing was affected in principle but not in practice for ordinary use: [GitHub's own analysis](https://github.blog/news-insights/company-news/sha-1-collision-detection-on-github-com/) found that the two published SHAttered PDFs collide as raw files but do *not* collide once added to a Git repository — Git's object format (which prepends a type/length header before hashing) changes the hashed bytes enough to break that specific collision. The same underlying technique could in principle be used to construct a Git-targeted collision, but doing so was not demonstrated and would itself require a comparably expensive dedicated computation, not a free reuse of the existing SHAttered files. Git added collision detection and, separately, is migrating toward SHA-256 object hashing; "unaffected" should be read as "not exploited under normal, non-adversarial use, and the specific published collision doesn't transfer directly," not as a blanket immunity claim.</li>
-      <li><strong>Length-Extension Vulnerability</strong>: Naive MACs like <code>H(key \|\| message)</code> allow attackers to append data and forge valid tags without learning the key.</li>
-      <li><strong>Mitigation Standard</strong>: For message authentication, deploy a keyed construction — HMAC-SHA256, KMAC (SHA-3 family), or BLAKE3's keyed mode — not a raw unkeyed SHA-3 or BLAKE3 digest, which resist length extension as hash functions but are not themselves MACs.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>MD5 and SHA-1 have broken collision resistance and are not acceptable for generating new digital signatures under NIST transition guidance. Prefix-MAC constructions such as <code>H(key || message)</code> are length-extension vulnerable when <code>H</code> is a Merkle–Damgård hash such as SHA-256; even with SHA-3 or BLAKE3, use a standard keyed construction—HMAC, KMAC, or BLAKE3 keyed mode—instead of inventing a MAC.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-131A Rev. 2**: *Transitioning the Use of Cryptographic Algorithms and Key Lengths* — [NIST CSRC SP 800-131A](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final)
 - **SHAttered Attack**: *Announcing the First SHA-1 Collision* — [Google Security Blog](https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html)

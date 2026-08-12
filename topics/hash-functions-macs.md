@@ -259,21 +259,12 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
 })();
 </script>
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Hash &amp; MAC Summary</strong>
-    <ul>
-      <li><strong>Three Security Properties</strong>: Preimage resistance (given a digest, infeasible to find any input producing it), Second-preimage resistance (given a specific input, infeasible to find a different input with the same digest), Collision resistance (infeasible to find any two distinct inputs sharing a digest).</li>
-      <li><strong>HMAC Construction</strong>: HMAC uses double-nested key hashing (<code>ipad</code> / <code>opad</code>) to prevent Merkle–Damgård length-extension attacks.</li>
-      <li><strong>Length-Extension Immunity</strong>: KMAC (SP 800-185, sponge-based) and BLAKE3 (Merkle tree-based, not a NIST standard) are both inherently immune to length extension by design.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>A hash function's security rests on preimage, second-preimage, and collision resistance, but an unkeyed digest authenticates nothing on its own. HMAC's nested construction defends against Merkle–Damgård length-extension attacks; KMAC and BLAKE3 resist length extension by design instead.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST FIPS 180-4**: *Secure Hash Standard (SHS)* — [NIST CSRC FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)
 - **NIST FIPS 198-1**: *The Keyed-Hash Message Authentication Code (HMAC)* — [NIST CSRC FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)

@@ -119,7 +119,7 @@ This simulator specifically models **MT19937**, the generator behind Python's [`
     </div>
 
     <!-- Output Logs -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; margin-top: 1rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 1rem; margin-top: 1rem;">
       <!-- Left: Target Server -->
       <div style="background: var(--paper); border: 1px solid var(--rule); padding: 0.85rem; border-radius: 6px;">
         <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700;">Target PRNG Server (Observed Tokens 1 - 624)</div>
@@ -309,24 +309,12 @@ Individually secure primitives can combine into an insecure protocol if the comp
 - **Ensure Cryptographic Agility**: Design software protocols to support key and algorithm rotation as cryptanalytic capabilities advance.
 - **Account for Long-Term Data Lifetimes**: Data encrypted today must remain secure for the duration of its confidentiality lifetime, incorporating post-quantum migration planning (**[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**, **[NIST FIPS 204 ML-DSA](https://csrc.nist.gov/pubs/fips/204/final)**; general key management guidance is provided by **[NIST SP 800-175B Rev. 1](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final)**).
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Cryptographic Foundations Summary</strong>
-    <ul>
-      <li><strong>CSPRNG Requirement</strong>: A randomly generated key, bearer token, or any other value needing genuine unpredictability must come from a CSPRNG (<code>secrets.token_bytes()</code>, <code>crypto.randomBytes()</code>) — never a non-cryptographic PRNG (<code>Math.random()</code>). Keys and tokens aren't required to be randomly generated in the first place — a securely derived, password-derived, agreement-established key, or a self-contained signed/MACed token, is a separate valid origin with its own requirements. Nonces and password-hashing salts follow their construction's own requirement (uniqueness, unpredictability, or both) rather than defaulting to a CSPRNG by category, and a deterministic counter or UUID scheme used for a uniqueness-only requirement still needs its own correctness conditions met (partitioning, persistence, exhaustion handling, or per-key collision limits) — it isn't automatically failure-proof just for avoiding the CSPRNG.</li>
-      <li><strong>Default to AEAD for New Symmetric Encryption</strong>: When confidentiality is the goal, use Authenticated Encryption with Associated Data (AES-GCM, ChaCha20-Poly1305) — AEAD supplies ciphertext integrity that unauthenticated modes lack, which closes off padding-oracle attacks (themselves conditional on a distinguishable validation-feedback oracle, not automatic from unauthenticated CBC alone) along with other malleability-based attacks.</li>
-      <li><strong>Protocol Composition</strong>: TLS 1.3's common, certificate-authenticated configuration combines asymmetric signatures (authentication), ephemeral ECDH (key agreement), and symmetric AEAD (bulk data) — but this isn't the only valid composition: PSK-based modes skip certificate authentication, and raw public keys are a valid alternative to certificates.</li>
-      <li><strong>DRBG State Hazards</strong>: <code>fork()</code> and process-level checkpoint/restore (CRIU) duplicate in-process userspace DRBG state — reseed explicitly after either event, or rely on a fresh OS-level CSPRNG call per use instead of a long-lived DRBG instance. A live VM snapshot is a distinct, kernel-level hazard: it duplicates the guest kernel's own RNG state, which an application-level reseed call cannot repair by itself — that requires the platform to detect the clone and inject fresh entropy into the guest kernel (some platforms, like current Linux via VMGenID, do this automatically when the hypervisor supports it; others don't). An ordinary container image start is not this hazard — it produces fresh state, not a duplicated live snapshot.</li>
-      <li><strong>Implementation Attacks Are a Separate Threat Class</strong>: Timing, cache, power, and fault-injection side channels can leak keys from a mathematically sound algorithm through its concrete implementation; use vetted constant-time libraries (libsodium, HACL*, BoringSSL) rather than hand-rolled "constant-time" code, and don't rely on <code>memset()</code> alone to guarantee a secret is gone from memory.</li>
-      <li><strong>Composition Failures</strong>: Domain separation and context binding prevent a value computed for one purpose or context from being replayed as valid for another; canonical serialization is a separate concern — it keeps signed/MACed bytes reproducible when a message can be re-parsed, re-serialized, or independently reconstructed across implementations, which is what creates the verify/use mismatch that breaks the signature's intended binding. Naive per-chunk AEAD over a stream doesn't detect chunk reordering, dropping, duplication, or truncation without an explicit sequence counter and final-chunk marker.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Never invent custom cryptography — use standardized, peer-reviewed primitives, a CSPRNG for values that genuinely need unpredictability, and AEAD by default for new symmetric encryption. Design for cryptographic agility and account for how long encrypted data must stay confidential, including post-quantum migration.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-90A Rev. 1**: *Recommendation for Random Number Generation Using Deterministic Random Bit Generators* — [NIST CSRC SP 800-90A](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)
 - **NIST SP 800-90B**: *Recommendation for the Entropy Sources Used for Random Bit Generation* — [NIST CSRC SP 800-90B](https://csrc.nist.gov/pubs/sp/800/90/b/final)

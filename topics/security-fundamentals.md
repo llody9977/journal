@@ -62,10 +62,10 @@ The five-stage breakdown below is a practical synthesis for this journal, inform
 
 | Lifecycle Stage | Primary Operational Actions & Mechanics | System Scenario Example |
 |---|---|---|
-| **Stage 1: Inputs**<br>*(Problem Domain)* | Gathers inputs from **Threat Modeling**, **CVSS Vulnerability Scans**, **Threat Intel**, Asset Inventories, and Gap Audits to construct scenario components (*Asset, Threat, Vulnerability, Impact*). | Unauthenticated public API route exposing customer database queries without rate limiting. |
+| **Stage 1: Inputs**<br>*(Problem Domain)* | Gathers inputs from **Threat Modeling**, **vulnerability scan findings scored with CVSS**, **Threat Intel**, Asset Inventories, and Gap Audits to construct scenario components (*Asset, Threat, Vulnerability, Impact*)—CVSS itself scores a vulnerability's severity, it does not perform the scan that discovers it. | Unauthenticated public API route exposing customer database queries without rate limiting. |
 | **Stage 2: Evaluation**<br>*(Risk Assessment)* | Calculates exposure severity per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)** by rating threat plausibility and harm consequence—commonly approximated as a simplified working model, `Risk ≈ Likelihood × Impact`, though SP 800-30 itself does not mandate multiplication. | Rating data exfiltration likelihood as **High** and financial harm as **Critical**. |
 | **Stage 3: Strategy**<br>*(Response Selection)* | Selects a response type; **[NIST SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)** names five: **Accept**, **Avoid** (redesign feature), **Mitigate** (deploy controls), **Share**, and **Transfer** (insurance/SLAs)—share and transfer are distinct but often grouped together informally. | Selecting **Mitigate** to deploy technical security controls. |
-| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** control catalog (organized into 20 control families, not a 4-function taxonomy). This journal groups implemented controls by a practical functional lens—**Preventive** (*mTLS/WAF*), **Detective** (*SIEM*), **Responsive** (*Revocation*), and **Recovery** (*Backups*)—for reasoning about defense in depth. This page introduces a four-stage execution lens—**Preventive**, **Detective**, **Corrective / Responsive**, and **Recovery**—which is expanded in the broader five-type operational taxonomy in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})** (**Preventive**, **Detective**, **Corrective**, **Compensating**, **Deterrent**). | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
+| **Stage 4: Execution**<br>*(Control Mechanics)* | Implements safeguards drawn from the **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** control catalog, which is organized into 20 control families. For defense-in-depth analysis, this journal additionally applies overlapping labels: **Preventive, Detective, Corrective / Recovery, Compensating,** and **Deterrent**. The first group describes operational role or timing, Compensating describes substitution for another control, and Deterrent describes intended behavioral effect; these are not five mutually exclusive stages or one official NIST taxonomy. Full breakdown in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**. | Deploying OIDC/OAuth token verification, Web Application Firewall (WAF), and mTLS. |
 | **Stage 5: Loop**<br>*(Continuous Audit)* | Continuously monitors control efficacy (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), tracks new threats, and feeds metrics back into Stage 1 Inputs for re-assessment. | Automated SIEM alerting on brute-force spikes and feeding log metrics into annual audits. |
 
 A vulnerability alone does not constitute a risk. Risk assessment requires determining whether a plausible threat can reach the vulnerability, the magnitude of the resulting impact, and how existing controls alter overall probability. Risk management is never a static, one-time activity—it operates as a continuous feedback loop (**NIST SP 800-37**).
@@ -77,27 +77,18 @@ When evaluating the security posture of any new feature or system architecture, 
 | Diagnostic Focus Area | Key Architectural Evaluation Question | Target Verification &amp; Audit Evidence |
 |---|---|---|
 | **Asset Categorization** | What sensitive data, critical services, or business operations require protection? | Data classification inventories, CMDB registers &amp; asset catalogues. |
-| **Control Verification** | Which preventive, detective, responsive, and recovery controls execute the reduction strategy? | Security controls baseline mapping (**NIST SP 800-53 Rev. 5**) &amp; continuous monitoring logs. |
+| **Control Verification** | Which preventive, detective, corrective/recovery, compensating, and deterrent controls execute the reduction strategy? | Security controls baseline mapping (**NIST SP 800-53 Rev. 5**) &amp; continuous monitoring logs. |
 | **Domain Boundary Identification** | Are you managing paper records (InfoSec), digital endpoints (Cybersecurity), or hardware roots of trust? | Scope boundary documents &amp; system security plan (SSP) architecture bounds. |
 | **Exposure Assessment** | What is the risk severity based on threat likelihood and consequential impact? | Risk assessment reports (**NIST SP 800-30 Rev. 1**). |
 | **Objective Testing** | Which CIA triad properties, safety, or privacy limits would be breached if compromised? | FIPS 199 impact categorization &amp; privacy impact assessments (PIA). |
 | **Strategic Response Selection** | Which response strategy—Accept, Avoid, Mitigate, Share, or Transfer—is authorized by the risk owner? | Risk treatment decision record signed off by the policy-defined acceptance authority (**NIST SP 800-39**). |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Security Fundamentals Summary</strong>
-    <ul>
-      <li><strong>Security Objectives</strong>: The CIA triad (Confidentiality, Integrity, Availability) plus the extended properties this page covers—Authenticity, Accountability, Privacy, Safety, and Resilience.</li>
-      <li><strong>Risk-Driven Architecture</strong>: Security controls must be selected based on threat modeling and risk assessments, not checkbox compliance.</li>
-      <li><strong>Defense in Depth</strong>: Layer controls across physical, network, identity, application, and data layers to reduce dependence on any single control—layering lowers the odds that one failure causes systemic compromise, but it does not guarantee the absence of every single point of failure.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Security architecture begins by identifying assets, required security properties, plausible threat scenarios, and unacceptable harm before selecting controls. Controls should be risk-driven, independently verified, and layered so that one failure does not automatically become systemic compromise.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-53 Rev. 5**: *Security and Privacy Controls for Information Systems and Organizations* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
 - **ISO/IEC 27001:2022**: *Information security, cybersecurity and privacy protection — Information security management systems* — [ISO 27001 Overview](https://www.iso.org/standard/27001)

@@ -69,21 +69,12 @@ modelscan -p suspicious_model.pkl
 # Unsafe operator found: 'system' from module 'os'
 ```
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>AI &amp; LLM Security Summary</strong>
-    <ul>
-      <li><strong>OWASP Top 10 for LLMs</strong>: Primary risks include Prompt Injection (direct/indirect), Insecure Output Handling, Training Data Poisoning, and Model Denial of Service.</li>
-      <li><strong>Indirect Prompt Injection</strong>: Untrusted inputs from websites, emails, or PDFs manipulate LLM behavior during RAG/retrieval ops. Filtering and sanitization reduce exposure but are one layer among several; per <a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">OWASP LLM01:2025</a>, pattern-based filtering and RAG-based approaches alone do not fully mitigate prompt injection, so pair them with least-privilege tool access, human-in-the-loop approval for consequential actions, and output monitoring.</li>
-      <li><strong>Human-in-the-Loop</strong>: Never allow LLMs to execute destructive side-effects (database deletes, wire transfers) without explicit human confirmation.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Indirect prompt injection lets untrusted content from retrieved documents or web pages manipulate an LLM's behavior; pattern-based filtering alone doesn't fully mitigate it per OWASP LLM01:2025, so pair it with least-privilege tool access and human-in-the-loop approval. Never let an LLM execute a destructive side effect — a database delete, a wire transfer — without explicit human confirmation.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **OWASP Top 10 for Large Language Model Applications**: *OWASP LLM Security Project* — [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - **NIST AI Risk Management Framework (AI RMF 1.0)**: *Artificial Intelligence Risk Management Framework* — [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework)

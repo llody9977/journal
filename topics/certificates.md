@@ -2,7 +2,7 @@
 title: Public Key Infrastructure (PKI) & X.509 Certificates
 description: X.509 v3 certificate structure, Certificate Authority (CA) hierarchies, automated ACME issuance (RFC 8555 / ARI), CRL/OCSP revocation, and PQC hybrid certificates.
 permalink: /topics/certificates/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
@@ -521,21 +521,12 @@ As PKI migrates toward quantum safety, Certificate Authorities and standards gro
 - **Dual-Algorithm / Composite Certificates** ([draft-ietf-lamps-pq-composite-sigs](https://datatracker.ietf.org/doc/html/draft-ietf-lamps-pq-composite-sigs)): Binds both a classical public key (e.g. RSA-3072 or ECDSA P-256) and a post-quantum public key (e.g. FIPS 204 ML-DSA) under a single composite algorithm identifier.
 - **Interoperability & Transition Mechanics**: Non-upgraded legacy clients cannot parse or fall back to verifying only the classical signature component of a composite certificate, as they do not recognize the composite algorithm OID (the IETF draft explicitly notes that upgraded/non-upgraded interoperability is not directly provided by composite signatures). Upgraded/non-upgraded interoperability is therefore achieved through parallel certificates (dual X.509 certificate chains) or negotiated protocol parameters rather than in-place composite fallback.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Certificates &amp; PKI Summary</strong>
-    <ul>
-      <li><strong>X.509 Trust Chain</strong>: Root CAs sign Intermediate CAs, which sign short-lived Leaf certificates (the leaf's SAN field presents the identifiers it's valid for; the TLS client separately performs hostname verification against SAN to enforce the match — a chain can pass path validation while still being the wrong certificate if that step is skipped).</li>
-      <li><strong>Automated ACME &amp; ARI (RFC 9773)</strong>: For publicly-trusted TLS subscriber certificates, lifespans are shrinking under CA/Browser Forum Baseline Requirements — 200 days now, 100 days from March 2027, 47 days from March 2029. At this cadence, automated renewal via ACME (RFC 8555) and ARI (RFC 9773) is essential in practice.</li>
-      <li><strong>Pinning Trade-offs</strong>: Certificate/SPKI pinning carries high operational risk during key rotation. Both Apple and Android guidance recommend against static public key pinning for general web traffic, reserving it for specific threat models with tested backup pins. HPKP is deprecated in web browsers.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Root CAs sign intermediates, which sign leaf certificates; path validation does not replace hostname verification against the leaf certificate's SAN. As public TLS validity periods shrink, automate issuance and renewal at scale. ACME is one standardized automation protocol, and ARI lets supporting CAs suggest renewal windows; ARI improves scheduling but is not required for renewal.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 5280**: *Internet X.509 Public Key Infrastructure Certificate and CRL Profile* — [IETF RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)
 - **RFC 8555**: *Automatic Certificate Management Environment (ACME)* — [IETF RFC 8555](https://www.rfc-editor.org/rfc/rfc8555)

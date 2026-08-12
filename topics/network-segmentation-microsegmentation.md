@@ -56,21 +56,12 @@ When designing or reviewing network architecture:
 3. **Separate database environments**: Are production databases placed in isolated subnets with no internet gateway route (`igw`) or direct external IP?
 4. **Enforce East-West inspection**: Is internal service-to-service traffic ("East-West") authenticated and restricted, or assumed trusted because it is inside the perimeter?
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Network Microsegmentation Summary</strong>
-    <ul>
-      <li><strong>Perimeter vs. Microsegmentation</strong>: Traditional firewalls protect VLAN perimeters; microsegmentation enforces workload-to-workload policies (Layer 7).</li>
-      <li><strong>Identity-Based Policies</strong>: Enforce traffic filtering based on cryptographic identity (SPIFFE IDs, mTLS) rather than fragile IP subnets.</li>
-      <li><strong>Zero Trust Network Architecture</strong>: Assume lateral movement will occur; default-deny all inter-service communications.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Traditional segmentation uses firewalls, VLANs, and subnets at perimeter and internal zone boundaries; microsegmentation adds finer workload-to-workload policy. In dynamic environments, prefer stable workload identity where available and use network location as one policy signal rather than the sole trust basis.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-207**: *Zero Trust Architecture (Network Microsegmentation)* — [NIST CSRC SP 800-207](https://csrc.nist.gov/pubs/sp/800/207/final)
 - **CISA Zero Trust Maturity Model**: *Network Segment Guidance* — [CISA ZTMM](https://www.cisa.gov/zero-trust-maturity-model)
