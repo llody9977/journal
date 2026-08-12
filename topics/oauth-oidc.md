@@ -88,24 +88,15 @@ print("Signature Valid:", hmac.compare_digest(calc_sig.encode(), sig_b64.encode(
 
 1. **Enforce PKCE**: RFC 9700 makes PKCE mandatory for public clients and recommends it for confidential clients; deploy it across all authorization code flows.
 2. **Validate State Parameter**: Enforce cryptographically random `state` parameters to prevent Cross-Site Request Forgery (CSRF) during authorization redirects.
-3. **Verify Token Claims on Resource Servers**: Resource servers MUST validate `iss` (Issuer), `aud` (Audience), `exp` (Expiration), and algorithm headers before granting access. Reject tokens specifying `alg: "none"`.
+3. **Verify Access Tokens on Resource Servers**: Validate each access token according to its format and the authorization-server profile. For JWT access tokens, verify the signature and allowed algorithm plus every required claim, commonly including `iss` (Issuer), `aud` (Audience), and `exp` (Expiration). Reject JWT access tokens that use any algorithm or protection mode the applicable profile does not allow.
 4. **Never Send ID Tokens to Resource Servers**: ID Tokens belong to the Client application; Access Tokens belong to the Resource Server API.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>OAuth 2.0 &amp; OIDC Summary</strong>
-    <ul>
-      <li><strong>OAuth vs. OIDC</strong>: OAuth 2.0 is an <em>Authorization framework</em> (Access Tokens); OIDC is an <em>Authentication layer</em> built on OAuth 2.0 (ID Tokens).</li>
-      <li><strong>PKCE (RFC 7636)</strong>: Mandatory for public clients (mobile, SPA) and recommended for confidential clients (backend) per RFC 9700, to defeat code interception attacks.</li>
-      <li><strong>Implicit Flow Deprecated</strong>: Never use OAuth 2.0 Implicit Flow (returns access tokens in URL hash fragment).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>OAuth 2.0 is an authorization framework; OpenID Connect adds authentication and ID tokens. Use Authorization Code + PKCE—required for public clients and recommended for confidential clients by RFC 9700—and do not use the implicit grant for new clients. A resource server must validate an access token according to its format and authorization-server profile; for JWT access tokens, verify the signature and algorithm plus all required issuer, audience, time, and authorization claims.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 6749**: *The OAuth 2.0 Authorization Framework* — [IETF RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)
 - **RFC 7636**: *Proof Key for Code Exchange by OAuth Public Clients (PKCE)* — [IETF RFC 7636](https://www.rfc-editor.org/rfc/rfc7636)

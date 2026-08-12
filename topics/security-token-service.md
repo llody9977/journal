@@ -58,25 +58,16 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 | Exchange Mode | JSON Claim Structure | Architectural Audit Meaning |
 |---|---|---|
 | **Impersonation** | `{"sub": "user_123"}` | Client A assumes User B's identity completely; if the token carries only the `sub` claim, downstream APIs relying on the token alone cannot distinguish Client A from User B. |
-| **Delegation** | `{"sub": "user_123", "act": {"sub": "client_A"}}` | Client A acts *on behalf of* User B. Downstream APIs retain full auditability of both subject and acting agent. |
+| **Delegation** | `{"sub": "user_123", "act": {"sub": "client_A"}}` | Client A acts *on behalf of* User B. Downstream APIs can identify both the subject and current actor from the token; nested `act` claims can retain prior actors. Operational auditability still depends on issuer behavior and downstream logging. |
 
 Whether actor context is preserved is a design choice of the issuing system, not an inherent property of "impersonation" as a category. RFC 8693 defines the `act` claim to express delegation, but does not prohibit an authorization server from populating it (or logging the original actor separately, e.g., in an audit trail) even when the resulting token otherwise behaves as an impersonation token. Systems that want auditability across an impersonation exchange can retain it; systems that strip actor identity by design cannot recover it downstream.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Security Token Service (STS) Summary</strong>
-    <ul>
-      <li><strong>Token Exchange Pattern</strong>: STS exchanges long-lived enterprise credentials or SAML assertions for short-lived AWS/cloud IAM security tokens.</li>
-      <li><strong>AWS STS session durations vary by operation</strong>: `AssumeRole` is capped at the role's configured maximum (1–12 hours); `GetSessionToken`/`GetFederationToken` allow up to 36 hours. Check the AWS STS API Reference for the operation in use.</li>
-      <li><strong>RFC 8693 OAuth Token Exchange</strong>: Standardized API for requesting delegation tokens across microservice boundaries.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>An STS exchanges security tokens for new tokens appropriate to another trust domain or resource; credential type and duration depend on the implementation and operation. RFC 8693's <code>act</code> claim can identify the current actor, and nested <code>act</code> claims can retain prior actors. That improves downstream attribution but does not replace audit logging or guarantee full auditability.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **AWS STS Documentation**: *Temporary security credentials in IAM* — [AWS IAM User Guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) — verified per-operation session duration ranges via the [AWS STS API Reference](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html).
 - **RFC 8693**: *OAuth 2.0 Token Exchange* — [IETF RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) — verified the `act` claim is not restricted to delegation-labeled exchanges.

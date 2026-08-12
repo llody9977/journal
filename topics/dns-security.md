@@ -71,21 +71,13 @@ delv nist.gov A
 # Output: ; fully validated
 ```
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>DNS Security Summary</strong>
-    <ul>
-      <li><strong>DNS Cache Poisoning</strong>: Attackers spoof DNS responses to redirect user traffic. Mitigated by source port randomization and DNSSEC.</li>
-      <li><strong>DNSSEC Validation</strong>: Cryptographically signs DNS resource records (RRSIG, DNSKEY, DS) to prove origin authenticity and integrity.</li>
-      <li><strong>DoH &amp; DoT Transport Security</strong>: DNS over HTTPS (DoH / RFC 8484) and DNS over TLS (DoT / RFC 7858) encrypt DNS queries against network eavesdropping.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>When a validating resolver can build a chain from a configured trust anchor, DNSSEC authenticates signed RRsets and rejects forged data; unsigned zones and non-validating paths do not gain that protection. DNSSEC does not encrypt queries—DoH and DoT protect client-to-resolver transport confidentiality.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 4033**: *DNS Security Introduction and Requirements (DNSSEC)* — [IETF RFC 4033](https://www.rfc-editor.org/rfc/rfc4033)
+- **RFC 4035**: *Protocol Modifications for DNS Security Extensions* — verified trust-anchor, validation, insecure-zone, and bogus-response behavior — [IETF RFC 4035](https://www.rfc-editor.org/rfc/rfc4035)
 - **RFC 8484**: *DNS Queries over HTTPS (DoH)* — [IETF RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)

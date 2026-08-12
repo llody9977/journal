@@ -88,22 +88,12 @@ Cryptographic key custody relies on reducing private key extraction and cloning 
   <p>A verifiable signature only proves the signing key produced the tag — it does not, by itself, establish legal non-repudiation. Whether a signature holds up as evidence that a specific person cannot deny having signed depends on jurisdiction, evidentiary rules, and proof tying the key to that person (e.g., the US ESIGN Act and UETA, or the EU eIDAS Regulation), not on the cryptography alone.</p>
 </div>
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Digital Signatures Summary</strong>
-    <ul>
-      <li><strong>Signature Pipeline</strong>: RSA-PSS and ECDSA operate over a hash digest (<code>H(M)</code>) that the algorithm's own definition computes as part of signing — not necessarily something the caller must pre-compute externally, though some lower-level APIs do accept a precomputed digest directly. Ed25519/Ed448 always hash the full message internally. Mixing conventions causes accidental double hashing; either way, verifiers check the signature tag against <code>K<sub>pub</sub></code>.</li>
-      <li><strong>ECDSA Nonce Hazard</strong>: Reusing a random nonce <code>k</code> across two ECDSA signatures leaks the private key. Use RFC 6979 deterministic nonces or Ed25519.</li>
-      <li><strong>Post-Quantum Signatures</strong>: FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) are finalized post-quantum signature standards.</li>
-      <li><strong>Legal vs. Cryptographic Non-Repudiation</strong>: A valid signature proves the signing key was used, not legal attribution to a person — legal non-repudiation depends on jurisdiction and evidentiary law (e.g., ESIGN Act/UETA, eIDAS), not the cryptography alone.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>A valid signature proves the signing key produced it, not legal attribution to a person — that depends on jurisdiction and evidentiary law, not the cryptography alone. Reusing an ECDSA nonce across signatures leaks the private key; use RFC 6979 deterministic nonces or Ed25519 instead.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST FIPS 186-5**: *Digital Signature Standard (DSS)* — [NIST CSRC FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final)
 - **RFC 8032**: *Edwards-Curve Digital Signature Algorithm (EdDSA / Ed25519)* — [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) (IRTF/CFRG Informational, not IETF Standards Track)

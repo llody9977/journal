@@ -52,29 +52,20 @@ ssh -J admin@bastion.example.com admin@10.0.2.45
 
 ## Zero Trust Network Access (ZTNA) as an alternative to VPN tunnels
 
-A traditional VPN (IPsec, WireGuard, or OpenVPN) grants a connected client broad network-level reachability: once the tunnel is up, the client typically has a routable path to an entire subnet or VPC, and access to individual services is enforced downstream (if at all) by firewall rules or application-layer controls. **Zero Trust Network Access (ZTNA)** replaces that broad tunnel with per-application, per-resource access: an identity-aware proxy or broker authenticates and authorizes the request for each specific application before forwarding it, rather than placing the client onto the internal network segment. This narrows the blast radius of a compromised endpoint or credential — a ZTNA session normally cannot reach lateral hosts the way a VPN-connected device can — at the cost of needing per-application integration or proxying rather than one blanket network tunnel.
+Many traditional VPN deployments grant a connected client broad network-level reachability: once the tunnel is up, the client may have a routable path to an entire subnet or VPC, with individual services restricted downstream by firewall or application policy. That breadth is a deployment choice rather than a protocol requirement—IPsec traffic selectors, WireGuard `AllowedIPs`, routing, and firewalls can narrow reachability. **Zero Trust Network Access (ZTNA)** instead mediates access per application or resource: an identity-aware proxy or broker authenticates and authorizes each specific application request without placing the client directly on an internal network segment. This can narrow the blast radius of a compromised endpoint or credential, at the cost of per-application integration or proxying.
 
 ## Network Tunnel Selection Rulebook
 
-1. **WireGuard**: Primary choice for site-to-site tunnels and modern VPN infrastructure (minimal attack surface, high performance).
-2. **IPsec (IKEv2)**: Selected when client devices require native OS VPN integration without installing third-party agents.
-3. **Short-Lived SSH Certificates + ProxyJump**: Standard for interactive engineer access to private VPC resources.
+1. **WireGuard**: A lean option for site-to-site tunnels and modern VPN infrastructure when its platform support and key-distribution model fit the environment.
+2. **IPsec (IKEv2)**: Useful when client devices require standardized, native OS VPN integration without installing third-party agents.
+3. **Short-Lived SSH Certificates + ProxyJump**: A focused option for interactive engineer access to SSH services in private networks.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>VPN, IPsec &amp; WireGuard Summary</strong>
-    <ul>
-      <li><strong>WireGuard Architecture</strong>: Modern, lightweight VPN protocol using Noise protocol framework, Curve25519, ChaCha20-Poly1305, and BLAKE2s (~4,000 LOC).</li>
-      <li><strong>IPsec IKEv2</strong>: Enterprise standard for site-to-site tunnels; encrypts IP packets using ESP (Encapsulating Security Payload) mode.</li>
-      <li><strong>Zero Trust Network Access (ZTNA)</strong>: Replaces perimeter VPN access with identity-aware application proxies to prevent lateral network movement.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>WireGuard is a lean option for new tunnels; IPsec/IKEv2 remains useful where standardized, OS-native VPN support is required. A VPN can be narrowly routed and firewalled, but many deployments expose broad network reachability; use per-peer routes and downstream policy, or ZTNA when per-application authorization is the goal.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **WireGuard Whitepaper**: *WireGuard: Next Generation Kernel Network Tunnel* — [WireGuard Official Paper](https://www.wireguard.com/papers/wireguard.pdf)
 - **RFC 7296**: *Internet Key Exchange Protocol Version 2 (IKEv2)* — [IETF RFC 7296](https://www.rfc-editor.org/rfc/rfc7296)

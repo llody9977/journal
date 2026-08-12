@@ -83,22 +83,12 @@ The tables above are a reference, not a decision procedure — picking an algori
 
 Treat this as a checklist to work through per system, not a one-time global choice — a payment-processing service, an internal build-signing pipeline, and a public website's TLS termination can legitimately land on different answers even within the same organization.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Algorithm Selection &amp; Compliance Takeaways</strong>
-    <ul>
-      <li><strong>RFC-Defined vs. FIPS Approved</strong>: Algorithms can be cryptographically sound and RFC-defined and widely deployed (X25519, AES-GCM-SIV — both defined by IRTF/CFRG Informational RFCs, not IETF Standards Track) while <em>not</em> being FIPS 140-3 / NIST SP 800-56A approved. Always check regulatory context: FedRAMP's requirement for a FIPS 140-validated cryptographic module traces to the <strong>SC-13</strong> control in the NIST SP 800-53 baselines FedRAMP inherits, not to SP 800-52 itself. Once FIPS-mode is required, <a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a> separately governs which TLS configuration is acceptable and accepts <strong>either P-256 or P-384</strong> — P-384 is only mandatory for National Security Systems under NSA CNSA 2.0, not as a blanket FedRAMP-wide rule.</li>
-      <li><strong>NIST Approval &amp; BSI Recommendation Are Not Interchangeable</strong>: A "NIST APPROVED" status in the matrix above is a U.S. federal (FIPS/SP 800-series) designation only. Germany's BSI sets independent criteria in TR-02102-1 and has historically favored Brainpool curves (brainpoolP256r1/P384r1) over the NIST P-curves for German government and critical-infrastructure use. Don't treat NIST approval as proof of BSI endorsement, or vice versa — verify each body's guidance separately for the relevant jurisdiction.</li>
-      <li><strong>PQC Finalization</strong>: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) were <strong>finalized in August 2024</strong>. Draft FIPS 206 (FN-DSA) remains under development.</li>
-      <li><strong>Symmetric vs Asymmetric Quantum Impact</strong>: AES-256 and SHA-384/512 maintain robust quantum-resistant margins today (Grover's algorithm halves symmetric key strength and provides a quadratic speedup for preimages, while BHT quantum collision bounds are O(2^(n/3))). RSA/ECC must be replaced with PQC (Shor's algorithm breaks them).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Algorithm selection depends on jurisdiction and regulatory regime, not just cryptographic soundness: a widely deployed, RFC-defined algorithm (X25519, AES-GCM-SIV) can still fail a FIPS 140-3 validation requirement, and NIST approval doesn't imply BSI or other regional-body endorsement. Match key size and algorithm to the required security strength, protocol support, module validation status, and how long the data must stay protected.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-57 Part 1 Rev. 5**: *Recommendation for Key Management: General* — [NIST CSRC SP 800-57](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)
 - **NIST FIPS 140-3 IG**: *Implementation Guidance for FIPS 140-3* — [NIST CMVP FIPS 140-3 IG Announcements](https://csrc.nist.gov/projects/cryptographic-module-validation-program/fips-140-3-ig-announcements)

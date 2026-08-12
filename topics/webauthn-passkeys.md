@@ -71,21 +71,12 @@ Per [NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/)
 - **Fraudulent credential registration**: an attacker who tricks a user (or a support/helpdesk agent) into registering the attacker's own passkey on the account bypasses origin binding entirely.
 - **Upstream domain or certificate failures**: a compromised CA or DNS hijack that points the real origin at attacker-controlled infrastructure operates above the layer WebAuthn protects.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>WebAuthn &amp; Passkeys Summary</strong>
-    <ul>
-      <li><strong>Phishing-Resistant FIDO2</strong>: WebAuthn binds public keys directly to origin domain names (<code>origin</code> field), giving verifier-name-bound phishing resistance against credential harvesting/relay sites—it does not cover weaker recovery fallbacks, post-authentication session compromise, or fraudulent credential registration.</li>
-      <li><strong>Hardware Signature Verification</strong>: Authenticator signs server <code>challenge</code> using device private key; server verifies signature with stored public key.</li>
-      <li><strong>Passkeys (Synced vs. Hardware)</strong>: Synced passkeys (iCloud Keychain, 1Password) provide seamless UX; Hardware keys (YubiKey) provide non-extractable key custody.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>WebAuthn binds credentials to the exact origin they were registered for, defeating real-time credential-relay phishing — but it does not protect weaker account-recovery fallbacks, a post-authentication session compromise, or fraudulent credential registration. Synced passkeys trade non-extractable key custody for seamless cross-device UX; hardware keys keep the key non-exportable.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **W3C WebAuthn Level 3**: *Web Authentication: An API for accessing Public Key Credentials* — [W3C WebAuthn Spec](https://www.w3.org/TR/webauthn-3/)
 - **FIDO Alliance Passkeys**: *Passkeys Standard & Specifications* — [FIDO Alliance](https://fidoalliance.org/passkeys/)

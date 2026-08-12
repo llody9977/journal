@@ -47,12 +47,18 @@
 {% if current_url == '/topics/incident-response-operational-learning/' or current_url == '/topics/incident-response-operational-learning' %}
   {% assign prev_title = '1.7 Identity & Access Fundamentals' %}
   {% assign prev_url = '/topics/identity-access-fundamentals/' %}
+  {% assign next_title = '1.9 Operational Resilience, Business Continuity & Disaster Recovery' %}
+  {% assign next_url = '/topics/operational-resilience-business-continuity-disaster-recovery/' %}
+{% endif %}
+{% if current_url == '/topics/operational-resilience-business-continuity-disaster-recovery/' or current_url == '/topics/operational-resilience-business-continuity-disaster-recovery' %}
+  {% assign prev_title = '1.8 Monitoring, Incident Response & Operational Learning' %}
+  {% assign prev_url = '/topics/incident-response-operational-learning/' %}
   {% assign next_title = '2.1 What Is Cryptography?' %}
   {% assign next_url = '/topics/cryptography-overview/' %}
 {% endif %}
 {% if current_url == '/topics/cryptography-overview/' or current_url == '/topics/cryptography-overview' %}
-  {% assign prev_title = '1.8 Monitoring, Incident Response & Operational Learning' %}
-  {% assign prev_url = '/topics/incident-response-operational-learning/' %}
+  {% assign prev_title = '1.9 Operational Resilience, Business Continuity & Disaster Recovery' %}
+  {% assign prev_url = '/topics/operational-resilience-business-continuity-disaster-recovery/' %}
   {% assign next_title = '2.2 Symmetric Cryptography' %}
   {% assign next_url = '/topics/symmetric-cryptography/' %}
 {% endif %}
@@ -323,7 +329,7 @@
 {% if current_url == '/topics/grc-framework-strategy/' or current_url == '/topics/grc-framework-strategy' %}
   {% assign prev_title = '8.1 Cybersecurity Standards & Frameworks' %}
   {% assign prev_url = '/topics/cybersecurity-standards/' %}
-  {% assign next_title = '8.3 Regulatory Mandates & Compliance Attestations' %}
+  {% assign next_title = '8.3 Regulatory Mandates & Private-Sector Assurance' %}
   {% assign next_url = '/topics/regulatory-compliance-mandates/' %}
 {% endif %}
 {% if current_url == '/topics/regulatory-compliance-mandates/' or current_url == '/topics/regulatory-compliance-mandates' %}
@@ -333,7 +339,7 @@
   {% assign next_url = '/topics/security-certifications/' %}
 {% endif %}
 {% if current_url == '/topics/security-certifications/' or current_url == '/topics/security-certifications' %}
-  {% assign prev_title = '8.3 Regulatory Mandates & Compliance Attestations' %}
+  {% assign prev_title = '8.3 Regulatory Mandates & Private-Sector Assurance' %}
   {% assign prev_url = '/topics/regulatory-compliance-mandates/' %}
   {% assign next_title = '8.5 Security Maturity Models' %}
   {% assign next_url = '/topics/security-maturity-models/' %}

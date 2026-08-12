@@ -12,13 +12,13 @@ last_verified: 2026-08-12
 <p class="lede">Detective controls generate telemetry; incident response is the process that turns an actual detection into contained, recovered, and understood harm; and operational learning is what feeds the outcome back into risk and control decisions instead of letting the same failure recur silently. This closes the loop this journal has followed from objective → requirement → control → verification → residual risk, returning the outcome to where that chain started.</p>
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" alt="Incident Response & Operational Learning Loop diagram showing Continuous Monitoring feeding Detect, Respond (Triage, Contain, Eradicate), Recover, and a Learn & Improve stage, which feed back into Govern-level risk and control decisions. The Learn & Improve stage is this journal's operational lens on CSF 2.0's Identify/Improvement (ID.IM) Category, not a seventh CSF Function.">
-  <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model, informed by NIST SP 800-61 Rev. 3's CSF 2.0 alignment): Continuous Monitoring → Detect → Respond (Triage, Contain, Eradicate) → Recover → Learn &amp; Improve → feeds back into Govern-level risk &amp; control decisions. CSF 2.0 has six Functions (Govern, Identify, Protect, Detect, Respond, Recover); Learn &amp; Improve maps to Identify's Improvement (ID.IM) Category, not a 7th Function.</p>
+  <img src="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" alt="Incident Response and Operational Learning Loop showing Continuous Monitoring feeding Detect, where candidate signals are validated, triaged, and classified; Respond, where confirmed incidents are contained and eradicated; Recover; and Learn and Improve, which feeds findings back into Govern-level risk and control decisions. Learn and Improve maps to CSF 2.0 Identify/Improvement rather than forming a seventh CSF Function.">
+  <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model informed by NIST SP 800-61 Rev. 3): Continuous Monitoring → Detect (validate, triage, classify) → Respond (contain, eradicate) → Recover → Learn &amp; Improve → Govern-level risk and control decisions.</p>
 </div>
 
 ## Continuous Monitoring: Feeding the Response Pipeline
 
-Incident response is triggered when an anomaly or breach is surfaced—whether through automated security telemetry, or via reports from users, cloud service providers, external security researchers, business partners, or law enforcement authorities. This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
+The response pipeline is fed by candidate signals surfaced through automated security telemetry, or via reports from users, cloud service providers, external security researchers, business partners, or law enforcement authorities—triage, not the surfacing itself, is what determines whether one of these actually becomes an incident (see the decision boundary below). This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
 
 | Monitoring Input | What It Surfaces | Where the Evidence Goes |
 |---|---|---|
@@ -116,21 +116,12 @@ When auditing an incident response program or reviewing a specific incident's ha
 | **Corrective Action Closure** | Are postmortem action items tracked to a named owner and closed, not left open indefinitely? | Corrective action tracker with owner, due date, and closure status. |
 | **Feedback Loop Completion** | Did this incident's findings actually reach the risk register, control effectiveness review, and threat model—not just the postmortem document? | Cross-references from the postmortem to updated risk register entries, control reviews, and threat model revisions. |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Incident Response &amp; Operational Learning Summary</strong>
-    <ul>
-      <li><strong>Rev. 3 Replaced the Linear Model</strong>: NIST SP 800-61 Rev. 3 (2025) reorganized incident response around all six CSF 2.0 Functions (Govern, Identify, Protect, Detect, Respond, Recover) instead of Rev. 2's standalone four-phase lifecycle; in-incident work concentrates in Detect/Respond/Recover, and continuous improvement is Identify's Improvement (ID.IM) Category, not a seventh Function. The phase vocabulary (detect/triage/contain/eradicate/recover/learn) is still useful in practice but is this journal's operational lens, not the current standard's structure.</li>
-      <li><strong>Severity and Roles Are Locally Defined</strong>: Severity tiers and incident-command-style roles are common practice, not something NIST SP 800-61 itself mandates—define them explicitly for your own organization.</li>
-      <li><strong>The Loop Only Closes If Findings Feed Back</strong>: A postmortem that doesn't update the risk register, reassess control effectiveness, and re-check the threat model has not actually closed the loop—it has just documented the incident.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Monitoring produces candidate signals; triage determines whether they are incidents, Respond contains and eradicates confirmed incidents, and Recover restores verified service. Operational learning closes the loop only when findings update risk decisions, controls, and threat models.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-61 Rev. 3**: *Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile* — [NIST CSRC SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
 - **NIST Cybersecurity Framework 2.0** — [NIST CSF 2.0](https://www.nist.gov/cyberframework)

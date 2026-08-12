@@ -131,21 +131,12 @@ While the high-level frameworks above define *what* safeguards are required, tec
 | **Cloud Vendor Baselines** *(AWS Well-Architected / Azure Security / GCP Foundations)* | Cloud Infrastructure Architecture | Cloud provider security architecture baselines | **Cloud Infrastructure Architecture**: Best-practice configuration for IAM identity perimeters, VPC Service Controls, and KMS key policies. |
 | **[DISA STIGs](https://public.cyber.mil/stigs/)** | Defense &amp; Federal System Hardening | DoD mandatory security technical implementation guides | **High-Assurance Federal Infrastructure**: Mandatory technical configuration baselines for military and defense IT environments. |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Cybersecurity Standards Summary</strong>
-    <ul>
-      <li><strong>Framework Hierarchy</strong>: ISO 27001 provides management systems (ISMS); NIST SP 800-53 provides technical controls; PCI-DSS governs payment security.</li>
-      <li><strong>Cross-Framework Mapping</strong>: Map enterprise controls to a unified control framework (UCF) to satisfy multi-regulation audits (SOC 2, ISO 27001, HIPAA).</li>
-      <li><strong>Continuous Evidence Collection</strong>: Automate compliance verification via continuous monitoring tools rather than annual point-in-time audits.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>ISO 27001 defines a management system, NIST SP 800-53 provides a technical control catalog, and hardening baselines like CIS Benchmarks give prescriptive per-system configuration — these operate at different altitudes and aren't interchangeable substitutes. Mapping controls to a unified framework and automating evidence collection is what makes satisfying multiple overlapping regimes tractable.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-53 Rev. 5**: *Security Controls for Information Systems* — [NIST CSRC SP 800-53](https://csrc.nist.gov/pubs/sp/800/53/r5/final)
 - **ISO/IEC 27001:2022**: *Information security management systems requirements* — [ISO 27001 Standard](https://www.iso.org/standard/27001)

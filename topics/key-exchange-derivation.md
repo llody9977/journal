@@ -651,21 +651,12 @@ Specified in **[RFC 9180](https://www.rfc-editor.org/rfc/rfc9180)**, **HPKE** st
 
 Classical ECDH key agreement (X25519) is vulnerable to quantum computers. Protocols are transitioning to post-quantum-secure key exchange, though adoption varies and is not yet universal. TLS 1.3 is a concrete, already-standardized example: [RFC 10024](https://www.rfc-editor.org/info/rfc10024) defines the hybrid **X25519MLKEM768** group, combining classical X25519 ECDH with **[NIST FIPS 203 ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)**-768 (Kyber), to establish post-quantum-resistant shared secrets.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Key Exchange &amp; PFS Summary</strong>
-    <ul>
-      <li><strong>No Key Transmitted</strong>: Diffie-Hellman math derives matching shared secrets locally in RAM; no secret key ever crosses the network.</li>
-      <li><strong>Perfect Forward Secrecy (PFS)</strong>: Ephemeral keys (ECDHE / X25519) are generated in RAM per connection and discarded when done. A later leak of the server's long-term disk key cannot, by itself, decrypt past recorded sessions.</li>
-      <li><strong>HKDF Pipeline (RFC 5869)</strong>: Extracts raw Diffie-Hellman secrets into a pseudorandom key (PRK, via Extract) and expands it into independent sub-keys for client/server encryption (Expand).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Diffie-Hellman lets both sides derive the same shared secret in RAM without ever transmitting it; ephemeral keys (ECDHE/X25519) provide forward secrecy so a later leak of a long-term key can't decrypt past sessions. HKDF then extracts and expands that raw shared secret into independent traffic sub-keys.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 7748**: *Elliptic Curves for Security (X25519)* — [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) (IRTF/CFRG Informational)
 - **RFC 5869**: *HMAC-based Extract-and-Expand Key Derivation Function (HKDF)* — [IETF RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)

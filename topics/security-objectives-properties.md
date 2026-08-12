@@ -22,9 +22,9 @@ Rather than treating security objectives as arbitrary choices, system architectu
 
 1. **Inventory Information Types & System Functions**: Identify all data types (*e.g., PII, medical records, financial transactions, system credentials*) processed or stored by the system.
 2. **Assess Potential Impact Severity**: Evaluate potential harm magnitude across Confidentiality (**SC Confidentiality**), Integrity (**SC Integrity**), and Availability (**SC Availability**) if compromised.
-3. **Apply the High-Water Mark Principle**: Establish the overall system security category (**System Security Category**) by taking the maximum potential impact level across all three CIA objectives:
-   - **System Security Category = Maximum (Confidentiality Impact, Integrity Impact, Availability Impact)**
-4. **Select Minimum Security Controls**: **[NIST FIPS 200](https://csrc.nist.gov/pubs/fips/200/final)** requires selecting the minimum security control baseline matching the category; **[NIST SP 800-53B](https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final)** is the publication that enumerates the actual Low/Moderate/High control baselines drawn from the **SP 800-53 Rev. 5** catalog.
+3. **Establish the FIPS 199 System Security Category**: For each security objective, take the highest potential impact assigned to any information type or system function. Retain the result as a three-component security-category tuple:
+   - **System Security Category = {(Confidentiality, impact), (Integrity, impact), (Availability, impact)}**
+4. **Determine the Overall Impact Level and Select Controls**: **[NIST FIPS 200](https://csrc.nist.gov/pubs/fips/200/final)** applies the high-water-mark principle across the three FIPS 199 objective ratings to determine the system's overall Low, Moderate, or High impact level. FIPS 200 then requires a corresponding minimum security control baseline; **[NIST SP 800-53B](https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final)** enumerates the Low, Moderate, and High baselines drawn from the SP 800-53 Rev. 5 catalog.
 
 ### FIPS 199 Impact Severity & Magnitude Matrix
 
@@ -34,7 +34,7 @@ Rather than treating security objectives as arbitrary choices, system architectu
 | **Moderate Impact** | **Serious adverse effect**: Significant degradation in operational capability, significant asset damage, or non-fatal injuries. | A B2B SaaS database workload is *often* rated here, but the actual category depends on what the data is and who is harmed if it's breached—not the "B2B SaaS" label itself. | **NIST SP 800-53B Moderate baseline** (referenced by FedRAMP Moderate, which layers its own additional parameters and requirements on top; FedRAMP is [transitioning from Low/Moderate/High impact-level terminology toward certification Classes A–D](https://www.fedramp.gov/marketplace/products/)). SOC 2 is an independent attestation framework with its own control criteria—not a NIST Moderate baseline. |
 | **High Impact** | **Severe or catastrophic adverse effect**: Complete loss of critical operational capability, major financial destruction, severe injury, or loss of life. | Power grid SCADA control or autonomous vehicle control plausibly reach High on safety grounds; healthcare ePHI or a core banking ledger are not automatically High—the category still depends on the specific harm (e.g., scale, reversibility) the organization assesses. | **NIST SP 800-53B High baseline** (referenced by FedRAMP High, which layers its own additional parameters and requirements on top; FedRAMP is transitioning from Low/Moderate/High impact-level terminology toward certification Classes A–D). ISO 26262 is an unrelated automotive functional-safety standard, not a generic FIPS High equivalent—it is cited here only because autonomous vehicle control also falls in the High category by consequence, not because the standards align. |
 
-The High-Water Mark principle illustrates how FIPS 199 combines per-objective ratings: if a system processes data with Low Confidentiality needs but **High Integrity** requirements (*e.g., flight control software or financial ledgers*), the overall system category is governed by the highest individual rating, not an average—so it would be treated as a **High-Impact System** requiring the high-assurance FIPS 200 baseline—which spans management, operational, and technical controls, not technical safeguards alone—under the federal FIPS 199/200 scheme this section describes.
+The high-water-mark process operates at two related levels. FIPS 199 first takes the highest impact for each CIA objective across the information types and functions processed by the system, preserving the resulting three-component system security category. FIPS 200 then takes the highest of those three objective ratings to determine the system's overall impact level for minimum-baseline selection. For example, a system categorized as Low for Confidentiality, High for Integrity, and Low for Availability retains that CIA tuple under FIPS 199, but FIPS 200 treats its overall impact level as High when selecting the minimum baseline—the high-assurance FIPS 200 baseline spans management, operational, and technical controls, not technical safeguards alone.
 
 System impact categorization establishes the minimum security baseline required for organizational and system implementation, spanning management, operational, and technical controls—not technical safeguards alone. The architecture is designed to preserve these invariants under the assessed threat model—no control set eliminates residual risk entirely:
 - **Confidentiality Invariant**: Restricts disclosure to authenticated, authorized identities across the evaluated impact baseline.
@@ -88,8 +88,8 @@ A security objective by itself is not actionable—"Confidentiality" does not te
 | **1. Security Objective** | The property being protected—CIA triad or an extended property from this page. | Confidentiality of customer payment data. | This page. |
 | **2. Testable Security Requirement** | A specific, falsifiable statement scoped to this system—not the objective restated in different words. | "PII fields in the `customers` table must be encrypted at rest with AES-256-GCM; plaintext must never appear in application logs." | Derived per-system; not a separate journal page. |
 | **3. Selected Control** | The concrete technical, administrative, or physical safeguard chosen to satisfy the requirement. | Column-level AES-256-GCM encryption with KMS-managed keys; log redaction middleware. | **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**. |
-| **4. Verification Evidence** | The artifact that demonstrates the control is actually implemented and operating, not merely designed. | Passing unit test asserting ciphertext-only storage; SAST rule confirming no plaintext PII in log statements; periodic access-log review. | Control-specific test/audit tooling; see the validation pipeline in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**. |
-| **5. Residual-Risk Decision** | What remains unaddressed after the verified control, and who is accountable for accepting, further mitigating, avoiding, or transferring it. | Key-management compromise is not addressed by column encryption alone; the risk owner accepts this with a documented KMS access-audit compensating control. | **[Threats, Vulnerabilities & Risk]({{ '/topics/risk-fundamentals/' | relative_url }})**. |
+| **4. Verification Evidence** | The artifact that demonstrates the control is actually implemented and operating, not merely designed. | Passing unit test asserting ciphertext-only storage; SAST rule flagging known plaintext-PII logging patterns in source code—a static check against known patterns, not proof that no PII reaches logs at runtime across dynamic values, dependencies, and configuration; that broader claim needs dynamic or integration testing. Periodic access-log review. | Control-specific test/audit tooling; see the validation pipeline in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**. |
+| **5. Residual-Risk Decision** | What remains unaddressed after the verified control, and who is accountable for accepting, further mitigating, avoiding, or transferring it. | Key-management compromise is not addressed by column encryption alone; the risk owner accepts this residual risk, with KMS access auditing—a detective control, not a compensating one, since it evidences a compromise after the fact rather than providing equivalent protection against it—kept in place for visibility. | **[Threats, Vulnerabilities & Risk]({{ '/topics/risk-fundamentals/' | relative_url }})**. |
 
 Skipping link 4 is a common failure: a control that was designed and deployed but never verified provides insufficient assurance that it operates as intended—the control may well be working, but nothing confirms it behaves as intended under real conditions, so it cannot be relied on for a risk decision.
 
@@ -108,21 +108,12 @@ When auditing a system architecture or API endpoint, evaluate these 8 diagnostic
 | **Resilience** | How does the system degrade gracefully when downstream database or identity dependencies fail? | Chaos engineering test suite & circuit breaker metrics. |
 | **Safety** | Could an unauthorized state change trigger physical, operational, or safety hazards (**ISO 26262**)? | ISO 26262 hazard analysis & fail-safe circuit checks. |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Security Objectives Summary</strong>
-    <ul>
-      <li><strong>CIA Triad + Extensions</strong>: Confidentiality (restricting disclosure to authorized identities), Integrity (protection from unauthorized modification), Availability (timely, reliable access), plus Authenticity and Non-Repudiation.</li>
-      <li><strong>Authenticity vs. Non-Repudiation</strong>: Authenticity verifies who sent the message; Non-repudiation provides cryptographic evidence that makes it harder for the sender to credibly deny the action to third parties.</li>
-      <li><strong>Privacy as a Distinct Objective</strong>: Privacy enforces data minimization, consent, and access restrictions over personal data (PII).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Security objectives define the properties a system must preserve and the evidence needed to verify them. FIPS 199 retains separate confidentiality, integrity, and availability ratings, while FIPS 200 uses their highest value to select the minimum federal baseline.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **ISO/IEC 27000:2026**: *Information security management systems — Overview* — [ISO 27000](https://www.iso.org/standard/27000)
 - **NIST FIPS 199**: *Standards for Security Categorization* — [NIST CSRC FIPS 199](https://csrc.nist.gov/pubs/fips/199/final)

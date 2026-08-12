@@ -24,9 +24,9 @@ Engineering teams adopt design-time threat modeling frameworks based on system c
 |---|---|---|---|
 | **OCTAVE (Carnegie Mellon)** | Organizational asset-driven risk evaluation focusing on operational risks, assets, and vulnerabilities. | Self-directed workshops identifying operational assets, organizational threats, and defense posture. | Enterprise IT infrastructure, physical/digital asset governance, organizational risk audits. |
 | **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** | Universal meta-process for driving continuous threat modeling iterations across any architecture. | Iterates: 1. *What are we working on?* 2. *What can go wrong?* 3. *What are we doing about it?* 4. *Did we do a good job?* | Agile software engineering, sprint-level threat modeling, and team design reviews. |
-| **PASTA (Risk-Centric)** | Process for Attack Structure and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and risk scoring (**Risk = Likelihood × Impact**). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
+| **PASTA (Risk-Centric)** | Process for Attack Simulation and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and a risk scoring stage (commonly a simplified `Likelihood × Impact` model). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
 | **STRIDE (Microsoft)** | Developer-centric threat taxonomy categorizing 6 threat types (*Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation*). | Maps specific STRIDE categories to each component in a Data Flow Diagram (DFD). | Application security, microservices, API route design, and code-level threat modeling. |
-| **VAST (Agile / Scalable)** | Visual, Agile, and Software Threat modeling; divides into Application Threat Models and Operational Threat Models. | Uses automated storyboarding and integration directly into DevOps / CI/CD pipelines. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
+| **VAST (Agile / Scalable)** | Visual, Agile, and Simple Threat modeling; divides into Application Threat Models and Operational Threat Models. | Uses automated storyboarding and integration directly into DevOps / CI/CD pipelines. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
 
 ## Deep Dive: Microsoft STRIDE Threat Taxonomy
 
@@ -43,13 +43,13 @@ Developed at Microsoft, **STRIDE** is a threat *categorization* taxonomy: it ide
 
 ## Operational Threat Intelligence & Intrusion Models
 
-Post-deployment, incident response and threat intelligence teams leverage operational frameworks to analyze live intrusions and adversary techniques:
+Incident response and threat intelligence teams use behavior-oriented frameworks to analyze intrusions and adversary techniques. The same knowledge bases also support design reviews, adversary emulation, control assessment, and detection planning before an incident occurs:
 
 | Framework Name | Operational Focus &amp; Scope | Structural Execution Model | Primary Incident Application |
 |---|---|---|---|
 | **Cyber Kill Chain (Lockheed Martin)** | Linear intrusion lifecycle tracing external adversary progression. | 7 Sequential Stages: *Recon, Weaponize, Deliver, Exploit, Install, C2, Actions on Objectives*. | Perimeter intrusion tracking, SOC alert escalation, linear breach progression analysis. |
 | **Diamond Model (Caltagirone et al.)** | Adversary attribution and event pivot relationship tracking. | Graph mapping 4 vertices: **Adversary**, **Capability**, **Infrastructure**, and **Victim**. | Incident pivoting, threat actor campaign tracking, threat intelligence attribution. |
-| **[MITRE ATT&CK](https://attack.mitre.org/)** | Globally accessible knowledge base of adversary tactics, techniques, and procedures (TTPs). | Three platform matrices — Enterprise, Mobile, and ICS — each mapping tactics to techniques and sub-techniques; the exact counts grow with every ATT&amp;CK release, so treat any fixed number as approximate and check [attack.mitre.org](https://attack.mitre.org/) for the current figure. | SOC detection engineering, adversary emulation, SIEM alert mapping &amp; coverage audits. |
+| **[MITRE ATT&CK](https://attack.mitre.org/)** | Globally accessible knowledge base of adversary tactics, techniques, and procedures (TTPs). | Three platform matrices — Enterprise, Mobile, and ICS — each mapping tactics to techniques and sub-techniques; the exact counts grow with every ATT&amp;CK release, so treat any fixed number as approximate and check [attack.mitre.org](https://attack.mitre.org/) for the current figure. | Threat-informed defense, adversary emulation, detection engineering, assessment planning, and SIEM alert mapping. |
 | **[MITRE D3FEND](https://d3fend.mitre.org/)** | Defensive countermeasure knowledge graph mapped directly against ATT&CK TTPs. | Defensive Hierarchy: *Model, Harden, Detect, Isolate, Deceive, Evict, Restore*. | Security engineering control selection, countermeasure mapping &amp; gap validation. |
 | **[MITRE ATLAS](https://atlas.mitre.org/)** | Standalone knowledge base of adversary tactics and techniques against AI/ML systems, drawn from real-world attack observations and red-team findings. | Modeled after ATT&amp;CK's structure and methodology and designed to be complementary to it, but maintained as its own separate matrix rather than an ATT&amp;CK matrix. | AI/ML system threat modeling, adversarial ML red-teaming, and AI-specific detection engineering. |
 
@@ -60,8 +60,8 @@ Selecting a framework poorly matched to the task at hand creates strategic misal
 | Operational Dimension | Design-Time Threat Modeling (STRIDE / PASTA) | Operational Intrusion Intelligence (ATT&amp;CK / Kill Chain) | Key Engineering Distinction |
 |---|---|---|---|
 | **Primary Emphasis** | Most naturally suited to **architecture and design-time analysis**, though teams can and should re-apply it as a system changes post-deployment. | Most naturally suited to **live SOC operations and incident response**, though its TTP catalog also informs design-time hardening decisions. | Design-oriented analysis vs detection/response-oriented analysis, not a strict before/after split. |
-| **Primary Input** | Data Flow Diagrams (DFDs), API specs, software blueprints, threat models. | Live SIEM logs, EDR telemetry, PCAP network captures, memory dumps. | Structural architecture vs Observed runtime telemetry. |
-| **Primary Output** | Required security controls, architectural refactors, threat registers. | Detection rules (YARA/Sigma), IOC indicators, attribution reports. | Control specification vs Detection rule engineering. |
+| **Primary Input** | Data Flow Diagrams (DFDs), API specs, software blueprints, threat models. | Threat intelligence, adversary-emulation plans, and—during operations or incidents—SIEM logs, EDR telemetry, packet captures, and memory evidence. | Structural architecture vs behavior and evidence, with lifecycle overlap. |
+| **Primary Output** | Required security controls, architectural refactors, threat registers. | Detection hypotheses and rules, emulation plans, investigation pivots, and coverage maps that still require testing. | Design decisions vs threat-informed operational and assessment artifacts. |
 | **Insider Threat Scope** | Native capability to model insider misuse and privilege escalation vectors. | The Cyber Kill Chain is widely criticized as a weaker fit for insider-threat scenarios, since its stages assume an external intruder progressing through discrete access stages that an already-privileged insider skips; ATT&amp;CK covers insider TTPs more directly. | STRIDE/ATT&amp;CK model insiders more directly than the Kill Chain's external-intrusion narrative. |
 
 ## Essential Threat Framework Diagnostic Checklist
@@ -74,24 +74,15 @@ When evaluating an enterprise threat modeling program or threat intelligence pip
 | **Non-Linear Intrusion Handling** | Are incident response teams leveraging MITRE ATT&CK matrices rather than relying on linear Kill Chain models? | Incident response playbooks &amp; threat hunting query repositories. |
 | **STRIDE Category Completeness** | Is every component in a System DFD evaluated against all applicable STRIDE threat categories? | Documented Threat Register listing component, threat vector, risk score &amp; owner. |
 | **Threat Intelligence Integration** | Are threat intelligence feeds and real-world adversary TTPs used to score threat likelihood (**PASTA / FAIR**)? | GRC risk assessment reports &amp; threat intelligence ingestion logs. |
-| **Defensive Countermeasure Mapping** | Are MITRE ATT&CK techniques paired with verified MITRE D3FEND countermeasures in production? | SIEM detection rule mappings &amp; D3FEND defensive coverage matrices. |
+| **Defensive Countermeasure Mapping** | Are relevant ATT&amp;CK techniques mapped to candidate defensive measures, then validated through testing rather than treated as covered from mapping alone? | Tested SIEM/EDR detections, adversary-emulation results, and supporting D3FEND mappings where applicable. |
 | **Continuous Model Re-assessment** | Is threat modeling re-triggered automatically whenever major architectural changes or new TTPs occur? | CI/CD pipeline triggers, quarterly threat model reviews &amp; post-incident audits. |
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Threat Frameworks Summary</strong>
-    <ul>
-      <li><strong>MITRE ATT&amp;CK Matrix</strong>: Categorizes real-world adversary behavior into Tactics, Techniques, and Procedures (TTPs).</li>
-      <li><strong>Cyber Kill Chain</strong>: 7-stage attack flow (Reconnaissance, Weaponization, Delivery, Exploitation, Installation, Command &amp; Control, Actions on Objectives).</li>
-      <li><strong>Detection Mapping</strong>: Map SIEM/EDR detection rules directly to MITRE ATT&amp;CK technique IDs to measure coverage gaps.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Threat-modeling methods such as STRIDE, PASTA, and VAST primarily analyze architecture, while ATT&amp;CK and the Cyber Kill Chain organize observed or expected adversary behavior; both can inform design and operations. ATT&amp;CK technique mapping inventories intended coverage, but measured coverage requires relevant telemetry plus tested detections or adversary-emulation evidence.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **MITRE ATT&amp;CK**: *Adversary Tactics, Techniques, and Knowledge Base* — [MITRE ATT&amp;CK Official](https://attack.mitre.org/)
 - **Lockheed Martin Cyber Kill Chain**: *Seven Steps of Cyber Kill Chain* — [Lockheed Martin](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html)

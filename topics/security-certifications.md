@@ -68,21 +68,12 @@ When auditing vendor certification claims:
 3. **Inspect the Physical/Software Boundary**: Confirm whether validation covers the entire physical hardware unit or merely an underlying software library module.
 4. **Check Certificate Sunset Dates**: Verify that hardware modules have not moved to NIST's *Historical List* following firmware or hardware updates.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Security Certifications Summary</strong>
-    <ul>
-      <li><strong>ISO 27001 vs. SOC 2</strong>: ISO 27001 is a globally recognized cert auditing ISMS processes; SOC 2 Type II is a U.S. report evaluating trust principles over 6+ months.</li>
-      <li><strong>FedRAMP</strong>: Authorization based on NIST SP 800-53 controls, required when a federal agency's specific use case for a cloud service falls within FedRAMP's scope — the same service can be in scope for one agency's use case and out of scope for another's; the determination is the agency's to make, not a blanket requirement on the cloud provider or service itself. FedRAMP's impact-level and authorization terminology has continued to evolve—verify current terms at <a href="https://www.fedramp.gov/">fedramp.gov</a> rather than assuming a fixed Low/Moderate/High or ATO framing.</li>
-      <li><strong>Common Criteria (CC)</strong>: Evaluates hardware/software assurance levels (EAL1 to EAL7) against defined protection profiles.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>A vendor's marketing claim ("FIPS compliant") is not a verified certificate — check the NIST CMVP database against the exact module name, version, operational environment, and approved mode before trusting it. FedRAMP applicability is scoped to the agency's specific use case, not a blanket requirement on the cloud service itself.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **AICPA SOC 2**: *Trust Services Criteria for Security, Availability, and Confidentiality* — [AICPA SOC 2](https://www.aicpa.org/topic/audit-assurance/audit-and-assurance-greater-than-soc-for-service-organizations)
 - **FedRAMP Marketplace**: *Federal Risk and Authorization Management Program* — [FedRAMP Official](https://www.fedramp.gov/)

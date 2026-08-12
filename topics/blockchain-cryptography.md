@@ -2,7 +2,7 @@
 title: Blockchain & Distributed Ledger Cryptography
 description: Cryptographic primitives in distributed ledgers, hash-linked block headers, Merkle trees, secp256k1 ECDSA, Schnorr signatures (BIP 340), BLS aggregation, and Zero-Knowledge Proofs (zk-SNARKs).
 permalink: /topics/blockchain-cryptography/
-last_verified: 2026-08-11
+last_verified: 2026-08-12
 ---
 
 <span class="eyebrow">Cryptography / Distributed Systems</span>
@@ -73,22 +73,14 @@ It's worth being explicit about where cryptographic guarantees end and other ass
 - **Zero-knowledge proof assumptions**: some widely deployed zk-SNARK systems (Groth16-style circuit-specific constructions, used by Zcash and many others; also universal-but-still-trusted setups like PLONK's) have soundness that depends on a **trusted setup ceremony** (a one-time generation of public parameters that is secure only if at least one participant destroyed their secret "toxic waste" — an assumption external to the proof system's math itself), on specific pairing-friendly curve choices, and on the correctness of the circuit compiler translating the claimed statement into the arithmetic circuit actually being proven. zk-STARKs avoid the trusted-setup assumption (relying on collision-resistant hashes instead) at the cost of larger proof sizes. In both cases, "the proof verified" is a statement about the circuit that was proven, not an independent guarantee that the circuit itself correctly encodes the intended real-world statement — a bug in circuit design is a bug a valid proof will not catch.
 - **Key custody is a critical end-to-end failure mode in practice**: alongside the consensus, bridge, oracle, and proof-circuit risks discussed above, none of the cryptography on this page protects funds if the private key controlling them is lost or stolen. A base-layer transaction signed by a stolen key has no built-in password reset or customer-support override — reversing it purely at the protocol level would require the same kind of majority/finality-threshold rewrite discussed above, which legitimate custody failures don't trigger. Some systems do add recourse on top of that base layer — smart-contract wallets with social recovery, DAO or governance-level intervention (Ethereum's 2016 DAO fork being the canonical precedent), or a custodian's own internal reversal — but those are opt-in application- or community-layer mechanisms, not something the base protocol provides for an arbitrary signed transaction. This is why serious custody design doesn't rest on a single private key: **multisignature** (at least M of N independent authorized keys must sign; all N are required only in the special case where M equals N) and **threshold signature schemes** (a single signature is produced collaboratively from N key shares, with no single share ever reconstructing the full key) both remove any one compromised key or device as a single point of failure. Beyond the signing scheme itself, production custody needs a **key rotation** plan (moving funds to a new key set on a schedule or after a suspected exposure), a **recovery** plan for lost key shares that doesn't itself become a backdoor, and **emergency controls** (a pre-authorized path to freeze or migrate funds quickly if a compromise is detected) — all of which are operational/systems design, not something the underlying signature scheme provides automatically just by existing.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Blockchain Cryptography Summary</strong>
-    <ul>
-      <li><strong>Hash Chains &amp; Tamper-Evidence</strong>: Embedding block header hashes <code>H(Block<sub>n-1</sub>)</code> makes silent history-rewriting computationally impractical to conceal — not impossible, since a majority-hashpower attacker on a PoW chain, an attacker destroying enough stake to cross a deterministic-finality chain's safety threshold (e.g., more than one-third of total stake for Ethereum's Casper FFG), or a community hard fork can still alter it.</li>
-      <li><strong>Merkle SPV Proofs</strong>: Light clients verify transaction inclusion in <code>O(log₂ N)</code> time without downloading full blocks.</li>
-      <li><strong>Signature Schemes</strong>: Bitcoin uses secp256k1 ECDSA and single-signer Schnorr (BIP 340), with aggregation added separately via MuSig2/BIP 327; Ethereum consensus uses BLS12-381 signature aggregation; Polkadot's primary scheme is sr25519, not Ed25519.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Hash-linked blocks make modification evident; the consensus protocol and its honest-participation or safety assumptions make an alternative history costly or unable to finalize. Rewriting thresholds are protocol-specific, and bridges, oracles, and key custody remain outside the base chain's consensus guarantees.</p>
 </div>
 
-## Primary References
+## Primary references
 
+- **Bitcoin white paper**: *Bitcoin: A Peer-to-Peer Electronic Cash System* — [bitcoin.org](https://bitcoin.org/bitcoin.pdf) — verified that rewriting accepted history depends on redoing proof of work and overtaking the honest chain, not hash linking alone.
 - **Bitcoin BIP 340**: *Schnorr Signatures for secp256k1* — [Bitcoin BIP 340 Specification](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
 - **Bitcoin BIP 327**: *MuSig2 for BIP340-compatible Multi-Signatures* — [Bitcoin BIP 327 Specification](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki)
 - **Bitcoin BIP 341 / BIP 342**: *Taproot: SegWit version 1 spending rules / Validation of Taproot Scripts (Tapscript)* — [BIP 341](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki), [BIP 342](https://github.com/bitcoin/bips/blob/master/bip-0342.mediawiki)

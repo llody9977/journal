@@ -450,21 +450,12 @@ Choosing a hashing algorithm is only the starting point — the hash's parameter
 - **Authentication DoS limits**: Memory-hard functions are expensive by design — that's the point against attackers, but it also means a login endpoint doing Argon2id verification on every request is a much easier target for a resource-exhaustion DoS than a stateless endpoint. Rate-limit authentication attempts per account and per source, and size Argon2id's memory/time parameters with your expected peak concurrent-login load in mind, not just against offline-cracking resistance in isolation — the parameters that are "strong" against an offline attacker can still be tuned so a login storm doesn't exhaust server memory.
 - **Privacy-preserving breached-password checks**: [NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)'s breached-password blacklisting requirement (see above) shouldn't be implemented by sending plaintext passwords to a third-party API. The [Have I Been Pwned Pwned Passwords API](https://haveibeenpwned.com/API/v3#PwnedPasswords) supports a **k-anonymity** model: the client hashes the candidate password with SHA-1, sends only the first 5 hex characters of the digest, and receives back all breached-password suffixes sharing that prefix — the client checks the full digest locally, so the full password (or its full hash) never leaves the client/server boundary being checked.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Password Storage Summary</strong>
-    <ul>
-      <li><strong>Argon2id (RFC 9106)</strong>: Winner of Password Hashing Competition; primary recommendation for password storage (memory-hard against GPU/ASIC attacks).</li>
-      <li><strong>Bcrypt 72-Byte Truncation Limit</strong>: Traditional bcrypt silently ignores characters beyond byte 72, but this is implementation-dependent — some libraries (e.g., current pyca/bcrypt) reject oversized input with an error instead, so verify your library's actual behavior. Do not pre-hash with plain unkeyed SHA-256 — it enables password shucking. If pre-hashing is needed, use OWASP's keyed <code>base64(HMAC-SHA-384(key=pepper, data=password))</code> construction, with the pepper held in KMS/HSM custody.</li>
-      <li><strong>Salts &amp; Peppers</strong>: 128-bit CSPRNG unique salt per stored hash prevents rainbow tables; an HSM/KMS-held pepper protects against offline cracking specifically when a breach is scoped to the database alone — it does not help against an attacker who can also reach the pepper (application-server compromise, KMS misconfiguration).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>Argon2id is the primary recommendation for password storage, memory-hard against GPU/ASIC cracking; a unique per-hash salt prevents rainbow tables, and an HSM/KMS-held pepper adds protection specifically when a breach is scoped to the database alone. Rehash-on-login is how cost parameters and legacy algorithms get upgraded gradually, since bulk re-hashing isn't possible without the plaintext.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 9106**: *Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work Applications* — [IETF RFC 9106](https://www.rfc-editor.org/rfc/rfc9106)
 - **NIST SP 800-63B-4**: *Digital Identity Guidelines: Authentication and Lifecycle Management* — [NIST CSRC SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b.html)

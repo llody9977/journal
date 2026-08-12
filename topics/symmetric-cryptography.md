@@ -132,21 +132,12 @@ Nonce uniqueness is necessary but not sufficient — deploying AEAD at scale mea
 
 **Separate directional keys**: Protocols like TLS derive distinct "write keys" for client&rarr;server and server&rarr;client traffic specifically so ciphertext produced by one direction can never land in the same (key, nonce) space as the other direction. Reusing a single shared key bidirectionally both halves the effective nonce budget (both directions draw from the same space) and can open reflection-style attacks where a ciphertext captured from one direction is replayed back along the other.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>Symmetric Cryptography Summary</strong>
-    <ul>
-      <li><strong>AES-256-GCM Standard</strong>: Primary AEAD recommendation for data in transit and for at-rest records, objects, fields, and file formats designed around AEAD — not for block-device/disk-volume encryption, which conventionally uses AES-XTS instead (see Full-Disk &amp; File Encryption). Provides 128-bit quantum security against Grover's algorithm.</li>
-      <li><strong>Nonce Uniqueness Rule</strong>: Reusing a 96-bit GCM nonce under the same key destroys authenticity and exposes the XOR of the two plaintexts; recovering either full plaintext from that XOR still requires known or predictable content in the other message.</li>
-      <li><strong>ChaCha20-Poly1305 Alternative</strong>: Software-optimized AEAD stream cipher providing exceptional speed on hardware lacking dedicated AES acceleration (e.g., AES-NI or ARMv8 Crypto Extensions).</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>AES-256-GCM is the default AEAD choice for data in transit and structured data at rest; reusing a 96-bit GCM nonce under the same key destroys both authenticity and confidentiality. ChaCha20-Poly1305 is the software-optimized alternative for hardware without dedicated AES acceleration.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **NIST SP 800-38D**: *Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM)* — [NIST CSRC SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)
 - **RFC 8439**: *ChaCha20 and Poly1305 for IETF Protocols* — [RFC 8439](https://www.rfc-editor.org/rfc/rfc8439) (IRTF/CFRG Informational)

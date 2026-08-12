@@ -68,21 +68,12 @@ Beyond the core handshake, several mechanisms determine how TLS 1.3 actually beh
 - **KeyUpdate**: For long-lived connections, either side can send a `KeyUpdate` message to ratchet the traffic keys forward — deriving fresh application traffic keys from the current ones via a one-way HKDF step — without a full re-handshake. This bounds how much ciphertext is protected under any single key (useful for staying within AEAD's per-key data limits on very long connections) and protects *earlier* key generations after the fact, provided the superseded secrets are actually erased. It does **not** provide post-compromise recovery: because each new generation is derived deterministically from the current one, an attacker who holds the current traffic secret can derive every later generation too — `KeyUpdate` ratchets existing key material forward, it doesn't inject the fresh entropy a new (EC)DHE exchange would.
 - **TLS vs. QUIC boundary**: As noted above, HTTP/3 runs over QUIC, which uses TLS 1.3 only for its handshake and key negotiation (RFC 9001) — QUIC then does its own packet protection and has its own loss-recovery and multiplexing layer entirely separate from the TCP-carried TLS record layer HTTP/1.1 and HTTP/2 use.
 
-## What I Need to Remember
-
-<div class="security-layer security-layer-direct">
-  <div class="security-layer-label">Key Takeaways for Future Recall</div>
-  <div>
-    <strong>TLS Handshake Summary</strong>
-    <ul>
-      <li><strong>TLS 1.3 1-RTT Speed</strong>: Reduces handshake latency to 1 round-trip time for a full handshake without a <code>HelloRetryRequest</code> (HRR adds a round trip); mandates AEAD ciphers and requires ephemeral key exchange (ECDHE) for the full handshake — PSK-only use (resumption or external PSKs) is a permitted mode but forgoes forward secrecy for that connection.</li>
-      <li><strong>Encrypted Client Hello (ECH, [RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html))</strong>: Encrypts the real SNI and selected <code>ClientHello</code> fields inside an encrypted inner payload to prevent passive SNI eavesdropping (though destination IP addresses, unencrypted DNS, and traffic flow analysis may still reveal destination servers).</li>
-      <li><strong>0-RTT Replay Warning</strong>: 0-RTT early data is vulnerable to replay attacks; restrict it to operations the application has explicitly confirmed are replay-safe (per <a href="https://www.rfc-editor.org/rfc/rfc9846.html#section-8">RFC 9846 §8</a>) — HTTP idempotence describes end-state, not freedom from replayable side effects, so it isn't a substitute for that check.</li>
-    </ul>
-  </div>
+<div class="callout">
+  <span class="callout-title">What I need to remember</span>
+  <p>TLS 1.3 completes a full handshake in one round trip, mandates AEAD ciphers, and requires ephemeral key exchange for forward secrecy — a PSK-only resumption is permitted but forgoes that guarantee. 0-RTT early data is replay-vulnerable and should be restricted to operations explicitly confirmed as replay-safe, not assumed safe from HTTP idempotence alone.</p>
 </div>
 
-## Primary References
+## Primary references
 
 - **RFC 9846**: *The Transport Layer Security (TLS) Protocol Version 1.3* — [IETF RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) (a backward-compatible update that obsoletes [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html), the original TLS 1.3 specification)
 - **RFC 9849**: *TLS Encrypted Client Hello* — [IETF RFC 9849](https://www.rfc-editor.org/rfc/rfc9849.html)

@@ -98,10 +98,10 @@
     <text x="755" y="244" font-size="10.5" font-weight="500" fill="#475569">  IAM policies, WAF, mTLS</text>
     <text x="755" y="264" font-size="11" font-weight="800" fill="#0f172a">• Detective Safeguards:</text>
     <text x="755" y="282" font-size="10.5" font-weight="500" fill="#475569">  SIEM logging, IDS/IPS audit</text>
-    <text x="755" y="302" font-size="11" font-weight="800" fill="#0f172a">• Responsive Safeguards:</text>
-    <text x="755" y="320" font-size="10.5" font-weight="500" fill="#475569">  Incident containment</text>
-    <text x="755" y="340" font-size="11" font-weight="800" fill="#0f172a">• Recovery Safeguards:</text>
-    <text x="755" y="358" font-size="10.5" font-weight="500" fill="#475569">  Backups, DR failover</text>
+    <text x="755" y="302" font-size="11" font-weight="800" fill="#0f172a">• Corrective / Recovery:</text>
+    <text x="755" y="320" font-size="10.5" font-weight="500" fill="#475569">  Containment, backups, DR</text>
+    <text x="755" y="340" font-size="11" font-weight="800" fill="#0f172a">• Compensating / Deterrent:</text>
+    <text x="755" y="358" font-size="10.5" font-weight="500" fill="#475569">  Bridges gaps, discourages</text>
     <line x1="755" y1="372" x2="945" y2="372" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
     <text x="755" y="394" font-size="11" font-weight="800" fill="#0f766e">LEAVES OUTCOME:</text>
     <text x="755" y="412" font-size="11.5" font-weight="700" fill="#0f172a">Residual Risk Requiring a</text>
