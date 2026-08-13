@@ -347,18 +347,48 @@
 {% if current_url == '/topics/network-edge-ddos-routing-security/' or current_url == '/topics/network-edge-ddos-routing-security' %}
   {% assign prev_title = '5.7 Wireless Network Security' %}
   {% assign prev_url = '/topics/wireless-network-security/' %}
-  {% assign next_title = '6.1 Threat Frameworks & Modeling Methodologies' %}
-  {% assign next_url = '/topics/threat-frameworks/' %}
+  {% assign next_title = '6.1 Design-Time Architecture Threat Modeling' %}
+  {% assign next_url = '/topics/threat-modeling-design/' %}
 {% endif %}
-{% if current_url == '/topics/threat-frameworks/' or current_url == '/topics/threat-frameworks' %}
+{% if current_url == '/topics/threat-modeling-design/' or current_url == '/topics/threat-modeling-design' %}
   {% assign prev_title = '5.8 Network Edge, DDoS & Routing Security' %}
   {% assign prev_url = '/topics/network-edge-ddos-routing-security/' %}
+  {% assign next_title = '6.2 Operational Intrusion Frameworks & Intrusion Analysis' %}
+  {% assign next_url = '/topics/operational-intrusion-frameworks/' %}
+{% endif %}
+{% if current_url == '/topics/operational-intrusion-frameworks/' or current_url == '/topics/operational-intrusion-frameworks' %}
+  {% assign prev_title = '6.1 Design-Time Architecture Threat Modeling' %}
+  {% assign prev_url = '/topics/threat-modeling-design/' %}
+  {% assign next_title = '6.3 Cyber Threat Intelligence & Threat Actor Profiling' %}
+  {% assign next_url = '/topics/cyber-threat-intelligence/' %}
+{% endif %}
+{% if current_url == '/topics/cyber-threat-intelligence/' or current_url == '/topics/cyber-threat-intelligence' %}
+  {% assign prev_title = '6.2 Operational Intrusion Frameworks & Intrusion Analysis' %}
+  {% assign prev_url = '/topics/operational-intrusion-frameworks/' %}
+  {% assign next_title = '6.4 Detection Engineering & SIEM Analytics' %}
+  {% assign next_url = '/topics/detection-engineering/' %}
+{% endif %}
+{% if current_url == '/topics/detection-engineering/' or current_url == '/topics/detection-engineering' %}
+  {% assign prev_title = '6.3 Cyber Threat Intelligence & Threat Actor Profiling' %}
+  {% assign prev_url = '/topics/cyber-threat-intelligence/' %}
+  {% assign next_title = '6.5 Threat Hunting & Behavioral Analytics' %}
+  {% assign next_url = '/topics/threat-hunting/' %}
+{% endif %}
+{% if current_url == '/topics/threat-hunting/' or current_url == '/topics/threat-hunting' %}
+  {% assign prev_title = '6.4 Detection Engineering & SIEM Analytics' %}
+  {% assign prev_url = '/topics/detection-engineering/' %}
+  {% assign next_title = '6.6 Adversary Emulation & Continuous Security Validation' %}
+  {% assign next_url = '/topics/adversary-emulation/' %}
+{% endif %}
+{% if current_url == '/topics/adversary-emulation/' or current_url == '/topics/adversary-emulation' %}
+  {% assign prev_title = '6.5 Threat Hunting & Behavioral Analytics' %}
+  {% assign prev_url = '/topics/threat-hunting/' %}
   {% assign next_title = '7.1 AI & LLM Security' %}
   {% assign next_url = '/topics/ai-llm-security/' %}
 {% endif %}
 {% if current_url == '/topics/ai-llm-security/' or current_url == '/topics/ai-llm-security' %}
-  {% assign prev_title = '6.1 Threat Frameworks & Modeling Methodologies' %}
-  {% assign prev_url = '/topics/threat-frameworks/' %}
+  {% assign prev_title = '6.6 Adversary Emulation & Continuous Security Validation' %}
+  {% assign prev_url = '/topics/adversary-emulation/' %}
   {% assign next_title = '7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA' %}
   {% assign next_url = '/topics/software-supply-chain-security/' %}
 {% endif %}

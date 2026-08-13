@@ -1212,12 +1212,12 @@
     {
       "id": "CD-0025",
       "title": "Establish explicit STRIDE DFD matrix, PASTA 7-stage sequence, and ATT&CK conceptual taxonomy in Section 6",
-      "status": "accepted",
+      "status": "superseded",
       "implementation_state": "implemented",
       "scope": {
         "files": [
-          "topics/threat-frameworks.md",
-          "assets/img/threat-frameworks-architecture.svg"
+          "topics/threat-modeling-design.md",
+          "assets/img/design-time-threat-modeling.svg"
         ],
         "concepts": [
           "STRIDE DFD element mapping matrix",
@@ -1265,8 +1265,93 @@
       ],
       "related_decisions": ["CD-0001", "CD-0024"],
       "supersedes": [],
-      "superseded_by": null,
+      "superseded_by": "CD-0026",
       "originating_review_state_id": "4b2b97403ef028815631a65d595e771720744fae6dc42e8df8f345c9c71c47c9",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0026",
+      "title": "Structure Section 6 into six single-subject topics covering design-time threat modeling, operational intrusion models, CTI, detection engineering, threat hunting, and adversary emulation",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/threat-modeling-design.md",
+          "topics/operational-intrusion-frameworks.md",
+          "topics/cyber-threat-intelligence.md",
+          "topics/detection-engineering.md",
+          "topics/threat-hunting.md",
+          "topics/adversary-emulation.md",
+          "assets/img/design-time-threat-modeling.svg",
+          "assets/img/operational-intrusion-frameworks.svg",
+          "assets/img/cyber-threat-intelligence-lifecycle.svg",
+          "assets/img/detection-engineering-pipeline.svg",
+          "assets/img/threat-hunting-methodology.svg",
+          "assets/img/adversary-emulation-validation.svg",
+          "_data/nav.yml",
+          "_includes/topic-nav.html"
+        ],
+        "concepts": [
+          "design-time threat modeling",
+          "operational intrusion frameworks",
+          "cyber threat intelligence operations",
+          "detection engineering and SIEM analytics",
+          "threat hunting methodologies",
+          "adversary emulation and continuous validation"
+        ]
+      },
+      "originating_feedback": "A section-level scope evaluation determined that combining design-time threat modeling, intrusion models, CTI, detection engineering, threat hunting, and adversary emulation into a single topic page resulted in severe topic overloading. The user approved expanding Section 6 into six dedicated single-subject pages.",
+      "decision": "Structure Section 6 as six single-subject topics: 6.1 Design-Time Architecture Threat Modeling, 6.2 Operational Intrusion Frameworks, 6.3 Cyber Threat Intelligence, 6.4 Detection Engineering, 6.5 Threat Hunting, and 6.6 Adversary Emulation.",
+      "rationale": "Each topic has distinct target audiences, data inputs, primary outputs, analytical mechanisms, and operational lifecycles. Separating them enforces single-subject integrity, prevents narrative drift, provides self-contained recall-first references, and creates complete coverage across the modern threat intelligence and detection landscape.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-150",
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-150/final",
+          "supports": "Cyber threat information sharing and threat intelligence lifecycle."
+        },
+        {
+          "title": "NIST SP 800-137",
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-137/final",
+          "supports": "Information security continuous monitoring and threat hunting."
+        },
+        {
+          "title": "OASIS STIX 2.1 Standard",
+          "url": "https://docs.oasis-open.org/cti/stix/v2.1/stix-v2.1.html",
+          "supports": "Structured Threat Information Expression objects and relationships."
+        },
+        {
+          "title": "Sigma Specification",
+          "url": "https://github.com/SigmaHQ/sigma",
+          "supports": "Vendor-neutral detection rule format and Detection-as-Code transpilation."
+        },
+        {
+          "title": "PEAK Threat Hunting Framework",
+          "url": "https://www.sqrrl.com/peak-threat-hunting-framework/",
+          "supports": "Hypothesis-driven, baseline outlier, and model-assisted threat hunting."
+        },
+        {
+          "title": "Atomic Red Team Specification",
+          "url": "https://atomicredteam.io/",
+          "supports": "Vendor-neutral atomic TTP testing for adversary emulation."
+        }
+      ],
+      "verification_methods": [
+        "Verify Section 6 navigation in nav.yml and topic-nav.html from 6.1 through 6.6.",
+        "Run scripts/verify_writing_style.py across all 72 topic files.",
+        "Run scripts/verify_content_decisions.py against CONTENT_DECISIONS.yml.",
+        "Verify visual rendering of all 6 SVG architecture diagrams."
+      ],
+      "approved_outcome": "Section 6 contains six clearly bounded single-subject topics with stable permalinks, clean navigation, provider- and protocol-specific semantics, operational failure modes, and matching SVG architecture diagrams.",
+      "invalidation_conditions": [
+        "The journal section architecture changes and a different grouping is explicitly adopted.",
+        "A governing primary source fundamentally merges or changes a core threat intelligence or detection methodology.",
+        "Rendered evidence demonstrates broken navigation or visual rendering defects across Section 6."
+      ],
+      "related_decisions": ["CD-0001", "CD-0024", "CD-0025"],
+      "supersedes": ["CD-0025"],
+      "superseded_by": null,
+      "originating_review_state_id": "022c70cf8fbd154542a8618c69dd6cbdfbdfaf6be71bf83e39e8462b3ea794ee",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
     }

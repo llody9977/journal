@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Detection Engineering &amp; SIEM Analytics Architecture</title>
+  <desc id="description">Detection Engineering diagram showing Detection-as-Code pipeline, Sigma/YARA/KQL rule compilation, telemetry normalization, and detection metrics.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Detection Engineering &amp; SIEM Analytics</text>
+  <text x="50" y="75" font-size="14" fill="#475569">Detection-as-Code workflows, standardized rule languages, log normalization, and continuous rule tuning.</text>
+  
+  <!-- Detection-as-Code Pipeline (x=40, w=540, y=105, h=160) -->
+  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">DETECTION-AS-CODE (DaC) CI/CD PIPELINE</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Version-Controlled Rule Development</text>
+  <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">1. Rule Authoring (Sigma YAML) → 2. Git Pull Request</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">→ 3. CI Automated Unit &amp; Syntax Tests → 4. Test Event Replay</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">→ 5. Auto-Transpile (sigmac) → 6. Production Deploy (SIEM/EDR API)</text>
+
+  <!-- Rule Languages (x=620, w=540, y=105, h=160) -->
+  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">STANDARDIZED RULE LANGUAGES &amp; SCOPE</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Vendor-Neutral &amp; Engine-Specific Logic</text>
+  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Sigma: Generic log signatures transpiled to KQL/SPL/YARA-L</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• YARA: Binary payload, memory, &amp; string pattern matching</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• KQL / SPL / YARA-L: Native SIEM log analytics query languages</text>
+
+  <!-- Telemetry & Metrics (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">TELEMETRY NORMALIZATION &amp; DETECTION PERFORMANCE METRICS</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Ingestion Schema &amp; Quality Measurement</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Telemetry Sources: EDR/XDR process trees, AWS CloudTrail / GCP Audit Logs, Identity Provider (IdP) auth logs</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Schema Normalization: Mapping raw telemetry to ECS (Elastic Common Schema) or OCSF (Open Cybersecurity Schema Framework)</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Metrics: Precision vs Recall, False Positive Rate (FPR), Mean Time to Detect (MTTD), Rule Fatigue Index</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">DETECTION ENGINEERING CYCLE: THREAT INTEL → SIGMA RULE → CI TESTING → SIEM INGESTION → ALERT SUPPRESSION &amp; TUNING</text>
+</svg>

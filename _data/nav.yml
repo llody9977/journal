@@ -137,8 +137,18 @@
           url: /topics/network-edge-ddos-routing-security/
     - title: 6. Threat Intelligence & Detection
       children:
-        - title: 6.1 Threat Frameworks & Modeling Methodologies
-          url: /topics/threat-frameworks/
+        - title: 6.1 Design-Time Architecture Threat Modeling
+          url: /topics/threat-modeling-design/
+        - title: "6.2 Operational Intrusion Frameworks & Intrusion Analysis"
+          url: /topics/operational-intrusion-frameworks/
+        - title: "6.3 Cyber Threat Intelligence & Threat Actor Profiling"
+          url: /topics/cyber-threat-intelligence/
+        - title: 6.4 Detection Engineering & SIEM Analytics
+          url: /topics/detection-engineering/
+        - title: 6.5 Threat Hunting & Behavioral Analytics
+          url: /topics/threat-hunting/
+        - title: "6.6 Adversary Emulation & Continuous Security Validation"
+          url: /topics/adversary-emulation/
     - title: 7. Emerging Topics
       children:
         - title: 7.1 AI & LLM Security
