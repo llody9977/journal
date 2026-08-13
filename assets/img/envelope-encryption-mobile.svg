@@ -1,0 +1,45 @@
+<svg viewBox="0 0 390 820" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Conceptual Envelope Encryption Flow</title>
+  <desc id="description">A vertical mobile view showing a key-encryption key in a cryptographic protection boundary, a plaintext data-encryption-key copy in workload memory, and persistent payload ciphertext with wrapped-DEK metadata.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#16a34a"/></marker>
+  </defs>
+  <rect width="390" height="820" fill="#ffffff"/>
+  <text x="24" y="38" font-size="21" font-weight="850" fill="#0f172a">Conceptual Envelope Encryption</text>
+  <text x="24" y="64" font-size="13" fill="#475569">Separate the high-value KEK, the workload's</text>
+  <text x="24" y="83" font-size="13" fill="#475569">plaintext DEK copy, and persistent envelope data.</text>
+
+  <rect x="24" y="110" width="342" height="176" rx="12" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+  <text x="42" y="139" font-size="12" font-weight="900" letter-spacing="1" fill="#94a3b8">KEY PROTECTION BOUNDARY</text>
+  <text x="42" y="169" font-size="17" font-weight="800" fill="#ffffff">Key-Encryption Key (KEK)</text>
+  <line x1="42" y1="183" x2="348" y2="183" stroke="#475569"/>
+  <text x="42" y="210" font-size="14" fill="#cbd5e1">• Plaintext KEK stays within its boundary</text>
+  <text x="42" y="236" font-size="14" fill="#cbd5e1">• Performs authorized wrap/unwrap calls</text>
+  <rect x="42" y="251" width="306" height="25" rx="5" fill="#334155"/>
+  <text x="195" y="269" font-size="13" font-weight="800" fill="#fde047" text-anchor="middle">Boundary-Protected KEK</text>
+
+  <path d="M195 294 L195 326" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+  <rect x="24" y="338" width="342" height="188" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="42" y="367" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">WORKLOAD MEMORY</text>
+  <text x="42" y="397" font-size="17" font-weight="800" fill="#1e40af">Plaintext DEK Copy</text>
+  <line x1="42" y1="411" x2="348" y2="411" stroke="#bfdbfe"/>
+  <text x="42" y="438" font-size="14" fill="#475569">• Encrypts or decrypts local payload data</text>
+  <text x="42" y="464" font-size="14" fill="#475569">• Limit lifetime and number of copies</text>
+  <text x="42" y="490" font-size="14" fill="#475569">• Clear best-effort where runtime permits</text>
+  <rect x="42" y="501" width="306" height="25" rx="5" fill="#1e40af"/>
+  <text x="195" y="519" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">DEK in Workload Memory</text>
+
+  <path d="M195 534 L195 566" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <rect x="24" y="578" width="342" height="194" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="42" y="607" font-size="12" font-weight="900" letter-spacing="1" fill="#15803d">PERSISTENT ENVELOPE</text>
+  <text x="42" y="637" font-size="17" font-weight="800" fill="#15803d">Ciphertext + Wrapped DEK</text>
+  <line x1="42" y1="651" x2="348" y2="651" stroke="#86efac"/>
+  <text x="42" y="678" font-size="14" fill="#475569">• Payload ciphertext, tag, and nonce</text>
+  <text x="42" y="704" font-size="14" fill="#475569">• Wrapped DEK and algorithm metadata</text>
+  <text x="42" y="730" font-size="14" fill="#475569">• Authenticated context or stable reference</text>
+  <rect x="42" y="741" width="306" height="25" rx="5" fill="#15803d"/>
+  <text x="195" y="759" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Persistent Envelope Metadata</text>
+</svg>

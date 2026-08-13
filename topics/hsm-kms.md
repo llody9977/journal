@@ -2,7 +2,7 @@
 title: HSM & KMS
 description: How Hardware Security Modules and Key Management Services differ, how their protection boundaries are evaluated, and how they support envelope encryption and custody choices.
 permalink: /topics/hsm-kms/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Architecture</span>
@@ -54,18 +54,23 @@ PKCS #11 exposes key-object attributes that a conforming token uses to control A
 Envelope encryption uses a short-lived or narrowly scoped **data-encryption key (DEK)** for the payload and a **key-encryption key (KEK)** to wrap the DEK. This pattern keeps bulk cryptography local to the workload and limits the KMS or HSM operation to a small key object.
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Envelope encryption process: generate a DEK, encrypt the payload, wrap the DEK with a KMS key, and store the encrypted envelope.">
+  <picture>
+    <source media="(max-width: 600px)" srcset="{{ '/assets/img/envelope-encryption-mobile.svg' | relative_url }}">
+    <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Conceptual envelope-encryption flow: a KEK in a cryptographic protection boundary wraps a DEK used in workload memory, while persistent storage retains the payload ciphertext and wrapped-DEK metadata.">
+  </picture>
   <p class="diagram-caption">A KMS coordinates the KEK's use, but the KEK itself lives in a separate cryptographic protection boundary — an HSM, a software module, or an external key service, as described above — not the KMS as a whole.</p>
 </div>
 
 1. Generate a DEK with an approved random-bit generator or ask the KMS to generate one.
 2. Encrypt the payload with an authenticated-encryption mode such as AES-GCM and a nonce that is unique for that DEK.
-3. Bind immutable context—tenant, object identifier, content algorithm, and key reference—as authenticated additional data (AAD) where the protocol supports it.
+3. Bind immutable payload context—such as tenant, object identifier, content algorithm, and envelope-format version—as authenticated additional data (AAD) where the protocol supports it.
 4. Wrap the DEK under a KEK using a specified key-wrapping mechanism such as an approved method in [NIST SP 800-38F](https://csrc.nist.gov/pubs/sp/800/38/f/final).
-5. Store the ciphertext, authentication tag, nonce, encrypted DEK, KEK identifier and version, algorithm identifiers, and authenticated context together.
+5. Store the ciphertext, authentication tag, nonce, encrypted DEK, KEK identifier and version, algorithm identifiers, authenticated payload context, and envelope-format metadata together.
 6. Minimize the lifetime and number of plaintext DEK copies in memory. A cache trades KMS availability and latency for a larger exposure window, so bound it by time, use count, data volume, and tenant or security context.
 
-Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting the bulk ciphertext. Changing the DEK requires decrypting and re-encrypting the bulk data. If the referenced KEK version is disabled, unavailable, or destroyed, the encrypted DEK cannot be unwrapped; destruction therefore requires dependency checks and a tested recovery decision.
+[AES-GCM authenticates its AAD](https://csrc.nist.gov/pubs/sp/800/38/d/final), so changing payload AAD invalidates the authentication tag. Mutable wrapping metadata—such as KEK identifier, KEK material version, wrapping algorithm, and encrypted DEK—should therefore not be placed in the payload AAD when the design promises rewrapping without changing the payload ciphertext. Protect that metadata with a separately updateable authenticated-envelope mechanism, such as a provider wrapping operation that binds an encryption context or a signed or MAC-protected envelope header. If a design instead authenticates wrapping metadata as payload AAD, changing it requires recomputing payload authentication and is not a rewrap-only operation.
+
+Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting the bulk ciphertext when the envelope's integrity construction supports that update. Changing the DEK requires decrypting and re-encrypting the bulk data. If the referenced KEK version is disabled, unavailable, or destroyed, the encrypted DEK cannot be unwrapped; destruction therefore requires dependency checks and a tested recovery decision.
 
 <div class="interactive-demo-card">
   <div class="demo-header">
@@ -139,12 +144,19 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
       const aadText = JSON.stringify({
         tenant: 'demo-tenant',
         object: 'demo-record',
-        keyId: 'local-demo-kek',
-        keyVersion: 'v1',
         contentAlgorithm: 'AES-256-GCM',
-        wrapAlgorithm: 'A256KW'
+        envelopeFormat: 'demo-v1'
       });
       const aad = encoder.encode(aadText);
+
+      // Mutable wrapping metadata is kept outside the payload AAD so a real
+      // envelope design can rewrap the DEK without invalidating the GCM tag.
+      // This browser demo does not implement a separate authenticated header.
+      const wrappingMetadata = {
+        keyId: 'local-demo-kek',
+        keyVersion: 'v1',
+        wrapAlgorithm: 'A256KW'
+      };
 
       const cipherBuffer = await window.crypto.subtle.encrypt(
         { name: 'AES-GCM', iv: nonce, additionalData: aad, tagLength: 128 },
@@ -164,6 +176,7 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
         nonce: nonce,
         aad: aad,
         aadText: aadText,
+        wrappingMetadata: wrappingMetadata,
         ciphertext: cipherBuffer,
         wrappedDek: wrappedDekBuffer
       };
@@ -183,6 +196,8 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
           <strong style="color: var(--amber); display: block; margin-bottom: 0.35rem;">&#128230; Step 3: Wrapped DEK (EDEK Stored Beside Data)</strong>
           <span style="color: var(--muted); display: block; font-size: 0.8rem;">Wrapped DEK Hex (AES Key Wrap output):</span>
           <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${bytesToHex(envelopeData.wrappedDek)}</code>
+          <span style="color: var(--muted); display: block; font-size: 0.8rem; margin-top: 0.35rem;">Separate Wrapping Metadata: <code style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-all;">${escapeHtml(JSON.stringify(envelopeData.wrappingMetadata))}</code></span>
+          <span style="color: var(--muted); display: block; font-size: 0.75rem; margin-top: 0.35rem;">The demo keeps this metadata outside the payload AAD but does not implement the separate authenticated envelope header required by a production design.</span>
         </div>
         <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
           <strong style="color: var(--ink); display: block; margin-bottom: 0.35rem;">&#128274; Step 4: Encrypted Payload &amp; Nonce</strong>
@@ -208,7 +223,7 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
         masterKEK,
         'AES-KW',
         { name: 'AES-GCM', length: 256 },
-        true,
+        false,
         ['decrypt']
       );
 
@@ -225,6 +240,7 @@ Changing the KEK can mean **rewrapping** the encrypted DEK without re-encrypting
       outputArea.innerHTML += `
         <div style="background: rgba(15, 118, 110, 0.08); border: 1px solid var(--teal); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; margin-top: 0.5rem;">
           <strong style="color: var(--teal); display: block; margin-bottom: 0.35rem;">&#9989; Step 5: Demo Envelope Decrypted</strong>
+          <span style="color: var(--muted); display: block; font-size: 0.8rem;">The DEK was unwrapped with <code>extractable=false</code> and decrypt-only usage.</span>
           <span style="color: var(--muted); display: block; font-size: 0.8rem;">Decrypted Payload Output:</span>
           <code style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--teal);">${escapeHtml(decryptedText)}</code>
         </div>
@@ -430,6 +446,7 @@ Provider terminology varies, so architecture decisions should be based on who ge
 - **[NIST SP 800-57 Part 1 Rev. 5: Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)** — verified that key management extends beyond storage to lifecycle protection and operational controls.
 - **[NIST SP 800-130: A Framework for Designing Cryptographic Key Management Systems](https://csrc.nist.gov/pubs/sp/800/130/final)** — verified the KMS boundary of policies, procedures, components, devices, keys, and metadata.
 - **[NIST SP 800-133 Rev. 2: Recommendation for Cryptographic Key Generation](https://csrc.nist.gov/pubs/sp/800/133/r2/final)** — verified key-generation and random-bit-generator requirements in the NIST federal profile.
+- **[NIST SP 800-38D: Galois/Counter Mode](https://csrc.nist.gov/pubs/sp/800/38/d/final)** — verified that AES-GCM authenticates additional data and that changing authenticated context invalidates tag verification.
 - **[NIST SP 800-38F: Recommendation for Block Cipher Modes of Operation—Methods for Key Wrapping](https://csrc.nist.gov/pubs/sp/800/38/f/final)** — verified approved AES key-wrapping methods.
 - **[OASIS PKCS #11 v3.1](https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html)** — verified the exact meanings of sensitive and extractability attributes.
 - **[OASIS KMIP v2.1](https://docs.oasis-open.org/kmip/kmip-spec/v2.1/kmip-spec-v2.1.html)** — verified the broader managed-object lifecycle and metadata model used for interoperable key management.

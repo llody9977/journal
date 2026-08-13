@@ -1,8 +1,8 @@
 ---
 title: Cryptographic Agility & PQC Operations
-description: Operational practices for discovering cryptographic dependencies, changing algorithm policy, migrating to post-quantum cryptography, rehearsing coexistence, and controlling rollback.
+description: Operational practices for discovering cryptographic dependencies, changing algorithm policy, migrating to post-quantum cryptography, protecting stateful-signature state, rehearsing coexistence, and controlling rollback.
 permalink: /topics/cryptographic-agility-pqc-operations/
-last_verified: 2026-08-10
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Transition</span>
@@ -48,9 +48,24 @@ The algorithms and standards are covered in [Post-Quantum Cryptography]({{ '/top
 | Size | Do certificates, handshakes, signatures, databases, queues, MTUs, proxies, logs, and caches accept larger artifacts? |
 | Performance | Can endpoints and central services meet latency, throughput, memory, and energy targets under load? |
 | Lifecycle | Can inventory, rotation, revocation, recovery, archival verification, and destruction distinguish classical and PQC versions? |
+| Signature state | Does the selected signature scheme require monotonic state that must advance before each released signature and never roll back or be reused? |
 | Interoperability | Which clients, partners, devices, and trust anchors can operate during coexistence? |
 
 NIST standardized ML-KEM, ML-DSA, and SLH-DSA in [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final), [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final), and [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final). NIST currently lists potential errata for FIPS 203 and FIPS 204, so implementations should check the current publication pages and errata. A standard's publication does not prove that a particular protocol profile, product, validation, or deployment is ready.
+
+## Stateful signatures make recovery state security-critical
+
+[NIST SP 800-208](https://csrc.nist.gov/pubs/sp/800/208/final) approves the stateful hash-based signature schemes LMS and XMSS for specific applications. Unlike stateless ML-DSA and SLH-DSA, an LMS or XMSS signer must never reuse a one-time signature key. Reuse can make signature forgery computationally feasible.
+
+The signing index is therefore protected cryptographic state, not disposable operational metadata:
+
+- Advance and durably store the private-key state before releasing the corresponding signature.
+- Prevent two active signers, cloned virtual machines, restored snapshots, or ordinary backup copies from allocating the same one-time signing state.
+- Do not treat rollback to an older private-key backup as recovery. Use a design permitted by the selected profile, such as independent accepted keys or a distributed multi-tree construction defined by SP 800-208.
+- Test power loss, process crash, storage failure, restore, failover, and concurrent signing for state reuse—not only whether the service resumes.
+- Record remaining signing capacity, exhaustion thresholds, state transitions, and the replacement public-key distribution path in the inventory.
+
+A successful post-crash signature does not prove safe recovery. The evidence must show that no previously allocated one-time state became available again.
 
 ## Use coexistence and hybrid designs only with a defined construction
 
@@ -103,3 +118,4 @@ A successful laboratory handshake proves interoperability for those versions and
 - **[NIST FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard](https://csrc.nist.gov/pubs/fips/203/final)** — verified the final ML-KEM standard and the current potential-errata notice.
 - **[NIST FIPS 204: Module-Lattice-Based Digital Signature Standard](https://csrc.nist.gov/pubs/fips/204/final)** — verified the final ML-DSA standard and the current potential-errata notice.
 - **[NIST FIPS 205: Stateless Hash-Based Digital Signature Standard](https://csrc.nist.gov/pubs/fips/205/final)** — verified the final SLH-DSA standard.
+- **[NIST SP 800-208: Recommendation for Stateful Hash-Based Signature Schemes](https://csrc.nist.gov/pubs/sp/800/208/final)** — verified LMS/XMSS state-management, one-time-key reuse, crash-safety, and distributed-signing constraints.

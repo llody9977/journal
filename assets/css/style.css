@@ -749,6 +749,11 @@ hr {
   margin: 0 auto;
 }
 
+.diagram-frame picture {
+  display: block;
+  width: 100%;
+}
+
 .diagram-open-link {
   position: relative;
   display: block;

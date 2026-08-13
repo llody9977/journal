@@ -2,25 +2,27 @@
 title: Rotation, Versioning, Rewrapping & Re-encryption
 description: How key versions change, why rotation does not rewrite existing ciphertext, and when to rewrap data keys or re-encrypt bulk data.
 permalink: /topics/key-rotation-versioning-rewrapping-reencryption/
-last_verified: 2026-08-10
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Rotation</span>
 
 # Rotation, Versioning, Rewrapping & Re-encryption
 
-<p class="lede">Rotation changes the key material used for new protection. It normally does not rewrite existing ciphertext, remove old dependencies, or repair a compromise by itself. Safe rotation requires explicit version references, retained read paths, and a separate decision about rewrapping or re-encrypting old data.</p>
+<p class="lede">Rotation changes the key material used for new protection. It normally does not rewrite existing ciphertext, remove old dependencies, or repair a compromise by itself. Safe retirement requires a provider-resolvable historical read path; application-visible version models also require explicit version references and a separate decision about rewrapping or re-encrypting old data.</p>
 
-## Rotation changes the write path first
+## Rotation models expose different version controls
 
-A logical key can have multiple material versions. An alias or stable resource name can direct new encryption or signing requests to the current version, while ciphertext metadata identifies the version needed for later decryption or verification.
+Rotation first changes the material used for new protection, but providers expose historical material through two different operating models:
 
-This behavior is explicit in major managed KMSs:
+| Rotation model | Historical resolution | Customer-visible controls | Retirement implication |
+|---|---|---|---|
+| **Opaque in-place material rotation** | The provider retains internal material behind one logical key and selects the required material during decryption. | The caller normally addresses the logical key, not an individual internal material version. | Per-material usage, disablement, and destruction may not be customer-visible or customer-controlled. |
+| **Explicit key version or manual logical-key rotation** | Ciphertext or application metadata identifies a selectable key version or distinct logical key. | The customer can resolve, measure, disable, and sometimes destroy specific versions or keys. | Version-level telemetry and reversible disablement can support staged retirement. |
 
-- [AWS KMS rotation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) retains previous key material and selects the correct material for decryption.
-- [Google Cloud KMS rotation](https://docs.cloud.google.com/kms/docs/key-rotation) creates a new primary version but does not re-encrypt data or disable or destroy previous versions.
+[AWS KMS automatic and on-demand rotation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html) normally use the opaque model: AWS KMS retains prior material and selects the correct material for decryption, while callers continue to address the same KMS key. [AWS manual rotation](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys-manually.html) creates a distinct KMS key and repoints an alias, so old ciphertext still requires the original key. [Google Cloud KMS rotation](https://docs.cloud.google.com/kms/docs/key-rotation) uses explicit `CryptoKeyVersion` objects: it creates a new primary version but does not re-encrypt data or disable or destroy previous versions.
 
-The provider behavior supports continuity, but it can hide old-version dependency. Inventory and usage telemetry are still needed before an old version can be disabled or destroyed.
+All three behaviors preserve historical processing, but their observability and retirement controls differ. Inventory remains necessary; version-level usage telemetry and disablement tests apply only when the provider exposes the relevant version or logical key.
 
 ## Scheduled and event-driven rotation solve different problems
 
@@ -59,19 +61,21 @@ Aliases are useful for the write path but dangerous as the only stored reference
 
 ## Use a staged retirement workflow
 
+The following workflow applies when the old version or logical key is independently addressable. Opaque in-place rotation does not expose every step; in that model, document the provider's historical resolution, telemetry, and retirement controls instead of implying that an internal material version was measured or disabled.
+
 1. Create or generate independent replacement material.
 2. Validate permissions, replication, quotas, latency, and disaster recovery before activation.
-3. Make the new version primary for new protective operations.
+3. Make the replacement version or logical key primary for new protective operations.
 4. Measure old-version decrypt, unwrap, verify, and direct-use requests by workload.
 5. Rewrap or re-encrypt dependencies according to the threat and retirement objective.
 6. Disable the old version and observe failures for a defined test window.
 7. Restore if an unknown dependency appears; otherwise complete the approved destruction workflow.
 
-The disable test is intentionally reversible. A zero-error observation window reduces risk but does not prove that dormant archives, offline clients, or disaster-recovery copies have no dependency.
+The disable test is intentionally reversible and applies only where the old version or logical key can be disabled independently. A zero-error observation window reduces risk but does not prove that dormant archives, offline clients, or disaster-recovery copies have no dependency. With opaque in-place rotation, the provider may retain internal historical material without offering customer-controlled retirement of an individual material version; do not claim that the generic staged workflow removed that dependency.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Rotation changes which key protects new material; old ciphertext still depends on old versions until it is rewrapped or re-encrypted. Rewrap when the DEK remains trusted, re-encrypt when the DEK or content construction has to change, and do not destroy a version based only on its age.</p>
+  <p>Rotation changes which material protects new data; old ciphertext still needs provider-retained historical material or an explicit old version until dependencies are migrated. Rewrap when the DEK remains trusted, re-encrypt when the DEK or content construction has to change, and apply version-level disablement only when the provider exposes that control.</p>
 </div>
 
 ## Primary references

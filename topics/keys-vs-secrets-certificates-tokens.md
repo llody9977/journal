@@ -2,14 +2,14 @@
 title: Keys vs Secrets, Certificates & Tokens
 description: A selection boundary for cryptographic keys, arbitrary secrets, certificates, and issued tokens, including where each object belongs and how its lifecycle differs.
 permalink: /topics/keys-vs-secrets-certificates-tokens/
-last_verified: 2026-08-10
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Boundaries</span>
 
 # Keys vs Secrets, Certificates & Tokens
 
-<p class="lede">Keys, secrets, certificates, and tokens can all be sensitive, but they solve different problems. Store and rotate the object according to its semantics: cryptographic keys perform algorithms, secret values are retrieved by consumers, certificates bind public keys to identities, and tokens carry or reference delegated authorization.</p>
+<p class="lede">Keys, secrets, certificates, and tokens can all be sensitive, but they solve different problems. Store and rotate the object according to its semantics: cryptographic keys perform algorithms, secret values are retrieved by consumers, certificates bind public keys to identities, and tokens convey issued authorization, credentials, or assertions according to their protocol.</p>
 
 ## Identify the object before selecting the service
 
@@ -60,13 +60,13 @@ See [OAuth & OpenID Connect]({{ '/topics/oauth-oidc/' | relative_url }}) and [Se
 1. **Does a workload need a cryptographic operation without receiving the raw secret/private key?** Use a KMS or HSM-backed service.
 2. **Does a workload need to retrieve an arbitrary confidential value?** Use a secrets manager or dynamic credential issuer.
 3. **Does a public key need a signed identity binding and validity status?** Use a CA and certificate-management system; protect the private key separately.
-4. **Does a caller need short-lived delegated authority?** Use an authorization server or STS and validate the token at the resource boundary.
+4. **Does a caller need a short-lived issued credential or assertion?** Use the applicable authorization server or STS and validate it at the resource or relying-party boundary.
 
 Cross-system references should be explicit. A certificate record should point to its private-key ID; a token issuer should point to its signing-key version; a secret should identify its target system and consumers; encrypted data should identify its KMS key and version.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Choose the system from the object's behavior: keys perform constrained cryptographic operations, secrets are retrieved, certificates bind public keys to identities, and tokens convey issued authority. Their rotation workflows differ, even when one product stores several of them.</p>
+  <p>Choose the system from the object's behavior: keys perform constrained cryptographic operations, secrets are retrieved, certificates bind public keys to identities, and tokens convey issued authorization, credentials, or assertions. Their rotation workflows differ, even when one product stores several of them.</p>
 </div>
 
 ## Primary references
@@ -75,4 +75,3 @@ Cross-system references should be explicit. A certificate record should point to
 - **[RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280)** — verified certificate structure, validity, public-key binding, and revocation mechanisms.
 - **[RFC 6749: The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749)** — verified access-token issuance, scope, expiry, refresh, and resource-server use in OAuth 2.0.
 - **[NIST SP 800-63C-4: Federation and Assertions](https://pages.nist.gov/800-63-4/sp800-63c.html)** — verified current NIST federation, assertion, and relying-party lifecycle concepts.
-

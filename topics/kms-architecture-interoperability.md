@@ -2,7 +2,7 @@
 title: KMS Architecture & Interoperability
 description: How to choose among application cryptography, managed KMS, managed HSM, dedicated HSM, and external KMS while accounting for trust, availability, and portability.
 permalink: /topics/kms-architecture-interoperability/
-last_verified: 2026-08-10
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Architecture</span>
@@ -77,6 +77,23 @@ For each high-value key, document:
 7. how rollback avoids creating new data under two ambiguous write paths.
 
 Run a small migration rehearsal. Documentation that an API supports import or re-encryption proves capability exists, not that the organization's formats, policies, volumes, and outage constraints will work.
+
+## Maintain a portability registry beside the key inventory
+
+An exit plan needs enough detail to reconstruct the full protection and authorization path. The following is a journal working model rather than a standardized schema:
+
+| Registry field | Example content | Migration decision supported |
+|---|---|---|
+| Envelope and schema version | `customer-record/v3` | Selects the parser and authenticated metadata rules. |
+| Logical key and material reference | Provider resource, alias, explicit version, or opaque-rotation model | Determines whether historical material is application-visible or provider-resolved. |
+| Cryptographic formats | Provider ciphertext blob, raw wrapped DEK, PKCS #8, JWK, PEM, certificate profile | Shows which objects can be parsed, exported, or must be transformed. |
+| Algorithms and parameters | Content AEAD, wrapping mechanism, nonce rules, signature or KEM parameters | Prevents migration code from guessing from key length or ciphertext shape. |
+| Authenticated context | Canonical fields, serialization, encoding, and stability rules | Preserves tag verification and identifies metadata that can or cannot change during rewrapping. |
+| Policy translation | Source grants, conditions, workload identities, destination roles | Exposes authorization semantics that an API adapter cannot preserve automatically. |
+| Migration ownership | Application owner, key custodian, data owner, rollback approver | Assigns decisions for outage, unknown dependencies, and irreversible retirement. |
+| Capacity and recovery | Volume, rate, regional path, retry behavior, checkpoints, recovery objectives | Estimates migration time and makes interruption and restart behavior testable. |
+
+Serialization alone is not portability. A valid PKCS #8 or JWK object may still be unusable because the source key is non-extractable, the destination lacks the mechanism, the envelope depends on provider-specific metadata, or policy and identity semantics cannot be reproduced.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>

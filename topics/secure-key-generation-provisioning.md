@@ -2,7 +2,7 @@
 title: Secure Key Generation & Provisioning
 description: Entropy, random-bit generators, key provenance, in-boundary generation, BYOK import, wrapping, split knowledge, and key ceremonies.
 permalink: /topics/secure-key-generation-provisioning/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Provisioning</span>
@@ -15,7 +15,7 @@ last_verified: 2026-08-11
 
 [NIST SP 800-133 Rev. 2](https://csrc.nist.gov/pubs/sp/800/133/r2/final) covers direct generation from a random-bit generator (RBG), derivation from another key, password-based derivation, and keys established by agreement. For the NIST federal profile, keys are based directly or indirectly on approved RBG output and are generated and used within FIPS 140-validated cryptographic modules.
 
-The security strength of the process is bounded by its weakest input and mechanism:
+The NIST random-bit-generation architecture separates three responsibilities: [SP 800-90B](https://csrc.nist.gov/pubs/sp/800/90/b/final) covers entropy sources and their health testing, [SP 800-90A Rev. 1](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final) specifies deterministic random bit generator (DRBG) mechanisms, and [SP 800-90C](https://csrc.nist.gov/pubs/sp/800/90/c/final) defines complete random bit generator (RBG) constructions that combine those components. The security strength of the resulting process is bounded by its weakest input and mechanism:
 
 - An entropy source supplies unpredictable input.
 - A deterministic random bit generator (DRBG) expands internal state into pseudorandom output.
@@ -86,6 +86,8 @@ NIST published [SP 800-133 Rev. 3 as an Initial Public Draft](https://csrc.nist.
 
 - **[NIST SP 800-133 Rev. 2: Recommendation for Cryptographic Key Generation](https://csrc.nist.gov/pubs/sp/800/133/r2/final)** — verified final NIST guidance for random-based generation, derived and established keys, security strength, and generation boundaries.
 - **[NIST SP 800-90A Rev. 1: Recommendation for Random Number Generation Using Deterministic Random Bit Generators](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)** — verified the approved DRBG constructions referenced by the generation guidance.
+- **[NIST SP 800-90B: Recommendation for the Entropy Sources Used for Random Bit Generation](https://csrc.nist.gov/pubs/sp/800/90/b/final)** — verified entropy-source models, validation, and health-test responsibilities.
+- **[NIST SP 800-90C: Recommendation for Random Bit Generator Constructions](https://csrc.nist.gov/pubs/sp/800/90/c/final)** — verified the complete RBG constructions that combine entropy sources with DRBG mechanisms.
 - **[NIST SP 800-57 Part 1 Rev. 5: Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)** — verified split knowledge, key components, distribution, and protection requirements.
 - **[NIST SP 800-38F: Methods for Key Wrapping](https://csrc.nist.gov/pubs/sp/800/38/f/final)** — verified approved AES key-wrapping methods.
 - **[NIST SP 800-133 Rev. 3 Initial Public Draft](https://csrc.nist.gov/pubs/sp/800/133/r3/ipd)** — verified draft status and proposed 2026 changes; it is not used as final normative guidance.

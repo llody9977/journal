@@ -705,6 +705,208 @@
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0016",
+      "title": "Keep mutable wrapping metadata outside payload AAD when rewrap-only updates are required",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/hsm-kms.md",
+          "topics/key-rotation-versioning-rewrapping-reencryption.md",
+          "assets/img/envelope-encryption.svg",
+          "assets/img/envelope-encryption-mobile.svg"
+        ],
+        "concepts": [
+          "envelope encryption",
+          "payload AAD",
+          "wrapping metadata",
+          "KEK rewrapping",
+          "authenticated envelope"
+        ]
+      },
+      "originating_feedback": "The Chapter 3 review found that the envelope example authenticated the KEK identifier, material version, and wrapping algorithm as payload AAD while also promising that those values could change through rewrapping without changing the payload ciphertext.",
+      "decision": "Authenticate immutable payload context as payload AAD. Keep mutable KEK and wrapped-DEK metadata in a separately updateable integrity construction when the format promises rewrap-only updates; otherwise state that changing that metadata requires recomputing payload authentication.",
+      "rationale": "AES-GCM tag verification covers AAD. Changing AAD without recomputing the payload tag fails authentication, so mutable wrapping metadata and rewrap-only behavior cannot be combined without a separate integrity design.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-38D",
+          "url": "https://csrc.nist.gov/pubs/sp/800/38/d/final",
+          "supports": "GCM authenticates additional data as part of tag generation and verification."
+        },
+        {
+          "title": "NIST SP 800-38F",
+          "url": "https://csrc.nist.gov/pubs/sp/800/38/f/final",
+          "supports": "Approved key-wrapping methods protect the wrapped key object separately from bulk payload encryption."
+        }
+      ],
+      "verification_methods": [
+        "Compare payload AAD fields with every field changed during the documented rewrapping workflow.",
+        "Run the browser demonstration and verify that immutable payload context remains in AAD while wrapping metadata is displayed separately.",
+        "Confirm the prose and diagrams do not imply that separately stored metadata is automatically authenticated."
+      ],
+      "approved_outcome": "The page and demonstration distinguish immutable payload AAD from mutable wrapping metadata and disclose that production envelopes need a separate integrity mechanism for the mutable metadata.",
+      "invalidation_conditions": [
+        "The page adopts a specified envelope construction in which the complete header can be reauthenticated without changing the payload ciphertext.",
+        "The page removes rewrap-only behavior and explicitly requires payload tag recomputation when wrapping metadata changes.",
+        "The authenticated-encryption construction or protocol defines different authenticated-metadata semantics."
+      ],
+      "related_decisions": ["CD-0010"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0017",
+      "title": "Distinguish opaque in-place rotation from explicit version retirement",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/key-inventory-classification-ownership.md",
+          "topics/key-rotation-versioning-rewrapping-reencryption.md",
+          "topics/kms-architecture-interoperability.md"
+        ],
+        "concepts": [
+          "opaque key-material rotation",
+          "explicit key versions",
+          "historical decryption",
+          "per-version telemetry",
+          "staged retirement"
+        ]
+      },
+      "originating_feedback": "The Chapter 3 review found that the rotation workflow treated AWS opaque internal material rotation and Google Cloud explicit CryptoKeyVersion rotation as though both exposed the same version identifiers, telemetry, disablement, and destruction controls.",
+      "decision": "Describe opaque provider-resolved material rotation separately from explicit version or manual logical-key rotation. Apply version-level measurement, reversible disablement, and destruction only where the old version or key is independently addressable.",
+      "rationale": "A continuity guarantee does not imply customer visibility or control over each historical material version. Conflating the models creates retirement steps that cannot be executed or evidenced on some providers.",
+      "authoritative_sources": [
+        {
+          "title": "AWS KMS key rotation",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
+          "supports": "AWS KMS retains internal historical material behind the same KMS key and selects it during decryption."
+        },
+        {
+          "title": "Google Cloud KMS key rotation",
+          "url": "https://docs.cloud.google.com/kms/docs/key-rotation",
+          "supports": "Google Cloud rotation creates a new primary CryptoKeyVersion and retains previous versions until separately disabled or destroyed."
+        }
+      ],
+      "verification_methods": [
+        "Check every generic rotation step for whether it requires an application-visible version.",
+        "Compare the AWS automatic, AWS manual, and Google Cloud models against their current provider documentation.",
+        "Verify summaries and inventory guidance do not block a safe write-path transition before dependency retirement."
+      ],
+      "approved_outcome": "The chapter identifies both rotation models, preserves a provider-resolvable historical read path, and scopes version-level retirement controls to models that expose them.",
+      "invalidation_conditions": [
+        "A cited provider materially changes whether internal material versions are customer-visible or customer-controlled.",
+        "The page narrows itself to one named provider and rotation mechanism.",
+        "A standardized cross-provider version-control model replaces the documented distinction."
+      ],
+      "related_decisions": ["CD-0016"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0018",
+      "title": "Treat stateful hash-based signature state as non-rollbackable key state",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cryptographic-agility-pqc-operations.md",
+          "topics/recommended-algorithms.md"
+        ],
+        "concepts": [
+          "LMS",
+          "XMSS",
+          "one-time signature state",
+          "crash recovery",
+          "backup rollback",
+          "high availability"
+        ]
+      },
+      "originating_feedback": "The Chapter 3 review found that PQC operations discussed backup, failover, and rollback without the critical LMS/XMSS constraint that one-time signing state must never be reused.",
+      "decision": "Separate stateful LMS/XMSS operations from stateless ML-DSA and SLH-DSA. Treat the signing index as protected monotonic key state that must advance durably before signature release and must not be duplicated or rolled back by ordinary backup, snapshot, or failover procedures.",
+      "rationale": "Reusing a one-time signature key can enable forgery. A service that resumes after a crash is not safely recovered unless it also proves that previously allocated signing state cannot be reused.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-208",
+          "url": "https://csrc.nist.gov/pubs/sp/800/208/final",
+          "supports": "LMS and XMSS require careful state maintenance, prohibit one-time-key reuse, and impose specific module and distributed-signing constraints."
+        }
+      ],
+      "verification_methods": [
+        "Check migration, backup, crash, restore, failover, and concurrency guidance for state reuse risk.",
+        "Verify that the page distinguishes stateful and stateless post-quantum signature schemes.",
+        "Confirm that successful service restart is not presented as proof of safe signer recovery."
+      ],
+      "approved_outcome": "PQC operational planning includes durable monotonic signer state, anti-cloning controls, permitted HA designs, capacity tracking, and crash/restore/failover tests for LMS/XMSS.",
+      "invalidation_conditions": [
+        "The page excludes stateful signature schemes and links clearly to equivalent operational coverage.",
+        "NIST revises or withdraws the relevant SP 800-208 state-management requirements.",
+        "A selected application profile prohibits LMS and XMSS entirely."
+      ],
+      "related_decisions": ["CD-0009", "CD-0010"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0019",
+      "title": "Describe tokens as protocol-defined credentials or assertions, not always delegated authority",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/keys-vs-secrets-certificates-tokens.md",
+          "topics/oauth-oidc.md",
+          "topics/security-token-service.md"
+        ],
+        "concepts": [
+          "security token",
+          "access token",
+          "delegation",
+          "client credentials",
+          "federation assertion"
+        ]
+      },
+      "originating_feedback": "The Chapter 3 review found that the keys-versus-tokens boundary described all tokens as delegated authority even though protocols also issue credentials for a client acting on its own behalf and authentication or federation assertions.",
+      "decision": "Use the broader boundary that a token conveys issued authorization, credentials, or assertions according to its protocol. Use delegation only when the protocol flow and actor relationship actually establish delegation.",
+      "rationale": "Token is a container and protocol role, not a universal delegation relationship. Over-narrow wording misclassifies client-credentials and federation uses and can lead to selecting or validating the wrong system boundary.",
+      "authoritative_sources": [
+        {
+          "title": "RFC 6749",
+          "url": "https://www.rfc-editor.org/rfc/rfc6749",
+          "supports": "OAuth includes both delegated authorization flows and a client-credentials grant in which the client acts on its own behalf."
+        },
+        {
+          "title": "NIST SP 800-63C-4",
+          "url": "https://pages.nist.gov/800-63-4/sp800-63c.html",
+          "supports": "Federation protocols convey assertions used by relying parties for identity and authentication decisions."
+        }
+      ],
+      "verification_methods": [
+        "Search ledes, tables, selection rules, summaries, and linked token pages for universal delegation wording.",
+        "Verify that validation remains scoped to the resource-server or relying-party boundary required by the protocol."
+      ],
+      "approved_outcome": "The object-selection page distinguishes issued credentials and assertions from specifically delegated authority while retaining protocol-specific validation requirements.",
+      "invalidation_conditions": [
+        "The page narrows its token definition explicitly to one delegation-only protocol construct.",
+        "The linked token pages adopt a different formally scoped taxonomy that requires corresponding wording here."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }

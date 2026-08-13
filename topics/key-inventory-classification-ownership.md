@@ -2,7 +2,7 @@
 title: Key Inventory, Classification & Ownership
 description: A practical inventory model for identifying cryptographic keys, their purpose, owners, dependencies, state, and protection requirements.
 permalink: /topics/key-inventory-classification-ownership/
-last_verified: 2026-08-10
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Key Management / Governance</span>
@@ -73,7 +73,7 @@ A **cryptographic bill of materials (CBOM)** can be an export or exchange view o
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>A key inventory binds each key and version to purpose, owner, custody, state, and downstream dependencies. A key is not safe to rotate, revoke, migrate, or destroy until both the managed object and everything that relies on it can be identified.</p>
+  <p>A key inventory binds each key and version to purpose, owner, custody, state, and downstream dependencies. Rotation can begin once independent replacement material and retained historical read paths are ready; do not complete migration, disable or revoke the old version, or destroy it until required dependencies have been identified and dispositioned.</p>
 </div>
 
 ## Primary references
@@ -81,4 +81,3 @@ A **cryptographic bill of materials (CBOM)** can be an export or exchange view o
 - **[NIST SP 800-130: A Framework for Designing Cryptographic Key Management Systems](https://csrc.nist.gov/pubs/sp/800/130/final)** — verified that a CKMS manages keys with bound metadata, policies, roles, functions, and system interfaces.
 - **[NIST SP 800-57 Part 1 Rev. 5: Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)** — verified key types, usage constraints, inventory management, cryptoperiod, and compromise considerations.
 - **[NIST SP 1800-38B Preliminary Draft: Public-Key Application Discovery](https://www.nccoe.nist.gov/sites/default/files/2023-12/pqc-migration-nist-sp-1800-38b-preliminary-draft.pdf)** — verified the role of cryptographic discovery and inventory in risk management and migration; this source remains a preliminary draft.
-

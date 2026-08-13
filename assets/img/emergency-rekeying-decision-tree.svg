@@ -1,0 +1,99 @@
+<svg viewBox="0 0 390 1040" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Emergency Rekeying Decision Tree</title>
+  <desc id="description">A journal decision tree that begins with containment and evidence preservation, branches by compromised key purpose, and maps to rewrapping, re-encryption, trust replacement, or session remediation before controlled retirement.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="390" height="1040" fill="#ffffff"/>
+  <text x="22" y="36" font-size="21" font-weight="850" fill="#0f172a">Emergency Rekeying Decision Tree</text>
+  <text x="22" y="60" font-size="12.5" fill="#475569">Journal working model — adapt to the affected protocol</text>
+
+  <rect x="24" y="88" width="342" height="106" rx="11" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="195" y="118" text-anchor="middle" font-size="16" font-weight="850" fill="#991b1b">Suspected or Confirmed Compromise</text>
+  <text x="42" y="147" font-size="13" fill="#475569">1. Stop new protective use where safe.</text>
+  <text x="42" y="170" font-size="13" fill="#475569">2. Preserve evidence and bound occurrence time.</text>
+  <path d="M195 194 L195 226" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="24" y="237" width="342" height="82" rx="11" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="195" y="267" text-anchor="middle" font-size="16" font-weight="850" fill="#1e40af">Create Independent Replacement Material</text>
+  <text x="195" y="291" text-anchor="middle" font-size="12.5" fill="#475569">Use a trusted generation and provisioning path.</text>
+  <path d="M195 319 L195 351" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <polygon points="195,362 348,425 195,488 42,425" fill="#fff7ed" stroke="#b45309" stroke-width="2"/>
+  <text x="195" y="416" text-anchor="middle" font-size="16" font-weight="850" fill="#92400e">What Key Purpose</text>
+  <text x="195" y="440" text-anchor="middle" font-size="16" font-weight="850" fill="#92400e">Lost Trust?</text>
+
+  <path d="M92 445 L45 515" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M161 477 L142 515" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M229 477 L248 515" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M298 445 L345 515" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="8" y="526" width="88" height="102" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="52" y="551" text-anchor="middle" font-size="13" font-weight="800" fill="#15803d">KEK</text>
+  <text x="52" y="573" text-anchor="middle" font-size="10.8" fill="#475569">Are dependent</text>
+  <text x="52" y="589" text-anchor="middle" font-size="10.8" fill="#475569">DEKs still</text>
+  <text x="52" y="605" text-anchor="middle" font-size="10.8" fill="#475569">trusted?</text>
+
+  <rect x="105" y="526" width="88" height="102" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+  <text x="149" y="551" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">DEK</text>
+  <text x="149" y="573" text-anchor="middle" font-size="10.8" fill="#475569">Which payloads</text>
+  <text x="149" y="589" text-anchor="middle" font-size="10.8" fill="#475569">were exposed</text>
+  <text x="149" y="605" text-anchor="middle" font-size="10.8" fill="#475569">or protected?</text>
+
+  <rect x="202" y="526" width="88" height="102" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+  <text x="246" y="551" text-anchor="middle" font-size="13" font-weight="800" fill="#6d28d9">Signing / CA</text>
+  <text x="246" y="573" text-anchor="middle" font-size="10.8" fill="#475569">Which bindings</text>
+  <text x="246" y="589" text-anchor="middle" font-size="10.8" fill="#475569">and signatures</text>
+  <text x="246" y="605" text-anchor="middle" font-size="10.8" fill="#475569">are suspect?</text>
+
+  <rect x="299" y="526" width="83" height="102" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="340" y="551" text-anchor="middle" font-size="13" font-weight="800" fill="#1e40af">MAC / KEX</text>
+  <text x="340" y="573" text-anchor="middle" font-size="10.8" fill="#475569">Which peers,</text>
+  <text x="340" y="589" text-anchor="middle" font-size="10.8" fill="#475569">messages, or</text>
+  <text x="340" y="605" text-anchor="middle" font-size="10.8" fill="#475569">sessions?</text>
+
+  <path d="M52 628 L52 675" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M149 628 L149 675" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M246 628 L246 675" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M340 628 L340 675" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="8" y="686" width="88" height="124" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.8"/>
+  <text x="52" y="714" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Rewrap only</text>
+  <text x="52" y="735" text-anchor="middle" font-size="10.5" fill="#475569">if DEKs remain</text>
+  <text x="52" y="751" text-anchor="middle" font-size="10.5" fill="#475569">trusted; otherwise</text>
+  <text x="52" y="767" text-anchor="middle" font-size="10.5" fill="#475569">rotate DEKs and</text>
+  <text x="52" y="783" text-anchor="middle" font-size="10.5" fill="#475569">re-encrypt</text>
+
+  <rect x="105" y="686" width="88" height="124" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.8"/>
+  <text x="149" y="714" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Re-encrypt</text>
+  <text x="149" y="735" text-anchor="middle" font-size="10.5" fill="#475569">affected payloads</text>
+  <text x="149" y="751" text-anchor="middle" font-size="10.5" fill="#475569">with independent</text>
+  <text x="149" y="767" text-anchor="middle" font-size="10.5" fill="#475569">DEKs and verify</text>
+  <text x="149" y="783" text-anchor="middle" font-size="10.5" fill="#475569">envelope metadata</text>
+
+  <rect x="202" y="686" width="88" height="124" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.8"/>
+  <text x="246" y="714" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Replace trust</text>
+  <text x="246" y="735" text-anchor="middle" font-size="10.5" fill="#475569">Revoke or distrust</text>
+  <text x="246" y="751" text-anchor="middle" font-size="10.5" fill="#475569">bindings; assess</text>
+  <text x="246" y="767" text-anchor="middle" font-size="10.5" fill="#475569">signatures in the</text>
+  <text x="246" y="783" text-anchor="middle" font-size="10.5" fill="#475569">occurrence window</text>
+
+  <rect x="299" y="686" width="83" height="124" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.8"/>
+  <text x="340" y="714" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Re-establish</text>
+  <text x="340" y="735" text-anchor="middle" font-size="10.5" fill="#475569">peer keys, MAC</text>
+  <text x="340" y="751" text-anchor="middle" font-size="10.5" fill="#475569">keys, sessions,</text>
+  <text x="340" y="767" text-anchor="middle" font-size="10.5" fill="#475569">and affected trust</text>
+  <text x="340" y="783" text-anchor="middle" font-size="10.5" fill="#475569">relationships</text>
+
+  <path d="M52 810 L52 849 L195 849 L195 875" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M149 810 L149 849" stroke="#475569" stroke-width="2"/>
+  <path d="M246 810 L246 849" stroke="#475569" stroke-width="2"/>
+  <path d="M340 810 L340 849 L195 849" fill="none" stroke="#475569" stroke-width="2"/>
+
+  <rect x="24" y="886" width="342" height="112" rx="11" fill="#ecfdf5" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="195" y="916" text-anchor="middle" font-size="16" font-weight="850" fill="#0f766e">Validate, Observe, Then Retire</text>
+  <text x="42" y="944" font-size="12.5" fill="#475569">• Verify new write/use paths and historical access.</text>
+  <text x="42" y="967" font-size="12.5" fill="#475569">• Alert on old-key use and reconcile dependencies.</text>
+  <text x="42" y="990" font-size="12.5" fill="#475569">• Destroy only after evidence and approvals permit.</text>
+  <text x="195" y="1025" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">Rotation alone does not complete compromise remediation.</text>
+</svg>

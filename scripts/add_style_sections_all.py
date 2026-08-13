@@ -77,6 +77,7 @@ sections_data = {
 - **[NIST SP 800-57 Part 1 Rev. 5: Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)** — verified that key management extends beyond storage to lifecycle protection and operational controls.
 - **[NIST SP 800-130: A Framework for Designing Cryptographic Key Management Systems](https://csrc.nist.gov/pubs/sp/800/130/final)** — verified the KMS boundary of policies, procedures, components, devices, keys, and metadata.
 - **[NIST SP 800-133 Rev. 2: Recommendation for Cryptographic Key Generation](https://csrc.nist.gov/pubs/sp/800/133/r2/final)** — verified key-generation and random-bit-generator requirements in the NIST federal profile.
+- **[NIST SP 800-38D: Galois/Counter Mode](https://csrc.nist.gov/pubs/sp/800/38/d/final)** — verified that AES-GCM authenticates additional data and that changing authenticated context invalidates tag verification.
 - **[NIST SP 800-38F: Recommendation for Block Cipher Modes of Operation—Methods for Key Wrapping](https://csrc.nist.gov/pubs/sp/800/38/f/final)** — verified approved AES key-wrapping methods.
 - **[OASIS PKCS #11 v3.1](https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html)** — verified the exact meanings of sensitive and extractability attributes.
 - **[OASIS KMIP v2.1](https://docs.oasis-open.org/kmip/kmip-spec/v2.1/kmip-spec-v2.1.html)** — verified the broader managed-object lifecycle and metadata model used for interoperable key management.""",
