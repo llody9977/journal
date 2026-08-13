@@ -30,17 +30,10 @@ Threat hunting operates across 3 core hunting types based on the triggering inpu
 
 The **PEAK (Preparedness, Execution, Analysis, Knowledge Sharing)** Hunting Framework defines three operational hunting models:
 
-```
-                          ┌───────────────────────────────────────┐
-                          │         PEAK HUNTING FRAMEWORK        │
-                          └───────────────────┬───────────────────┘
-                                              │
-        ┌─────────────────────────────────────┼─────────────────────────────────────┐
-        ▼                                     ▼                                     ▼
-[1. Hypothesis-Driven]               [2. Baseline / EDR]                   [3. Model-Assisted (MASH)]
-  Formulates testable                  Queries telemetry for                 Leverages ML clustering
-  adversary hypotheses                 rare process outliers                 &amp; anomaly algorithms
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/peak-hunting-framework.svg' | relative_url }}" alt="PEAK Hunting Framework diagram.">
+  <p class="diagram-caption">PEAK Hunting Framework: Hypothesis-Driven, Baseline, and Model-Assisted</p>
+</div>
 
 ### 1. Hypothesis-Driven Threat Hunting
 - **Step 1: Formulate Hypothesis**: State a specific, falsifiable statement based on CTI or architectural risk (*e.g., "Adversaries are dumping LSASS memory using legitimate Windows utilities like `rundll32.exe comsvcs.dll`"*).

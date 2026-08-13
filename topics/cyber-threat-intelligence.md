@@ -18,11 +18,11 @@ last_verified: 2026-08-13
 
 ## The 6-Stage CTI Operational Lifecycle
 
-Per NIST SP 800-150 standards, effective threat intelligence operations follow a continuous 6-stage lifecycle driven by explicit organizational requirements:
+Mature threat intelligence operations follow a continuous 6-stage intelligence lifecycle driven by explicit organizational requirements:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/cyber-threat-intelligence.svg' | relative_url }}" alt="Cyber Threat Intelligence 6-stage lifecycle diagram.">
-  <p class="diagram-caption">NIST SP 800-150 CTI Lifecycle: Requirements &leftrightarrow; Collection &leftrightarrow; Processing &leftrightarrow; Analysis &leftrightarrow; Dissemination &leftrightarrow; Feedback</p>
+  <p class="diagram-caption">CTI Lifecycle: Requirements &leftrightarrow; Collection &leftrightarrow; Processing &leftrightarrow; Analysis &leftrightarrow; Dissemination &leftrightarrow; Feedback</p>
 </div>
 
 1. **Planning & Direction (Priority Intelligence Requirements - PIRs)**: Define explicit intelligence questions based on business risk, critical assets, geographic footprint, and threat landscape (*e.g., "Which ransomware groups are targeting financial services in Q3?"*).
@@ -47,20 +47,10 @@ Intelligence is categorized into 4 operational tiers based on consumer audience,
 
 David Bianco's **Pyramid of Pain** illustrates the relative difficulty and operational disruption inflicted on an adversary when defensive security controls successfully detect and block indicators at each layer:
 
-```
-                  /   TTPs   \               [ Tough ]  <-- Forces adversary to re-engineer core behavior
-                 /----------- \
-                /    Tools     \             [ Challenging ] <-- Forces tool payload rewrite
-               /----------------\
-              / Host & Net Artifacts \       [ Annoying ] <-- Forces C2 URI / registry key changes
-             /------------------------\
-            /      Domain Names        \     [ Simple ] <-- Requires re-registering DNS domains
-           /----------------------------\
-          /        IP Addresses          \   [ Easy ] <-- Fast BGP / Firewall IP block
-         /--------------------------------\
-        /           Hash Values            \ [ Trivial ] <-- Easily bypassed via 1-bit file mutation
-       /------------------------------------\
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/pyramid-of-pain.svg' | relative_url }}" alt="Pyramid of Pain diagram.">
+  <p class="diagram-caption">David Bianco's Pyramid of Pain: Hash Values to TTPs</p>
+</div>
 
 - **Hash Values (Trivial)**: MD5/SHA-256 file hashes. Trivial for attackers to bypass by mutating single bytes or recompiling binaries.
 - **IP Addresses (Easy)**: C2 server IP addresses. Simple for adversaries to rotate using cloud proxies or fast-flux infrastructure.
@@ -68,6 +58,12 @@ David Bianco's **Pyramid of Pain** illustrates the relative difficulty and opera
 - **Host & Network Artifacts (Annoying)**: Registry keys, user-agent strings, HTTP URI patterns, or file paths. Disrupting artifacts forces attackers to modify weaponization scripts.
 - **Tools (Challenging)**: Adversary software, Cobalt Strike profiles, or custom malware frameworks. Blocking tools forces attackers to invest heavy resources in developing new exploit kits.
 - **TTPs (Toughest)**: Core adversary tactics, techniques, and procedures (*e.g., Spearphishing Attachment, LSASS Credential Dumping*). Disrupting TTPs forces the adversary to completely learn new attack methodologies.
+
+### Indicator Decay & False Positive Management
+The operational value of an Indicator of Compromise (IOC) degrades over time. **Indicator Decay** models the rate at which intelligence loses its reliability as adversaries rotate infrastructure, recompile malware, and acquire new domains.
+- **High-Decay IOCs (IPs, Hashes)**: Must be aggressively aged out (e.g., 7-14 days) to prevent widespread false positives (Alert Fatigue) on reallocated IP space or accidental benign matches.
+- **Low-Decay Artifacts (TTPs, Custom Tools)**: Can persist in detection logic for years, as the adversary cost of re-engineering them remains high.
+Effective CTI programs utilize Threat Intelligence Platforms (TIPs) with automated feed decay configurations to gracefully expire stale IOCs and manage the false-positive lifecycle dynamically.
 
 ## Data Standards: STIX 2.1 & TAXII 2.1
 

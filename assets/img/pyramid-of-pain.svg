@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="100%" height="100%">
+  <style>
+    .level { stroke: #333; stroke-width: 2; }
+    .label { font-family: monospace; font-size: 14px; fill: #333; text-anchor: middle; alignment-baseline: middle; font-weight: bold; }
+    .desc { font-family: monospace; font-size: 12px; fill: #555; alignment-baseline: middle; }
+    .toughness { font-family: monospace; font-size: 13px; fill: #d32f2f; font-weight: bold; }
+  </style>
+  
+  <polygon points="400,20 370,60 430,60" fill="#ffcdd2" class="level" />
+  <text x="400" y="45" class="label">TTPs</text>
+  <text x="450" y="45" class="toughness">[ Tough ]</text>
+  <text x="530" y="45" class="desc">&lt;-- Forces adversary to re-engineer core behavior</text>
+  
+  <polygon points="370,60 340,110 460,110 430,60" fill="#f8bbd0" class="level" />
+  <text x="400" y="85" class="label">Tools</text>
+  <text x="480" y="85" class="toughness">[ Challenging ]</text>
+  <text x="590" y="85" class="desc">&lt;-- Forces tool payload rewrite</text>
+  
+  <polygon points="340,110 300,160 500,160 460,110" fill="#e1bee7" class="level" />
+  <text x="400" y="135" class="label">Host &amp; Net Artifacts</text>
+  <text x="520" y="135" class="toughness">[ Annoying ]</text>
+  <text x="610" y="135" class="desc">&lt;-- Forces C2 URI / registry key changes</text>
+  
+  <polygon points="300,160 250,220 550,220 500,160" fill="#d1c4e9" class="level" />
+  <text x="400" y="190" class="label">Domain Names</text>
+  <text x="570" y="190" class="toughness">[ Simple ]</text>
+  <text x="650" y="190" class="desc">&lt;-- Requires re-registering DNS domains</text>
+  
+  <polygon points="250,220 190,290 610,290 550,220" fill="#c5cae9" class="level" />
+  <text x="400" y="255" class="label">IP Addresses</text>
+  <text x="630" y="255" class="toughness">[ Easy ]</text>
+  <text x="700" y="255" class="desc">&lt;-- Fast BGP / Firewall IP block</text>
+  
+  <polygon points="190,290 120,370 680,370 610,290" fill="#bbdefb" class="level" />
+  <text x="400" y="330" class="label">Hash Values</text>
+  <text x="700" y="330" class="toughness">[ Trivial ]</text>
+  <text x="780" y="330" class="desc">&lt;-- Easily bypassed via 1-bit file mutation</text>
+</svg>

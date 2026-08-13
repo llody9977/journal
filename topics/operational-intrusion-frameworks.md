@@ -54,17 +54,10 @@ Developed by Lockheed Martin, the **Cyber Kill Chain** models an external intrus
 
 Developed by Caltagirone, Pendergast, and Betz (2013), the **Diamond Model** represents malicious activity as an atomic **event** defined by four core vertices connected by two structural axes:
 
-```
-                  [ ADVERSARY ]
-                       │
-                       │  Socio-Political Axis
-                       │
-  [ CAPABILITY ] ──────┼────── [ INFRASTRUCTURE ]
-                       │
-                       │  Technology Axis
-                       │
-                   [ VICTIM ]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/diamond-model.svg' | relative_url }}" alt="Diamond Model of Intrusion Analysis diagram.">
+  <p class="diagram-caption">Diamond Model: Adversary, Capability, Infrastructure, Victim</p>
+</div>
 
 ### Core Vertices & Structural Axes
 - **Adversary**: The threat actor or group executing the intrusion (*e.g., APT29, FIN7*).

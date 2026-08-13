@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250" width="100%" height="100%">
+  <style>
+    .box { fill: none; stroke: #333; stroke-width: 2; }
+    .filled { fill: #f5f5f5; stroke: #333; stroke-width: 2; }
+    .text-title { font-family: monospace; font-size: 16px; font-weight: bold; text-anchor: middle; }
+    .text { font-family: monospace; font-size: 14px; text-anchor: middle; alignment-baseline: middle; }
+    .text-sm { font-family: monospace; font-size: 12px; fill: #666; text-anchor: middle; }
+    .formula { font-family: monospace; font-size: 14px; fill: #d32f2f; font-weight: bold; }
+  </style>
+  
+  <text x="300" y="30" class="text-title">Adversary Activity Present</text>
+  <text x="220" y="55" class="text">Present</text>
+  <text x="380" y="55" class="text">Absent</text>
+  
+  <text x="80" y="110" class="text-title">Triggered</text>
+  <text x="80" y="130" class="text-sm">Detection</text>
+  <text x="80" y="150" class="text-sm">Status</text>
+  <text x="80" y="200" class="text-title">Quiet</text>
+  
+  <rect x="140" y="70" width="160" height="70" class="filled" />
+  <rect x="300" y="70" width="160" height="70" class="box" />
+  <rect x="140" y="140" width="160" height="70" class="box" />
+  <rect x="300" y="140" width="160" height="70" class="filled" />
+  
+  <text x="220" y="100" class="text">True Positive</text>
+  <text x="220" y="120" class="text-sm">(Successful)</text>
+  
+  <text x="380" y="100" class="text">False Positive</text>
+  <text x="380" y="120" class="text-sm">(Alert Fatigue)</text>
+  
+  <text x="220" y="170" class="text">False Negative</text>
+  <text x="220" y="190" class="text-sm">(Breach Leak)</text>
+  
+  <text x="380" y="170" class="text">True Negative</text>
+  <text x="380" y="190" class="text-sm">(Normal Ops)</text>
+  
+  <text x="600" y="105" class="formula">&lt;-- Precision = TP / (TP + FP)</text>
+  <text x="220" y="240" class="formula">Recall = TP / (TP + FN)</text>
+</svg>

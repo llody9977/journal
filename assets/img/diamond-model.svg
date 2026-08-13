@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <style>
+    .text-box { fill: #f0f0f0; stroke: #333; stroke-width: 2; }
+    .label { font-family: monospace; font-size: 14px; fill: #333; text-anchor: middle; alignment-baseline: middle; }
+    .axis-label { font-family: monospace; font-size: 12px; fill: #666; font-style: italic; text-anchor: middle; }
+    .line { stroke: #333; stroke-width: 2; }
+  </style>
+  
+  <line x1="300" y1="50" x2="300" y2="250" class="line" />
+  <line x1="150" y1="150" x2="450" y2="150" class="line" />
+  
+  <text x="350" y="100" class="axis-label">Socio-Political Axis</text>
+  <text x="350" y="200" class="axis-label">Technology Axis</text>
+  
+  <rect x="250" y="25" width="100" height="30" rx="5" class="text-box" />
+  <text x="300" y="40" class="label">ADVERSARY</text>
+  
+  <rect x="250" y="240" width="100" height="30" rx="5" class="text-box" />
+  <text x="300" y="255" class="label">VICTIM</text>
+  
+  <rect x="40" y="135" width="120" height="30" rx="5" class="text-box" />
+  <text x="100" y="150" class="label">CAPABILITY</text>
+  
+  <rect x="440" y="135" width="140" height="30" rx="5" class="text-box" />
+  <text x="510" y="150" class="label">INFRASTRUCTURE</text>
+</svg>

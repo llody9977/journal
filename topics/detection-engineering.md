@@ -164,19 +164,10 @@ Detection engineers evaluate rule health using 4 core quantitative metrics:
 
 ### Precision vs. Recall Trade-Off Matrix
 
-```
-                      Adversary Activity Present
-                     Present            Absent
-                 ┌───────────────┬──────────────────┐
-        Triggered│ True Positive │  False Positive  │  <-- Precision = TP / (TP + FP)
-Detection        │ (Successful)  │ (Alert Fatigue)  │
-  Status         ├───────────────┼──────────────────┤
-            Quiet│ False Negative│  True Negative   │
-                 │ (Breach Leak) │ (Normal Ops)     │
-                 └───────────────┴──────────────────┘
-                         ▲
-                   Recall = TP / (TP + FN)
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/precision-vs-recall.svg' | relative_url }}" alt="Precision vs Recall matrix diagram.">
+  <p class="diagram-caption">Detection Performance Trade-Off: Precision vs. Recall Matrix</p>
+</div>
 
 ## Essential Detection Engineering Diagnostic Checklist
 

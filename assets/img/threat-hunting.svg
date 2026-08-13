@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 100" width="100%" height="100%">
+<rect x="20" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
+<text x="100.0" y="48" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Raw</text>
+<text x="100.0" y="62" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Event Ingestion</text>
+<rect x="220" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
+<text x="300.0" y="48" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Peer</text>
+<text x="300.0" y="62" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Group Comparison</text>
+<rect x="420" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
+<text x="500.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Z-Score Calculation</text>
+<rect x="620" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
+<text x="700.0" y="48" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Risk</text>
+<text x="700.0" y="62" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Score Update</text>
+<line x1="180" y1="50.0" x2="212" y2="50.0" stroke="#333" stroke-width="2" />
+<polygon points="212,46.0 220,50.0 212,54.0" fill="#333" />
+<line x1="380" y1="50.0" x2="412" y2="50.0" stroke="#333" stroke-width="2" />
+<polygon points="412,46.0 420,50.0 412,54.0" fill="#333" />
+<line x1="580" y1="50.0" x2="612" y2="50.0" stroke="#333" stroke-width="2" />
+<polygon points="612,46.0 620,50.0 612,54.0" fill="#333" />
+</svg>
