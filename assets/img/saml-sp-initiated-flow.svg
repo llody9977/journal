@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 555" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">SAML service-provider-initiated sign-in</title>
-  <desc id="description">The browser carries messages between the service provider and identity provider.</desc>
+  <desc id="description">The browser carries an AuthnRequest to the identity provider and a protected SAML response to the service provider, which validates trust, signature location, correlation, destination, recipient, audience, time, and replay state.</desc>
   <rect width="1200" height="555" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -21,9 +21,9 @@
     <path d="M600 290 L135 290" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
     <rect x="305.5" y="258" width="124" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="275" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">2. REDIRECT</text><text x="367.5" y="314" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">SAMLRequest</text>
     <path d="M135 360 L1065 360" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <rect x="538" y="328" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="345" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">3. AUTHENTICATE</text><text x="600" y="384" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">User proves identity</text>
+    <rect x="538" y="328" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="345" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">3. AUTHENTICATE</text><text x="600" y="384" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">User authenticates to identity provider</text>
     <path d="M1065 430 L135 430" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <rect x="538" y="398" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="415" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">4. FORM RESPONSE</text><text x="600" y="454" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">Signed SAMLResponse</text>
+    <rect x="538" y="398" width="124" height="24" rx="12" fill="#ffffff"/><text x="600" y="415" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">4. FORM RESPONSE</text><text x="600" y="454" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">Protected response / assertion under profile</text>
     <path d="M135 500 L600 500" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <rect x="305.5" y="468" width="124" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="485" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">5. POST ASSERTION</text><text x="367.5" y="524" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">Service validates signature and conditions</text>
+    <rect x="305.5" y="468" width="124" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="485" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">5. POST RESPONSE</text><text x="367.5" y="524" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">SP validates trust, structure, context, time, and replay</text>
 </svg>

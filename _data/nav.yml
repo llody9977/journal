@@ -105,12 +105,18 @@
           url: /topics/saml/
         - title: "4.7 NTLM, Kerberos & HTTP Authentication Schemes"
           url: /topics/http-auth-schemes/
-        - title: 4.8 SSH Architecture & Authentication
+        - title: 4.8 Model Context Protocol Authorization
+          url: /topics/mcp-authorization/
+        - title: 4.9 SSH Architecture & Authentication
           url: /topics/ssh/
-        - title: 4.9 Security Token Service (STS)
+        - title: 4.10 Security Token Service (STS)
           url: /topics/security-token-service/
-        - title: 4.10 Machine-to-Machine API Authentication
+        - title: 4.11 Machine-to-Machine API Authentication
           url: /topics/api-security/
+        - title: 4.12 Workload Identity Federation
+          url: /topics/workload-identity-federation/
+        - title: 4.13 Identity Provisioning, Access Lifecycle & PAM
+          url: /topics/identity-provisioning-access-lifecycle-pam/
     - title: 5. Network Security
       children:
         - title: 5.1 DNS Security

@@ -1,83 +1,89 @@
 ---
 title: WebAuthn & Passkeys Deep-Dive
-description: FIDO2/WebAuthn ceremony mechanics, public-key credentials, Attestation vs Assertion, and syncable passkeys vs hardware security keys.
+description: WebAuthn registration and authentication mechanics, attestation policy, passkey deployment models, validation, recovery, conditional UI, and cross-device authentication.
 permalink: /topics/webauthn-passkeys/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Authentication & Authorization / Concepts</span>
 
 # WebAuthn & Passkeys Deep-Dive
 
-<p class="lede">WebAuthn (W3C Web Authentication) and FIDO2 replace passwords with asymmetric public-key cryptography bound to a specific origin. Passkeys provide verifier-name-bound (origin-bound) phishing resistance by design because the browser and authenticator enforce origin binding at the cryptographic protocol layer—a lookalike phishing site cannot trick an authenticator into signing a challenge for a domain it does not control. This blocks credential replay against a lookalike domain specifically; it does not cover weaker account-recovery fallbacks, post-authentication session compromise, or fraudulent credential registration (see below).</p>
+<p class="lede">WebAuthn lets a relying party authenticate a user with a per-site public-key credential. The browser and authenticator bind the ceremony to the relying-party identifier and origin, providing verifier-name-bound phishing resistance. That property blocks credential relay to a lookalike site; it does not protect an insecure recovery flow, a compromised authenticated session, or an attacker-authorized credential registration.</p>
 
-## What is WebAuthn: origin-bound public key authentication
+## Components and protocol boundary
 
-WebAuthn replaces passwords with asymmetric key pairs generated per web domain (Relying Party). The server stores the public key; the device's authenticator (Secure Enclave, TPM, YubiKey) protects the private key behind local biometric/PIN authorization.
-
-WebAuthn involves three distinct entities:
-
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/webauthn-components.svg' | relative_url }}" alt="WebAuthn components: the user and browser, a private-key-holding authenticator, and the relying party server that verifies signed challenges.">
-  <p class="diagram-caption">The private key remains in the authenticator while the relying party stores the public key</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/webauthn-components.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the WebAuthn components diagram at full size">
+    <img src="{{ '/assets/img/webauthn-components.svg' | relative_url }}" alt="WebAuthn flow in which the relying party sends options through the browser, the browser communicates with a platform or roaming authenticator, and the browser returns the credential response to the relying party.">
+  </a>
+  <p class="diagram-caption">The browser mediates both directions; the authenticator protects the private key while the relying party stores the credential public key.</p>
 </div>
 
-1. **Relying Party (RP)**: The server application requesting authentication.
-2. **Client / Browser**: The user agent enforcing origin verification (`https://login.example.com`).
-3. **Authenticator**: The hardware or software module generating and signing challenges via **CTAP2** (Client-to-Authenticator Protocol).
+1. **Relying Party (RP)**: Generates ceremony options and validates the returned credential response.
+2. **Client**: The browser or user agent that exposes the WebAuthn API and supplies the effective origin.
+3. **Authenticator**: Generates or uses the credential private key and reports user-presence (UP) and, when performed, user-verification (UV) state. A platform authenticator is integrated into the client device; a roaming authenticator can communicate through CTAP, USB, NFC, or another supported transport. CTAP is therefore a concrete external-authenticator path, not a requirement for every authenticator.
 
-## The WebAuthn Ceremony: Registration vs Authentication
+## Registration, attestation, and authentication are distinct
 
-### 1. Registration Ceremony (Attestation)
-During account setup, the server sends a challenge and RP ID. The authenticator generates a new key pair and returns an **Attestation Object**:
+### Registration creates a credential
 
-- **Credential ID**: Unique identifier for the generated key pair.
-- **Public Key**: Exported to the server to store in the user database.
-- **Attestation Statement**: Cryptographic proof verifying the hardware manufacturer/type of the authenticator (optional).
+The RP sends a fresh challenge, RP information, user information, acceptable algorithms, and selection preferences. The authenticator creates a credential scoped to the RP ID. The browser returns an attestation object and `clientDataJSON`; the RP validates the response before associating the credential ID and public key with the intended account.
 
-### 2. Authentication Ceremony (Assertion)
-When the user logs in later, the server issues a random cryptographic challenge:
+**Attestation is optional policy evidence inside registration, not another name for registration.** Depending on the attestation conveyance and authenticator behavior, the statement may be none, self, basic, enterprise, or an anonymized form. Its evidentiary value depends on chain validation and trusted metadata; it does not universally prove a particular manufacturer or device model.
 
-- The browser passes the challenge and origin (`https://example.com`) to the authenticator.
-- The user completes local biometric authorization (Touch ID / Face ID / PIN).
-- The authenticator computes a digital signature over `clientDataJSON` (containing challenge + origin) and `authenticatorData`.
-- The server verifies the signature using the stored public key.
+### Authentication produces an assertion
 
-## Syncable Passkeys vs Hardware Security Keys
+1. The RP issues a fresh, unpredictable challenge and its credential-selection options.
+2. The browser supplies the effective origin and invokes an eligible authenticator.
+3. The authenticator checks user presence and performs user verification only when the options and authenticator operation require it. UV may use a PIN, biometric, device unlock, or another authenticator-supported method.
+4. The authenticator signs `authenticatorData || SHA-256(clientDataJSON)` with the credential private key.
+5. The browser returns the assertion; the RP validates the complete response against stored credential state and the original request.
 
-Passkeys come in two distinct operational models:
+## Passkey deployment models and assurance
 
-| Dimension | Syncable Passkeys (Multi-Device) | Hardware Security Keys (Single-Device) |
-|---|---|---|
-| **Private Key Storage** | Synced across user devices via end-to-end encrypted cloud fabric (Apple Keychain, Google Password Manager, 1Password) | Non-exportable private key bound permanently to a physical chip (YubiKey, Titan Key) |
-| **User Convenience** | High (available automatically across all user devices) | Requires physically plugging in or tapping NFC key |
-| **Phishing Resistance** | **Phishing Resistant** | **Phishing Resistant** |
-| **NIST AAL Level** | Satisfies **NIST AAL2** | Satisfies **NIST AAL3** (due to non-exportable private key requirement) |
+| Model | Key availability | Operational advantage | Assurance boundary |
+|---|---|---|---|
+| **Syncable passkey** | Credential material can be made available across a provider's trusted device ecosystem. | Recovery and cross-device usability are easier. | Can satisfy AAL2 when the complete deployment meets AAL2; synchronization conflicts with AAL3's non-exportable-key requirement. Provider-account recovery is a dependency. |
+| **Device-bound credential** | Credential is not synced by the credential provider. | Stronger device custody and administrative separation. | Device binding alone does not establish AAL3; the deployment must also meet activation, phishing-resistance, verifier-compromise-resistance, and approved-cryptography requirements. |
+| **Roaming security key** | Credential remains on a separate authenticator and can be used with supported clients. | Portable, separable custody and useful administrator workflows. | Can participate in AAL2 or AAL3 depending on the authenticator and verifier profile; the product label is not sufficient evidence. |
 
-## Why WebAuthn resists phishing through origin binding
+## Relying-party validation checklist
 
-In traditional password or TOTP authentication, a user can be tricked into entering credentials on `examp1e.com`.
+For registration and authentication, use a maintained WebAuthn implementation and verify at least:
 
-In WebAuthn:
-1. The browser automatically inspects the actual TLS origin (`https://examp1e.com`).
-2. The browser packages `https://examp1e.com` into `clientDataJSON`.
-3. The signature is computed over that exact origin.
-4. When the attacker forwards the signature to `example.com`, the server checks `clientDataJSON.origin`, detects the mismatch (`examp1e.com` != `example.com`), and rejects the authentication.
+- the returned `type`, challenge, and origin exactly match the stored ceremony state and allowed origins;
+- the RP ID hash in authenticator data matches the expected RP ID;
+- UP and UV flags satisfy the RP's requested policy;
+- the credential algorithm is allowed and the assertion signature verifies with the registered public key;
+- registration was authorized by an already trusted account session or a controlled enrollment/recovery process;
+- attestation is evaluated only when policy requires it, against explicitly trusted roots and metadata;
+- the signature counter is treated as a signal, not universal cloning proof—some authenticators do not maintain a useful global counter;
+- backup-eligibility and backup-state flags are interpreted according to the credential-management policy; and
+- ceremony state is single-use, expires promptly, and is bound to the intended account and transaction.
 
-Per [NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/), this property is called **verifier impersonation resistance** (verifier-name binding): the authenticator cryptographically binds each assertion to the exact relying-party origin it was registered for, so a credential registered for the real site cannot be replayed against a lookalike domain. It is a strong, specific defense against real-time credential-relay phishing, but it does not make the account itself immune to takeover. It does not protect against:
+## Conditional UI and cross-device authentication
 
-- **Weaker account-recovery fallbacks**: an account-recovery flow that falls back to email or SMS can be phished or hijacked independently of the passkey.
-- **Post-authentication compromise**: malware or a hijacked session on the device after a legitimate WebAuthn login is unaffected by origin binding.
-- **Fraudulent credential registration**: an attacker who tricks a user (or a support/helpdesk agent) into registering the attacker's own passkey on the account bypasses origin binding entirely.
-- **Upstream domain or certificate failures**: a compromised CA or DNS hijack that points the real origin at attacker-controlled infrastructure operates above the layer WebAuthn protects.
+**Conditional mediation** allows discoverable credentials to appear in browser sign-in UI without forcing an immediate modal prompt. It changes discovery and user experience, not RP validation requirements.
+
+**Hybrid or cross-device authentication** lets one device use a nearby authenticator, often after a QR-code/bootstrap exchange and proximity-assisted channel establishment. The RP still receives a normal WebAuthn assertion. Treat the transport and paired device as additional dependencies; do not infer that the credential has become syncable or device-bound solely from the cross-device ceremony.
+
+## Lifecycle, recovery, and residual risk
+
+- Provide a credential inventory with recognizable names, registration time, backup state where available, and last-use information.
+- Notify the account through an independent channel when a credential is added or removed.
+- Require strong reauthentication and risk checks before adding a credential; prevent helpdesk social engineering from becoming the weakest path.
+- Support multiple authenticators, lost-device recovery, and prompt server-side removal of a compromised credential. WebAuthn has no universal global revocation service; the RP controls credential acceptance.
+- Test domain/RP-ID migrations before deployment because credentials are intentionally scoped. Preserve old origins only when the WebAuthn rules and migration plan permit them.
+- Protect authenticated sessions and sensitive transactions separately; origin binding does not stop malware using an already authenticated browser session.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>WebAuthn binds credentials to the exact origin they were registered for, defeating real-time credential-relay phishing — but it does not protect weaker account-recovery fallbacks, a post-authentication session compromise, or fraudulent credential registration. Synced passkeys trade non-extractable key custody for seamless cross-device UX; hardware keys keep the key non-exportable.</p>
+  <p>WebAuthn's core security property is verifier-name binding, but the relying party must still validate the complete ceremony and secure registration, session, recovery, and credential-removal paths. Syncable, device-bound, and roaming credentials have different custody properties; none reaches AAL3 by product name alone.</p>
 </div>
 
 ## Primary references
 
-- **W3C WebAuthn Level 3**: *Web Authentication: An API for accessing Public Key Credentials* — [W3C WebAuthn Spec](https://www.w3.org/TR/webauthn-3/)
-- **FIDO Alliance Passkeys**: *Passkeys Standard & Specifications* — [FIDO Alliance](https://fidoalliance.org/passkeys/)
-- **NIST SP 800-63B**: *Digital Identity Guidelines — Authentication and Authenticator Management*, verifier impersonation resistance definition — [NIST 800-63B](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/)
+- **[W3C Web Authentication Level 3](https://www.w3.org/TR/webauthn-3/)** — verified ceremony data, signed bytes, UP/UV flags, attestation, backup state, conditional mediation, and hybrid transport semantics.
+- **[FIDO Alliance passkeys](https://fidoalliance.org/passkeys/)** — verified passkey terminology and multi-device/device-bound operating models.
+- **[NIST SP 800-63B-4 authenticator requirements](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/)** — verified verifier-name binding and the assurance boundary for syncable and non-exportable authenticators.

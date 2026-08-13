@@ -1,61 +1,27 @@
-<svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
-  <rect x="0" y="0" width="900" height="520" fill="#ffffff" />
-
-  <defs>
-    <marker id="aho" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#193e9f" />
-    </marker>
-  </defs>
-
-  <!-- lifelines -->
-  <text x="90" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">User</text>
-  <text x="330" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Client App</text>
-  <text x="600" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Authorization Server</text>
-  <text x="830" y="25" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">Resource Server</text>
-
-  <line x1="90" y1="35" x2="90" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
-  <line x1="330" y1="35" x2="330" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
-  <line x1="600" y1="35" x2="600" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
-  <line x1="830" y1="35" x2="830" y2="495" stroke="#d7dee7" stroke-width="2" stroke-dasharray="3 4" />
-
-  <!-- 1 -->
-  <path d="M90 60 L325 60" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <text x="210" y="52" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">① "Log in with Google"</text>
-
-  <!-- 1b: client generates PKCE verifier -->
-  <text x="330" y="85" font-size="10.5" fill="#a14c00" text-anchor="start">client generates code_verifier, derives code_challenge</text>
-
-  <!-- 2: redirect to auth server -->
-  <path d="M330 100 L595 100" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <text x="460" y="112" font-size="10.5" fill="#475569" text-anchor="middle">redirect: ?client_id, redirect_uri, code_challenge, state</text>
-
-  <!-- 3: auth server prompts user -->
-  <path d="M600 125 L95 125" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <text x="345" y="140" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">② user logs in + approves scopes, directly with the Authorization Server</text>
-
-  <!-- 4: auth code back to client via user redirect -->
-  <path d="M600 175 L335 175" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <text x="468" y="167" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">③ redirect back to client with one-time authorization code</text>
-
-  <!-- 5: client exchanges code -->
-  <rect x="485" y="195" width="230" height="60" rx="8" fill="#fdf1e0" stroke="#a14c00" stroke-width="1.5" />
-  <text x="600" y="215" font-size="11" font-weight="700" fill="#a14c00" text-anchor="middle">④ token endpoint exchange</text>
-  <text x="600" y="230" font-size="10.5" fill="#a14c00" text-anchor="middle">code + code_verifier (+ client auth if confidential)</text>
-  <text x="600" y="244" font-size="10.5" fill="#a14c00" text-anchor="middle">→ access token (+ refresh token)</text>
-
-  <path d="M330 200 L480 215" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <path d="M480 235 L330 250" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-
-  <text x="460" y="270" font-size="10.5" fill="#475569" text-anchor="middle">code_verifier must match the earlier code_challenge — proves this is the same client that started the flow</text>
-
-  <!-- 6: client calls resource server -->
-  <path d="M330 310 L825 310" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <text x="580" y="302" font-size="11.5" font-weight="700" fill="#111827" text-anchor="middle">⑤ API call with "Authorization: Bearer &lt;access token&gt;"</text>
-
-  <path d="M825 335 L335 335" stroke="#193e9f" stroke-width="2.2" fill="none" marker-end="url(#aho)" />
-  <text x="580" y="352" font-size="11.5" fill="#0f766e" text-anchor="middle">⑥ resource server validates the token, returns the data</text>
-
-  <text x="450" y="410" font-size="13" font-weight="700" fill="#111827" text-anchor="middle">The client never sees the user's password — only a scoped, revocable token</text>
-  <text x="450" y="432" font-size="12" fill="#475569" text-anchor="middle">PKCE (steps with code_verifier/code_challenge) is mandatory in OAuth 2.1,</text>
-  <text x="450" y="452" font-size="12" fill="#475569" text-anchor="middle">even for apps that also hold a client_secret</text>
+<svg viewBox="0 0 1200 690" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">OAuth Authorization Code with PKCE</title>
+  <desc id="description">The client creates a verifier and challenge, sends the user through authorization, receives a code, proves possession of the verifier at the token endpoint, and calls the resource server with the access token.</desc>
+  <rect width="1200" height="690" fill="#fff"/>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker></defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">OAuth Authorization Code with PKCE</text>
+  <text x="50" y="85" font-size="14.5" fill="#475569">Pure OAuth authorization flow; add openid, nonce, ID Token issuance, and OIDC validation for login.</text>
+  <g fill="#0f172a" font-size="17" font-weight="800" text-anchor="middle">
+    <rect x="25" y="120" width="230" height="58" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/><text x="140" y="155">User agent</text>
+    <rect x="330" y="120" width="230" height="58" rx="16" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/><text x="445" y="155">Client</text>
+    <rect x="635" y="120" width="230" height="58" rx="16" fill="#fffbeb" stroke="#b45309" stroke-width="3"/><text x="750" y="155">Authorization server</text>
+    <rect x="940" y="120" width="230" height="58" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/><text x="1055" y="155">Resource server</text>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 8"><path d="M140 178V655"/><path d="M445 178V655"/><path d="M750 178V655"/><path d="M1055 178V655"/></g>
+  <g stroke="#94a3b8" stroke-width="4" fill="none" marker-end="url(#arrow)">
+    <path d="M445 220L750 220"/><path d="M750 300L140 300"/><path d="M140 380L445 380"/><path d="M445 460L750 460"/><path d="M750 540L445 540"/><path d="M445 620L1055 620"/>
+  </g>
+  <g fill="#475569" font-size="13" text-anchor="middle">
+    <text x="598" y="207" font-weight="800">1. Authorization request</text><text x="598" y="241">client_id, exact redirect_uri, state, code_challenge (S256), resource/scope</text>
+    <text x="445" y="287" font-weight="800">2. Authenticate and authorize in user agent</text><text x="445" y="321">authorization server evaluates user/client/policy and consent where applicable</text>
+    <text x="293" y="367" font-weight="800">3. Redirect with code + state</text><text x="293" y="401">client validates transaction binding and issuer where used</text>
+    <text x="598" y="447" font-weight="800">4. Token request</text><text x="598" y="481">code + code_verifier + redirect_uri (+ client authentication if required)</text>
+    <text x="598" y="527" font-weight="800">5. Token response</text><text x="598" y="561">client validates response; PKCE proves possession of matching verifier</text>
+    <text x="750" y="607" font-weight="800">6. API request with access token</text><text x="750" y="641">resource server validates token profile and authorization</text>
+  </g>
+  <text x="600" y="680" text-anchor="middle" font-size="12.5" fill="#475569">OAuth 2.1 remains an Internet-Draft; RFC 9700 requires PKCE for public authorization-code clients and recommends it for confidential clients.</text>
 </svg>

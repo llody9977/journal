@@ -1,87 +1,108 @@
 ---
 title: SSH Architecture & Authentication
-description: Technical breakdown of SSH protocols (RFC 4252/4253), Trust-On-First-Use (TOFU), Ed25519 key pairs, OpenSSH Certificates, and SSH vs TLS comparison.
+description: SSH transport and user authentication, host-key trust, OpenSSH certificates, algorithm selection, key restrictions, revocation, agent forwarding, and modern key exchange.
 permalink: /topics/ssh/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocol</span>
 
 # SSH Architecture & Authentication
 
-<p class="lede">Secure Shell (SSH) provides encrypted remote shell access, command execution, and network tunneling. SSH and TLS negotiate similar classes of modern cryptographic primitives for transport encryption (ECDHE-family key agreement, AEAD bulk ciphers)—but the concrete algorithm suites, wire framing, and key-derivation constructions differ between the two protocols, so the primitives are analogous, not interchangeable or identical. Where the protocols diverge structurally is server trust: SSH relies on a Trust-On-First-Use (TOFU) or OpenSSH Certificate trust model rather than hierarchical X.509 Certificate Authorities.</p>
+<p class="lede">Secure Shell (SSH) provides encrypted remote login, command execution, file transfer, and tunneling. Before user authentication, the client must decide whether it trusts the server host key. That trust can come from a previously pinned bare key, independent fingerprint verification, DNSSEC-protected SSHFP policy, or a provisioned OpenSSH host-certificate authority.</p>
 
-## SSH vs TLS: Architectural Comparison
+## SSH and TLS use different trust and protocol profiles
 
-| Security Dimension | TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), obsoletes RFC 8446) | SSH v2 (RFC 4253 / RFC 4252) |
+| Axis | TLS 1.3 | SSH v2 / OpenSSH |
 |---|---|---|
-| **Server Authentication** | Hierarchical X.509 Certificate Authority (Root ──> Intermediate ──> Leaf) | **Trust-On-First-Use (TOFU)** via bare host keys or **OpenSSH Certificates** |
-| **Client Authentication** | Optional X.509 Client Certificates (mTLS) | Mandatory User Authentication (Public Key, Password, or OpenSSH Cert) |
-| **Key Agreement** | Ephemeral (EC)DHE (X25519, NIST P-256) | Ephemeral (EC)DH (`curve25519-sha256`, `ecdh-sha2-nistp256`) |
-| **Bulk AEAD Encryption** | AES-256-GCM, ChaCha20-Poly1305 | `chacha20-poly1305@openssh.com`, `aes256-gcm@openssh.com` |
-| **Trust Anchor Storage** | Operating System / Browser Trust Store | Local `~/.ssh/known_hosts` file |
+| **Typical server trust** | Web PKI uses configured X.509 trust anchors and hostname validation; private deployments can use other configured anchors or pinning. | Bare host-key pinning/TOFU, SSHFP under a configured DNSSEC policy, or configured OpenSSH host-CA trust. |
+| **Client authentication** | Optional and application-defined; mTLS is one possibility. | SSH user authentication is a protocol phase and may use public keys, certificates, passwords, or other enabled methods. |
+| **Negotiation and framing** | TLS 1.3 algorithms and record protocol as specified by RFC 9846. | SSH transport, key exchange, host-key algorithms, ciphers, and MAC/AEAD choices under SSH/OpenSSH specifications. |
+| **Interoperability** | Similar primitives such as X25519, AES-GCM, or ChaCha20 may appear. | The wire formats, transcript, key derivation, algorithm names, and trust objects are not interchangeable with TLS. |
 
-## Trust-On-First-Use (TOFU) Model & Host Key Verification
+## Host-key verification precedes user authentication
 
-When a client connects to an SSH server for the first time, the client verifies the server's bare host key using TOFU:
-
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/ssh-trust.svg' | relative_url }}" alt="SSH host-key trust flow showing known-host verification, first-use acceptance, and host-key mismatch failure.">
-  <p class="diagram-caption">The host key authenticates the SSH server before user authentication begins</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/ssh-trust.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the SSH host and user public-key trust diagram at full size">
+    <img src="{{ '/assets/img/ssh-trust.svg' | relative_url }}" alt="Conceptual SSH public-key authentication trust diagram: the client first validates the server host key, then signs session-bound authentication data with its user private key and the server checks the corresponding authorized public key.">
+  </a>
+  <p class="diagram-caption">Server host authentication and user public-key authentication are separate trust decisions; both signatures are bound into the SSH exchange.</p>
 </div>
 
-<div class="callout warn">
-  <span class="callout-title">The Host Key Changed Security Alert</span>
-  <p>If a host key in <code>~/.ssh/known_hosts</code> mismatches the key presented during a connection, the OpenSSH client's default configuration (<a href="https://man.openbsd.org/ssh_config.5#StrictHostKeyChecking">StrictHostKeyChecking</a> set to <code>ask</code> or <code>accept-new</code>) refuses to proceed and warns of potential Man-in-the-Middle (MitM) key interception or unauthorized server replacement. This refusal is a client-configuration behavior, not a protocol guarantee: setting <code>StrictHostKeyChecking no</code> instead permits the connection to proceed without requiring interactive confirmation, subject to the restrictions <a href="https://man.openbsd.org/ssh_config.5#StrictHostKeyChecking">documented for that setting</a> — this does not necessarily mean no warning is printed at all, only that the client no longer blocks on one.</p>
+On a first connection with an unknown bare host key, OpenSSH's current default `StrictHostKeyChecking ask` prompts the user before adding it to `known_hosts`. The prompt displays a key but does not independently prove the server's identity. Verify the fingerprint through a separate authenticated channel before accepting it. `accept-new` is an explicit alternative setting, not the default.
+
+A changed key can indicate legitimate replacement, rebuilt infrastructure, DNS/IP reassignment, or interception. Investigate before removing the old entry. `StrictHostKeyChecking no` permits changed keys subject to documented restrictions and is not equivalent to authenticated trust.
+
+## Key type and signature algorithm are separate
+
+The following status labels are journal selection guidance, not universal OpenSSH policy:
+
+| Credential or algorithm | Journal use | Boundary |
+|---|---|---|
+| **Ed25519 / `ssh-ed25519`** | Preferred general-purpose user and host key where supported. | RFC 8032 signatures are deterministic; implementation side-channel resistance still depends on the implementation. |
+| **FIDO-backed `sk-ssh-ed25519@openssh.com`** | Preferred for high-value interactive user authentication when physical presence or local verification is useful. | Requires supported FIDO hardware/middleware and a recovery/spare-key process. Resident credentials and verification requirements are policy choices. |
+| **RSA key with `rsa-sha2-256` or `rsa-sha2-512`** | Compatibility option when Ed25519 is unavailable. | An RSA key is not synonymous with the legacy SHA-1 `ssh-rsa` signature algorithm. Disable `ssh-rsa` without unnecessarily rejecting RSA SHA-2. |
+| **ECDSA** | Use where ecosystem or compliance constraints require it and the implementation is trusted. | ECDSA requires a unique unpredictable nonce or a correct deterministic construction such as RFC 6979; nonce reuse exposes the private key. |
+| **`ssh-dss` (DSA)** | Do not enable for new or normal deployments. | OpenSSH disables it by default; “prohibited” requires a cited local policy rather than the protocol alone. |
+
+Check the negotiated algorithms with current client/server configuration. Do not copy a historical algorithm list into policy without testing both endpoints.
+
+## OpenSSH certificates replace per-host key distribution with CA trust
+
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/ssh-user-ca.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the OpenSSH user certificate diagram at full size">
+    <img src="{{ '/assets/img/ssh-user-ca.svg' | relative_url }}" alt="OpenSSH user certificate flow in which a user certificate authority signs a user public key with principals and validity, and an SSH server validates it against a provisioned trusted CA key.">
+  </a>
+  <p class="diagram-caption">A server can validate many user certificates against one provisioned CA key while still checking principal, validity, critical options, extensions, and revocation.</p>
 </div>
 
-## OpenSSH Public Key Types & Recommendations
+- **Host certificates** remove first-use prompts only after clients are provisioned to trust the host CA, commonly through an `@cert-authority` entry or managed configuration.
+- **User certificates** replace many static `authorized_keys` entries with certificates signed by a trusted user CA. The lifetime is an organizational risk choice; OpenSSH does not prescribe a universal 1–8 hour period.
+- **Certificates do not eliminate lifecycle work**: protect CA keys, constrain principals and extensions, monitor issuance, rotate CA trust deliberately, and distribute Key Revocation Lists (KRLs) or `RevokedKeys` updates when keys or certificates must be rejected.
 
-| Algorithm | Key Length / Curve | Recommended Status | Cryptographic Properties |
-|---|---|---|---|
-| **Ed25519** | 256-bit Edwards Curve | **PRIMARY DEFAULT** | Deterministic signature nonces derived from the message and secret key, removing reliance on an RNG per signature ([RFC 8032](https://www.rfc-editor.org/rfc/rfc8032), applied to SSH via [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709)); the curve's design also makes constant-time implementations comparatively easy to achieve, but constant-time execution itself is a property of the implementation, not something either RFC mandates. |
-| **RSA-3072 / 4096** | 3,072+ bits | Approved Legacy | High compatibility; larger signatures and slower key generation. |
-| **ECDSA P-256 / P-384** | NIST Curves | Accepted | Requires secure per-signature random nonces (Vulnerable to nonce reuse). |
-| **DSA** | 1024-bit | **PROHIBITED** | Disabled in modern OpenSSH releases due to small key size and weak math. |
+## Harden user-key operation and recovery
 
-## OpenSSH Certificate Authority (CA) Architecture
+1. Restrict static entries with `from=`, `command=`, `restrict`, `no-agent-forwarding`, `no-port-forwarding`, `no-pty`, or other options appropriate to the account. Test that restrictions match the required workload.
+2. Avoid agent forwarding to hosts that are not fully trusted. A compromised remote host cannot normally extract the agent's private key, but it can request signatures from the forwarded agent while the connection remains available.
+3. Separate human, automation, host, and CA keys; record owner, purpose, authorized principals, source, expiry, and rotation state.
+4. Remove keys and principals promptly on compromise, transfer, or termination. Verify KRL distribution and cache/daemon reload behavior rather than assuming revocation propagated.
+5. Keep at least one controlled recovery path that does not bypass host verification or privileged-access approval. Test CA loss, host-key rotation, and emergency access.
+6. Use SSHFP only with a documented DNSSEC validation policy. Unsigned or non-validating DNS does not authenticate the fingerprint.
 
-To eliminate TOFU fingerprint prompts across enterprise fleets, organizations deploy an **OpenSSH Certificate Authority**:
+## Modern key-exchange and migration options
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/ssh-user-ca.svg' | relative_url }}" alt="OpenSSH user certificate flow from a user CA through a short-lived user certificate to a validating SSH server.">
-  <p class="diagram-caption">The server trusts the user CA public key and validates certificate principals and expiry</p>
-</div>
+Current OpenSSH releases can support hybrid post-quantum key-exchange algorithms such as `mlkem768x25519-sha256` or `sntrup761x25519-sha512` when both peers implement them. A hybrid exchange protects the session only when negotiation selects it and both implementations behave correctly; it does not make existing host/user signatures post-quantum. Inventory peer support and observe negotiation before removing classical fallbacks needed by managed legacy systems.
 
-1. **Host Certificates**: Servers present host certificates signed by an OpenSSH Host CA. Clients trust all servers bearing valid CA signatures, eliminating `known_hosts` prompts.
-2. **User Certificates**: Users authenticate using short-lived (1–8 hour) certificates signed by an OpenSSH User CA, eliminating static `authorized_keys` management.
+FIDO-backed SSH keys improve user-key custody but introduce hardware availability, middleware, resident-key, PIN/user-verification, and recovery considerations. Roll them out with multiple registered authenticators or another controlled recovery method.
 
-## OpenSSH CLI Commands
+## Inspection commands
 
 ```bash
-# 1. Generate an Ed25519 SSH key pair
-ssh-keygen -t ed25519 -C "admin@enterprise.com" -f ~/.ssh/id_ed25519
+# Generate an Ed25519 user key pair.
+ssh-keygen -t ed25519 -C "admin@example.com" -f ~/.ssh/id_ed25519
 
-# 2. Inspect SSH public key fingerprint
+# Inspect a public-key fingerprint.
 ssh-keygen -lf ~/.ssh/id_ed25519.pub
-# Output: 256 SHA256:zy9q4C7U9Ki5kOv7mwmGxyfVbpbwlJMiqU1tCxoh0cM admin@enterprise.com (ED25519)
 
-# 3. Collect a remote server's host key fingerprint for known_hosts
+# Collect, but do not authenticate, a server host key.
 ssh-keyscan -t ed25519 github.com 2>/dev/null | ssh-keygen -lf -
-# Output: 256 SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU github.com (ED25519)
+
+# Display the effective client configuration, including algorithm policy.
+ssh -G example.com | grep -E '^(stricthostkeychecking|hostkeyalgorithms|kexalgorithms) '
 ```
 
-<div class="callout warn">
-  <span class="callout-title">ssh-keyscan Is Not an Out-of-Band Verification Method</span>
-  <p><code>ssh-keyscan</code> fetches the host key over the same network path being verified, and it cannot authenticate the key it returns—an attacker positioned on that path can substitute their own key without detection. OpenBSD's <a href="https://man.openbsd.org/ssh-keyscan.1">ssh-keyscan manual</a> states this directly: its output "should be verified out of band, or only used directly for host authentication if the network is trusted." <code>ssh-keyscan</code> is a convenience for <em>collecting</em> a key to add to <code>known_hosts</code>—the collected fingerprint still needs independent out-of-band verification (for example, comparing it against a fingerprint the server operator publishes through a separate channel, such as GitHub's published SSH key fingerprints) before it is trusted.</p>
-</div>
+`ssh-keyscan` collects keys over the network path being evaluated and cannot authenticate them. Compare its result with a fingerprint obtained through an independent authenticated channel before trusting it.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Static keys scattered across <code>authorized_keys</code> files scale poorly and cause key sprawl; short-lived SSH certificates signed by a central CA let hosts verify against one CA public key instead. <code>ssh-keyscan</code> fetches a host key over the same network path being verified, so its output still needs independent out-of-band verification before it's trusted.</p>
+  <p>SSH host trust and user authentication are separate, session-bound decisions. Verify first-use host keys independently or provision a host CA, distinguish key types from signature algorithms, constrain and revoke user credentials operationally, and treat post-quantum or FIDO options as negotiated deployments with explicit recovery plans.</p>
 </div>
 
 ## Primary references
 
-- **OpenSSH Certificates**: *OpenSSH Certificate Architecture Protocol* — [OpenSSH Specs](https://www.openssh.com/specs.html)
-- **RFC 4253**: *The Secure Shell (SSH) Transport Layer Protocol* — [IETF RFC 4253](https://www.rfc-editor.org/rfc/rfc4253)
+- **[RFC 4253: SSH Transport Layer Protocol](https://www.rfc-editor.org/rfc/rfc4253.html)** and **[RFC 4252: SSH Authentication Protocol](https://www.rfc-editor.org/rfc/rfc4252.html)** — verified host authentication, exchange binding, and user-authentication mechanics.
+- **[OpenSSH `ssh_config`](https://man.openbsd.org/OpenBSD-current/man/ssh_config)** and **[`sshd_config`](https://man.openbsd.org/OpenBSD-current/man/sshd_config)** — verified current defaults, algorithm configuration, CA trust, and forwarding controls.
+- **[OpenSSH certificates and protocol specifications](https://www.openssh.com/specs.html)** — verified certificate, FIDO-key, and key-exchange formats.
+- **[RFC 6979: Deterministic DSA and ECDSA](https://www.rfc-editor.org/rfc/rfc6979.html)** — verified deterministic ECDSA nonce generation.
+- **[RFC 4255: DNS SSHFP Records](https://www.rfc-editor.org/rfc/rfc4255.html)** — verified the DNSSEC-dependent fingerprint model.
+- **[RFC 9846: TLS 1.3](https://www.rfc-editor.org/rfc/rfc9846.html)** — verified the current TLS 1.3 reference used in the comparison.

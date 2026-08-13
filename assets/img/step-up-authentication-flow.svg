@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 625" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Step-up authentication for a high-risk action</title>
-  <desc id="description">The API requires a fresher or stronger authentication context before allowing the transaction.</desc>
+  <desc id="description">The resource server returns an RFC 9470 challenge, the client requests the specified authentication context or recency, and the resource server validates a replacement token before reconsidering the original action.</desc>
   <rect width="1200" height="625" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -24,9 +24,9 @@
     <path d="M135 360 L1065 360" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
     <rect x="502.8" y="328" width="194.4" height="24" rx="12" fill="#ffffff"/><text x="600" y="345" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">3. REQUEST STRONGER CONTEXT</text><text x="600" y="384" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">acr_values and max_age</text>
     <path d="M1065 430 L135 430" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <rect x="535.2" y="398" width="129.6" height="24" rx="12" fill="#ffffff"/><text x="600" y="415" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">4. RE-AUTHENTICATE</text><text x="600" y="454" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">phishing-resistant authenticator</text>
+    <rect x="535.2" y="398" width="129.6" height="24" rx="12" fill="#ffffff"/><text x="600" y="415" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">4. AUTHENTICATE</text><text x="600" y="454" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">satisfy, deny, or report unsupported context</text>
     <path d="M1065 500 L135 500" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <rect x="520.8" y="468" width="158.4" height="24" rx="12" fill="#ffffff"/><text x="600" y="485" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">5. ISSUE UPDATED TOKEN</text><text x="600" y="524" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">fresh authentication context</text>
+    <rect x="520.8" y="468" width="158.4" height="24" rx="12" fill="#ffffff"/><text x="600" y="485" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">5. REPLACEMENT TOKEN</text><text x="600" y="524" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">client validates token and requested context</text>
     <path d="M135 570 L600 570" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <rect x="305.5" y="538" width="124" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="555" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">6. RETRY TRANSFER</text><text x="367.5" y="594" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">API validates the stronger context</text>
+    <rect x="305.5" y="538" width="124" height="24" rx="12" fill="#ffffff"/><text x="367.5" y="555" text-anchor="middle" font-size="11" font-weight="900" letter-spacing=".5" fill="#475569">6. RETRY TRANSFER</text><text x="367.5" y="594" text-anchor="middle" font-size="12.5" font-weight="500" fill="#475569">API validates token, context, and authorization</text>
 </svg>
