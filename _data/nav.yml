@@ -119,12 +119,22 @@
           url: /topics/identity-provisioning-access-lifecycle-pam/
     - title: 5. Network Security
       children:
-        - title: 5.1 DNS Security
+        - title: 5.1 Network Security Foundations & Policy Enforcement
+          url: /topics/network-security-foundations-policy-enforcement/
+        - title: 5.2 DNS Security
           url: /topics/dns-security/
-        - title: 5.2 Network Segmentation & Microsegmentation
+        - title: 5.3 Network Segmentation & Microsegmentation
           url: /topics/network-segmentation-microsegmentation/
-        - title: "5.3 Secure Tunneling: IPsec, WireGuard & SSH Bastions"
+        - title: "5.4 VPN & Secure Tunneling: IPsec, WireGuard & OpenVPN"
           url: /topics/vpn-ipsec-wireguard/
+        - title: 5.5 Administrative Network Access
+          url: /topics/administrative-network-access/
+        - title: "5.6 Network Telemetry, IDS/IPS & Validation"
+          url: /topics/network-telemetry-ids-ips-validation/
+        - title: 5.7 Wireless Network Security
+          url: /topics/wireless-network-security/
+        - title: "5.8 Network Edge, DDoS & Routing Security"
+          url: /topics/network-edge-ddos-routing-security/
     - title: 6. Threat Intelligence & Detection
       children:
         - title: 6.1 Threat Frameworks & Modeling Methodologies

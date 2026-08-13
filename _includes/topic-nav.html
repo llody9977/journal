@@ -299,30 +299,60 @@
 {% if current_url == '/topics/identity-provisioning-access-lifecycle-pam/' or current_url == '/topics/identity-provisioning-access-lifecycle-pam' %}
   {% assign prev_title = '4.12 Workload Identity Federation' %}
   {% assign prev_url = '/topics/workload-identity-federation/' %}
-  {% assign next_title = '5.1 DNS Security' %}
+  {% assign next_title = '5.1 Network Security Foundations & Policy Enforcement' %}
+  {% assign next_url = '/topics/network-security-foundations-policy-enforcement/' %}
+{% endif %}
+{% if current_url == '/topics/network-security-foundations-policy-enforcement/' or current_url == '/topics/network-security-foundations-policy-enforcement' %}
+  {% assign prev_title = '4.13 Identity Provisioning, Access Lifecycle & PAM' %}
+  {% assign prev_url = '/topics/identity-provisioning-access-lifecycle-pam/' %}
+  {% assign next_title = '5.2 DNS Security' %}
   {% assign next_url = '/topics/dns-security/' %}
 {% endif %}
 {% if current_url == '/topics/dns-security/' or current_url == '/topics/dns-security' %}
-  {% assign prev_title = '4.13 Identity Provisioning, Access Lifecycle & PAM' %}
-  {% assign prev_url = '/topics/identity-provisioning-access-lifecycle-pam/' %}
-  {% assign next_title = '5.2 Network Segmentation & Microsegmentation' %}
+  {% assign prev_title = '5.1 Network Security Foundations & Policy Enforcement' %}
+  {% assign prev_url = '/topics/network-security-foundations-policy-enforcement/' %}
+  {% assign next_title = '5.3 Network Segmentation & Microsegmentation' %}
   {% assign next_url = '/topics/network-segmentation-microsegmentation/' %}
 {% endif %}
 {% if current_url == '/topics/network-segmentation-microsegmentation/' or current_url == '/topics/network-segmentation-microsegmentation' %}
-  {% assign prev_title = '5.1 DNS Security' %}
+  {% assign prev_title = '5.2 DNS Security' %}
   {% assign prev_url = '/topics/dns-security/' %}
-  {% assign next_title = '5.3 Secure Tunneling: IPsec, WireGuard & SSH Bastions' %}
+  {% assign next_title = '5.4 VPN & Secure Tunneling: IPsec, WireGuard & OpenVPN' %}
   {% assign next_url = '/topics/vpn-ipsec-wireguard/' %}
 {% endif %}
 {% if current_url == '/topics/vpn-ipsec-wireguard/' or current_url == '/topics/vpn-ipsec-wireguard' %}
-  {% assign prev_title = '5.2 Network Segmentation & Microsegmentation' %}
+  {% assign prev_title = '5.3 Network Segmentation & Microsegmentation' %}
   {% assign prev_url = '/topics/network-segmentation-microsegmentation/' %}
+  {% assign next_title = '5.5 Administrative Network Access' %}
+  {% assign next_url = '/topics/administrative-network-access/' %}
+{% endif %}
+{% if current_url == '/topics/administrative-network-access/' or current_url == '/topics/administrative-network-access' %}
+  {% assign prev_title = '5.4 VPN & Secure Tunneling: IPsec, WireGuard & OpenVPN' %}
+  {% assign prev_url = '/topics/vpn-ipsec-wireguard/' %}
+  {% assign next_title = '5.6 Network Telemetry, IDS/IPS & Validation' %}
+  {% assign next_url = '/topics/network-telemetry-ids-ips-validation/' %}
+{% endif %}
+{% if current_url == '/topics/network-telemetry-ids-ips-validation/' or current_url == '/topics/network-telemetry-ids-ips-validation' %}
+  {% assign prev_title = '5.5 Administrative Network Access' %}
+  {% assign prev_url = '/topics/administrative-network-access/' %}
+  {% assign next_title = '5.7 Wireless Network Security' %}
+  {% assign next_url = '/topics/wireless-network-security/' %}
+{% endif %}
+{% if current_url == '/topics/wireless-network-security/' or current_url == '/topics/wireless-network-security' %}
+  {% assign prev_title = '5.6 Network Telemetry, IDS/IPS & Validation' %}
+  {% assign prev_url = '/topics/network-telemetry-ids-ips-validation/' %}
+  {% assign next_title = '5.8 Network Edge, DDoS & Routing Security' %}
+  {% assign next_url = '/topics/network-edge-ddos-routing-security/' %}
+{% endif %}
+{% if current_url == '/topics/network-edge-ddos-routing-security/' or current_url == '/topics/network-edge-ddos-routing-security' %}
+  {% assign prev_title = '5.7 Wireless Network Security' %}
+  {% assign prev_url = '/topics/wireless-network-security/' %}
   {% assign next_title = '6.1 Threat Frameworks & Modeling Methodologies' %}
   {% assign next_url = '/topics/threat-frameworks/' %}
 {% endif %}
 {% if current_url == '/topics/threat-frameworks/' or current_url == '/topics/threat-frameworks' %}
-  {% assign prev_title = '5.3 Secure Tunneling: IPsec, WireGuard & SSH Bastions' %}
-  {% assign prev_url = '/topics/vpn-ipsec-wireguard/' %}
+  {% assign prev_title = '5.8 Network Edge, DDoS & Routing Security' %}
+  {% assign prev_url = '/topics/network-edge-ddos-routing-security/' %}
   {% assign next_title = '7.1 AI & LLM Security' %}
   {% assign next_url = '/topics/ai-llm-security/' %}
 {% endif %}

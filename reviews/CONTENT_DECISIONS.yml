@@ -1136,6 +1136,78 @@
       "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0024",
+      "title": "Separate Section 5 by network control boundary and retain advanced operational coverage",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/network-security-foundations-policy-enforcement.md",
+          "topics/dns-security.md",
+          "topics/network-segmentation-microsegmentation.md",
+          "topics/vpn-ipsec-wireguard.md",
+          "topics/administrative-network-access.md",
+          "topics/network-telemetry-ids-ips-validation.md",
+          "topics/wireless-network-security.md",
+          "topics/network-edge-ddos-routing-security.md",
+          "assets/img/dns-cache-poisoning.svg",
+          "assets/img/dnssec-chain.svg",
+          "assets/img/segmentation-enforcement-layers.svg",
+          "_data/nav.yml",
+          "_includes/topic-nav.html"
+        ],
+        "concepts": [
+          "network policy enforcement",
+          "DNS security",
+          "segmentation and microsegmentation",
+          "VPN and secure tunneling",
+          "administrative network access",
+          "network telemetry and IDS IPS",
+          "wireless network security",
+          "DDoS and routing security"
+        ]
+      },
+      "originating_feedback": "The fresh Section 5 review found that three specialized pages did not restore the foundational policy model, mixed VPN protocols with SSH bastions and ZTNA, omitted network telemetry and validation, and left wireless, DDoS, routing, cloud-native policy, and deprecated-tunnel coverage as optional gaps. The user requested remediation of required and optional items.",
+      "decision": "Organize Section 5 as eight single-subject pages: foundations and policy enforcement; DNS; segmentation and microsegmentation; VPN and secure tunneling; administrative access; telemetry, IDS/IPS and validation; wireless security; and network-edge DDoS/routing security.",
+      "rationale": "These subjects have different actors, protection scopes, control planes, failure modes, evidence, and lifecycle sources. Dedicated pages keep protocol claims from appearing universal, make operational gaps visible, and preserve the optional advanced material the user explicitly adopted without overloading the foundational pages.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-41 Rev. 1",
+          "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+          "supports": "Firewall policy, enforcement, testing, deployment, and management form a distinct foundation for the chapter."
+        },
+        {
+          "title": "NIST SP 800-207A",
+          "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
+          "supports": "Cloud-native network-tier and identity-tier enforcement require explicit treatment beyond coarse network segmentation."
+        },
+        {
+          "title": "NIST SP 800-189",
+          "url": "https://csrc.nist.gov/pubs/sp/800/189/final",
+          "supports": "BGP security, source validation, and DDoS mitigation form a distinct Internet-edge resilience subject."
+        }
+      ],
+      "verification_methods": [
+        "Verify the Section 5 navigation and previous/next chain from 4.13 through all eight topics to 6.1.",
+        "Complete a claim ledger and twelve-category completeness matrix for each page after implementation is frozen.",
+        "Render all Section 5 pages and diagrams at mobile and desktop widths and verify internal links, table overflow, and diagram semantics.",
+        "Check VPN, SSH/ZTNA, DNS, cloud firewall, service-mesh, wireless, DDoS, and routing claims independently against current primary sources."
+      ],
+      "approved_outcome": "Section 5 contains eight clearly bounded topics with stable permalinks, complete navigation, provider- and protocol-specific semantics, operational failure and recovery guidance, advanced coverage adopted by the user, and matching reviewed diagrams.",
+      "invalidation_conditions": [
+        "The journal chapter architecture changes and an equally complete, clearly linked location replaces one or more pages.",
+        "A governing protocol, platform, or primary source materially changes a documented mechanism or status.",
+        "Rendered or executable evidence shows that the adopted structure creates broken navigation, inaccessible content, or incorrect visual meaning.",
+        "A later completeness review identifies a required network-security subject that cannot be covered coherently within the eight-page structure."
+      ],
+      "related_decisions": ["CD-0022", "CD-0023"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "846ff9e3232c1533d8a3f5106eb6074ce57bc14eaf30be7ace083c953b63d3f0",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }
