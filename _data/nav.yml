@@ -169,15 +169,49 @@
           url: /topics/slsa-provenance-attestation/
         - title: "8.4 Code Signing, Binary Integrity & Sigstore"
           url: /topics/code-signing-sigstore/
-    - title: 9. Governance, Risk & Compliance
+    - title: 9. Security Architecture & Design Principles
       children:
-        - title: "9.1 Cybersecurity Standards & Frameworks"
+        - title: 9.1 Fundamental Security Design Principles
+          url: /topics/security-design-principles/
+        - title: "9.2 Zero Trust Architecture (ZTA) & NIST SP 800-207"
+          url: /topics/zero-trust-architecture/
+        - title: "9.3 Privacy by Design (PbD) & Privacy-Enhancing Technologies"
+          url: /topics/privacy-by-design-pets/
+        - title: 9.4 Cloud & Distributed Secure Architecture Patterns
+          url: /topics/cloud-secure-architecture-patterns/
+    - title: 10. Application Security & Vulnerability Engineering
+      children:
+        - title: "10.1 Web Application Vulnerabilities & OWASP Top 10"
+          url: /topics/web-application-vulnerabilities/
+        - title: 10.2 API & Microservice Security
+          url: /topics/api-microservice-security/
+        - title: "10.3 Secure SDLC & Application Security Testing"
+          url: /topics/ssdlc-security-testing/
+        - title: 10.4 Client-Side & Mobile Security
+          url: /topics/client-side-mobile-security/
+    - title: 11. Cloud-Native & Infrastructure Security
+      children:
+        - title: 11.1 Cloud Security Architecture & IAM Perimeters
+          url: /topics/cloud-security-iam-perimeters/
+        - title: 11.2 Container & Kubernetes Security
+          url: /topics/container-kubernetes-security/
+        - title: "11.3 Infrastructure as Code (IaC) & Immutable Security"
+          url: /topics/iac-immutable-security/
+    - title: 12. Digital Forensics & Incident Response (DFIR)
+      children:
+        - title: "12.1 Digital Forensics & Evidence Handling"
+          url: /topics/digital-forensics-evidence-handling/
+        - title: "12.2 Incident Response Playbooks & SOAR"
+          url: /topics/incident-response-playbooks-soar/
+    - title: 13. Governance, Risk & Compliance
+      children:
+        - title: "13.1 Cybersecurity Standards & Frameworks"
           url: /topics/cybersecurity-standards/
-        - title: "9.2 GRC Strategy: Framework Stacking & Assessment Models"
+        - title: "13.2 GRC Strategy: Framework Stacking & Assessment Models"
           url: /topics/grc-framework-strategy/
-        - title: 9.3 Regulatory Mandates & Private-Sector Assurance
+        - title: 13.3 Regulatory Mandates & Private-Sector Assurance
           url: /topics/regulatory-compliance-mandates/
-        - title: 9.4 Security Certifications
+        - title: 13.4 Security Certifications
           url: /topics/security-certifications/
-        - title: 9.5 Security Maturity Models
+        - title: 13.5 Security Maturity Models
           url: /topics/security-maturity-models/

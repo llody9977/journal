@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Fundamental Security Design Principles Architecture</title>
+  <desc id="description">Security Design Principles diagram showing Saltzer and Schroeder principles, Defense-in-Depth layers, Least Privilege, and Attack Surface Reduction.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Fundamental Security Design Principles</text>
+  <text x="50" y="75" font-size="14" fill="#475569">Saltzer &amp; Schroeder foundational design axioms, Defense-in-Depth layering, and Attack Surface Reduction.</text>
+  
+  <!-- Saltzer & Schroeder Axioms (x=40, w=540, y=105, h=160) -->
+  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">SALTZER &amp; SCHROEDER DESIGN PRINCIPLES</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Foundational Architectural Principles</text>
+  <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Least Privilege &amp; Fail-Safe Defaults (Default-Deny Access)</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Complete Mediation &amp; Open Design (Kerckhoffs' Principle)</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Separation of Privilege &amp; Psychological Acceptability</text>
+
+  <!-- Defense in Depth (x=620, w=540, y=105, h=160) -->
+  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">DEFENSE-IN-DEPTH LAYERING</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Multi-Tiered Safeguard Redundancy</text>
+  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Edge &amp; Network: WAF, DDoS Protection, Egress Isolation</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• IAM &amp; Application: Strong Auth, Input Validation, Microsegmentation</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Data Layer: Envelope Encryption, Access Auditing, Immutable Backups</text>
+
+  <!-- Attack Surface Reduction (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">ATTACK SURFACE REDUCTION &amp; MINIMALITY</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Elimination of Unnecessary Exposure Points</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Disable Unused Ports, Services, &amp; Unneeded API Endpoints</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Enforce Least Common Mechanism to Minimize Shared Dependencies</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Implement Distrust of External Boundaries &amp; Input Validation at Every Interface</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">DESIGN PRINCIPLES: DEFAULT DENY → MINIMAL ATTACK SURFACE → COMPLETE MEDIATION → MULTI-LAYER DEFENSE REDUNDANCY</text>
+</svg>

@@ -431,35 +431,113 @@
 {% if current_url == '/topics/code-signing-sigstore/' or current_url == '/topics/code-signing-sigstore' %}
   {% assign prev_title = '8.3 SLSA & Build Provenance Attestations' %}
   {% assign prev_url = '/topics/slsa-provenance-attestation/' %}
-  {% assign next_title = '9.1 Cybersecurity Standards & Frameworks' %}
+  {% assign next_title = '9.1 Fundamental Security Design Principles' %}
+  {% assign next_url = '/topics/security-design-principles/' %}
+{% endif %}
+{% if current_url == '/topics/security-design-principles/' or current_url == '/topics/security-design-principles' %}
+  {% assign prev_title = '8.4 Code Signing, Binary Integrity & Sigstore' %}
+  {% assign prev_url = '/topics/code-signing-sigstore/' %}
+  {% assign next_title = '9.2 Zero Trust Architecture (ZTA) & NIST SP 800-207' %}
+  {% assign next_url = '/topics/zero-trust-architecture/' %}
+{% endif %}
+{% if current_url == '/topics/zero-trust-architecture/' or current_url == '/topics/zero-trust-architecture' %}
+  {% assign prev_title = '9.1 Fundamental Security Design Principles' %}
+  {% assign prev_url = '/topics/security-design-principles/' %}
+  {% assign next_title = '9.3 Privacy by Design (PbD) & Privacy-Enhancing Technologies' %}
+  {% assign next_url = '/topics/privacy-by-design-pets/' %}
+{% endif %}
+{% if current_url == '/topics/privacy-by-design-pets/' or current_url == '/topics/privacy-by-design-pets' %}
+  {% assign prev_title = '9.2 Zero Trust Architecture (ZTA) & NIST SP 800-207' %}
+  {% assign prev_url = '/topics/zero-trust-architecture/' %}
+  {% assign next_title = '9.4 Cloud & Distributed Secure Architecture Patterns' %}
+  {% assign next_url = '/topics/cloud-secure-architecture-patterns/' %}
+{% endif %}
+{% if current_url == '/topics/cloud-secure-architecture-patterns/' or current_url == '/topics/cloud-secure-architecture-patterns' %}
+  {% assign prev_title = '9.3 Privacy by Design (PbD) & Privacy-Enhancing Technologies' %}
+  {% assign prev_url = '/topics/privacy-by-design-pets/' %}
+  {% assign next_title = '10.1 Web Application Vulnerabilities & OWASP Top 10' %}
+  {% assign next_url = '/topics/web-application-vulnerabilities/' %}
+{% endif %}
+{% if current_url == '/topics/web-application-vulnerabilities/' or current_url == '/topics/web-application-vulnerabilities' %}
+  {% assign prev_title = '9.4 Cloud & Distributed Secure Architecture Patterns' %}
+  {% assign prev_url = '/topics/cloud-secure-architecture-patterns/' %}
+  {% assign next_title = '10.2 API & Microservice Security' %}
+  {% assign next_url = '/topics/api-microservice-security/' %}
+{% endif %}
+{% if current_url == '/topics/api-microservice-security/' or current_url == '/topics/api-microservice-security' %}
+  {% assign prev_title = '10.1 Web Application Vulnerabilities & OWASP Top 10' %}
+  {% assign prev_url = '/topics/web-application-vulnerabilities/' %}
+  {% assign next_title = '10.3 Secure SDLC & Application Security Testing' %}
+  {% assign next_url = '/topics/ssdlc-security-testing/' %}
+{% endif %}
+{% if current_url == '/topics/ssdlc-security-testing/' or current_url == '/topics/ssdlc-security-testing' %}
+  {% assign prev_title = '10.2 API & Microservice Security' %}
+  {% assign prev_url = '/topics/api-microservice-security/' %}
+  {% assign next_title = '10.4 Client-Side & Mobile Security' %}
+  {% assign next_url = '/topics/client-side-mobile-security/' %}
+{% endif %}
+{% if current_url == '/topics/client-side-mobile-security/' or current_url == '/topics/client-side-mobile-security' %}
+  {% assign prev_title = '10.3 Secure SDLC & Application Security Testing' %}
+  {% assign prev_url = '/topics/ssdlc-security-testing/' %}
+  {% assign next_title = '11.1 Cloud Security Architecture & IAM Perimeters' %}
+  {% assign next_url = '/topics/cloud-security-iam-perimeters/' %}
+{% endif %}
+{% if current_url == '/topics/cloud-security-iam-perimeters/' or current_url == '/topics/cloud-security-iam-perimeters' %}
+  {% assign prev_title = '10.4 Client-Side & Mobile Security' %}
+  {% assign prev_url = '/topics/client-side-mobile-security/' %}
+  {% assign next_title = '11.2 Container & Kubernetes Security' %}
+  {% assign next_url = '/topics/container-kubernetes-security/' %}
+{% endif %}
+{% if current_url == '/topics/container-kubernetes-security/' or current_url == '/topics/container-kubernetes-security' %}
+  {% assign prev_title = '11.1 Cloud Security Architecture & IAM Perimeters' %}
+  {% assign prev_url = '/topics/cloud-security-iam-perimeters/' %}
+  {% assign next_title = '11.3 Infrastructure as Code (IaC) & Immutable Security' %}
+  {% assign next_url = '/topics/iac-immutable-security/' %}
+{% endif %}
+{% if current_url == '/topics/iac-immutable-security/' or current_url == '/topics/iac-immutable-security' %}
+  {% assign prev_title = '11.2 Container & Kubernetes Security' %}
+  {% assign prev_url = '/topics/container-kubernetes-security/' %}
+  {% assign next_title = '12.1 Digital Forensics & Evidence Handling' %}
+  {% assign next_url = '/topics/digital-forensics-evidence-handling/' %}
+{% endif %}
+{% if current_url == '/topics/digital-forensics-evidence-handling/' or current_url == '/topics/digital-forensics-evidence-handling' %}
+  {% assign prev_title = '11.3 Infrastructure as Code (IaC) & Immutable Security' %}
+  {% assign prev_url = '/topics/iac-immutable-security/' %}
+  {% assign next_title = '12.2 Incident Response Playbooks & SOAR' %}
+  {% assign next_url = '/topics/incident-response-playbooks-soar/' %}
+{% endif %}
+{% if current_url == '/topics/incident-response-playbooks-soar/' or current_url == '/topics/incident-response-playbooks-soar' %}
+  {% assign prev_title = '12.1 Digital Forensics & Evidence Handling' %}
+  {% assign prev_url = '/topics/digital-forensics-evidence-handling/' %}
+  {% assign next_title = '13.1 Cybersecurity Standards & Frameworks' %}
   {% assign next_url = '/topics/cybersecurity-standards/' %}
 {% endif %}
 {% if current_url == '/topics/cybersecurity-standards/' or current_url == '/topics/cybersecurity-standards' %}
-  {% assign prev_title = '8.4 Code Signing, Binary Integrity & Sigstore' %}
-  {% assign prev_url = '/topics/code-signing-sigstore/' %}
-  {% assign next_title = '9.2 GRC Strategy: Framework Stacking & Assessment Models' %}
+  {% assign prev_title = '12.2 Incident Response Playbooks & SOAR' %}
+  {% assign prev_url = '/topics/incident-response-playbooks-soar/' %}
+  {% assign next_title = '13.2 GRC Strategy: Framework Stacking & Assessment Models' %}
   {% assign next_url = '/topics/grc-framework-strategy/' %}
 {% endif %}
 {% if current_url == '/topics/grc-framework-strategy/' or current_url == '/topics/grc-framework-strategy' %}
-  {% assign prev_title = '9.1 Cybersecurity Standards & Frameworks' %}
+  {% assign prev_title = '13.1 Cybersecurity Standards & Frameworks' %}
   {% assign prev_url = '/topics/cybersecurity-standards/' %}
-  {% assign next_title = '9.3 Regulatory Mandates & Private-Sector Assurance' %}
+  {% assign next_title = '13.3 Regulatory Mandates & Private-Sector Assurance' %}
   {% assign next_url = '/topics/regulatory-compliance-mandates/' %}
 {% endif %}
 {% if current_url == '/topics/regulatory-compliance-mandates/' or current_url == '/topics/regulatory-compliance-mandates' %}
-  {% assign prev_title = '9.2 GRC Strategy: Framework Stacking & Assessment Models' %}
+  {% assign prev_title = '13.2 GRC Strategy: Framework Stacking & Assessment Models' %}
   {% assign prev_url = '/topics/grc-framework-strategy/' %}
-  {% assign next_title = '9.4 Security Certifications' %}
+  {% assign next_title = '13.4 Security Certifications' %}
   {% assign next_url = '/topics/security-certifications/' %}
 {% endif %}
 {% if current_url == '/topics/security-certifications/' or current_url == '/topics/security-certifications' %}
-  {% assign prev_title = '9.3 Regulatory Mandates & Private-Sector Assurance' %}
+  {% assign prev_title = '13.3 Regulatory Mandates & Private-Sector Assurance' %}
   {% assign prev_url = '/topics/regulatory-compliance-mandates/' %}
-  {% assign next_title = '9.5 Security Maturity Models' %}
+  {% assign next_title = '13.5 Security Maturity Models' %}
   {% assign next_url = '/topics/security-maturity-models/' %}
 {% endif %}
 {% if current_url == '/topics/security-maturity-models/' or current_url == '/topics/security-maturity-models' %}
-  {% assign prev_title = '9.4 Security Certifications' %}
+  {% assign prev_title = '13.4 Security Certifications' %}
   {% assign prev_url = '/topics/security-certifications/' %}
 {% endif %}
 

@@ -1447,6 +1447,83 @@
       "originating_review_state_id": "846f399757913a993ffccae05344daf6c0d15ce8aa50daa44b13de3f50188696",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0028",
+      "title": "Expand security journal sitemap with Security Architecture, AppSec, Cloud-Native, DFIR, and re-position GRC as Section 13",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-design-principles.md",
+          "topics/zero-trust-architecture.md",
+          "topics/privacy-by-design-pets.md",
+          "topics/cloud-secure-architecture-patterns.md",
+          "topics/web-application-vulnerabilities.md",
+          "topics/api-microservice-security.md",
+          "topics/ssdlc-security-testing.md",
+          "topics/client-side-mobile-security.md",
+          "topics/cloud-security-iam-perimeters.md",
+          "topics/container-kubernetes-security.md",
+          "topics/iac-immutable-security.md",
+          "topics/digital-forensics-evidence-handling.md",
+          "topics/incident-response-playbooks-soar.md",
+          "topics/cybersecurity-standards.md",
+          "topics/grc-framework-strategy.md",
+          "topics/regulatory-compliance-mandates.md",
+          "topics/security-certifications.md",
+          "topics/security-maturity-models.md",
+          "_data/nav.yml",
+          "_includes/topic-nav.html"
+        ],
+        "concepts": [
+          "security design principles",
+          "zero trust architecture",
+          "privacy by design",
+          "application security",
+          "OWASP top 10",
+          "API security",
+          "cloud-native security",
+          "digital forensics",
+          "incident response",
+          "governance risk compliance"
+        ]
+      },
+      "originating_feedback": "The user requested scanning the entire journal for missing critical security domains (AppSec, Zero Trust, Privacy by Design, Cloud-Native, DFIR) and implementing them as dedicated sections while placing GRC at the end.",
+      "decision": "Structure the journal into 13 dedicated sections: Section 9 Security Architecture & Design Principles (9.1-9.4), Section 10 Application Security & Vulnerability Engineering (10.1-10.4), Section 11 Cloud-Native & Infrastructure Security (11.1-11.3), Section 12 Digital Forensics & Incident Response (12.1-12.2), and Section 13 Governance, Risk & Compliance (13.1-13.5).",
+      "rationale": "Comprehensive technical coverage requires addressing core engineering disciplines (Architecture, AppSec, Cloud-Native, DFIR) alongside threat intelligence and governance. Positioning GRC as Section 13 provides a natural capstone synthesising all technical controls into enterprise governance.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-207",
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-207/final",
+          "supports": "Zero Trust Architecture core principles."
+        },
+        {
+          "title": "OWASP Top 10 Web / API",
+          "url": "https://owasp.org/www-project-top-10/",
+          "supports": "Web and API application security vulnerability taxonomies."
+        },
+        {
+          "title": "NIST SP 800-86 & 800-61",
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-86/final",
+          "supports": "Digital forensics evidence handling and incident response lifecycle."
+        }
+      ],
+      "verification_methods": [
+        "Verify 90 ordered topics in nav.yml and topic-nav.html.",
+        "Run scripts/verify_writing_style.py across all 90 topic files.",
+        "Run scripts/verify_content_decisions.py against CONTENT_DECISIONS.yml."
+      ],
+      "approved_outcome": "Journal expanded to 13 sections and 90 ordered single-subject topics, fully verified with matching SVGs and re-ordered navigation.",
+      "invalidation_conditions": [
+        "The journal section taxonomy is restructured by explicit user instruction."
+      ],
+      "related_decisions": ["CD-0001", "CD-0027"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "fe3c5e5a5228b0404379085ce1e63442c29a3af8f7c666c6fd7081214a19d113",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }

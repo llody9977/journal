@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">API &amp; Microservice Security Architecture</title>
+  <desc id="description">API &amp; Microservice Security diagram showing OWASP API Top 10, BOLA, JWT security, and GraphQL query depth limits.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">API &amp; Microservice Security</text>
+  <text x="50" y="75" font-size="14" fill="#475569">OWASP API Security Top 10, BOLA mitigation, JWT signature verification, and GraphQL batching protections.</text>
+  
+  <!-- OWASP API BOLA (x=40, w=540, y=105, h=160) -->
+  <rect x="40" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">BROKEN OBJECT LEVEL AUTHORIZATION (BOLA / IDOR)</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">#1 API Threat: Direct Object Access</text>
+  <line x1="60" y1="166" x2="560" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Vulnerability: Replacing GET /api/user/101 with /api/user/102 returns target user data</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Root Cause: Missing object-level authorization checks at API handler endpoints</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Mitigation: Enforce strict user session to object ID ownership checks on every request</text>
+
+  <!-- JWT Security (x=620, w=540, y=105, h=160) -->
+  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">JWT SECURITY &amp; TOKEN HARDENING</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Algorithm Confusion &amp; Signature Validation</text>
+  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Algorithm Confusion: Blocking 'alg: none' and RS256 -> HS256 public key attacks</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Key ID (kid) Injection: Sanitizing kid header parameters against SQLi/directory traversal</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Revocation: Short-lived access tokens (15-min) + token introspection / revocation lists</text>
+
+  <!-- GraphQL & Rate Limiting (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">GRAPHQL SECURITY &amp; RATE LIMITING GATEWAYS</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Query Complexity Controls &amp; API Rate Limiting</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• GraphQL Hardening: Disable Introspection in production; enforce maximum query depth &amp; cost analysis</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Rate Limiting: Token bucket &amp; leaky bucket algorithms enforced at API Gateway by IP / Client ID</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Mass Assignment Protection: Strict DTO schema binding restricting client-writable parameters</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">API SECURITY: API GATEWAY RATE LIMITING → JWT SIGNATURE VALIDATION → OBJECT AUTHORIZATION (BOLA) → SCHEMA BINDING</text>
+</svg>

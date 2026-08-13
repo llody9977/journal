@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Web Application Vulnerability Engineering Architecture</title>
+  <desc id="description">Web Application Vulnerability Engineering diagram showing OWASP Top 10 web risks, Injection, XSS, SSRF, Deserialization, and Memory Safety.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Web Application Vulnerability Engineering</text>
+  <text x="50" y="75" font-size="14" fill="#475569">OWASP Top 10 web vulnerabilities, Injection, XSS, SSRF, Deserialization, and Memory Safety.</text>
+  
+  <!-- Injection & XSS (x=40, w=540, y=105, h=160) -->
+  <rect x="40" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">INJECTION &amp; CROSS-SITE SCRIPTING (XSS)</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Input Processing Vulnerabilities</text>
+  <line x1="60" y1="166" x2="560" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• SQL / Command Injection: Dynamic string concatenation into parser engines</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Reflected / Stored / DOM XSS: Executable JavaScript injected into browser DOM</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Remediation: Parameterized queries &amp; Context-aware HTML/JS output encoding</text>
+
+  <!-- SSRF & Deserialization (x=620, w=540, y=105, h=160) -->
+  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SSRF &amp; INSECURE DESERIALIZATION</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Internal Boundary &amp; Object Attacks</text>
+  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• SSRF: Server forced to send requests to internal metadata endpoints (169.254.169.254)</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Insecure Deserialization: Untrusted object streams executing gadget chains</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Remediation: Strict URL destination whitelisting &amp; Safe JSON/Protobuf formats</text>
+
+  <!-- Memory Safety (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">MEMORY SAFETY ENGINEERING (RUST / GO VS C / C++)</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Eliminating Spatial &amp; Temporal Memory Corruption</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Memory Vulnerabilities: Buffer Overflows, Use-After-Free, Double-Free, Pointer Null Dereference</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Memory-Safe Languages: Rust (Compile-time borrow checker) &amp; Go (Garbage collection &amp; bounds checking)</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• C/C++ Hardening: ASLR, DEP/NX, Stack Canaries, AddressSanitizer (ASan), Control Flow Integrity (CFI)</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">APPSEC FLOW: INPUT VALIDATION → PARAMETERIZED QUERIES → OUTPUT ENCODING → MEMORY-SAFE COMPILATION</text>
+</svg>

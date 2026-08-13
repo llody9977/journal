@@ -1,0 +1,29 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Zero Trust Architecture (ZTA) &amp; NIST SP 800-207 Architecture</title>
+  <desc id="description">Zero Trust Architecture diagram showing NIST SP 800-207 Policy Engine, Policy Administrator, Policy Enforcement Point, and CARTA continuous adaptive evaluation.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Zero Trust Architecture (ZTA) &amp; NIST SP 800-207</text>
+  <text x="50" y="75" font-size="14" fill="#475569">NIST SP 800-207 core components: Policy Engine, Policy Administrator, Policy Enforcement Point, and CARTA adaptive trust.</text>
+  
+  <!-- Control Plane (x=40, w=1120, y=105, h=160) -->
+  <rect x="40" y="105" width="1120" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">ZERO TRUST CONTROL PLANE (NIST SP 800-207)</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Policy Decision Point (PDP)</text>
+  <line x1="60" y1="166" x2="1140" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• POLICY ENGINE (PE): Evaluates trust score using Threat Intel, Identity (IdP), Device Posture (EDR), &amp; Context</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• POLICY ADMINISTRATOR (PA): Issues credential tokens &amp; signals commands to Policy Enforcement Points</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• CONTINUOUS ADAPTIVE TRUST (CARTA): Re-evaluates session risk dynamically during active connections</text>
+
+  <!-- Data Plane (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">ZERO TRUST DATA PLANE (DATA &amp; WORKLOAD ENFORCEMENT)</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Policy Enforcement Point (PEP)</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Subject / Device ──( 1. Encrypted TLS Tunnel )──> Policy Enforcement Point (PEP Gateway / Sidecar)</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• PEP Gatekeeper ──( 2. Query PDP )──> Control Plane Decision ──( 3. Allow / Deny )──> Target Resource</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Key Principle: Assume Breach — All network locations are untrusted; explicit microsegmentation enforced</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">ZERO TRUST TENETS: ASSUME BREACH → EXPLICIT VERIFICATION → LEAST PRIVILEGE → CONTINUOUS ADAPTIVE ASSESSMENT</text>
+</svg>

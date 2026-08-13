@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Digital Forensics &amp; Evidence Handling (DFIR) Architecture</title>
+  <desc id="description">Digital Forensics diagram showing Memory Forensics (Volatility), Disk Forensics (Autopsy), Artifact Analysis (Windows Registry/Prefetch, Linux journald, CloudTrail), and Chain of Custody (NIST SP 800-86).</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Digital Forensics &amp; Evidence Handling (DFIR)</text>
+  <text x="50" y="75" font-size="14" fill="#475569">Memory forensics, disk acquisition, OS artifact analysis, and NIST SP 800-86 Chain of Custody.</text>
+  
+  <!-- Forensics Modalities (x=40, w=540, y=105, h=160) -->
+  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">MEMORY &amp; DISK FORENSIC ACQUISITION</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Live Volatile RAM &amp; Static Storage Analysis</text>
+  <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Memory Forensics (Volatility / LiME): In-memory injection, process hollowing, network sockets</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Disk Acquisition (FTK Imager / dd): Bit-stream raw/E01 image creation with write-blockers</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Volatility Order: Capture volatile RAM prior to host shutdown or network isolation</text>
+
+  <!-- Artifact Analysis (x=620, w=540, y=105, h=160) -->
+  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">OS &amp; CLOUD ARTIFACT TIMELINE ANALYSIS</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Windows, Linux, &amp; Cloud Incident Artifacts</text>
+  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Windows Artifacts: Registry hives, Event Logs (Evtx), Prefetch, Shimcache, Amcache, USN Journal</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Linux Artifacts: Systemd journald, auth.log, bash history, auditd logs, cron jobs</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Cloud Artifacts: AWS CloudTrail, VPC Flow Logs, GCP Audit Logs, Azure Activity Logs</text>
+
+  <!-- Chain of Custody (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">CHAIN OF CUSTODY &amp; EVIDENTIARY INTEGRITY (NIST SP 800-86)</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Legal Evidence Integrity &amp; Cryptographic Hash Verification</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Cryptographic Hashing: Calculate SHA-256 / SHA-512 hashes immediately upon evidence acquisition</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Custody Logging: Record acquiring investigator, date/time, physical/cloud location, &amp; hash validation</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Read-Only Analysis: Always perform forensic timeline analysis on working copies; preserve master original</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">DFIR LIFECYCLE: LIVE RAM ACQUISITION → DISK BIT-STREAM IMAGE → ARTIFACT TIMELINE → CHAIN OF CUSTODY VERIFICATION</text>
+</svg>
