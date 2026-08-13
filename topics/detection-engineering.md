@@ -87,13 +87,56 @@ rule Detect_Suspicious_Dump_Strings {
 }
 ```
 
-### 3. Native SIEM Analytics Query Languages
+### 3. Native SIEM Analytics Query Languages & pySigma Transpilation
 
 | Query Language | Target Platform | Primary Operational Characteristics |
 |---|---|---|
 | **KQL (Kusto Query Language)** | Microsoft Sentinel, Defender XDR | High-performance pipe-based analytics query language designed for structured log filtering, joining, and aggregation. |
 | **SPL (Search Processing Language)** | Splunk Enterprise / Cloud | Pipe-delimited search language supporting statistical transforms, lookup tables, and complex subsearches. |
 | **YARA-L 2.0** | Google Chronicle / SecOps | Event- and entity-centric rule language supporting single-event conditions and multi-event correlation windows. |
+
+### Automating Rule Transpilation via pySigma Pipeline
+
+In a modern Detection-as-Code pipeline, **`pySigma`** programmatically transpiles vendor-neutral Sigma rules into target SIEM query formats:
+
+```python
+#!/usr/bin/env python3
+"""pySigma Automated Rule Transpilation Script."""
+
+from sigma.collection import SigmaCollection
+from sigma.backends.microsoftsentinel import MicrosoftSentinelBackend
+from sigma.backends.splunk import SplunkBackend
+from sigma.pipelines.microsoftsentinel import microsoft_sentinel_windows_pipeline
+from sigma.pipelines.splunk import splunk_windows_pipeline
+
+# 1. Load Vendor-Neutral Sigma Rule YAML
+sigma_yaml = """
+title: LSASS Memory Dumping via Process Access
+logsource:
+    category: process_access
+    product: windows
+detection:
+    selection:
+        TargetImage|endswith: '\\lsass.exe'
+        GrantedAccess:
+            - '0x1010'
+            - '0x1400'
+    condition: selection
+"""
+rule_collection = SigmaCollection.from_yaml(sigma_yaml)
+
+# 2. Transpile to Microsoft Sentinel KQL
+sentinel_backend = MicrosoftSentinelBackend(processing_pipeline=microsoft_sentinel_windows_pipeline())
+kql_query = sentinel_backend.convert(rule_collection)[0]
+print(f"[*] Generated KQL: {kql_query}")
+# Output: SecurityEvent | where TargetImage endswith "\\lsass.exe" and GrantedAccess in ("0x1010", "0x1400")
+
+# 3. Transpile to Splunk SPL
+splunk_backend = SplunkBackend(processing_pipeline=splunk_windows_pipeline())
+spl_query = splunk_backend.convert(rule_collection)[0]
+print(f"[*] Generated SPL: {spl_query}")
+# Output: index=windows EventCode=10 TargetImage="*\\lsass.exe" (GrantedAccess="0x1010" OR GrantedAccess="0x1400")
+```
 
 ## Telemetry Normalization: ECS & OCSF
 

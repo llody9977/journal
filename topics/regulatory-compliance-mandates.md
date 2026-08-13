@@ -36,6 +36,18 @@ These mechanisms serve different purposes and do not bind every organization aut
 | **[PCI-DSS v4.0.1](https://www.pcisecuritystandards.org/document_library/?class=pcidss&doc=pci_dss)** | Payment Card Security | Annual QSA Audit / Report on Compliance | Contractual technical requirements for processing, storing, or transmitting credit card data—enforced by the payment card networks, not a government. Version 4.0.1 is the currently active revision, superseding 4.0. |
 | **[SOC 2 Type II (AICPA)](https://www.aicpa-cima.com/resources/landing/aicpa-soc-for-service-organizations)** | B2B SaaS &amp; Cloud Security | Independent CPA Audit Attestation | Proving operational control effectiveness (*Security, Availability, Confidentiality*) to enterprise customers. |
 
+### ISO/IEC 27701:2025 PIMS Control Mapping to Statutory Privacy Rules
+
+ISO/IEC 27701:2025 maps technical privacy controls specifically for PII Controllers and PII Processors:
+
+| Privacy Operational Domain | ISO/IEC 27701:2025 PIMS Control Requirement | GDPR Statutory Alignment | CCPA / CPRA Statutory Alignment |
+|---|---|---|---|
+| **Consent &amp; Choice Management** | Clause 7.2.1 / 7.2.2: Provide mechanisms for PII principals to give and withdraw explicit consent. | GDPR Article 6 &amp; 7 (Lawfulness of processing &amp; consent conditions). | CCPA § 1798.120 (Right to opt-out of sale/sharing of personal info). |
+| **Data Minimisation &amp; Purpose** | Clause 7.2.5 / 7.2.6: Limit PII collection and processing strictly to declared lawful purposes. | GDPR Article 5(1)(b) &amp; (c) (Purpose limitation &amp; data minimisation). | CCPA § 1798.100 (Notice at collection &amp; collection limits). |
+| **Data Subject Access Rights** | Clause 7.3.1 - 7.3.9: Provide PII principals with access, correction, erasure, and portability capabilities. | GDPR Articles 15–21 (Access, rectification, erasure "right to be forgotten", portability). | CCPA § 1798.100, 105, 110 (Right to know, delete, correct info). |
+| **Privacy by Design &amp; Default** | Clause 7.4.1 - 7.4.8: Implement Privacy Impact Assessments (PIA) &amp; technical PII boundary isolation. | GDPR Article 25 &amp; 35 (Data protection by design/default &amp; DPIA). | CPRA § 1798.185(a)(15) (Risk assessment &amp; cybersecurity audit mandates). |
+| **Data Breach Notification** | Clause 7.5.1 / 8.5.8: Notify PII controllers and supervisory authorities of PII breaches without undue delay. | GDPR Article 33 &amp; 34 (72-hour supervisory breach notification). | CCPA § 1798.150 (Private right of action for data breaches). |
+
 ## Distinguishing Legal Requirements from Private-Sector Assurance
 
 | Question | Applicable Laws and Regulations | Private-Sector Standards and Assurance |

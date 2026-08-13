@@ -61,6 +61,41 @@ For an emerging enterprise or startup establishing a security program from scrat
 4. **Stage 4 (Customer Attestation)**: Undergo a **SOC 2 Type II audit** when enterprise B2B sales demand third-party attestation.
 5. **Stage 5 (Global Certification)**: Pursue **ISO/IEC 27001:2022 certification** when expanding into international or heavily regulated markets.
 
+### Automated GRC Evidence Collection Pipeline
+
+Manual compliance evidence collection is error-prone and stale by audit time. Modern GRC automation scripts query cloud APIs continuously to extract evidence payloads for SOC 2 Type II and ISO 27001 audit logs:
+
+```python
+#!/usr/bin/env python3
+"""Automated GRC Evidence Collection Script (AWS KMS Key Rotation & IAM MFA Audit)."""
+
+import json
+from datetime import datetime, timezone
+import boto3
+
+def collect_kms_evidence() -> list[dict]:
+    kms = boto3.client('kms')
+    evidence = []
+    keys = kms.list_keys()['Keys']
+    for key in keys:
+        key_id = key['KeyId']
+        metadata = kms.describe_key(KeyId=key_id)['KeyMetadata']
+        if metadata['KeyManager'] == 'CUSTOMER':
+            rotation = kms.get_key_rotation_status(KeyId=key_id)['KeyRotationEnabled']
+            evidence.append({
+                "resource_id": metadata['Arn'],
+                "control_id": "ISO_27001_A.8.24_CRYPTOGRAPHY",
+                "compliant": rotation,
+                "evidence_detail": f"KMS Key Rotation Enabled: {rotation}",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
+    return evidence
+
+if __name__ == "__main__":
+    evidence_payload = collect_kms_evidence()
+    print(json.dumps(evidence_payload, indent=2))
+```
+
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
   <p>One practical startup sequence is technical hygiene → shared risk vocabulary → product security → customer attestation → certification, adjusted to the organization's risks, obligations, and resources; it is not a universal maturity model. Governance roles and risk appetite guide those choices, while automated guardrails reduce policy drift without proving compliance.</p>

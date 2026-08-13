@@ -55,6 +55,22 @@ atomic_tests:
         Remove-Item #{output_file} -ErrorAction SilentlyContinue
       name: powershell
       elevation_required: true
+
+  - name: T1059.001 - PowerShell Encoded Command Execution
+    auto_generated_guid: b250b73c-b169-4e4b-a94f-4d371d797374
+    description: Executes an encoded PowerShell command string to emulate adversary obfuscated execution.
+    supported_platforms:
+      - windows
+    input_arguments:
+      encoded_command:
+        description: Base64 encoded PowerShell command string
+        type: string
+        default: "V3JpdGUtSG9zdCAnQXRvbWljIFJlZCBUZWFtIFQxMDU5LjAwMSBUZXN0Jw=="
+    executor:
+      command: |
+        powershell.exe -NoProfile -EncodedCommand #{encoded_command}
+      name: powershell
+      elevation_required: false
 ```
 
 ### 2. MITRE CALDERA
