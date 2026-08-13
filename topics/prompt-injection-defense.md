@@ -1,6 +1,6 @@
 ---
 title: Prompt Injection & Context Safety
-description: Comprehensive technical guide to direct and indirect prompt injection attacks (OWASP LLM01:2025), dual-LLM guardrail architectures, NeMo Guardrails, Llama Guard, and RAG document context isolation.
+description: Comprehensive technical guide to direct and indirect prompt injection attacks (OWASP LLM01:2026), dual-LLM guardrail architectures, NeMo Guardrails, Llama Guard, and RAG document context isolation.
 permalink: /topics/prompt-injection-defense/
 last_verified: 2026-08-13
 ---
@@ -87,6 +87,6 @@ When evaluating an LLM application for prompt injection vulnerabilities, audit t
 
 ## Primary references
 
-- **OWASP LLM01:2025**: *Prompt Injection Vulnerability Guide* — [OWASP LLM01](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
+- **OWASP LLM01:2026**: *Prompt Injection Vulnerability Guide* — [OWASP LLM01](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
 - **NVIDIA NeMo Guardrails**: *Open Source Toolkit for Adding Guardrails to LLMs* — [NeMo Guardrails Docs](https://github.com/NVIDIA/NeMo-Guardrails)
 - **Meta Llama Guard**: *Llama Guard Safety Classifier Models* — [Meta Llama Guard](https://github.com/meta-llama/llama-models/tree/main/models/llama_guard)

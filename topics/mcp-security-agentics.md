@@ -9,7 +9,7 @@ last_verified: 2026-08-13
 
 # Model Context Protocol (MCP) & Agentic Security
 
-<p class="lede">The Model Context Protocol (MCP) standardizes how AI agents discover and invoke external tools, databases, and APIs. However, granting LLM agents autonomous tool execution creates a critical attack surface: MCP tool description poisoning and excessive agency (OWASP LLM06:2025). Securing agentic architectures requires treating tool metadata as untrusted input, scoping client tokens via RFC 8707 resource indicators, and enforcing mandatory Human-in-the-Loop (HITL) authorization gates for high-privilege side effects.</p>
+<p class="lede">The Model Context Protocol (MCP) standardizes how AI agents discover and invoke external tools, databases, and APIs. However, granting LLM agents autonomous tool execution creates a critical attack surface: MCP tool description poisoning and excessive agency (OWASP LLM06:2026). Securing agentic architectures requires treating tool metadata as untrusted input, scoping client tokens via RFC 8707 resource indicators, and enforcing mandatory Human-in-the-Loop (HITL) authorization gates for high-privilege side effects.</p>
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/mcp-tool-poisoning.svg' | relative_url }}" alt="MCP Tool Poisoning diagram showing malicious instructions hidden inside tool metadata.">
@@ -60,7 +60,7 @@ To prevent token misuse, MCP clients must enforce **Resource Indicators for OAut
 
 ## Human-in-the-Loop (HITL) Execution Controls
 
-OWASP LLM06:2025 (*Excessive Agency*) occurs when an agent executes destructive actions autonomously. To prevent catastrophic side effects, MCP clients must enforce **Human-in-the-Loop (HITL)** approval gates based on tool privilege classification:
+OWASP LLM06:2026 (*Excessive Agency*) occurs when an agent executes destructive actions autonomously. To prevent catastrophic side effects, MCP clients must enforce **Human-in-the-Loop (HITL)** approval gates based on tool privilege classification:
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/mcp-tool-poisoning.svg' | relative_url }}" alt="Human in the Loop approval gate evaluation diagram.">
@@ -95,4 +95,4 @@ When auditing an MCP deployment or agentic application, evaluate these 6 criteri
 
 - **Model Context Protocol Specification**: *Server Tools Specification (2025-06-18)* — [MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)
 - **RFC 8707**: *Resource Indicators for OAuth 2.0* — [IETF Datatracker](https://datatracker.ietf.org/doc/html/rfc8707)
-- **OWASP LLM06:2025**: *Excessive Agency Risk Guide* — [OWASP LLM06](https://genai.owasp.org/llmrisk/llm06-excessive-agency/)
+- **OWASP LLM06:2026**: *Excessive Agency Risk Guide* — [OWASP LLM06](https://genai.owasp.org/llmrisk/llm06-excessive-agency/)

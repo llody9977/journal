@@ -44,6 +44,11 @@ Federated Learning introduces unique decentralized attack vectors:
 - **Membership Inference Attacks**: Adversaries query the global model to determine whether a target individual's private data was used in training.
   - *Defense*: Enforce strict Central Differential Privacy ($\varepsilon \le 1.0$) during model aggregation.
 
+### Performance Trade-Offs & Limitations
+Federated Learning imposes severe operational and theoretical constraints:
+- **Privacy-Utility Trade-Off**: The Differential Privacy noise parameter ($\varepsilon$) operates on an inverse curve with model utility. Stricter privacy bounds (lower $\varepsilon$) mathematically guarantee higher privacy but proportionally degrade model accuracy.
+- **Aggregation Overhead**: Secure Multi-Party Computation (SMPC) used in SecAgg requires extensive cryptographic overhead, dramatically increasing network bandwidth consumption and latency across participating edge clients.
+
 ## Essential Federated Learning Diagnostic Checklist
 
 When auditing a privacy-preserving machine learning deployment, evaluate these 6 criteria:

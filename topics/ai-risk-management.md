@@ -1,6 +1,6 @@
 ---
 title: AI & LLM Threat Frameworks & Risk Management
-description: Comprehensive technical guide to AI and Large Language Model (LLM) risk governance, NIST AI RMF 1.0 core functions, OWASP Top 10 for LLM Applications (2025), and MITRE ATLAS adversarial ML threat mapping.
+description: Comprehensive technical guide to AI and Large Language Model (LLM) risk governance, NIST AI RMF 1.0 core functions, OWASP Top 10 for LLM Applications (2026), and MITRE ATLAS adversarial ML threat mapping.
 permalink: /topics/ai-risk-management/
 last_verified: 2026-08-13
 ---
@@ -13,7 +13,7 @@ last_verified: 2026-08-13
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/ai-risk-management.svg' | relative_url }}" alt="AI &amp; LLM Threat Frameworks &amp; Risk Management Architecture diagram showing NIST AI RMF 1.0 functions (Govern, Map, Measure, Manage), OWASP Top 10 for LLMs, and MITRE ATLAS matrix mapping.">
-  <p class="diagram-caption">AI Risk Management Architecture: NIST AI RMF 1.0 Core Functions &leftrightarrow; OWASP Top 10 for LLMs (2025) &leftrightarrow; MITRE ATLAS Adversarial Threat Matrix</p>
+  <p class="diagram-caption">AI Risk Management Architecture: NIST AI RMF 1.0 Core Functions &leftrightarrow; OWASP Top 10 for LLMs (2026) &leftrightarrow; MITRE ATLAS Adversarial Threat Matrix</p>
 </div>
 
 ## The Fundamental AI Risk Shift
@@ -41,22 +41,29 @@ Published by NIST, the **AI RMF 1.0** provides a structured framework for managi
 3. **MEASURE**: Employs quantitative and qualitative metrics to evaluate AI system safety, security, robustness, bias, and privacy. Conducts empirical red-teaming and adversarial benchmark evaluations.
 4. **MANAGE**: Allocates risk response resources to prioritized AI risks. Deploys technical controls (*e.g. guardrails, least-privilege tool binding*) and defines incident response procedures for AI failures.
 
-## OWASP Top 10 for LLM Applications (2025 Edition)
+### AI Model Retirement & Revocation
+A mature AI risk management program must define explicit lifecycle criteria for **Model Retirement**. Models must be actively decommissioned and revoked from inference endpoints when:
+- Underlying training datasets are discovered to contain unacceptably biased, poisoned, or legally restricted data (e.g., copyright revocation).
+- Model weights drift significantly beyond acceptable safety baselines.
+- More robust, less resource-intensive models (e.g., migrating from 70B to 8B parameter models) successfully pass safety benchmarks.
+Proper revocation prevents "zombie models" from accumulating in production and exposing deprecated vulnerabilities.
+
+## OWASP Top 10 for LLM Applications (2026 Edition)
 
 The **OWASP Top 10 for LLM Applications** categorizes the most critical security vulnerabilities impacting LLM-backed applications:
 
 | Vulnerability ID | Vulnerability Name | Operational Risk &amp; Threat Description |
 |---|---|---|
-| **LLM01:2025** | **Prompt Injection** | Direct jailbreaks or indirect untrusted data payloads override system prompt instructions. |
-| **LLM02:2025** | **Sensitive Information Disclosure** | Model discloses confidential training data, PII, or internal system context in responses. |
-| **LLM03:2025** | **Supply Chain Vulnerabilities** | Compromised foundation models, poisoned datasets, or vulnerable third-party Python packages. |
-| **LLM04:2025** | **Data and Model Poisoning** | Adversaries manipulate fine-tuning datasets or pre-training corpora to introduce backdoors. |
-| **LLM05:2025** | **Improper Output Handling** | Unsanitized LLM responses passed directly to downstream web browsers, DBs, or shells. |
-| **LLM06:2025** | **Excessive Agency** | LLM agents granted over-privileged tool access or autonomous execution without approval gates. |
-| **LLM07:2025** | **System Prompt Leakage** | Attackers craft prompts that force the model to reveal proprietary system instructions. |
-| **LLM08:2025** | **Vector and Embedding Weaknesses** | Unauthorized data access or injection via weak vector database access controls and RAG pipelines. |
-| **LLM09:2025** | **Misinformation &amp; Hallucination** | Over-reliance on inaccurate or hallucinated model outputs leading to security operational failures. |
-| **LLM10:2025** | **Unbounded Consumption** | Resource exhaustion and denial-of-wallet via heavy inference requests or recursive agent loops. |
+| **LLM01:2026** | **Prompt Injection** | Direct jailbreaks or indirect untrusted data payloads override system prompt instructions. |
+| **LLM02:2026** | **Sensitive Information Disclosure** | Model discloses confidential training data, PII, or internal system context in responses. |
+| **LLM03:2026** | **Supply Chain Vulnerabilities** | Compromised foundation models, poisoned datasets, or vulnerable third-party Python packages. |
+| **LLM04:2026** | **Data and Model Poisoning** | Adversaries manipulate fine-tuning datasets or pre-training corpora to introduce backdoors. |
+| **LLM05:2026** | **Improper Output Handling** | Unsanitized LLM responses passed directly to downstream web browsers, DBs, or shells. |
+| **LLM06:2026** | **Excessive Agency** | LLM agents granted over-privileged tool access or autonomous execution without approval gates. |
+| **LLM07:2026** | **System Prompt Leakage** | Attackers craft prompts that force the model to reveal proprietary system instructions. |
+| **LLM08:2026** | **Vector and Embedding Weaknesses** | Unauthorized data access or injection via weak vector database access controls and RAG pipelines. |
+| **LLM09:2026** | **Misinformation &amp; Hallucination** | Over-reliance on inaccurate or hallucinated model outputs leading to security operational failures. |
+| **LLM10:2026** | **Unbounded Consumption** | Resource exhaustion and denial-of-wallet via heavy inference requests or recursive agent loops. |
 
 ## MITRE ATLAS (Adversarial Threat Landscape for Artificial-Intelligence Systems)
 
@@ -87,7 +94,7 @@ When auditing an enterprise AI deployment, evaluate these 6 core criteria:
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>AI risk management requires governing non-deterministic token inference. NIST AI RMF 1.0 provides governance functions (Govern, Map, Measure, Manage), OWASP LLM01:2025 highlights prompt injection and excessive agency, and MITRE ATLAS maps adversarial AI attack paths.</p>
+  <p>AI risk management requires governing non-deterministic token inference. NIST AI RMF 1.0 provides governance functions (Govern, Map, Measure, Manage), OWASP LLM01:2026 highlights prompt injection and excessive agency, and MITRE ATLAS maps adversarial AI attack paths.</p>
 </div>
 
 ## Primary references
