@@ -2,20 +2,20 @@
 title: Symmetric vs Asymmetric Cryptography
 description: Direct comparative decision guide between symmetric and asymmetric cryptography, hybrid encryption architectures (HPKE), and attribution limits.
 permalink: /topics/symmetric-vs-asymmetric/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Decision Guide</span>
 
 # Symmetric vs Asymmetric Cryptography
 
-<p class="lede">Symmetric and asymmetric cryptography are complementary mechanisms serving distinct architectural roles. Symmetric ciphers provide high-throughput bulk encryption using a single shared secret key, whereas asymmetric cryptography uses public/private key pairs for open public-key distribution whose identity binding must be authenticated (e.g., via a certificate or out-of-band verification), and for digital signatures that prove control of a private key rather than a signer's real-world identity.</p>
+<p class="lede">Symmetric and asymmetric cryptography are complementary mechanisms serving distinct architectural roles. Symmetric ciphers provide high-throughput bulk encryption using a shared secret key, whereas asymmetric cryptography uses public/private key pairs for public-key distribution and digital signatures. A signature validates for data under a public key; signer attribution and evidence of key control additionally require an authenticated identity binding and trustworthy key custody.</p>
 
 ## Direct Comparison Matrix
 
 | Dimension | Symmetric Cryptography | Asymmetric Cryptography | Primary Operational Trade-off |
 |---|---|---|---|
-| **Attribution Capability** | Identifies shared key holder; cannot prove *which* holder created it | Verifies the signature was produced using the private key matching a given public key (technical non-repudiation) — attribution to a specific *person* depends on that public key actually being bound to their identity and the private key remaining in their sole custody; a copied, shared, delegated, or compromised private key breaks that chain. *Legal* non-repudiation further depends on jurisdiction, evidentiary standards, and key-custody proof, e.g., under ESIGN/UETA or eIDAS | Symmetric MACs cannot provide non-repudiation against key partners. |
+| **Attribution Capability** | Shows that a valid tag came from some holder of the shared key; it cannot distinguish which holder created it | Verifies that a signature validates for specific data under a public key. Attribution to a person depends on an authenticated key-to-identity binding and evidence that the private key remained under that person's control; a copied, shared, delegated, or compromised key breaks that chain. Legal non-repudiation further depends on jurisdiction and evidentiary standards | Symmetric MACs cannot distinguish among key-sharing parties; signatures can support attribution only with separate identity and custody evidence. |
 | **Computational Throughput** | Extremely fast (Gigabytes/sec via hardware AES-NI) | Computationally far more expensive per byte — commonly cited as roughly two to three orders of magnitude slower, though the actual ratio varies widely by algorithm, key size, and hardware acceleration; consult a current benchmark (e.g., `openssl speed`) for figures on your target platform rather than treating any single number as universal | Use asymmetric crypto to exchange keys, then symmetric ciphers for bulk data. |
 | **Data Size Limits** | Arbitrary message length | Applies to **public-key encryption specifically** (e.g., RSA-OAEP), not to signatures or key agreement: RSA-2048 with OAEP-SHA256 encrypts &le; 190 bytes (modulus_bytes &minus; 2&times;hashLen &minus; 2). ECDSA/EdDSA sign a fixed-size digest regardless of message length, and ECDH/X25519 key agreement has no payload to size-limit at all. | Asymmetric *encryption* wraps symmetric keys rather than encrypting bulk files; signatures and key agreement aren't subject to this limit in the first place. |
 | **Key Architecture** | Single shared secret key (**K**) | Linked Key Pair: Public Key (<b>K<sub>pub</sub></b>) + Private Key (<b>K<sub>priv</sub></b>) | Symmetric keys require secure out-of-band distribution or key agreement. |
@@ -47,7 +47,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 | **Key Encapsulation to Single Receiver** | Asymmetric HPKE | HPKE (RFC 9180) | Sender's KEM operation against the receiver's public key yields a shared secret, which HKDF expands into an AEAD context (key + nonce schedule) used to encrypt the payload directly; using that context to wrap a separate DEK is one common application pattern, not HPKE's only mode of operation (RFC 9180 also defines PSK and auth modes). |
 | **Network Transit Confidentiality** | Hybrid Encryption | TLS 1.3 (ECDHE + AES-GCM) | Ephemeral key agreement establishes shared secret for symmetric transport. |
 | **Payload Integrity &amp; Authentication** | Symmetric MAC | HMAC-SHA256 | Both endpoints share secret key; verifier checks HMAC tag over message. |
-| **Unforgeable Signature Evidence** | Asymmetric Digital Signature | Ed25519 (RFC 8032) / RSA-PSS | Signer uses private key; verifier uses public key to verify control of the signing key and payload integrity. |
+| **Unforgeable Signature Evidence** | Asymmetric Digital Signature | Ed25519 (RFC 8032) / RSA-PSS | Signer uses a private key; verifier checks that the signature validates for the payload under the public key. Identity and custody remain separate checks. |
 
 ## Critical Cryptographic Boundary Rules
 

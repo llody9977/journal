@@ -17,6 +17,17 @@ defaults:
       layout: default
 
 exclude:
+  - .ruby-version
+  - AGENTS.md
   - README.md
+  - REVIEW_STANDARD.md
+  - WRITING_STYLE.md
   - Gemfile
   - Gemfile.lock
+  - bin
+  - node_modules
+  - package-lock.json
+  - package.json
+  - reviews
+  - scripts
+  - vendor

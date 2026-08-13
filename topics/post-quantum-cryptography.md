@@ -1,8 +1,8 @@
 ---
 title: Post-Quantum Cryptography (PQC) Migration
-description: Architectural roadmap for migrating to NIST PQC standards (finalized FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA, and draft FIPS 206 FN-DSA), NSA CNSA 2.0 timelines, and hybrid key exchange.
+description: Architectural roadmap for migrating to finalized NIST PQC standards FIPS 203 ML-KEM, FIPS 204 ML-DSA, and FIPS 205 SLH-DSA, with FIPS 206 FN-DSA under development, NSA CNSA 2.0 timelines, and hybrid key exchange.
 permalink: /topics/post-quantum-cryptography/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Emerging Topics</span>
@@ -54,9 +54,9 @@ Adversaries may be collecting and storing encrypted high-value enterprise traffi
   </div>
 </div>
 
-## Finalized NIST PQC Standards (FIPS 203, 204, 205) & Draft FIPS 206
+## Finalized NIST PQC Standards and FIPS 206 Under Development
 
-On August 13, 2024, NIST officially published the **finalized Federal Information Processing Standards (FIPS)** for Post-Quantum Cryptography: **FIPS 203 (ML-KEM)**, **FIPS 204 (ML-DSA)**, and **FIPS 205 (SLH-DSA)**. A fourth algorithm, **FN-DSA (Falcon)**, is currently under development as draft **FIPS 206**:
+On August 13, 2024, NIST officially published the **finalized Federal Information Processing Standards (FIPS)** for Post-Quantum Cryptography: **FIPS 203 (ML-KEM)**, **FIPS 204 (ML-DSA)**, and **FIPS 205 (SLH-DSA)**. NIST is developing a fourth standard, **FIPS 206**, for **FN-DSA (Falcon)**; it is not yet a finalized FIPS publication, so deployment status must be tracked through [NIST's PQC project](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography/Post-Quantum-Cryptography-Standardization?data1=v2):
 
 ### Finalized PQC Standards (August 2024)
 
@@ -66,11 +66,11 @@ On August 13, 2024, NIST officially published the **finalized Federal Informatio
 | **FIPS 204** | **ML-DSA** (Dilithium) | Module Lattice (ML-SIS) | General Digital Signatures | **FINALIZED (Aug 2024)**: Primary standard for general-purpose digital signatures and PKI ([NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final)). |
 | **FIPS 205** | **SLH-DSA** (SPHINCS+) | Stateless Hash Trees | Backup Digital Signatures | **FINALIZED (Aug 2024)**: Purely hash-based signature scheme providing conservative fallback safety ([NIST FIPS 205](https://csrc.nist.gov/pubs/fips/205/final)). |
 
-### Standards Under Development (Draft)
+### Standard Under Development
 
-| Draft Standard | Algorithm Name | Mathematical Paradigm | Target Function | Status & Primary Engineering Role |
+| Planned Standard | Algorithm Name | Mathematical Paradigm | Target Function | Status & Primary Engineering Role |
 |---|---|---|---|---|
-| **Draft FIPS 206** | **FN-DSA** (Falcon) | Fast-Fourier Lattice | Compact Digital Signatures | **UNDER DEVELOPMENT**: Draft standard optimized for compact signatures in constrained memory environments. |
+| **FIPS 206 (in development)** | **FN-DSA** (Falcon) | Fast-Fourier Lattice | Compact Digital Signatures | **UNDER DEVELOPMENT**: NIST is preparing the FN-DSA standard; no final FIPS 206 has been published. |
 
 ### Backup KEM: HQC
 
@@ -89,7 +89,7 @@ For U.S. **National Security Systems (NSS)** subject to Commercial National Secu
 
 ## Hybrid Cryptography Transition Pattern
 
-To hedge against implementation bugs in new lattice-based algorithms, production protocols (*TLS 1.3, SSHv2, Signal*) deploy **Hybrid Key Exchange**:
+Hybrid key establishment combines classical and post-quantum inputs so that a failure in one family does not automatically expose the derived secret. Production transition designs include [TLS 1.3 X25519MLKEM768](https://www.rfc-editor.org/info/rfc10024), [OpenSSH's `sntrup761x25519-sha512` exchange](https://www.openbsd.org/71.html), and [Signal's PQXDH protocol](https://signal.org/docs/specifications/pqxdh/):
 
 `Shared Secret S = KDF(Classical_ECDH_Secret || PostQuantum_KEM_Secret)`
 

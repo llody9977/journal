@@ -21,6 +21,10 @@ All journal entries follow [`WRITING_STYLE.md`](WRITING_STYLE.md): a concise, re
 
 All targeted verifications, fresh reviews, final passes, and gap assessments follow [`REVIEW_STANDARD.md`](REVIEW_STANDARD.md). Reviews are read-only by default and may claim complete closure only after satisfying its documented coverage and evidence requirements.
 
+Fresh reviews freeze an exact baseline with [`scripts/capture_review_state.py`](scripts/capture_review_state.py) and use [`reviews/REVIEW_TEMPLATE.md`](reviews/REVIEW_TEMPLATE.md) to record scope, claims, completeness, independent review passes, checks, findings, and limitations. Targeted fix verification is deliberately kept separate from full-review closure.
+
+Deliberate technical decisions are recorded in [`reviews/CONTENT_DECISIONS.yml`](reviews/CONTENT_DECISIONS.yml) under the workflow in [`reviews/CONTENT_DECISION_GUIDE.md`](reviews/CONTENT_DECISION_GUIDE.md). Reviewers evaluate current evidence first, then reconcile applicable records so an earlier decision is neither blindly inherited nor silently reversed.
+
 ## Structure
 
 - `index.md` — landing page / overview
@@ -47,9 +51,12 @@ All targeted verifications, fresh reviews, final passes, and gap assessments fol
 ## Local preview
 
 ```bash
-bundle exec jekyll serve
+bin/setup
+bin/jekyll serve --livereload
 ```
 
-Requires Ruby + Bundler. First run: `bundle init && bundle add jekyll` (or
-add a `Gemfile` with `gem "github-pages", group: :jekyll_plugins`) if you
-don't already have a Gemfile.
+The repository pins the Ruby version, Bundler version, and GitHub Pages gem
+set used for local builds. `bin/setup` installs the locked gems under the
+ignored `vendor/bundle` directory; `bin/jekyll` then uses that exact runtime.
+If the required Ruby or Bundler version is missing, the setup command prints
+the installation command or version-manager action needed before retrying.

@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 570" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">The Continuous Risk Management Lifecycle</title>
-  <desc id="description">Inputs (Threat Modeling, Scans, Intel) lead to Risk Assessment, 5 Risk Response Strategies (Avoid, Mitigate, Share, Transfer, Accept), Security Control Execution, and Continuous Risk Monitoring feedback loop.</desc>
+  <desc id="description">Inputs including threat modeling, vulnerability findings scored for severity with CVSS, and threat intelligence lead to Risk Assessment, five Risk Response Strategies (Avoid, Mitigate, Share, Transfer, Accept), Security Control Execution, and a Continuous Risk Monitoring feedback loop.</desc>
   <rect width="1200" height="570" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -12,7 +12,7 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">The Continuous Risk Management Lifecycle</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Inputs (Threat Modeling, Scans, Intel) lead to Risk Assessment, 5 Risk Response Strategies (Avoid, Mitigate, Share, Transfer, Accept),</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Inputs (Threat Modeling, Vulnerability Findings, Intel) lead to Risk Assessment, 5 Risk Response Strategies (Avoid, Mitigate, Share, Transfer, Accept),</text>
   <text x="50" y="102" font-size="14.5" fill="#475569">Security Control Execution, and Continuous Risk Monitoring feedback loop.</text>
   
     <!-- Stage 1: Problem Inputs (x=40, w=210) -->
@@ -22,17 +22,18 @@
     <line x1="55" y1="188" x2="235" y2="188" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="55" y="210" font-size="11" font-weight="800" fill="#2563eb">OPERATIONAL INPUTS:</text>
     <text x="55" y="228" font-size="11.5" font-weight="500" fill="#475569">• Threat Modeling</text>
-    <text x="55" y="246" font-size="11.5" font-weight="500" fill="#475569">• Vuln Scans / CVSS</text>
-    <text x="55" y="264" font-size="11.5" font-weight="500" fill="#475569">• Threat Intel Feeds</text>
-    <text x="55" y="282" font-size="11.5" font-weight="500" fill="#475569">• Asset Inventories</text>
-    <text x="55" y="300" font-size="11.5" font-weight="500" fill="#475569">• Gap Assessments</text>
-    <line x1="55" y1="314" x2="235" y2="314" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-    <text x="55" y="336" font-size="11" font-weight="800" fill="#2563eb">COMPONENTS:</text>
-    <text x="55" y="354" font-size="11" font-weight="600" fill="#0f172a">• Asset</text>
-    <text x="55" y="372" font-size="11" font-weight="600" fill="#0f172a">• Threat Source/Event</text>
-    <text x="55" y="390" font-size="11" font-weight="600" fill="#0f172a">• Vulnerability</text>
-    <text x="55" y="408" font-size="11" font-weight="600" fill="#0f172a">• Predisposing Condition</text>
-    <text x="55" y="426" font-size="11" font-weight="600" fill="#0f172a">• Consequential Impact</text>
+    <text x="55" y="246" font-size="11.5" font-weight="500" fill="#475569">• Vulnerability Findings</text>
+    <text x="55" y="264" font-size="11.5" font-weight="500" fill="#475569">  scored for severity with CVSS</text>
+    <text x="55" y="282" font-size="11.5" font-weight="500" fill="#475569">• Threat Intel Feeds</text>
+    <text x="55" y="300" font-size="11.5" font-weight="500" fill="#475569">• Asset Inventories</text>
+    <text x="55" y="318" font-size="11.5" font-weight="500" fill="#475569">• Gap Assessments</text>
+    <line x1="55" y1="332" x2="235" y2="332" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+    <text x="55" y="352" font-size="11" font-weight="800" fill="#2563eb">COMPONENTS:</text>
+    <text x="55" y="370" font-size="11" font-weight="600" fill="#0f172a">• Asset</text>
+    <text x="55" y="388" font-size="11" font-weight="600" fill="#0f172a">• Threat Source/Event</text>
+    <text x="55" y="406" font-size="11" font-weight="600" fill="#0f172a">• Vulnerability</text>
+    <text x="55" y="424" font-size="11" font-weight="600" fill="#0f172a">• Predisposing Condition</text>
+    <text x="55" y="442" font-size="11" font-weight="600" fill="#0f172a">• Consequential Impact</text>
 
     <!-- Arrow 1 -> 2 -->
     
@@ -66,22 +67,26 @@
     <text x="515" y="194" font-size="10.5" font-weight="600" fill="#475569">(NIST SP 800-39 / ISO 27005)</text>
     <line x1="515" y1="206" x2="705" y2="206" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
 
-    <!-- 4 Strategy Cards -->
-    <rect x="510" y="215" width="200" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
-    <text x="518" y="232" font-size="11" font-weight="800" fill="#0f172a">1. Avoid:</text>
-    <text x="518" y="247" font-size="10.5" font-weight="500" fill="#475569">Redesign / terminate feature</text>
+    <!-- 5 Strategy Cards -->
+    <rect x="510" y="214" width="200" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="518" y="230" font-size="10.5" font-weight="800" fill="#0f172a">1. Avoid</text>
+    <text x="575" y="230" font-size="10" font-weight="500" fill="#475569">End the activity</text>
 
-    <rect x="510" y="265" width="200" height="52" rx="6" fill="#f0fdfa" stroke="#0f766e" stroke-width="1.5" />
-    <text x="518" y="283" font-size="11" font-weight="800" fill="#0f766e">2. Reduce (Mitigate): ──&gt;</text>
-    <text x="518" y="300" font-size="10.5" font-weight="700" fill="#0f172a">Triggers Stage 4 Controls</text>
+    <rect x="510" y="256" width="200" height="44" rx="6" fill="#f0fdfa" stroke="#0f766e" stroke-width="1.5" />
+    <text x="518" y="273" font-size="10.5" font-weight="800" fill="#0f766e">2. Mitigate ──&gt;</text>
+    <text x="518" y="290" font-size="10" font-weight="700" fill="#0f172a">Triggers Stage 4 Controls</text>
 
-    <rect x="510" y="325" width="200" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
-    <text x="518" y="342" font-size="11" font-weight="800" fill="#0f172a">3. Share / Transfer:</text>
-    <text x="518" y="357" font-size="10.5" font-weight="500" fill="#475569">Shift or distribute via insurance / SLAs</text>
+    <rect x="510" y="306" width="200" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="518" y="322" font-size="10.5" font-weight="800" fill="#0f172a">3. Share</text>
+    <text x="575" y="322" font-size="10" font-weight="500" fill="#475569">Distribute exposure</text>
 
-    <rect x="510" y="375" width="200" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
-    <text x="518" y="392" font-size="11" font-weight="800" fill="#0f172a">4. Accept:</text>
-    <text x="518" y="407" font-size="10.5" font-weight="500" fill="#475569">Authorize residual risk</text>
+    <rect x="510" y="348" width="200" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="518" y="364" font-size="10.5" font-weight="800" fill="#0f172a">4. Transfer</text>
+    <text x="587" y="364" font-size="10" font-weight="500" fill="#475569">Shift defined loss</text>
+
+    <rect x="510" y="390" width="200" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="518" y="406" font-size="10.5" font-weight="800" fill="#0f172a">5. Accept</text>
+    <text x="580" y="406" font-size="10" font-weight="500" fill="#475569">Authorize residual risk</text>
 
     <!-- Arrow 3 -> 4 -->
     
@@ -95,17 +100,18 @@
     <text x="755" y="194" font-size="10.5" font-weight="600" fill="#475569">(NIST SP 800-53 Rev. 5)</text>
     <line x1="755" y1="206" x2="945" y2="206" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
     <text x="755" y="226" font-size="11" font-weight="800" fill="#0f172a">• Preventive Safeguards:</text>
-    <text x="755" y="244" font-size="10.5" font-weight="500" fill="#475569">  IAM policies, WAF, mTLS</text>
+    <text x="755" y="244" font-size="10.5" font-weight="500" fill="#475569">  IAM policies, WAF, mTLS, IPS</text>
     <text x="755" y="264" font-size="11" font-weight="800" fill="#0f172a">• Detective Safeguards:</text>
-    <text x="755" y="282" font-size="10.5" font-weight="500" fill="#475569">  SIEM logging, IDS/IPS audit</text>
+    <text x="755" y="282" font-size="10.5" font-weight="500" fill="#475569">  SIEM correlation, IDS alerts</text>
     <text x="755" y="302" font-size="11" font-weight="800" fill="#0f172a">• Corrective / Recovery:</text>
     <text x="755" y="320" font-size="10.5" font-weight="500" fill="#475569">  Containment, backups, DR</text>
-    <text x="755" y="340" font-size="11" font-weight="800" fill="#0f172a">• Compensating / Deterrent:</text>
-    <text x="755" y="358" font-size="10.5" font-weight="500" fill="#475569">  Bridges gaps, discourages</text>
-    <line x1="755" y1="372" x2="945" y2="372" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-    <text x="755" y="394" font-size="11" font-weight="800" fill="#0f766e">LEAVES OUTCOME:</text>
-    <text x="755" y="412" font-size="11.5" font-weight="700" fill="#0f172a">Residual Risk Requiring a</text>
-    <text x="755" y="428" font-size="11.5" font-weight="700" fill="#0f172a">Recorded Response</text>
+    <text x="755" y="340" font-size="10.5" font-weight="800" fill="#0f172a">• Compensating:</text>
+    <text x="765" y="358" font-size="10.5" font-weight="500" fill="#475569">Comparable substitute</text>
+    <text x="755" y="378" font-size="10.5" font-weight="700" fill="#0f172a">• Deterrent: discouragement</text>
+    <line x1="755" y1="392" x2="945" y2="392" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="755" y="410" font-size="11" font-weight="800" fill="#0f766e">LEAVES OUTCOME:</text>
+    <text x="755" y="430" font-size="11.5" font-weight="700" fill="#0f172a">Residual Risk Requiring a</text>
+    <text x="755" y="446" font-size="11.5" font-weight="700" fill="#0f172a">Recorded Response</text>
 
     <!-- Arrow 4 -> 5 -->
     

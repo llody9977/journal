@@ -2,14 +2,14 @@
 title: Blockchain & Distributed Ledger Cryptography
 description: Cryptographic primitives in distributed ledgers, hash-linked block headers, Merkle trees, secp256k1 ECDSA, Schnorr signatures (BIP 340), BLS aggregation, and Zero-Knowledge Proofs (zk-SNARKs).
 permalink: /topics/blockchain-cryptography/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Distributed Systems</span>
 
 # Blockchain & Distributed Ledger Cryptography
 
-<p class="lede">Distributed ledgers don't eliminate trust — they redistribute it, replacing a single central authority with protocol-specific consensus assumptions: honest-majority effective hashpower for Nakamoto-style proof of work, or, for Ethereum's Casper FFG, votes representing at least two-thirds of total stake to finalize a checkpoint, while safety separately assumes fewer than one-third of stake behaves Byzantine — a fault-tolerance boundary on how much adversarial stake finality can withstand, not the honest-participation level finality itself requires (see the finality discussion below; [Ethereum PoS documentation](https://ethereum.org/developers/docs/consensus-mechanisms/pos/), [attack and defense thresholds](https://ethereum.org/developers/docs/consensus-mechanisms/pos/attack-and-defense/)). These systems also depend on correctly implemented client software and the security of the underlying cryptography. Blockchains coordinate hash-linked data chains, Merkle-tree transaction inclusion proofs, public-key digital signatures (secp256k1 / Ed25519), BLS signature aggregation, and Zero-Knowledge Proofs (ZK-SNARKs) into tamper-evidence and authorization primitives that *support* — rather than themselves enforce — the separate consensus protocols that let P2P nodes agree on ordering and finality without a central operator.</p>
+<p class="lede">Distributed ledgers do not eliminate trust — they redistribute it, replacing a single central authority with protocol-specific consensus assumptions: honest-majority effective hashpower for Nakamoto-style proof of work, or, for Ethereum's Casper FFG, votes representing at least two-thirds of total stake to finalize a checkpoint, while safety separately assumes fewer than one-third of stake behaves Byzantine. This is a fault-tolerance boundary on how much adversarial stake finality can withstand, not the honest-participation level finality itself requires; see the <a href="https://ethereum.org/developers/docs/consensus-mechanisms/pos/">Ethereum proof-of-stake documentation</a> and its <a href="https://ethereum.org/developers/docs/consensus-mechanisms/pos/attack-and-defense/">attack and defense thresholds</a>. These systems also depend on correctly implemented client software and the security of the underlying cryptography. Blockchains coordinate hash-linked data chains, Merkle-tree transaction inclusion proofs, public-key digital signatures (secp256k1 / Ed25519), BLS signature aggregation, and Zero-Knowledge Proofs (ZK-SNARKs) into tamper-evidence and authorization primitives that support — rather than themselves enforce — the consensus protocols that let peer-to-peer nodes agree on ordering and finality without a central operator.</p>
 
 ## Cryptographic Layering in Blockchains
 

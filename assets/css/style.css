@@ -53,6 +53,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.nav-open { overflow: hidden; }
+
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
@@ -644,13 +646,30 @@ pre {
 pre code { background: none; color: inherit; padding: 0; }
 
 table {
-  display: block;
-  overflow-x: auto;
+  display: table;
   max-width: 100%;
   width: 100%;
   border-collapse: collapse;
   margin: 0 0 1.5rem;
   font-size: 0.92rem;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+  max-width: none;
+  margin: 0;
+}
+
+.table-scroll:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
 th, td {
@@ -730,6 +749,37 @@ hr {
   margin: 0 auto;
 }
 
+.diagram-open-link {
+  position: relative;
+  display: block;
+  width: 100%;
+  color: inherit;
+  border-radius: 8px;
+  cursor: zoom-in;
+}
+
+.diagram-open-link::after {
+  content: "Open full size ↗";
+  display: inline-block;
+  margin: 0.5rem auto 0;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.diagram-open-link:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
 .diagram-video {
   display: block;
   width: 100%;
@@ -803,6 +853,8 @@ hr {
 }
 
 @media (max-width: 600px) {
+  .diagram-frame-openable { padding: 0.75rem; }
+  .diagram-open-link::after { content: "Full size ↗"; }
   .security-layer-map { padding: 0.9rem; }
   .security-layer { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
 }
@@ -963,5 +1015,9 @@ a.topic-card:hover {
   .content { padding: 2rem 1.25rem 4rem; }
   .content h1 { font-size: 1.9rem; }
 
-  table { display: table; table-layout: fixed; }
+  .table-scroll table {
+    width: max(100%, 44rem);
+    min-width: 100%;
+    table-layout: auto;
+  }
 }

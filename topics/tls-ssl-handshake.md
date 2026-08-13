@@ -2,14 +2,14 @@
 title: TLS 1.3 Handshake & Network Encryption
 description: Detailed protocol breakdown of the TLS 1.3 1-RTT handshake, ECDHE key exchange, AEAD transport protection, 0-RTT early data replay risks, and Encrypted Client Hello (ECH, RFC 9849).
 permalink: /topics/tls-ssl-handshake/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Protocols</span>
 
 # TLS 1.3 Handshake & Network Encryption
 
-<p class="lede">Transport Layer Security (TLS) 1.3 is the foundational security protocol of the internet, providing confidentiality, integrity, server authentication, and — for its standard full handshake — Perfect Forward Secrecy over TCP networks. Standardized in [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) — which obsoletes [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html), the original TLS 1.3 specification, rather than merely amending it — TLS 1.3 streamlines the handshake phase to 1-RTT by combining key exchange with initial parameters and deprecating legacy, insecure ciphers.</p>
+<p class="lede">Transport Layer Security (TLS) 1.3 is the foundational security protocol of the internet, providing confidentiality, integrity, server authentication, and — for its standard full handshake — Perfect Forward Secrecy over TCP networks. Standardized in <a href="https://www.rfc-editor.org/rfc/rfc9846.html">RFC 9846</a> — which obsoletes <a href="https://www.rfc-editor.org/rfc/rfc8446.html">RFC 8446</a>, the original TLS 1.3 specification, rather than merely amending it — TLS 1.3 streamlines the handshake phase to 1-RTT by combining key exchange with initial parameters and deprecating legacy, insecure ciphers.</p>
 
 ## TLS 1.3 Handshake Architecture (1-RTT)
 

@@ -2,14 +2,14 @@
 title: Digital Signatures & Non-Repudiation
 description: Comprehensive guide to digital signature pipelines, RSA-PSS, ECDSA, Ed25519 (RFC 8032), FIPS 204 ML-DSA, FIPS 205 SLH-DSA, deterministic nonces (RFC 6979), and HSM key custody.
 permalink: /topics/digital-signatures/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # Digital Signatures & Non-Repudiation
 
-<p class="lede">Digital signatures provide verifiable cryptographic evidence of payload integrity and key control over unauthenticated networks—verifiable evidence that a valid signature tag could only have been produced using the corresponding private key. By signing a cryptographically secure hash of a payload using a private key, the key holder creates a signature tag that any third party holding the matching public key can verify independently.</p>
+<p class="lede">Digital signatures provide cryptographic evidence that a signature validates for specific payload bytes under a particular public key. This supports payload integrity and origin authentication only when the public key is authentically bound to the expected signer and the signing key remains uncompromised; verification alone does not prove real-world identity, exclusive key custody, human intent, or legal non-repudiation. A verifier holding the public key can check the signature independently.</p>
 
 ## The Digital Signature Pipeline
 
@@ -22,7 +22,7 @@ RSA-PSS and ECDSA operate over a fixed-size digest rather than the raw payload: 
 
 1. **Hashing Phase**: Compute a cryptographic hash digest **H(M)** over message **M** using SHA-256 or SHA3-256.
 2. **Signing Phase**: Compute signature tag **S** over digest **H(M)** using private key <b>K<sub>priv</sub></b>.
-3. **Verification Phase**: The verifier computes **H(M')** over received message **M'** and verifies **S** against public key <b>K<sub>pub</sub></b>. If the signature matches, key possession and payload integrity are verified.
+3. **Verification Phase**: The verifier computes **H(M')** over received message **M'** and verifies **S** against public key <b>K<sub>pub</sub></b>. A successful result establishes that the signature validates for **M'** under that public key; signer identity and key custody require separate evidence.
 
 ## Signature Scheme Comparison Matrix
 
@@ -51,9 +51,9 @@ These are two distinct constructions, not one shared formula, though both elimin
 
 ## Signature Verification: A Verifier's Checklist
 
-"The signature is valid" is a narrower statement than it sounds — a cryptographically valid signature only proves the holder of a specific private key signed a specific byte string. Everything else a verifier actually needs to trust the result is a separate check, and skipping any of them is a recurring source of real vulnerabilities:
+"The signature is valid" is a narrower statement than it sounds — it means that a signature validates for a specific byte string under a specific public key and accepted algorithm. Everything else a verifier actually needs to trust the result is a separate check, and skipping any of them is a recurring source of real vulnerabilities:
 
-1. **Key-to-identity binding**: A valid signature under a public key proves nothing about *whose* key it is unless that key is bound to an identity through a trusted mechanism — a CA-issued certificate chain (see Certificates), a pinned key, or an out-of-band fingerprint check. Verifying the signature without verifying this binding is exactly the gap that lets an attacker substitute their own key.
+1. **Key-to-identity binding**: A signature that validates under a public key says nothing about *whose* key it is unless that key is bound to an identity through a trusted mechanism — a CA-issued certificate chain (see Certificates), a pinned key, or an out-of-band fingerprint check. Verifying the signature without verifying this binding is exactly the gap that lets an attacker substitute their own key.
 2. **Accepted algorithms and parameters**: Confirm the signature algorithm and its parameters (curve, hash function, key size) are ones your system actually intends to accept — a verifier that accepts *any* algorithm the signer claims to have used is vulnerable to algorithm-confusion attacks (e.g., an attacker relabeling an HMAC tag as an "RSA signature" against a verifier that naively trusts a client-supplied algorithm field).
 3. **Canonical encoding / malleability**: Some signature schemes (notably ECDSA) have a documented malleability property — a valid signature `(r, s)` can be transformed into another valid signature `(r, n-s)` for the same message and key. Systems that use a signature's bytes as a unique identifier (transaction IDs keyed by signature hash, replay-detection caches) need to normalize or reject the malleable form, or they'll treat the same logical signature as two different ones.
 4. **Context / domain separation**: Confirm the signature was produced for the context you're verifying it in, not just that it's valid *somewhere* — a signature scheme without domain separation lets a signature created for one purpose (or one protocol version) be replayed as valid for another (see Safe Protocol Composition on the Cryptography Overview page).
@@ -85,12 +85,12 @@ Cryptographic key custody relies on reducing private key extraction and cloning 
 
 <div class="callout warn">
   <span class="callout-title">Cryptographic Non-Repudiation Is Not Automatically Legal Non-Repudiation</span>
-  <p>A verifiable signature only proves the signing key produced the tag — it does not, by itself, establish legal non-repudiation. Whether a signature holds up as evidence that a specific person cannot deny having signed depends on jurisdiction, evidentiary rules, and proof tying the key to that person (e.g., the US ESIGN Act and UETA, or the EU eIDAS Regulation), not on the cryptography alone.</p>
+  <p>A verifiable signature establishes that the tag validates for specific bytes under a public key — it does not, by itself, establish legal non-repudiation. Whether a signature supports attribution to a specific person depends on jurisdiction, evidentiary rules, an authenticated key-to-person binding, and evidence of key custody and signing intent, not on the cryptography alone.</p>
 </div>
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>A valid signature proves the signing key produced it, not legal attribution to a person — that depends on jurisdiction and evidentiary law, not the cryptography alone. Reusing an ECDSA nonce across signatures leaks the private key; use RFC 6979 deterministic nonces or Ed25519 instead.</p>
+  <p>A valid signature establishes that a tag validates for specific bytes under a public key; signer identity, exclusive key custody, intent, and legal attribution require separate evidence. Reusing an ECDSA nonce across signatures leaks the private key; use RFC 6979 deterministic nonces or Ed25519 instead.</p>
 </div>
 
 ## Primary references
@@ -100,3 +100,5 @@ Cryptographic key custody relies on reducing private key extraction and cloning 
 - **RFC 6979**: *Deterministic Usage of the Digital Signature Algorithm (DSA) and ECDSA* — [IETF RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)
 - **RFC 3161**: *Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP)* — [RFC Editor: RFC 3161](https://www.rfc-editor.org/info/rfc3161/)
 - **RFC 9921**: *Time-Stamp Protocol (TSP) Timestamp Tokens for COSE* — [IETF RFC 9921](https://www.rfc-editor.org/rfc/rfc9921.html)
+- **RFC 7515**: *JSON Web Signature (JWS)* — [RFC 7515 security considerations](https://www.rfc-editor.org/rfc/rfc7515.html#section-10.2), covering key protection and origin-authentication dependencies
+- **RFC 3552**: *Guidelines for Writing RFC Text on Security Considerations* — [RFC 3552 §4.3](https://www.rfc-editor.org/rfc/rfc3552.html#section-4.3), covering non-repudiation limits

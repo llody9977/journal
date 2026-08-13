@@ -2,14 +2,14 @@
 title: Asymmetric Cryptography & Public-Key Infrastructure
 description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and an interactive RSA-OAEP/RSA-PSS playground showing why private keys aren't used to encrypt data.
 permalink: /topics/asymmetric-cryptography/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # Asymmetric Cryptography & Public-Key Infrastructure
 
-<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives enable public-key distribution without a pre-shared secret channel and establish ephemeral keys for transport security — but distribution alone doesn't establish *whose* key it is; that additionally requires an authenticated binding (a CA-issued certificate, or an out-of-band fingerprint check) tying the public key to an identity, without which the exchange is vulnerable to MitM key substitution. Digital signatures similarly provide verifiable evidence that an action was performed by whoever controls a given private key, which is a weaker claim than "verified real-world identity" unless that same key-to-identity binding is separately established.</p>
+<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives enable public-key distribution without a pre-shared secret channel and establish ephemeral keys for transport security — but distribution alone does not establish whose key it is; that requires an authenticated binding, such as a CA-issued certificate or an out-of-band fingerprint check. A digital signature validates under a public key for specific data, while attribution to a signer additionally depends on that binding and evidence that the private key was not shared, delegated, or compromised.</p>
 
 ## Asymmetric Paradigm: Linked Key Pairs
 
@@ -23,7 +23,7 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric cryptogra
 ### Three Distinct Operations
 
 1. **Public-Key Encryption (RSA-OAEP direct, or HPKE hybrid)**: With RSA-OAEP, the sender encrypts a short payload directly under the recipient's public key. HPKE (RFC 9180) instead uses the public key only to encapsulate a KEM-derived shared secret; a KDF expands that secret into keys for an AEAD cipher, which performs the actual (arbitrary-length) encryption. Either way, only the recipient's private key can recover the secret.
-2. **Digital Signatures (Ed25519 / RSA-PSS)**: The sender computes a signature over data using their private key; anyone holding the sender's public key can verify origin and integrity.
+2. **Digital Signatures (Ed25519 / RSA-PSS)**: The sender computes a signature over data using their private key; anyone holding the corresponding public key can verify that signature for the data. Origin attribution additionally requires a trusted key-to-signer binding and uncompromised key custody.
 3. **Key Agreement (ECDHE / X25519)**: Peer endpoints combine their own private keys with each other's public keys to derive a matching shared secret.
 
 ## Operations Comparison Matrix
@@ -31,7 +31,7 @@ Unlike symmetric ciphers which rely on a single shared key, asymmetric cryptogra
 | Objective | Public Key Action | Private Key Action | Standard Protocol | Primary Output |
 |---|---|---|---|---|
 | **Confidentiality** (RSA-OAEP direct; HPKE hybrid) | Encrypts payload (RSA-OAEP) / KEM encapsulation (HPKE) | Decrypts payload (RSA-OAEP) / KEM decapsulation (HPKE) | RSA-OAEP; RFC 9180 HPKE = KEM + KDF + AEAD | Unreadable ciphertext; in HPKE the KEM encapsulates a shared secret (not a pre-existing symmetric key) using the public key, a KDF derives the AEAD key/nonce from that secret, and the AEAD cipher encrypts the actual payload |
-| **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Verifiable evidence that the signing key was used |
+| **Integrity &amp; Authenticity** | Verifies signature tag | Generates digital signature tag | Ed25519 (RFC 8032), RSA-PSS, ECDSA | Evidence that the signature validates for the data under a public key; signer attribution requires trusted key binding and custody evidence |
 | **Key Agreement** | Exchanged with peer | Combined with peer public key | Ephemeral ECDH (X25519 / NIST P-256) | Raw shared-secret material — not yet a usable key; passed through a KDF (see Key Exchange &amp; Derivation page) to derive the actual symmetric AEAD traffic key |
 
 ## Can I Use a Private Key to Encrypt Data?
@@ -68,11 +68,11 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       <label>Generated Public &amp; Private Keys (PEM Format):</label>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
         <div>
-          <small><strong>Recipient Public Key (Shareable):</strong></small>
+          <label for="rsa-pub-pem"><small><strong>Recipient Public Key (Shareable):</strong></small></label>
           <textarea id="rsa-pub-pem" rows="4" class="demo-textarea" readonly style="font-size: 0.72rem; cursor: default;"></textarea>
         </div>
         <div>
-          <small><strong>Recipient Private Key (Secret):</strong></small>
+          <label for="rsa-priv-pem"><small><strong>Recipient Private Key (Secret):</strong></small></label>
           <textarea id="rsa-priv-pem" rows="4" class="demo-textarea" readonly style="font-size: 0.72rem; cursor: default;"></textarea>
         </div>
       </div>
@@ -362,7 +362,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
           <div class="security-layer-label">Signature Verification Successful</div>
           <div>
             <strong>✔ Signature Verified OK!</strong>
-            <p style="margin-bottom:0;">The signature tag matches the message payload and was mathematically generated by the holder of the matching Private Key.</p>
+            <p style="margin-bottom:0;">The signature validates for this message under the displayed public key. This demonstrates signature and payload verification within this in-page key pair; it does not prove real-world identity or exclusive private-key custody.</p>
           </div>
         </div>`;
       } else {

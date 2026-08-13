@@ -2,14 +2,14 @@
 title: Certificate Transparency (CT) & Merkle Audit Proofs
 description: Cryptographic principles of Certificate Transparency (RFC 6962 / RFC 9162), Signed Certificate Timestamps (SCT), Merkle tree audit proofs, and browser CT policies.
 permalink: /topics/certificate-transparency/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>
 
 # Certificate Transparency (CT) & Merkle Audit Proofs
 
-<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework for logging publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. The CT protocol itself (RFC 6962/9162) does not compel a CA to log anything — logging is effectively mandatory only because major browsers (Chrome, Safari, and — since Firefox 135 — Firefox) refuse to trust publicly trusted TLS connections that lack qualifying Signed Certificate Timestamps (SCTs); that browser/root-program policy layer, not the CT protocol, is what forces CAs' hand. CT does not prevent a CA from misissuing a certificate; instead, by making SCTs a practical prerequisite for browser trust, it makes secret CA certificate misissuance and rogue MitM certificates publicly discoverable rather than allowing them to go unnoticed.</p>
+<p class="lede">Certificate Transparency (CT) is an open cryptographic auditing framework for logging publicly trusted TLS server certificates into append-only, publicly verifiable Merkle hash trees. The CT protocol itself (RFC 6962/9162) does not compel a CA to log anything; enforcement comes from browser and root-program policy. Chrome and Apple platforms require qualifying Signed Certificate Timestamps (SCTs) for in-scope publicly trusted TLS certificates, while Firefox has enforced CT on desktop since version 135 for certificates chaining to CAs in Mozilla's Root CA Program. CT does not prevent CA misissuance; it makes in-scope certificates publicly discoverable so domain owners and monitors can detect them.</p>
 
 ## The Problem: Rogue CA Misissuance
 

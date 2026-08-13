@@ -2,14 +2,14 @@
 title: Key Exchange & Key Derivation (KDF)
 description: Diffie-Hellman key exchange mechanics, Ephemeral ECDH (X25519), Perfect Forward Secrecy (PFS), HKDF extract-and-expand pipeline, and post-quantum KEMs.
 permalink: /topics/key-exchange-derivation/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # Key Exchange & Key Derivation (KDF)
 
-<p class="lede">Key exchange protocols allow two communicating endpoints to establish a matching secret key over an untrusted, eavesdropped channel without transmitting the key itself. Key Derivation Functions (KDF) take high-entropy shared secrets or master secrets and deterministically expand them into cryptographically independent sub-keys for encryption, authentication, and IV generation.</p>
+<p class="lede">Key establishment is the umbrella process by which endpoints obtain shared keying material. In Diffie-Hellman key agreement, both endpoints derive a matching shared secret without transmitting that secret; key transport instead sends a sender-generated session key protected under the recipient's key, while a Key Encapsulation Mechanism (KEM) sends an encapsulation ciphertext from which both sides obtain a shared secret. Key Derivation Functions (KDFs) turn shared or master secrets into context-bound subkeys for encryption, authentication, and IV generation.</p>
 
 ## Diffie-Hellman Key Exchange (DH & ECDH)
 
@@ -40,9 +40,9 @@ To understand how two computers arrive at the exact same secret key without ever
 <div class="security-layer security-layer-direct">
   <div class="security-layer-label">Software Execution Flow</div>
   <div>
-    <strong>How Software Handshakes Execute Without Transmitting Keys</strong>
+    <strong>How Software Diffie-Hellman Handshakes Execute Without Transmitting the Shared Secret</strong>
     <p>A common point of confusion is asking <em>"how does the secret key get passed to the client?"</em></p>
-    <p><strong>The secret key is NEVER transmitted across the network.</strong> Neither endpoint sends the secret key. Instead, both software engines exchange public values (key shares) derived from previously agreed-upon domain parameters, and compute the same shared secret <strong>independently in CPU RAM</strong>:</p>
+    <p><strong>In this DH/ECDH flow, the shared secret is never transmitted across the network.</strong> Neither endpoint sends that secret. Instead, both software engines exchange public values (key shares) derived from agreed domain parameters and compute the same shared secret <strong>independently in CPU RAM</strong>. This statement does not describe key transport, which sends an encrypted session key, or KEM encapsulation, which sends an encapsulation ciphertext:</p>
     <ol>
       <li><strong>Client Exchange (`ClientHello`)</strong>: Client's crypto engine generates an ephemeral private key <strong>a</strong> in RAM and sends public key <b>A = a × G</b> over the wire.</li>
       <li><strong>Server Exchange (`ServerHello`)</strong>: Server's crypto engine generates an ephemeral private key <strong>b</strong> in RAM and sends public key <b>B = b × G</b> over the wire.</li>
@@ -146,7 +146,7 @@ The PSK row above assumes a **high-entropy** pre-shared secret — one an offlin
         <h4 style="margin: 0 0 0.25rem 0;">Step 1: Session 1 (Past Connection)</h4>
         <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0;">Establish a secure connection and transmit data.</p>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
-          <input id="input-payload-1" type="text" class="demo-input" style="flex: 1; margin: 0;" value="Secret Transaction: Send $5,000 to Alice">
+          <input id="input-payload-1" type="text" class="demo-input" aria-label="Session 1 payload" style="flex: 1; margin: 0;" value="Secret Transaction: Send $5,000 to Alice">
           <button id="btn-pfs-step-1" class="btn-primary" style="margin: 0;" type="button">⚡ Run Session 1</button>
         </div>
       </div>
@@ -155,7 +155,7 @@ The PSK row above assumes a **high-entropy** pre-shared secret — one an offlin
         <h4 style="margin: 0 0 0.25rem 0;">Step 2: Session 2 (Recent Connection)</h4>
         <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0;">Establish a second connection and transmit data. Eavesdroppers record all traffic.</p>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
-          <input id="input-payload-2" type="text" class="demo-input" style="flex: 1; margin: 0;" value="Secret Transaction: Send $2,500 to Bob">
+          <input id="input-payload-2" type="text" class="demo-input" aria-label="Session 2 payload" style="flex: 1; margin: 0;" value="Secret Transaction: Send $2,500 to Bob">
           <button id="btn-pfs-step-2" class="btn-primary" style="margin: 0;" type="button">⚡ Run Session 2</button>
         </div>
       </div>
