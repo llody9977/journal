@@ -1,7 +1,7 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+<svg viewBox="0 0 1200 555" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Identity &amp; Access Management Architecture</title>
-  <desc id="description">IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement (PEP/PDP), and Lifecycle Revocation &amp; Audit (NIST SP 800-63 &amp; 800-207).</desc>
-  <rect width="1200" height="500" fill="#ffffff"/>
+  <desc id="description">IAM Architecture showing independent Setup assurance dimensions (IAL, AAL, FAL), followed by Zero Trust Runtime Enforcement (PEP/PDP), then Lifecycle Revocation and Audit. Stage-level arrows show the operating sequence without implying that IAL, AAL, and FAL are sequential.</desc>
+  <rect width="1200" height="555" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
     <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
@@ -12,13 +12,13 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Identity &amp; Access Management Architecture</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">IAM Architecture showing Setup (IAL, AAL, FAL), Zero Trust Runtime</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">IAM Architecture showing independent Setup dimensions (IAL, AAL, FAL), Zero Trust Runtime</text>
   <text x="50" y="102" font-size="14.5" fill="#475569">Enforcement (PEP/PDP), and Lifecycle Revocation &amp; Audit (NIST SP 800-63 &amp; 800-207).</text>
   
     <!-- Setup Stage: IAL, AAL, FAL (y=115, h=135) -->
     <!-- Card 1: IAL Identity Proofing (x=40, w=355) -->
     <rect x="40" y="115" width="355" height="135" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-    <text x="60" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">1. IDENTITY PROOFING (IAL1 - IAL3)</text>
+    <text x="60" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">SETUP • IDENTITY PROOFING</text>
     <text x="60" y="162" font-size="14" font-weight="800" fill="#0f172a">Applicant Identity Verification</text>
     <line x1="60" y1="174" x2="375" y2="174" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="60" y="192" font-size="10" font-weight="800" letter-spacing="0.5" fill="#2563eb">IAL:</text>
@@ -27,7 +27,7 @@
 
     <!-- Card 2: AAL Authenticator Binding (x=422, w=355) -->
     <rect x="422" y="115" width="355" height="135" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-    <text x="442" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. AUTHENTICATOR BINDING (AAL1 - AAL3)</text>
+    <text x="442" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SETUP • AUTHENTICATOR BINDING</text>
     <text x="442" y="162" font-size="14" font-weight="800" fill="#0f172a">Single-Factor to Multi-Factor Binding</text>
     <line x1="442" y1="174" x2="757" y2="174" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
     <text x="442" y="192" font-size="10" font-weight="800" letter-spacing="0.5" fill="#0f766e">AAL:</text>
@@ -36,49 +36,59 @@
 
     <!-- Card 3: FAL Federation Assurance (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="135" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
-    <text x="825" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">3. FEDERATION ASSURANCE (FAL1 - FAL3)</text>
+    <text x="825" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">SETUP • FEDERATION ASSURANCE</text>
     <text x="825" y="162" font-size="14" font-weight="800" fill="#0f172a">Secure Token &amp; Assertion Exchange</text>
     <line x1="825" y1="174" x2="1140" y2="174" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
     <text x="825" y="192" font-size="10" font-weight="800" letter-spacing="0.5" fill="#b45309">FAL:</text>
     <text x="825" y="210" font-size="10.5" font-weight="500" fill="#475569">• FAL1: Bearer → FAL2: Injection-protected</text>
     <text x="825" y="228" font-size="10.5" font-weight="500" fill="#475569">• FAL3: Holder-of-key</text>
 
-    <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=265, h=145) -->
+    <!-- Stage-level progression: setup assurance informs runtime enforcement; IAL, AAL, and FAL remain independent dimensions. -->
+    <path d="M217.5 250 L217.5 262 L982.5 262 L982.5 250" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+    <path d="M600 250 L600 282" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="615" y="273" font-size="9.5" font-weight="900" letter-spacing="0.5" fill="#475569">USE AT RUNTIME</text>
+
+    <!-- Runtime Stage: Zero Trust PDP / PEP Enforcement (y=290, h=145) -->
     <!-- Card 1: PEP (x=40, w=355) -->
-    <rect x="40" y="265" width="355" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
-    <text x="60" y="290" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">4. POLICY ENFORCEMENT POINT (PEP)</text>
-    <text x="60" y="312" font-size="14" font-weight="800" fill="#0f172a">API Gateway &amp; Ingress Proxy</text>
-    <line x1="60" y1="324" x2="375" y2="324" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
-    <text x="60" y="344" font-size="10.5" font-weight="500" fill="#475569">• Intercepts incoming client requests &amp; bearer tokens</text>
-    <text x="60" y="362" font-size="10.5" font-weight="500" fill="#475569">• Extracts mTLS certs, IP &amp; Device context</text>
-    <text x="60" y="380" font-size="10.5" font-weight="500" fill="#475569">• Enforces PDP Allow / Deny decision rules</text>
+    <rect x="40" y="290" width="355" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
+    <text x="60" y="315" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">RUNTIME • POLICY ENFORCEMENT (PEP)</text>
+    <text x="60" y="337" font-size="14" font-weight="800" fill="#0f172a">API Gateway &amp; Ingress Proxy</text>
+    <line x1="60" y1="349" x2="375" y2="349" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="369" font-size="10.5" font-weight="500" fill="#475569">• Intercepts incoming client requests &amp; bearer tokens</text>
+    <text x="60" y="387" font-size="10.5" font-weight="500" fill="#475569">• Extracts mTLS certs, IP &amp; Device context</text>
+    <text x="60" y="405" font-size="10.5" font-weight="500" fill="#475569">• Enforces PDP Allow / Deny decision rules</text>
 
     <!-- Card 2: PDP Engine (x=422, w=355) -->
-    <rect x="422" y="265" width="355" height="145" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
-    <text x="442" y="290" font-size="11" font-weight="900" letter-spacing="1" fill="#0f172a">5. POLICY DECISION POINT (PDP)</text>
-    <text x="442" y="312" font-size="14" font-weight="800" fill="#0f172a">Zero Trust Policy Engine</text>
-    <line x1="442" y1="324" x2="757" y2="324" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1" />
-    <text x="442" y="344" font-size="10.5" font-weight="500" fill="#475569">• Evaluates OPA / Rego &amp; OpenFGA policy rules</text>
-    <text x="442" y="362" font-size="10.5" font-weight="500" fill="#475569">• Evaluates RBAC roles, ABAC attributes &amp; ReBAC</text>
-    <text x="442" y="380" font-size="10.5" font-weight="500" fill="#475569">• NIST SP 800-207 Zero Trust policy evaluation</text>
+    <rect x="422" y="290" width="355" height="145" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5" />
+    <text x="442" y="315" font-size="11" font-weight="900" letter-spacing="1" fill="#0f172a">RUNTIME • POLICY DECISION POINT (PDP)</text>
+    <text x="442" y="337" font-size="14" font-weight="800" fill="#0f172a">Zero Trust Policy Engine</text>
+    <line x1="442" y1="349" x2="757" y2="349" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1" />
+    <text x="442" y="369" font-size="10.5" font-weight="500" fill="#475569">• Evaluates OPA / Rego &amp; OpenFGA policy rules</text>
+    <text x="442" y="387" font-size="10.5" font-weight="500" fill="#475569">• Evaluates RBAC roles, ABAC attributes &amp; ReBAC</text>
+    <text x="442" y="405" font-size="10.5" font-weight="500" fill="#475569">• NIST SP 800-207 Zero Trust policy evaluation</text>
 
     <!-- Card 3: Protected Resource (x=805, w=355) -->
-    <rect x="805" y="265" width="355" height="145" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2.5" />
-    <text x="825" y="290" font-size="11" font-weight="900" letter-spacing="1" fill="#15803d">6. PROTECTED TARGET RESOURCE</text>
-    <text x="825" y="312" font-size="14" font-weight="800" fill="#0f172a">Microservice or Data Store</text>
-    <line x1="825" y1="324" x2="1140" y2="324" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
-    <text x="825" y="344" font-size="10.5" font-weight="500" fill="#475569">• Executes authorized application logic</text>
-    <text x="825" y="362" font-size="10.5" font-weight="500" fill="#475569">• Enforces fine-grained field level filters</text>
-    <text x="825" y="380" font-size="10.5" font-weight="500" fill="#475569">• Emits structured SIEM telemetry</text>
+    <rect x="805" y="290" width="355" height="145" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2.5" />
+    <text x="825" y="315" font-size="11" font-weight="900" letter-spacing="1" fill="#15803d">RUNTIME • PROTECTED TARGET RESOURCE</text>
+    <text x="825" y="337" font-size="14" font-weight="800" fill="#0f172a">Microservice or Data Store</text>
+    <line x1="825" y1="349" x2="1140" y2="349" stroke="#15803d" stroke-opacity="0.3" stroke-width="1" />
+    <text x="825" y="369" font-size="10.5" font-weight="500" fill="#475569">• Executes authorized application logic</text>
+    <text x="825" y="387" font-size="10.5" font-weight="500" fill="#475569">• Enforces fine-grained field level filters</text>
+    <text x="825" y="405" font-size="10.5" font-weight="500" fill="#475569">• Emits structured SIEM telemetry</text>
 
-    <!-- Bottom Stage: Revocation & Governance (y=425, h=55) -->
+    <!-- Stage-level progression from runtime decisions and evidence to lifecycle action. -->
+    <path d="M217.5 435 L217.5 447 L982.5 447 L982.5 435" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+    <path d="M600 435 L600 470" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="615" y="460" font-size="9.5" font-weight="900" letter-spacing="0.5" fill="#475569">REVOKE &amp; AUDIT</text>
+
+    <!-- Bottom Stage: Revocation & Governance (y=475, h=55) -->
     <!-- Left Box: Revocation (x=40, w=545) -->
-    <rect x="40" y="425" width="545" height="55" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
-    <text x="60" y="445" font-size="10.5" font-weight="900" letter-spacing="1" fill="#b91c1c">AUTOMATED LIFECYCLE REVOCATION</text>
-    <text x="60" y="463" font-size="10.5" font-weight="600" fill="#475569">• SCIM 2.0 Joiner-Mover-Leaver (JML) &amp; OAuth Revocation (RFC 7009)</text>
+    <rect x="40" y="475" width="545" height="55" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
+    <text x="60" y="495" font-size="10.5" font-weight="900" letter-spacing="1" fill="#b91c1c">AUTOMATED LIFECYCLE REVOCATION</text>
+    <text x="60" y="513" font-size="10.5" font-weight="600" fill="#475569">• SCIM 2.0 Joiner-Mover-Leaver (JML) &amp; OAuth Revocation (RFC 7009)</text>
 
     <!-- Right Box: Audit (x=615, w=545) -->
-    <rect x="615" y="425" width="545" height="55" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
-    <text x="635" y="445" font-size="10.5" font-weight="900" letter-spacing="1" fill="#2563eb">CROSS-CUTTING AUDIT &amp; ACCOUNTABILITY</text>
-    <text x="635" y="463" font-size="10.5" font-weight="600" fill="#475569">• Structured SIEM Audit Logging (NIST SP 800-92)</text>
+    <rect x="615" y="475" width="545" height="55" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+    <text x="635" y="495" font-size="10.5" font-weight="900" letter-spacing="1" fill="#2563eb">CROSS-CUTTING AUDIT &amp; ACCOUNTABILITY</text>
+    <text x="635" y="513" font-size="10.5" font-weight="600" fill="#475569">• Structured SIEM Audit Logging (NIST SP 800-92)</text>
 </svg>

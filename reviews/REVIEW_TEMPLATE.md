@@ -33,6 +33,7 @@ Out-of-scope boundaries and reason:
 | Cross-page consistency, prerequisites, sequence, and duplication | No |  |
 | Topic completeness | No |  |
 | Mechanical, link, generator, executable, and rendered-output validation | No |  |
+| Durable content-decision reconciliation | No |  |
 | Residual exhaustion | No |  |
 
 ## Material-claim ledger
@@ -56,6 +57,14 @@ Use **covered**, **not applicable** with a reason, **required gap**, or **option
 | Concept or claim | Representations compared | Result |
 | --- | --- | --- |
 |  |  |  |
+
+## Applicable durable content decisions
+
+Evaluate current source and evidence before consulting the register. Record every decision returned for the reviewed files or concepts.
+
+| Decision ID | Affected concept | Disposition: reaffirmed / not applicable / reopened / superseded | Current evidence and rationale |
+| --- | --- | --- | --- |
+|  |  |  |  |
 
 ## Mechanical and rendered checks
 
@@ -88,6 +97,7 @@ None recorded yet.
 - [ ] Current primary sources were used for standards-sensitive and time-sensitive claims.
 - [ ] Prose, metadata, diagrams, captions, alt text, examples, summaries, navigation, and generators were reconciled.
 - [ ] Applicable mechanical and rendered checks passed or their limitations are recorded.
+- [ ] Applicable durable content decisions were reconciled after the independent claim review, and every reversal or supersession is justified.
 - [ ] Residual exhaustion was completed after findings were assembled.
 - [ ] The baseline remained frozen, or changes and repeated passes are documented.
 - [ ] Required findings, optional coverage, and limitations are separated.

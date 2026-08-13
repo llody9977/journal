@@ -49,6 +49,20 @@ A fresh review applies to one immutable content state.
 - When implementation and review are requested together, treat them as separate phases: complete and validate the edits, freeze the resulting state, and only then begin the closure review.
 - Earlier reports may guide investigation, but they must not pre-populate a current finding as open or closed.
 
+### Durable content decisions and anti-flip-flop reconciliation
+
+The repository records deliberate content decisions in [`reviews/CONTENT_DECISIONS.yml`](reviews/CONTENT_DECISIONS.yml). The register preserves the question, rationale, sources, approved outcome, and conditions that would justify reconsideration. It prevents a later reviewer from unknowingly reversing a decision while still allowing standards, implementations, and evidence to evolve.
+
+- Evaluate the current source and primary evidence independently before consulting the register. A prior decision must not pre-populate a claim as correct or incorrect.
+- After reaching a provisional disposition, search the register by affected file and concept. Use `python3 scripts/verify_content_decisions.py --file <path>` for a scoped lookup.
+- For each applicable record, classify it as **reaffirmed**, **not applicable to this scope**, **reopened**, or **superseded**. Record the decision ID and rationale in the review artifact.
+- Do not reverse an accepted or rejected decision merely because a new reviewer prefers different wording. Reopen it only when a recorded invalidation condition is met or when new evidence demonstrates that the earlier reasoning was materially incomplete or incorrect.
+- A superseding decision must identify the earlier decision, the changed fact or scope, current primary evidence where applicable, and the replacement outcome. Preserve the earlier record as history rather than deleting or rewriting it.
+- The register is review context, not evidence of current correctness. Current source inspection, current primary evidence, cross-format checks, rendered validation, and the frozen baseline remain mandatory.
+- Add a decision record when feedback leads to a deliberate material change, a deliberate rejection, or a choice likely to recur. Minor copyedits that do not affect meaning do not need records.
+
+The complete record format, lifecycle, and status meanings are defined in [`reviews/CONTENT_DECISION_GUIDE.md`](reviews/CONTENT_DECISION_GUIDE.md).
+
 ### Gap analysis
 
 Gap analysis is mandatory during every fresh review. Determine whether the page or section omits knowledge necessary to understand, evaluate, or apply its subject correctly.
@@ -111,7 +125,8 @@ Complete these passes separately and record their results:
 6. Cross-page consistency, prerequisites, sequencing, and duplication.
 7. Topic completeness using the matrix above.
 8. Mechanical, executable, link, generator, and rendered-output validation.
-9. Residual exhaustion: reread each affected content unit after proposed fixes are known and look specifically for additional issues that the same reasoning exposes.
+9. Decision-history reconciliation against applicable durable content decisions.
+10. Residual exhaustion: reread each affected content unit after proposed fixes are known and look specifically for additional issues that the same reasoning exposes.
 
 Do not combine targeted verification with fresh-review closure. A targeted check answers whether named changes worked; a fresh review asks what remains wrong or missing across the complete frozen scope.
 
@@ -136,6 +151,7 @@ For every in-scope artifact, review:
 15. Whether illustrative, hypothetical, locally defined, or author-created material is clearly identified.
 16. Comparative-claim symmetry: verify every side of claims using "unlike," "whereas," "compared with," "alone," or equivalent wording against the same comparison axis and compromise scope.
 17. Attacker-state precision: distinguish passive observation, active interaction, database-only disclosure, credential-file disclosure, required server-secret disclosure, full server compromise, direct credential reuse, offline recovery, and downstream impersonation.
+18. Decision-history consistency: identify applicable durable decisions and require explicit evidence before reversing or superseding them.
 
 ## Required review procedure
 
@@ -154,8 +170,9 @@ A fresh review must follow this procedure:
    - For downloadable or executable demonstration assets, verify separately:
      1. the property demonstrated by the asset; and
      2. the asset's claimed identity, provenance, or official-source attribution.
-10. **Run residual exhaustion**: after the other passes, reread every unit associated with a finding and challenge neighboring claims using the same rule or source.
-11. **Report the result**: separate required corrections, optional coverage, and review limitations. Report only open findings when requested.
+10. **Reconcile durable decisions**: after independently evaluating current claims, consult the content-decision register, record applicable decision IDs and dispositions, and resolve any conflict without silently inheriting or reversing the earlier decision.
+11. **Run residual exhaustion**: after the other passes, reread every unit associated with a finding and challenge neighboring claims using the same rule or source.
+12. **Report the result**: separate required corrections, optional coverage, and review limitations. Report only open findings when requested.
 
 ## Closure requirements
 
@@ -168,6 +185,7 @@ Do not state or imply that content is “all fixed,” “fully resolved,” “
 - all material standards-sensitive and time-sensitive claims were checked against current primary sources;
 - separate adversarial-claim, cross-format, cross-page, and knowledge-gap passes were completed;
 - applicable mechanical checks were run;
+- applicable durable content decisions were reconciled and any reversal or supersession was justified;
 - a residual-exhaustion pass was completed after all other findings were assembled;
 - the reviewed commit or worktree state is identified; and
 - unresolved limitations or uncertainty are disclosed.
@@ -203,6 +221,7 @@ The record must contain:
 - mechanical checks executed;
 - open required findings;
 - optional coverage gaps; and
-- known review limitations.
+- known review limitations; and
+- applicable durable decision IDs and their dispositions.
 
 The record is evidence of coverage for that repository state, not permanent proof that later content remains correct. A fresh review must still inspect the current sources.

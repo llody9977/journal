@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Operational Resilience, Business Continuity &amp; Disaster Recovery Flow</title>
-  <desc id="description">Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection across Backup/Restore, Pilot Light, Warm Standby, Active/Passive, and Active/Active patterns. The flow splits into a business-continuity lane (people, process, workarounds) and a disaster-recovery lane (systems, data, identity, keys), which converge on validating recovered service and controlled failback, with exercises and lessons feeding back into the business impact analysis.</desc>
+  <desc id="description">Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection across Backup/Restore, Pilot Light, Warm Standby, Active/Passive, and Active/Active patterns. The flow splits into business-continuity and disaster-recovery lanes, converges on validated recovery and controlled failback, then uses exercise and incident findings to update the BIA, strategies, plans, contacts, and procedures.</desc>
   <rect width="1200" height="780" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -13,7 +13,7 @@
   </defs>
   <text x="50" y="55" font-size="28" font-weight="850" fill="#0f172a">Operational Resilience, Business Continuity &amp; Disaster Recovery</text>
   <text x="50" y="82" font-size="14" fill="#475569">Business Impact Analysis and recovery objectives drive strategy selection, which splits into coordinated</text>
-  <text x="50" y="100" font-size="14" fill="#475569">continuity and disaster-recovery lanes, converges on validated recovery, and feeds exercises back to the BIA.</text>
+  <text x="50" y="100" font-size="14" fill="#475569">continuity and disaster-recovery lanes, converges on validated recovery, then updates plans through tested evidence.</text>
 
   <!-- Row 1: BIA -->
   <rect x="300" y="120" width="600" height="85" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
@@ -71,8 +71,9 @@
 
   <!-- Row 6: Feedback banner -->
   <rect x="40" y="689" width="1120" height="65" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
-  <text x="600" y="716" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">6. EXERCISES &amp; LESSONS FEED BACK ↺</text>
-  <text x="600" y="738" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0f172a">Tabletop → Component Restore → Regional/Full Failover → Failback → Supplier-Loss — results and corrective actions feed back into Stage 1's Business Impact Analysis.</text>
+  <text x="600" y="713" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">6. EXERCISES, INCIDENTS &amp; PLAN MAINTENANCE FEED BACK ↺</text>
+  <text x="600" y="734" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0f172a">Findings update the BIA, recovery objectives, strategies, plans, contacts, and procedures.</text>
+  <text x="600" y="750" text-anchor="middle" font-size="10.5" font-weight="500" fill="#475569">Approved versions are redistributed, obsolete copies are retired, and material changes trigger a proportionate new exercise.</text>
 
   <path d="M1090 689 L1140 689 L1140 162 L900 162" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
 </svg>

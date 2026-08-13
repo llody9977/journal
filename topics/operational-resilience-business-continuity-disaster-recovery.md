@@ -1,6 +1,6 @@
 ---
 title: Operational Resilience, Business Continuity & Disaster Recovery
-description: Operational resilience, business impact analysis, continuity planning, disaster recovery objectives, recovery strategies, cyber-recovery safeguards, and exercise evidence.
+description: Operational resilience, business impact analysis, continuity planning, disaster recovery objectives, cyber-recovery safeguards, exercise evidence, and plan maintenance through operational change.
 permalink: /topics/operational-resilience-business-continuity-disaster-recovery/
 last_verified: 2026-08-13
 ---
@@ -13,9 +13,9 @@ last_verified: 2026-08-13
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/operational-resilience-bcdr.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the operational resilience, business continuity, and disaster recovery diagram at full size">
-    <img src="{{ '/assets/img/operational-resilience-bcdr.svg' | relative_url }}" alt="Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection, which compares Backup/Restore, Pilot Light, Warm Standby, Active/Passive, and Active/Active before splitting into a business-continuity lane (people, process, workarounds) and a disaster-recovery lane (systems, data, identity, keys). The lanes converge on validating recovered service and controlled failback, with exercises and lessons feeding back into the business impact analysis.">
+    <img src="{{ '/assets/img/operational-resilience-bcdr.svg' | relative_url }}" alt="Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection, which compares Backup/Restore, Pilot Light, Warm Standby, Active/Passive, and Active/Active before splitting into a business-continuity lane and a disaster-recovery lane. The lanes converge on validated recovery and controlled failback; exercise and incident findings then update the BIA, strategies, plans, contacts, and procedures.">
   </a>
-  <p class="diagram-caption">Journal working model: Business Impact Analysis &amp; recovery objectives → continuity/recovery strategy selection → parallel business-continuity and disaster-recovery lanes → validated recovery → controlled failback → exercises feed back into the BIA.</p>
+  <p class="diagram-caption">Journal working model: Business Impact Analysis &amp; recovery objectives → continuity/recovery strategy selection → parallel business-continuity and disaster-recovery lanes → validated recovery → controlled failback → exercise and incident findings update the BIA, strategies, plans, contacts, and procedures.</p>
 </div>
 
 ## Operational Resilience, Business Continuity, Disaster Recovery, and Incident Response
@@ -95,9 +95,23 @@ A continuity or disaster recovery plan that has never been exercised is a hypoth
 
 Every exercise should record what was actually measured against the stated objective—the achieved recovery time against the RTO, the actual data loss against the RPO, and what failed—and every gap it surfaces needs a tracked corrective action with an owner and a closure date, the same discipline already established for postmortem action items in **[Monitoring, Incident Response & Operational Learning]({{ '/topics/incident-response-operational-learning/' | relative_url }})**. An exercise that reveals a gap and is never followed up leaves the same untested assumption in place for the next real event.
 
+## Plan Maintenance & Change Control
+
+A successful exercise does not keep a plan current indefinitely. **[NIST SP 800-34 Rev. 1](https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final)** treats plan maintenance as an ongoing lifecycle activity, and **[NIST SP 800-53 Rev. 5 CP-2](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** requires contingency plans to be reviewed and updated at organization-defined frequencies and when relevant changes or testing problems occur. The organization should define both a calendar cadence and event-driven triggers rather than relying on either one alone.
+
+Required maintenance triggers include material changes to business processes, architecture, data, identity or key dependencies, facilities, recovery regions, suppliers, staffing or succession, notification obligations, and the threat or failure assumptions used by the plan. Incidents, exercises, failed restores, missed RTO/RPO targets, and corrective-action findings also trigger review. Each update should:
+
+1. name the plan owner, version, approver, effective date, and next scheduled review;
+2. trace the change to the BIA, dependency inventory, recovery objectives, strategy, procedures, contacts, or exercise schedule it affects;
+3. distribute the approved version to every role and location that needs it, including offline or independently accessible recovery copies;
+4. retire or clearly mark obsolete copies so responders do not execute conflicting procedures; and
+5. determine whether the change is material enough to require a new tabletop, component restore, failover, failback, or supplier-loss exercise.
+
+A closed corrective-action ticket is not sufficient evidence when the approved plan, runbook, contact list, or recovery automation still contains the old assumption. Closure requires confirming that the affected artifacts changed and, where the risk warrants it, that the revised procedure was exercised.
+
 ## Essential Resilience & BCDR Diagnostic Checklist
 
-When auditing an organization's operational resilience posture or a specific system's recovery plan, evaluate these 7 diagnostic questions:
+When auditing an organization's operational resilience posture or a specific system's recovery plan, evaluate these 8 diagnostic questions:
 
 | Diagnostic Focus Area | Key Evaluation Question | Target Verification & Audit Evidence |
 |---|---|---|
@@ -108,10 +122,11 @@ When auditing an organization's operational resilience posture or a specific sys
 | **Failover & Failback Testing** | Has failover been tested under realistic conditions, and—separately—has failback been tested to confirm it doesn't lose or corrupt data? | Dated regional/full failover exercise results; a distinct dated failback exercise result. |
 | **Communications & Third-Party Continuity** | Are customer/regulator/supplier communication owners and templates pre-defined, and has the plan been tested against the loss of a critical supplier? | Communication plan with named owners; supplier-loss exercise record. |
 | **Corrective-Action Closure** | Do gaps found during exercises get tracked to a named owner and closure date, the same as incident postmortem actions? | Corrective-action tracker cross-referenced to exercise reports. |
+| **Plan Currency &amp; Distribution** | Is the plan reviewed on a defined cadence and after material business, system, dependency, staffing, supplier, incident, or exercise changes; are approved versions distributed and obsolete copies retired? | Version history, change-trigger log, approval record, distribution acknowledgement, obsolete-copy register &amp; post-change exercise evidence. |
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Operational resilience begins with the critical outcome and its maximum tolerable disruption, not with a preferred backup product or failover pattern. Continuity and disaster-recovery plans are credible only when dependencies, authority, recovery objectives, restored-state integrity, failback, and corrective actions are exercised and evidenced.</p>
+  <p>Operational resilience begins with the critical outcome and its maximum tolerable disruption, not with a preferred backup product or failover pattern. A continuity or disaster-recovery plan remains credible only when it is exercised, updated after relevant change, distributed to responders, and protected from obsolete conflicting copies.</p>
 </div>
 
 ## Primary references

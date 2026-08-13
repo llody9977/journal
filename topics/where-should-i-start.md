@@ -1,6 +1,6 @@
 ---
 title: Where Should I Start?
-description: Practical architectural roadmap for security engineering—choosing implementation pathways (system threat modeling vs enterprise ISMS governance), establishing mission context, asset inventory and data classification, and selecting standards.
+description: Practical architectural roadmap for security engineering—choosing implementation pathways, establishing mission context and standards, and connecting governance and technical controls to ongoing detection, response, recovery, and learning.
 permalink: /topics/where-should-i-start/
 last_verified: 2026-08-13
 ---
@@ -13,13 +13,13 @@ last_verified: 2026-08-13
 
 ## Security Program Implementation Architecture
 
-The following is a practical organizing model—not a formally standardized hierarchy—for how a security program's strategy connects governance (**GOVERN**) and technical execution (**TECHNICAL**) through dual-directional operational feedback loops:
+The following is a practical organizing model—not a formally standardized hierarchy—for how a security program's strategy connects governance (**GOVERN**) and technical execution (**TECHNICAL**) through dual-directional feedback, then carries both into ongoing operation, incident response, recovery, and learning:
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/security-program-implementation-roadmap.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the security program implementation architecture diagram at full size">
-    <img src="{{ '/assets/img/security-program-implementation-roadmap.svg' | relative_url }}" alt="Security Program Implementation Architecture diagram showing SECURITY PROGRAM translating into GOVERNANCE (GOVERN) and TECHNICAL SAFEGUARDS (TECHNICAL) with Top-Down and Bottom-Up operational feedback arrows.">
+    <img src="{{ '/assets/img/security-program-implementation-roadmap.svg' | relative_url }}" alt="Security Program Implementation Architecture diagram showing SECURITY PROGRAM translating into GOVERNANCE and TECHNICAL SAFEGUARDS through top-down and bottom-up feedback, then into an OPERATE, RESPOND, RECOVER, AND LEARN layer that returns incident, exercise, and recovery evidence to governance and engineering decisions.">
   </a>
-  <p class="diagram-caption">Security Program Implementation Architecture: SECURITY PROGRAM strategy leading to GOVERNANCE (GOVERN) and TECHNICAL SAFEGUARDS (TECHNICAL) connected by Top-Down Policy Mandates (↓) and Bottom-Up Telemetry &amp; Evidence (↑)</p>
+  <p class="diagram-caption">Journal working model: SECURITY PROGRAM strategy → GOVERNANCE ↔ TECHNICAL SAFEGUARDS → OPERATE, RESPOND, RECOVER &amp; LEARN, with policy flowing down and telemetry, incident findings, exercise results, and recovery evidence feeding decisions back up.</p>
 </div>
 
 ## Two Operational Entry Pathways
@@ -34,6 +34,7 @@ When evaluating a specific application, cloud infrastructure workload, or API se
 2. **Identify Threat Scenarios**: Analyze potential threat vectors, abuse cases, injection flaws, and authorization bypasses using a threat modeling methodology tailored to project trade-offs (*e.g., STRIDE, PASTA, VAST*) (**[Threat Frameworks]({{ '/topics/threat-frameworks/' | relative_url }})**).
 3. **Deploy Technical Safeguards**: Implement technical controls—OpenID Connect (OIDC) authentication and OAuth 2.0 delegated authorization, database encryption, rate limiting, and Web Application Firewall (WAF) rules (**[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**).
 4. **Validate Control Enforcement**: Validate implementation efficacy using static application security testing (SAST), dynamic application security testing (DAST), automated CI/CD pipeline security scanning, and periodic manual penetration testing (manual pentesting is not itself an automatable activity).
+5. **Prepare to Operate, Respond & Recover**: Define monitored incident criteria, response roles and playbooks, service recovery objectives, continuity workarounds, and tested restore and failback procedures before production operation (**[Monitoring, Incident Response & Operational Learning]({{ '/topics/incident-response-operational-learning/' | relative_url }})** / **[Operational Resilience, Business Continuity & Disaster Recovery]({{ '/topics/operational-resilience-business-continuity-disaster-recovery/' | relative_url }})**).
 
 ### Pathway B: Governance Entry (Enterprise ISMS & Compliance)
 
@@ -45,6 +46,7 @@ When building or auditing an organizational security program, governance teams f
 4. **Audit Baseline Controls**: Assess existing safeguards against prioritized baselines such as **[CIS Controls IG1](https://www.cisecurity.org/controls/implementation-groups)**.
 5. **Prioritize Remediation**: Prioritize security engineering gaps based on evaluated risk severity (likelihood and impact, per **[NIST SP 800-30 Rev. 1](https://csrc.nist.gov/pubs/sp/800/30/r1/final)**).
 6. **Deploy & Assure Controls**: Implement administrative and technical controls, configure continuous monitoring (**[NIST SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)**), and collect audit compliance evidence.
+7. **Govern Operational Readiness & Learning**: Assign incident, continuity, and recovery authority; approve recovery objectives and notification criteria; require exercises; and route incidents, exercise gaps, and recovery evidence back into risk, control, and architecture decisions.
 
 ## Top-Down & Bottom-Up Operational Feedback Loops
 
@@ -59,6 +61,17 @@ The operational connection between **GOVERN** and **TECHNICAL** functions as a c
 
 - **Operational Action**: Automated vulnerability scan metrics, SIEM log telemetry, SAST/DAST results, and penetration test reports generated in **TECHNICAL** flow up to **GOVERN**.
 - **Governance Impact**: Provides evidence toward demonstrating control effectiveness to CISOs, executive boards, external auditors, and regulatory compliance authorities—telemetry supports the case for effectiveness, it does not on its own prove it.
+
+## Operation, Response, Recovery & Learning
+
+The two entry pathways converge before a system can be treated as operationally ready. Control deployment and continuous monitoring establish necessary safeguards and visibility, but a complete operating model also defines what happens when those safeguards fail or a non-adversarial disruption occurs:
+
+1. **Detect and declare**: Define monitored signals, adverse-event analysis, incident-declaration criteria, severity levels, and escalation authority.
+2. **Respond without losing decision discipline**: Exercise triage, containment, eradication, evidence preservation, communications, and notification decisions under realistic constraints.
+3. **Continue and recover critical outcomes**: Establish business-owned Maximum Tolerable Downtime (MTD), Recovery Time Objective (RTO), and Recovery Point Objective (RPO) values; document continuity workarounds; and test restoration, failover, and failback.
+4. **Feed evidence back into design and governance**: Incidents, exercises, failed restores, control telemetry, and near misses update threat models, risk estimates, control-effectiveness assessments, priorities, and recovery plans.
+
+This is not a third competing entry pathway. It is the operating loop that both technical and governance pathways must reach. A program that stops at control deployment covers **Protect** but remains incomplete across the **Detect, Respond,** and **Recover** outcomes in **[NIST CSF 2.0](https://www.nist.gov/cyberframework)**.
 
 ## Mission Context, Asset Inventory & Data Classification
 
@@ -89,7 +102,7 @@ The full catalog of NIST/FIPS publication mappings, application/supply-chain sta
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Start a system change with architecture and threat modeling; start an enterprise program with mission context, assets, obligations, ownership, and risk appetite. Use frameworks to organize outcomes, catalogs to select safeguards, and legal or contractual requirements only when their scope tests are met.</p>
+  <p>Start a system change with architecture and threat modeling; start an enterprise program with mission context, assets, obligations, ownership, and risk appetite. Both paths must continue past control deployment into exercised detection, response, continuity, recovery, and learning.</p>
 </div>
 
 ## Primary references

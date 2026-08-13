@@ -29,6 +29,8 @@ jobs:
           python-version: '3.11'
       - name: Run Automated Page-Structure Checks
         run: python3 scripts/verify_writing_style.py
+      - name: Validate Durable Content Decisions
+        run: python3 scripts/verify_content_decisions.py
 
   build:
     name: Build Site

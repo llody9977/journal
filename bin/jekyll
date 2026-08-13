@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# shellcheck source=../scripts/ruby_runtime.sh
+source "${project_root}/scripts/ruby_runtime.sh"
+resolve_journal_ruby "${project_root}"
+
+export PATH="$(dirname "${JOURNAL_RUBY_BIN}"):${PATH}"
+export BUNDLE_PATH="${BUNDLE_PATH:-${project_root}/vendor/bundle}"
+export RUBYOPT="${RUBYOPT:+${RUBYOPT} }-r${project_root}/scripts/ruby_compat_shim"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+if ! "${JOURNAL_BUNDLE_BIN}" "_${JOURNAL_BUNDLER_VERSION}_" check >/dev/null 2>&1; then
+  echo "The locked Jekyll dependencies are not installed in ${BUNDLE_PATH}." >&2
+  echo "Run bin/setup, then retry this command." >&2
+  exit 1
+fi
+
+exec "${JOURNAL_BUNDLE_BIN}" "_${JOURNAL_BUNDLER_VERSION}_" exec jekyll "$@"

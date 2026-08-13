@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Threats, Vulnerabilities &amp; Risk Engine</title>
-  <desc id="description">Risk Management Architecture showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, Risk Response Options (NIST SP 800-39), and Residual Risk Governance.</desc>
+  <desc id="description">Risk Management Architecture showing Threat Event Evaluation (NIST SP 800-30), CVSS/EPSS Vulnerability Scoring, five distinct Risk Response Options (Avoid, Mitigate, Share, Transfer, Accept) from NIST SP 800-39, and Residual Risk Governance.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -41,38 +41,41 @@
     <text x="825" y="196" font-size="11.5" font-weight="500" fill="#475569">• Qualitative (Low/Med/High) &amp; Quantitative Loss ($)</text>
     <text x="825" y="214" font-size="11.5" font-weight="500" fill="#475569">• Control effectiveness and context considered</text>
 
-    <!-- Middle Stage: Risk Response Strategies (y=265, h=145) -->
-    <!-- Option 1: Avoid (x=40, w=260) -->
-    <rect x="40" y="265" width="260" height="145" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
-    <text x="55" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">1. AVOID</text>
-    <text x="55" y="315" font-size="13" font-weight="800" fill="#0f172a">Eliminate Risk Vector</text>
-    <line x1="55" y1="326" x2="285" y2="326" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
-    <text x="55" y="346" font-size="11" font-weight="500" fill="#475569">Terminating vulnerable features</text>
-    <text x="55" y="364" font-size="11" font-weight="500" fill="#475569">or deprecating legacy protocols.</text>
+    <!-- Middle Stage: Five Risk Response Strategies (y=265, h=145) -->
+    <rect x="40" y="265" width="210" height="145" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2" />
+    <text x="55" y="292" font-size="10.5" font-weight="900" letter-spacing="0.8" fill="#b91c1c">1. AVOID</text>
+    <text x="55" y="315" font-size="12" font-weight="800" fill="#0f172a">End the Risk Activity</text>
+    <line x1="55" y1="326" x2="235" y2="326" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+    <text x="55" y="346" font-size="10.5" font-weight="500" fill="#475569">Remove the feature or</text>
+    <text x="55" y="364" font-size="10.5" font-weight="500" fill="#475569">retire the protocol.</text>
 
-    <!-- Option 2: Reduce (x=327, w=260) -->
-    <rect x="327" y="265" width="260" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2" />
-    <text x="342" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">2. REDUCE (MITIGATE)</text>
-    <text x="342" y="315" font-size="13" font-weight="800" fill="#0f172a">Deploy Technical Controls</text>
-    <line x1="342" y1="326" x2="572" y2="326" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-    <text x="342" y="346" font-size="11" font-weight="500" fill="#475569">NIST SP 800-53 controls,</text>
-    <text x="342" y="364" font-size="11" font-weight="500" fill="#475569">mTLS &amp; WebAuthn MFA.</text>
+    <rect x="268" y="265" width="210" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2" />
+    <text x="283" y="292" font-size="10.5" font-weight="900" letter-spacing="0.8" fill="#0f766e">2. MITIGATE</text>
+    <text x="283" y="315" font-size="12" font-weight="800" fill="#0f172a">Reduce Likelihood / Impact</text>
+    <line x1="283" y1="326" x2="463" y2="326" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+    <text x="283" y="346" font-size="10.5" font-weight="500" fill="#475569">Apply proportionate</text>
+    <text x="283" y="364" font-size="10.5" font-weight="500" fill="#475569">safeguards and verify them.</text>
 
-    <!-- Option 3: Transfer (x=614, w=260) -->
-    <rect x="614" y="265" width="260" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
-    <text x="629" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">3. SHARE / TRANSFER</text>
-    <text x="629" y="315" font-size="13" font-weight="800" fill="#0f172a">Shift or Distribute Exposure</text>
-    <line x1="629" y1="326" x2="859" y2="326" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
-    <text x="629" y="346" font-size="11" font-weight="500" fill="#475569">Cybersecurity insurance policies</text>
-    <text x="629" y="364" font-size="11" font-weight="500" fill="#475569">and managed cloud SLAs.</text>
+    <rect x="496" y="265" width="210" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+    <text x="511" y="292" font-size="10.5" font-weight="900" letter-spacing="0.8" fill="#2563eb">3. SHARE</text>
+    <text x="511" y="315" font-size="12" font-weight="800" fill="#0f172a">Distribute Exposure</text>
+    <line x1="511" y1="326" x2="691" y2="326" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+    <text x="511" y="346" font-size="10.5" font-weight="500" fill="#475569">Allocate defined portions</text>
+    <text x="511" y="364" font-size="10.5" font-weight="500" fill="#475569">among participating parties.</text>
 
-    <!-- Option 4: Accept (x=901, w=259) -->
-    <rect x="901" y="265" width="259" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2" />
-    <text x="916" y="292" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">4. ACCEPT</text>
-    <text x="916" y="315" font-size="13" font-weight="800" fill="#0f172a">Formal Residual Approval</text>
-    <line x1="916" y1="326" x2="1145" y2="326" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-    <text x="916" y="346" font-size="11" font-weight="500" fill="#475569">Acceptance authority sign-off</text>
-    <text x="916" y="364" font-size="11" font-weight="500" fill="#475569">for accepted residual risk.</text>
+    <rect x="724" y="265" width="210" height="145" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
+    <text x="739" y="292" font-size="10.5" font-weight="900" letter-spacing="0.8" fill="#7c3aed">4. TRANSFER</text>
+    <text x="739" y="315" font-size="12" font-weight="800" fill="#0f172a">Shift Defined Consequences</text>
+    <line x1="739" y1="326" x2="919" y2="326" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+    <text x="739" y="346" font-size="10.5" font-weight="500" fill="#475569">Insurance or contractual</text>
+    <text x="739" y="364" font-size="10.5" font-weight="500" fill="#475569">assumption within set limits.</text>
+
+    <rect x="952" y="265" width="208" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2" />
+    <text x="967" y="292" font-size="10.5" font-weight="900" letter-spacing="0.8" fill="#b45309">5. ACCEPT</text>
+    <text x="967" y="315" font-size="12" font-weight="800" fill="#0f172a">Authorize Residual Risk</text>
+    <line x1="967" y1="326" x2="1145" y2="326" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+    <text x="967" y="346" font-size="10.5" font-weight="500" fill="#475569">Record authority, rationale,</text>
+    <text x="967" y="364" font-size="10.5" font-weight="500" fill="#475569">horizon, and review trigger.</text>
 
     <!-- Bottom Stage: Residual Risk Governance (y=425, h=50) -->
     <rect x="40" y="425" width="1120" height="62" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />

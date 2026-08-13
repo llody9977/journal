@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "decisions": [
+    {
+      "id": "CD-0001",
+      "title": "Represent security objectives, domain scopes, risk decisions, and controls as relationships rather than containment",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-fundamentals.md",
+          "assets/img/security-domains-overlap.svg"
+        ],
+        "concepts": [
+          "security domain boundaries",
+          "risk management relationship",
+          "security control execution",
+          "CIA objectives",
+          "conceptual diagram containment"
+        ]
+      },
+      "originating_feedback": "A fresh Section 1 review found that concentric SVG containers visually asserted that controls contain risk management and that risk management contains security-domain scopes, while the prose described a directional engineering relationship.",
+      "decision": "Use a directional journal working model instead of nested containment: security objectives define outcomes, domain scopes establish context, risk management selects responses, controls implement those responses, and monitoring evidence feeds reassessment.",
+      "rationale": "Objectives, scopes, risk decisions, and controls are related but are not progressively nested ontological sets. A directional model preserves the page's intended operating sequence without implying that technical controls encompass governance or that CIA objectives exist only inside one domain.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-37 Rev. 2",
+          "url": "https://csrc.nist.gov/pubs/sp/800/37/r2/final",
+          "supports": "Risk management, control implementation, assessment, authorization, and monitoring are interacting lifecycle activities."
+        },
+        {
+          "title": "NIST SP 800-39",
+          "url": "https://csrc.nist.gov/pubs/sp/800/39/final",
+          "supports": "Risk framing, assessment, response, and monitoring connect risk decisions across organizational and system levels."
+        }
+      ],
+      "verification_methods": [
+        "Compare the visible SVG relationships with the page prose, alt text, caption, and cited NIST lifecycle descriptions.",
+        "Render the SVG at full size and in the responsive page."
+      ],
+      "approved_outcome": "A non-nested four-stage relationship diagram with a monitoring and residual-risk feedback path; matching SVG description, page alt text, and caption; explicit journal-working-model qualification.",
+      "invalidation_conditions": [
+        "The page changes to teach a different relationship model and explains why containment is semantically intended.",
+        "A governing primary source introduces a normative containment model that the page explicitly adopts.",
+        "Rendered evidence shows that the directional model is unreadable or implies a different incorrect relationship."
+      ],
+      "related_decisions": ["CD-0006"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0002",
+      "title": "Retain the FIPS 199 and FIPS 200 sequence but use the official High baseline terminology",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": ["topics/security-objectives-properties.md"],
+        "concepts": [
+          "FIPS 199 high-water mark",
+          "FIPS 200 impact level",
+          "SP 800-53B High baseline",
+          "high-assurance baseline"
+        ]
+      },
+      "originating_feedback": "The FIPS 199 and FIPS 200 sequencing was correct, but the phrase 'high-assurance FIPS 200 baseline' was not the official name and could be confused with separate assurance requirements.",
+      "decision": "Preserve the existing tuple-to-overall-impact explanation and call the selected control set the SP 800-53B High baseline for a high-impact system.",
+      "rationale": "FIPS 199 preserves confidentiality, integrity, and availability impact values in the system security category. FIPS 200 applies the high-water mark to select one of the Low, Moderate, or High baselines. The correction is terminological and must not reverse the already-verified sequence.",
+      "authoritative_sources": [
+        {
+          "title": "FIPS 200",
+          "url": "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.200.pdf",
+          "supports": "FIPS 200 selects the low, moderate, or high control baseline according to the system impact level."
+        },
+        {
+          "title": "NIST SP 800-53B",
+          "url": "https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final",
+          "supports": "SP 800-53B defines the Low, Moderate, and High control baselines and describes the FIPS 199/200 high-water-mark relationship."
+        }
+      ],
+      "verification_methods": [
+        "Compare the complete paragraph with the FIPS 199 system security category and FIPS 200 baseline-selection language."
+      ],
+      "approved_outcome": "Use 'the corresponding SP 800-53B High baseline is a system-wide minimum control baseline, not a set of technical safeguards alone' while retaining the existing FIPS 199 tuple and FIPS 200 overall-impact explanation.",
+      "invalidation_conditions": [
+        "FIPS 199, FIPS 200, or SP 800-53B is superseded with a materially different categorization or baseline-selection model.",
+        "The page changes scope away from the U.S. federal model.",
+        "New primary evidence shows that the retained sequencing is inaccurate."
+      ],
+      "related_decisions": ["CD-0003"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0003",
+      "title": "Describe accountability as attribution to an authenticated entity, not necessarily a proofed person",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-objectives-properties.md",
+          "assets/img/security-objectives-properties-matrix.svg",
+          "topics/identity-access-fundamentals.md"
+        ],
+        "concepts": [
+          "accountability",
+          "authenticated entity context",
+          "verified real-world identity",
+          "identity proofing",
+          "audit attribution"
+        ]
+      },
+      "originating_feedback": "The security-properties diagram used 'Verified Identity Context,' which could imply real-world identity proofing and conflicted with Section 1.7's explicit coverage of pseudonymous users, workloads, devices, and agents.",
+      "decision": "Use 'authenticated entity context' for accountability unless a specific claim truly depends on real-world identity proofing.",
+      "rationale": "Accountability requires actions to be traceable to an entity. Authentication and attribution can apply to pseudonymous accounts and non-human identities; identity proofing is a separate assurance question.",
+      "authoritative_sources": [
+        {
+          "title": "NIST CSRC Accountability Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/accountability",
+          "supports": "Accountability is the ability to trace actions uniquely to an entity."
+        },
+        {
+          "title": "NIST SP 800-63-4",
+          "url": "https://pages.nist.gov/800-63-4/",
+          "supports": "Identity proofing, authentication, and federation are separate functions and assurance dimensions."
+        }
+      ],
+      "verification_methods": [
+        "Compare the diagram label with the page's accountability row and Section 1.7 identity-type and assurance distinctions."
+      ],
+      "approved_outcome": "The diagram uses 'Attributing System Actions to Authenticated Entity Context'; prose continues to qualify attribution strength by identity binding and log integrity.",
+      "invalidation_conditions": [
+        "The diagram is narrowed to a system in which every accountable subject is explicitly required and verified to be a proofed real-world person.",
+        "The governing accountability or digital-identity definitions materially change.",
+        "The phrase is replaced by terminology that preserves the same proofing boundary more clearly."
+      ],
+      "related_decisions": ["CD-0002", "CD-0007"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0004",
+      "title": "Keep the external Bank API label inside its trust-domain card",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/trust-boundaries-threat-modeling.md",
+          "assets/img/trust-boundaries-threat-modeling.svg"
+        ],
+        "concepts": [
+          "Bank API card",
+          "external third-party trust domain",
+          "modeled system boundary",
+          "SVG text overflow"
+        ]
+      },
+      "originating_feedback": "Rendered inspection showed that the Bank API title extended past the purple process card even though the SVG remained syntactically valid.",
+      "decision": "Split the service name and boundary qualification into separate lines and size the card and external zone so all text remains visibly inside the intended boundary.",
+      "rationale": "A trust-boundary diagram must not let its own labels cross the boundary they describe. XML validity and page-level overflow measurements cannot detect this local clipping or ink overflow.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Render the source SVG at full size and visually inspect every text element against its owning card.",
+        "Render the containing page at mobile and desktop widths and confirm the diagram remains fully visible through its responsive frame and full-size link."
+      ],
+      "approved_outcome": "Two visible lines—'Payment Gateway (Third-Party)' and 'Outside the Modeled System Boundary'—with the mechanism line below, at least approximately 20 pixels of card padding, and no text crossing the card or external-zone edge.",
+      "invalidation_conditions": [
+        "The external service card is redesigned or removed.",
+        "A different label preserves the same system-boundary meaning and passes rendered containment checks.",
+        "Font or renderer changes cause renewed clipping or overlap."
+      ],
+      "related_decisions": ["CD-0001"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0005",
+      "title": "Treat replication as one dependency of tested failover, not a complete availability mitigation",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/risk-fundamentals.md",
+          "topics/operational-resilience-business-continuity-disaster-recovery.md"
+        ],
+        "concepts": [
+          "multi-region replication",
+          "single-zone database dependency",
+          "failover",
+          "replica promotion",
+          "traffic redirection",
+          "disaster recovery"
+        ]
+      },
+      "originating_feedback": "The risk matrix said that a single-zone database dependency was mitigated by multi-region replication, while Section 1.9 correctly explained that replication alone is not a complete recovery strategy.",
+      "decision": "Describe the mitigation as a tested multi-location failover design that may include replication, promotion, dependency recovery, and traffic redirection.",
+      "rationale": "A second copy does not by itself make a service available. Recovery depends on detecting failure, promoting or activating capacity, redirecting traffic, restoring dependencies and credentials, and validating the recovered service.",
+      "authoritative_sources": [
+        {
+          "title": "AWS Well-Architected REL11-BP02",
+          "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_failover2good.html",
+          "supports": "Cross-Region replicas still require promotion and traffic redirection during failover."
+        },
+        {
+          "title": "AWS Well-Architected REL10-BP01",
+          "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_fault_isolation_multiaz_region_system.html",
+          "supports": "Multi-location resilience combines replication with failover design and location-specific dependencies."
+        }
+      ],
+      "verification_methods": [
+        "Compare the risk example with the recovery-strategy, clean-recovery, failover, and testing qualifications in Section 1.9."
+      ],
+      "approved_outcome": "The risk matrix states that the failure mode is mitigated with a tested multi-location failover design, potentially including cross-region replication, replica promotion, dependency recovery, and traffic redirection.",
+      "invalidation_conditions": [
+        "The example is explicitly narrowed to data durability rather than service availability.",
+        "The referenced platform provides and verifies transparent failover as an inseparable property of the named replication mechanism.",
+        "Current primary guidance materially changes the recovery mechanics."
+      ],
+      "related_decisions": ["CD-0006"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0006",
+      "title": "Make preventive-control adequacy conditional on design, configuration, operation, and evidence",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-controls-defense-in-depth.md",
+          "topics/security-fundamentals.md"
+        ],
+        "concepts": [
+          "preventive control adequacy",
+          "known threats",
+          "defense in depth",
+          "residual risk",
+          "control effectiveness"
+        ]
+      },
+      "originating_feedback": "The defense-in-depth page categorically said that preventive controls provide adequate baseline protection against known threats.",
+      "decision": "State that preventive controls can provide baseline protection only for threats they were designed, configured, operating, and evidenced to address.",
+      "rationale": "A known threat does not make a control adequate. Coverage depends on scope, configuration, implementation defects, operating state, dependencies, attacker paths, and the organization's risk tolerance.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-53 Rev. 5",
+          "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+          "supports": "Controls express outcomes and require organization-specific selection, tailoring, implementation, and assessment."
+        },
+        {
+          "title": "NIST CSF 2.0",
+          "url": "https://www.nist.gov/cyberframework",
+          "supports": "Protect, Detect, Respond, and Recover are complementary outcome areas rather than a guarantee that preventive safeguards are adequate."
+        }
+      ],
+      "verification_methods": [
+        "Challenge the statement with known-threat counterexamples involving disabled, incomplete, bypassable, or untested controls.",
+        "Compare it with the page's design, implementation, operating-effectiveness, and control-lifecycle distinctions."
+      ],
+      "approved_outcome": "Use conditional wording tied to design, configuration, operating state, and evidence before explaining the need for complementary preventive, detective, and corrective controls.",
+      "invalidation_conditions": [
+        "The sentence is narrowed to one specific control with defined coverage and current evidence that establishes adequacy for the stated threat model.",
+        "The page adopts a sourced normative definition of adequacy with explicit evaluation criteria.",
+        "New evidence demonstrates that the qualification is materially incomplete."
+      ],
+      "related_decisions": ["CD-0001", "CD-0005"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0007",
+      "title": "Separate federation assertion issuance from relying-party validation",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/identity-access-fundamentals.md",
+          "assets/img/identity-access-architecture.svg"
+        ],
+        "concepts": [
+          "federation assertion issuance",
+          "identity provider",
+          "relying party validation",
+          "federated tokens",
+          "FAL"
+        ]
+      },
+      "originating_feedback": "The IAM lede used the non-standard phrase 'asserting federated tokens,' collapsing the issuer, assertion or token representation, transmission, and relying-party validation steps.",
+      "decision": "Describe the IAM lifecycle as issuing federation assertions or tokens and validating them at relying parties.",
+      "rationale": "In the NIST federation model, an identity provider creates and sends an assertion and the relying party validates it. Protocols may encode the assertion as an ID Token, but the token is not itself an actor that is 'asserted.'",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-63C-4",
+          "url": "https://pages.nist.gov/800-63-4/sp800-63c.html",
+          "supports": "The IdP creates and sends assertions and the RP validates them; an OpenID Connect ID Token is an example assertion representation."
+        }
+      ],
+      "verification_methods": [
+        "Compare the lede with the page's Federation and Trust-Agreement Management lifecycle row and the IAM diagram's FAL card."
+      ],
+      "approved_outcome": "The lede says 'issuing federation assertions or tokens and validating them at relying parties'; downstream lifecycle text retains the distinct IdP and RP responsibilities.",
+      "invalidation_conditions": [
+        "The page narrows to one protocol whose formal terminology requires a different actor and operation description.",
+        "NIST or the adopted federation specification materially changes the issuer and relying-party roles.",
+        "A clearer replacement preserves the same actor and validation boundaries."
+      ],
+      "related_decisions": ["CD-0003", "CD-0008"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0008",
+      "title": "Show IAM stage progression without implying that IAL, AAL, and FAL are sequential",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/identity-access-fundamentals.md",
+          "assets/img/identity-access-architecture.svg"
+        ],
+        "concepts": [
+          "IAM diagram connectors",
+          "setup to runtime to revocation",
+          "IAL AAL FAL independence",
+          "lifecycle sequence"
+        ]
+      },
+      "originating_feedback": "The optional review item noted that the caption expressed setup, enforcement, and revocation as a sequence while the diagram relied only on numbered cards and had no visible stage connectors.",
+      "decision": "Add connectors between the setup row, runtime enforcement row, and lifecycle revocation and audit row, but do not connect IAL, AAL, and FAL to one another as if they were sequential levels or stages.",
+      "rationale": "The lifecycle groups have a useful operating progression, while NIST requires IAL, AAL, and FAL to be selected independently. Stage-level connectors improve recall without creating a new assurance-model error.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-63-4",
+          "url": "https://pages.nist.gov/800-63-4/",
+          "supports": "IAL, AAL, and FAL address separate assurance dimensions and are selected independently."
+        }
+      ],
+      "verification_methods": [
+        "Render the SVG and confirm that arrows connect row-level lifecycle stages rather than the three assurance cards.",
+        "Compare the visible connectors with the SVG description, page alt text, and caption."
+      ],
+      "approved_outcome": "Visible row-level arrows labeled for runtime use and revocation or audit, with enough vertical spacing to avoid card overlap; no arrows that imply IAL then AAL then FAL progression.",
+      "invalidation_conditions": [
+        "The diagram is redesigned so another unambiguous visual device communicates the same stage progression.",
+        "Rendered arrows overlap or materially reduce readability.",
+        "The page's lifecycle scope changes so setup, enforcement, and revocation are no longer the intended relationship."
+      ],
+      "related_decisions": ["CD-0007"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    }
+  ]
+}
