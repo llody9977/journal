@@ -1,45 +1,52 @@
-<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">DNS cache poisoning attempt</title>
-  <desc id="description">The attacker tries to make a forged response win the race and enter the recursive resolver's cache.</desc>
-  <rect width="1200" height="400" fill="#ffffff"/>
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Conceptual DNS cache-poisoning race</title>
+  <desc id="description">A client triggers a cache miss. The recursive resolver sends an upstream query. Forged and authentic responses race back. A forged response can affect the cache only if it arrives first and matches the question, query identifier, source address, destination address, and destination port expected by the resolver.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#64748b"/></marker>
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
   </defs>
-  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">DNS cache poisoning attempt</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">The attacker tries to make a forged response win the race and enter the recursive</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">resolver's cache.</text>
-  
-    <g>
-      <rect x="50" y="135" width="330" height="220" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
-      <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">1 · TRIGGER</text>
-      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Random query</text>
-      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Query a nonexistent</text>
-<text x="75" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">bank.com name</text>
-    </g>
 
-    <g>
-      <rect x="435" y="135" width="330" height="220" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
-      <text x="460" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">2 · RACE</text>
-      <text x="460" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Forged replies</text>
-      <text x="460" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Guess transaction data</text>
-<text x="460" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">and claim a fake answer</text>
-    </g>
+  <text x="50" y="54" font-size="29" font-weight="850" fill="#0f172a">DNS cache-poisoning race</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">A forged UDP response needs both correct matching data and arrival before the authentic response.</text>
 
-    <g>
-      <rect x="820" y="135" width="330" height="220" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
-      <text x="845" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">3 · CONSEQUENCE</text>
-      <text x="845" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Poisoned cache</text>
-      <text x="845" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Later users receive</text>
-<text x="845" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">attacker-controlled data</text>
-    </g>
-    <path d="M388 245 L427 245" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="407.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">CREATES LOOKUP</text>
-    <path d="M773 245 L812 245" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="792.5" y="125" text-anchor="middle" font-size="10.5" font-weight="800" fill="#475569">IF ACCEPTED</text>
+  <rect x="50" y="130" width="235" height="225" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text x="72" y="162" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">1 · CACHE MISS</text>
+  <text x="72" y="202" font-size="19" font-weight="800" fill="#0f172a">Client query</text>
+  <text x="72" y="239" font-size="14" fill="#475569">Unpredictable name</text>
+  <text x="72" y="262" font-size="14" fill="#475569">forces a new lookup</text>
+
+  <rect x="335" y="130" width="245" height="225" rx="18" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>
+  <text x="357" y="162" font-size="12" font-weight="900" letter-spacing="1" fill="#475569">2 · OPEN QUERY</text>
+  <text x="357" y="202" font-size="19" font-weight="800" fill="#0f172a">Recursive resolver</text>
+  <text x="357" y="239" font-size="14" fill="#475569">Sends an upstream query</text>
+  <text x="357" y="262" font-size="14" fill="#475569">and waits for a match</text>
+
+  <rect x="630" y="105" width="235" height="135" rx="18" fill="#fef2f2" stroke="#b91c1c" stroke-width="3"/>
+  <text x="652" y="137" font-size="12" font-weight="900" letter-spacing="1" fill="#b91c1c">3A · FORGED</text>
+  <text x="652" y="177" font-size="18" font-weight="800" fill="#0f172a">Attacker replies</text>
+  <text x="652" y="207" font-size="13.5" fill="#475569">Guesses matching fields</text>
+
+  <rect x="630" y="270" width="235" height="135" rx="18" fill="#ecfdf5" stroke="#0f766e" stroke-width="3"/>
+  <text x="652" y="302" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">3B · AUTHENTIC</text>
+  <text x="652" y="342" font-size="18" font-weight="800" fill="#0f172a">Authority replies</text>
+  <text x="652" y="372" font-size="13.5" fill="#475569">Returns the intended data</text>
+
+  <rect x="915" y="130" width="235" height="225" rx="18" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+  <text x="937" y="162" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">4 · ACCEPT OR DROP</text>
+  <text x="937" y="200" font-size="18" font-weight="800" fill="#0f172a">First valid match wins</text>
+  <text x="937" y="235" font-size="13.5" fill="#475569">Question · query ID</text>
+  <text x="937" y="258" font-size="13.5" fill="#475569">source address</text>
+  <text x="937" y="281" font-size="13.5" fill="#475569">destination address</text>
+  <text x="937" y="304" font-size="13.5" fill="#475569">destination port</text>
+  <text x="937" y="333" font-size="12.5" font-weight="700" fill="#92400e">Wrong or late → dropped</text>
+
+  <path d="M292 242 L327 242" fill="none" stroke="#64748b" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M587 213 C605 213 606 172 622 172" fill="none" stroke="#b91c1c" stroke-width="4" marker-end="url(#arrow-red)"/>
+  <path d="M587 270 C605 270 606 337 622 337" fill="none" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow-green)"/>
+  <path d="M873 172 C892 172 895 213 907 213" fill="none" stroke="#b91c1c" stroke-width="4" marker-end="url(#arrow-red)"/>
+  <path d="M873 337 C892 337 895 270 907 270" fill="none" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow-green)"/>
+
+  <text x="600" y="447" text-anchor="middle" font-size="12.5" fill="#64748b">Conceptual model based on RFC 5452 response acceptance; source-port and query-ID randomization make off-path guessing harder.</text>
 </svg>

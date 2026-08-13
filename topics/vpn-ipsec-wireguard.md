@@ -1,71 +1,99 @@
 ---
-title: "Secure Tunneling: IPsec, WireGuard & SSH Bastions"
-description: Securing network transport across untrusted boundaries using IPsec, WireGuard, OpenVPN, and SSH Bastion architectures.
+title: "VPN & Secure Tunneling: IPsec, WireGuard & OpenVPN"
+description: VPN tunnel boundaries, IPsec/IKEv2, WireGuard, and OpenVPN mechanics, authentication, routing, anti-replay, operations, migration, and selection criteria.
 permalink: /topics/vpn-ipsec-wireguard/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
-<span class="eyebrow">Network Security / Transport</span>
+<span class="eyebrow">Network Security / Secure Transport</span>
 
-# Secure Tunneling: IPsec, WireGuard & SSH Bastions
+# VPN & Secure Tunneling: IPsec, WireGuard & OpenVPN
 
-<p class="lede">When IP traffic travels over untrusted networks (such as the public internet or untrusted Wi-Fi), it is vulnerable to eavesdropping, tampering, and IP spoofing. Secure tunneling protocols encapsulate and cryptographically protect packets between endpoints, creating virtual private channels across untrusted infrastructure.</p>
+<p class="lede">A virtual private network (VPN) protects selected traffic between tunnel endpoints across an untrusted path. It does not make either endpoint trustworthy, authorize every inner connection, or guarantee that routes, DNS, keys, and failover behave as intended.</p>
 
-## What is secure tunneling: encapsulating network traffic
+## Define the protection boundary first
 
-Secure tunneling wraps an original network packet inside an outer transport packet, typically protected by **Authenticated Encryption with Associated Data (AEAD)**. WireGuard always uses AEAD (ChaCha20-Poly1305) by design, but the protection scope and cipher configuration are not uniform across all tunneling protocols — see the IPsec mode and ESP configuration notes below. The receiving gateway verifies payload integrity, decrypts the inner packet where encryption is configured, and routes it to the target network.
+A tunnel encapsulates an inner packet or frame in an outer packet carried between tunnel endpoints. The outer headers remain visible for routing. The protected content, peer authentication, replay handling, and traffic selection depend on the protocol and configuration.
 
-When confidentiality is configured, tunneling provides up to three security guarantees:
+| Model | What enters the tunnel | Common use |
+|---|---|---|
+| **Site-to-site** | Traffic selected between network gateways | Connect offices, data centers, and cloud networks. |
+| **Remote access** | Selected or default client traffic to a gateway | Give a managed user/device network reachability. |
+| **Host-to-host / overlay** | Traffic between enrolled hosts or workloads | Build a private routed overlay without exposing services directly. |
 
-1. **Confidentiality**: Payload (and, depending on mode, the inner IP header) is encrypted, protecting internal IP addresses from external exposure. IPsec in **tunnel mode** encapsulates and encrypts the entire original packet, including its header, inside a new outer IP packet; IPsec in **transport mode** protects only the upper-layer payload and leaves the original IP header largely intact and visible. WireGuard's design always encapsulates the full inner packet, functionally similar to tunnel mode.
-2. **Integrity & Authenticity**: WireGuard and AEAD-configured ESP carry a cryptographic authentication tag on every packet; a modified packet fails that tag check and is dropped. Replay rejection is a separate mechanism from the tag check — a byte-for-byte replayed packet still carries a valid tag, since nothing about it was altered. IPsec's ESP ([RFC 4303](https://www.rfc-editor.org/rfc/rfc4303.html)) addresses this with a sequence-number-based anti-replay window: implementations are required to support it, but a receiver may enable or disable it per Security Association, and it must not be enabled without the integrity service also enabled (since the sequence number itself needs integrity protection to be trustworthy). IPsec's ESP protocol ([RFC 4301](https://www.rfc-editor.org/rfc/rfc4301.html)) can also be configured for integrity-only (no confidentiality/encryption at all) or with separate encrypt-then-MAC algorithms instead of a combined AEAD cipher — not every IPsec deployment encrypts traffic, though RFC 4301 prohibits an SA with neither encryption nor an integrity algorithm.
-3. **Identity Binding**: Tunnel endpoints verify peer identity (via public keys or certificates) before passing traffic.
+**Full tunnel** routes a broad default path through the VPN; **split tunnel** routes selected prefixes or applications. Split tunneling reduces backhaul and can preserve local access, but it creates simultaneous trusted/untrusted paths and requires explicit DNS, route, and endpoint policy. Full tunneling centralizes inspection only when the gateway actually sees the traffic and IPv6, DNS, and alternate interfaces cannot escape.
 
-## Comparing tunneling protocols: IPsec vs WireGuard vs OpenVPN
+## Compare protocols on the same axes
 
-When evaluating VPN protocols for site-to-site or remote access connections, compare architecture, crypto primitives, and operational complexity:
+| Protocol | Data model and transport | Peer authentication and cryptography | Operational boundary |
+|---|---|---|---|
+| **IPsec with IKEv2** | IPsec operates at the IP layer. ESP transport mode protects upper-layer payload while retaining the original IP header; tunnel mode encapsulates the original IP packet in a new packet. NAT traversal commonly carries ESP in UDP. | IKEv2 establishes Security Associations and supports authentication models including pre-shared keys, signatures/certificates, and EAP-based remote access. ESP can use AEAD or separate encryption/integrity algorithms; integrity-only ESP exists. | Standards-based and widely integrated, but selectors, proposals, identities, NAT, rekey, lifetimes, and multiple Security Associations create substantial configuration state. |
+| **WireGuard** | Routes IP packets over UDP and always encrypts the inner packet. | Fixed protocol construction using NoiseIK, Curve25519, ChaCha20-Poly1305, BLAKE2s, and related primitives; static public keys identify peers, with an optional pre-shared key mixed into the handshake. | Small protocol surface and no cipher negotiation. Key distribution, peer-to-identity mapping, address assignment, endpoint discovery, and revocation are external operational responsibilities. |
+| **OpenVPN** | `tun` carries Layer-3 IP packets; `tap` can carry Layer-2 Ethernet frames where supported. The tunnel can use UDP or TCP. | TLS authenticates the control channel; deployments can use certificates and configured external/user authentication mechanisms. The negotiated data channel commonly uses AEAD suites in current configurations. | Flexible and mature. User-space processing is not a universal performance limit because supported Data Channel Offload (DCO) can move compatible data paths into the kernel; platform and feature support still vary. |
 
-| Protocol | Layer | Handshake / Crypto Primitives | Strengths | Trade-offs / Weaknesses |
-|---|---|---|---|---|
-| **IPsec (IKEv2)** | Network (Layer 3) | **IKEv2** (Diffie-Hellman), AES-GCM / ChaCha20-Poly1305 | OS-native support (iOS, macOS, Windows, Android); standardized; hardware-accelerated | Complex configuration state machine; large code footprint; complex NAT traversal |
-| **WireGuard** | Network (Layer 3) | **Noise IK** handshake, Noise protocol framework, Curve25519, ChaCha20-Poly1305, BLAKE2s | ~4,000 lines of code (audit-friendly); modern crypto; state-of-the-art speed & low latency; seamless roaming | Fixed modern crypto suite (no agility/negotiation by design); static IP assignments in default config |
-| **OpenVPN** | Transport (Layer 4, UDP/TCP) | TLS-based handshake, custom protocol, OpenSSL backend | Operates over TCP 443 (traverses strict corporate firewalls); mature | User-space processing overhead (slower throughput); complex OpenSSL dependency surface |
+Performance depends on implementation, platform crypto acceleration, packet size, path latency/loss, MTU, number of peers, traffic mix, hardware, and offload. Protocol design alone does not justify a universal “fastest,” “low latency,” or line-count-based auditability claim.
 
-The table above lists the cipher suites IPsec's ESP ([RFC 4301](https://www.rfc-editor.org/rfc/rfc4301.html)) commonly negotiates, but ESP is configurable, not fixed: an administrator can select **transport mode** (only the upper-layer payload is protected; the original IP header stays largely intact and visible) or **tunnel mode** (the entire original packet, including its header, is encapsulated and encrypted inside a new IP packet), and can configure ESP for AEAD, for separate encrypt-then-MAC algorithms, or for integrity-only with no encryption at all. WireGuard has no equivalent negotiation: every WireGuard tunnel uses the same fixed AEAD construction (ChaCha20-Poly1305) and always encapsulates the full inner packet.
+## IPsec separates policy, key management, and packet protection
 
-### WireGuard's crypto key routing design
-WireGuard binds each peer's public key directly to its assigned internal IP address inside the interface configuration (`AllowedIPs`). When a packet arrives, WireGuard decrypts it, verifies that the source IP matches the public key's `AllowedIPs` mapping, and drops spoofed packets before they reach the routing table.
+- The **Security Policy Database (SPD)** decides whether matching traffic is discarded, bypasses IPsec, or is protected.
+- **IKEv2** authenticates peers and negotiates Security Associations, traffic selectors, algorithms, and fresh keying material.
+- The **Security Association Database (SAD)** holds the unidirectional state used to process AH/ESP traffic.
+- **ESP** supplies confidentiality when encryption is selected and data-origin authentication/integrity when the configured algorithm supplies it.
 
-## SSH Bastion Host architecture for administrative access
+An AEAD tag detects unauthorized modification for a packet under the Security Association. A byte-for-byte replay can still carry a valid tag. ESP therefore has a separate sequence-number and receiver anti-replay-window mechanism; implementations support it, but the receiver chooses whether to enable it for an SA, and it depends on integrity protection.
 
-For interactive server administration without exposing SSH ports directly to the public internet, deployment architectures use an **SSH Bastion Host** (Jump Server) combined with SSH ProxyJump (`-J`):
+Tunnel mode hides the inner IP header from observers between the IPsec endpoints, not from those endpoints or the networks beyond them. The new outer header, packet size, timing, and endpoint addresses remain observable.
 
-```bash
-# Connect to private database server via public bastion host
-ssh -J admin@bastion.example.com admin@10.0.2.45
-```
+## WireGuard AllowedIPs combines routing and source checks
 
-### SSH Bastion Security Hardening Rulebook
-1. **Disable password authentication**: Permit public-key or SSH certificate authentication only (`PasswordAuthentication no`).
-2. **Enforce short-lived SSH Certificates**: Issue temporary, signed certificates (via OpenSSH CA or Vault SSH Secrets Engine) with 1-8 hour lifetimes rather than distributing static `authorized_keys`.
-3. **Restrict Bastion Shell**: Limit bastion user capabilities so compromised keys cannot execute local commands on the bastion host itself.
+WireGuard's **cryptokey routing** associates peer public keys with allowed IP prefixes:
 
-## Zero Trust Network Access (ZTNA) as an alternative to VPN tunnels
+- For outbound traffic, `AllowedIPs` participates in selecting which peer receives a destination prefix.
+- For inbound decrypted traffic, the source address must belong to that peer's configured prefixes.
 
-Many traditional VPN deployments grant a connected client broad network-level reachability: once the tunnel is up, the client may have a routable path to an entire subnet or VPC, with individual services restricted downstream by firewall or application policy. That breadth is a deployment choice rather than a protocol requirement—IPsec traffic selectors, WireGuard `AllowedIPs`, routing, and firewalls can narrow reachability. **Zero Trust Network Access (ZTNA)** instead mediates access per application or resource: an identity-aware proxy or broker authenticates and authorizes each specific application request without placing the client directly on an internal network segment. This can narrow the blast radius of a compromised endpoint or credential, at the cost of per-application integration or proxying.
+This constrains inner addresses but does not assign addresses, authenticate a human-readable device identity, distribute keys, authorize application actions, or prevent two configuration sources from creating ambiguous policy. Overlay controllers can add those functions, but their identity and control planes become additional trust dependencies.
 
-## Network Tunnel Selection Rulebook
+WireGuard endpoints can roam when authenticated packets arrive from a new outer address. Roaming does not remove the need to detect stolen private keys, expire devices, remove peers, and manage recovery when the coordination or discovery system is unavailable.
 
-1. **WireGuard**: A lean option for site-to-site tunnels and modern VPN infrastructure when its platform support and key-distribution model fit the environment.
-2. **IPsec (IKEv2)**: Useful when client devices require standardized, native OS VPN integration without installing third-party agents.
-3. **Short-Lived SSH Certificates + ProxyJump**: A focused option for interactive engineer access to SSH services in private networks.
+## OpenVPN flexibility changes the decision
+
+- Prefer UDP for general tunnel transport when the path allows it. Carrying TCP application flows inside a TCP-based VPN can make loss recovery and congestion control interact poorly; TCP 443 may pass some restrictive networks, but it is not guaranteed to traverse proxies, inspection, authentication portals, or policy that distinguishes non-HTTPS traffic.
+- DCO can improve compatible data-path performance, but it is conditional on platform/module support, mode, cipher set, and options. Confirm the active mode from runtime evidence rather than assuming offload is used.
+- Layer-2 `tap` mode carries broadcasts and expands the failure and attack domain. Use it only for a requirement that cannot be met with routed Layer-3 `tun` mode.
+- Disable compression unless a narrowly reviewed legacy dependency requires it; compression can create information leakage and may be incompatible with modern offload paths.
+
+## Operate keys, routes, names, and failure together
+
+1. Bind each peer credential to an owner, device/workload, allowed prefixes, environment, issuance time, and retirement action.
+2. Use least-privilege routes and downstream firewall/application authorization; tunnel membership is not resource authorization.
+3. Test route precedence, overlapping prefixes, IPv4 and IPv6 leakage, DNS resolver/search behavior, local-LAN access, kill-switch behavior, and reconnect after network change.
+4. Measure packet loss, retransmission, handshake/rekey failure, peer last-seen state, route drift, MTU/fragmentation, gateway saturation, and denied inner flows.
+5. Define gateway failover and fail-closed/fail-open behavior. Confirm that high availability does not reuse identities or Security Association state unsafely.
+6. Revoke compromised peers, rotate affected keys, remove routes, inspect post-revocation use, and test recovery from lost controller, CA, pre-shared key, or gateway state.
+
+## Migrate unsafe and obsolete tunnels deliberately
+
+- **PPTP with MS-CHAPv2** and obsolete cryptographic configurations should not be selected for new protection. Inventory clients and replace the dependency rather than wrapping it in another tunnel and leaving it active.
+- **IKEv1** is deprecated and its defining RFCs are Historic. Migrate to IKEv2 and review algorithms during migration instead of importing the old proposal unchanged.
+- Remove single-DES, 3DES where prohibited by current policy, RC4, MD5-based integrity, weak Diffie-Hellman groups, static shared credentials with broad reuse, and unauthenticated or integrity-free configurations.
+- Run old and new tunnels in parallel only for a bounded cutover. Validate routes and applications, revoke old credentials, remove listeners and firewall rules, and monitor for attempts to use the retired path.
+
+## Select the mechanism from requirements
+
+- Choose **IPsec/IKEv2** for interoperable site-to-site or native-client requirements when the team can manage its policy and negotiation state.
+- Choose **WireGuard** for a lean Layer-3 UDP tunnel when external key, identity, address, and lifecycle management are available.
+- Choose **OpenVPN** when TLS-based extensibility, `tun`/`tap`, or UDP/TCP transport flexibility is required and its larger option surface can be governed.
+- Choose **[Administrative Network Access]({{ '/topics/administrative-network-access/' | relative_url }})** rather than a general VPN when engineers need narrowly mediated access to specific management resources.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>WireGuard is a lean option for new tunnels; IPsec/IKEv2 remains useful where standardized, OS-native VPN support is required. A VPN can be narrowly routed and firewalled, but many deployments expose broad network reachability; use per-peer routes and downstream policy, or ZTNA when per-application authorization is the goal.</p>
+  <p>A VPN protects selected traffic between tunnel endpoints; routes, DNS, endpoint security, key lifecycle, and resource authorization remain separate. Compare IPsec, WireGuard, and OpenVPN by protection scope, authentication, policy state, platform support, and recovery—not by universal speed or simplicity claims.</p>
 </div>
 
 ## Primary references
 
-- **WireGuard Whitepaper**: *WireGuard: Next Generation Kernel Network Tunnel* — [WireGuard Official Paper](https://www.wireguard.com/papers/wireguard.pdf)
-- **RFC 7296**: *Internet Key Exchange Protocol Version 2 (IKEv2)* — [IETF RFC 7296](https://www.rfc-editor.org/rfc/rfc7296)
+- **[RFC 4301: Security Architecture for IP](https://www.rfc-editor.org/rfc/rfc4301.html)**, **[RFC 4303: IP Encapsulating Security Payload](https://www.rfc-editor.org/rfc/rfc4303.html)**, and **[RFC 7296: IKEv2](https://www.rfc-editor.org/rfc/rfc7296.html)** — verified IPsec databases, modes, Security Associations, authentication, ESP protection, sequence numbers, and anti-replay boundaries.
+- **[WireGuard whitepaper](https://www.wireguard.com/papers/wireguard.pdf)** and **[WireGuard protocol overview](https://www.wireguard.com/protocol/)** — verified cryptokey routing, protocol primitives, roaming, and fixed-suite behavior.
+- **[OpenVPN 2.6 manual](https://openvpn.net/community-docs/community-articles/openvpn-2-6-manual.html)** — verified `tun`/`tap`, UDP/TCP, current data-cipher, compression, and conditional DCO behavior.
+- **[NIST SP 800-77 Rev. 1: Guide to IPsec VPNs](https://csrc.nist.gov/pubs/sp/800/77/r1/final)** — verified IPsec deployment guidance and the unsafe/deprecated boundary for PPTP and obsolete VPN configurations.
+- **[RFC 9395: Deprecation of IKEv1](https://www.rfc-editor.org/rfc/rfc9395.html)** — verified IKEv1 Historic status, migration guidance, and associated obsolete-algorithm considerations.
