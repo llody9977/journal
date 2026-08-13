@@ -1524,6 +1524,63 @@
       "originating_review_state_id": "fe3c5e5a5228b0404379085ce1e63442c29a3af8f7c666c6fd7081214a19d113",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0029",
+      "title": "Add Federated Learning (7.5), Serverless Security (11.4), Malware Analysis (12.3), and repair Topic 9.3 reference URL",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/federated-learning-privacy.md",
+          "topics/serverless-faas-security.md",
+          "topics/malware-analysis-reverse-engineering.md",
+          "topics/privacy-by-design-pets.md",
+          "_data/nav.yml",
+          "_includes/topic-nav.html"
+        ],
+        "concepts": [
+          "federated learning",
+          "serverless security",
+          "malware analysis",
+          "privacy by design reference link"
+        ]
+      },
+      "originating_feedback": "The user requested adding the 3 optional micro-enrichment topics (Federated Learning 7.5, Serverless Security 11.4, Malware Analysis 12.3) and repairing the primary reference link on Topic 9.3.",
+      "decision": "Add Topics 7.5, 11.4, and 12.3 with matching SVGs and update Topic 9.3 primary reference link to active IPC Ontario URL.",
+      "rationale": "Completes specialized edge AI, serverless cloud, and reverse engineering domains while ensuring 100% active primary reference links across all pages.",
+      "authoritative_sources": [
+        {
+          "title": "McMahan et al. (2017)",
+          "url": "https://arxiv.org/abs/1602.05629",
+          "supports": "Federated Learning core FedAvg and SecAgg mechanics."
+        },
+        {
+          "title": "OWASP Serverless Top 10",
+          "url": "https://owasp.org/www-project-serverless-top-10/",
+          "supports": "Serverless application security risks."
+        },
+        {
+          "title": "SANS FOR610",
+          "url": "https://www.sans.org/cyber-security-courses/reverse-engineering-malware-tools-techniques/",
+          "supports": "Reverse engineering malware methodology."
+        }
+      ],
+      "verification_methods": [
+        "Verify 93 ordered topics in nav.yml and topic-nav.html.",
+        "Run scripts/verify_writing_style.py across all 94 topic files.",
+        "Run scripts/verify_content_decisions.py against CONTENT_DECISIONS.yml."
+      ],
+      "approved_outcome": "Journal expanded to 93 ordered topics across 13 sections with clean navigation, matching SVGs, and verified primary reference links.",
+      "invalidation_conditions": [
+        "The journal section taxonomy is restructured by explicit user instruction."
+      ],
+      "related_decisions": ["CD-0001", "CD-0028"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "959ee00a9eddaa8aff967653bfa3f6387de4b49544a1ea74b0ba00b32ffc435e",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }

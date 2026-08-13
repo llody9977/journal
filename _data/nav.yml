@@ -159,6 +159,8 @@
           url: /topics/mcp-security-agentics/
         - title: 7.4 AI Model Supply Chain & Deserialization Safety
           url: /topics/ai-model-supply-chain/
+        - title: "7.5 Federated Learning & Privacy-Preserving Machine Learning"
+          url: /topics/federated-learning-privacy/
     - title: 8. Software Supply Chain Security
       children:
         - title: "8.1 Software Bill of Materials (SBOM) & VEX"
@@ -197,12 +199,16 @@
           url: /topics/container-kubernetes-security/
         - title: "11.3 Infrastructure as Code (IaC) & Immutable Security"
           url: /topics/iac-immutable-security/
+        - title: "11.4 Serverless Security & FaaS Hardening"
+          url: /topics/serverless-faas-security/
     - title: 12. Digital Forensics & Incident Response (DFIR)
       children:
         - title: "12.1 Digital Forensics & Evidence Handling"
           url: /topics/digital-forensics-evidence-handling/
         - title: "12.2 Incident Response Playbooks & SOAR"
           url: /topics/incident-response-playbooks-soar/
+        - title: "12.3 Malware Analysis & Reverse Engineering"
+          url: /topics/malware-analysis-reverse-engineering/
     - title: 13. Governance, Risk & Compliance
       children:
         - title: "13.1 Cybersecurity Standards & Frameworks"

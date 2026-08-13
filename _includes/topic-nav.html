@@ -407,12 +407,18 @@
 {% if current_url == '/topics/ai-model-supply-chain/' or current_url == '/topics/ai-model-supply-chain' %}
   {% assign prev_title = '7.3 Model Context Protocol (MCP) & Agentic Security' %}
   {% assign prev_url = '/topics/mcp-security-agentics/' %}
+  {% assign next_title = '7.5 Federated Learning & Privacy-Preserving Machine Learning' %}
+  {% assign next_url = '/topics/federated-learning-privacy/' %}
+{% endif %}
+{% if current_url == '/topics/federated-learning-privacy/' or current_url == '/topics/federated-learning-privacy' %}
+  {% assign prev_title = '7.4 AI Model Supply Chain & Deserialization Safety' %}
+  {% assign prev_url = '/topics/ai-model-supply-chain/' %}
   {% assign next_title = '8.1 Software Bill of Materials (SBOM) & VEX' %}
   {% assign next_url = '/topics/sbom-dependency-management/' %}
 {% endif %}
 {% if current_url == '/topics/sbom-dependency-management/' or current_url == '/topics/sbom-dependency-management' %}
-  {% assign prev_title = '7.4 AI Model Supply Chain & Deserialization Safety' %}
-  {% assign prev_url = '/topics/ai-model-supply-chain/' %}
+  {% assign prev_title = '7.5 Federated Learning & Privacy-Preserving Machine Learning' %}
+  {% assign prev_url = '/topics/federated-learning-privacy/' %}
   {% assign next_title = '8.2 CI/CD Pipeline Security & Workload Identity' %}
   {% assign next_url = '/topics/cicd-pipeline-security/' %}
 {% endif %}
@@ -497,24 +503,36 @@
 {% if current_url == '/topics/iac-immutable-security/' or current_url == '/topics/iac-immutable-security' %}
   {% assign prev_title = '11.2 Container & Kubernetes Security' %}
   {% assign prev_url = '/topics/container-kubernetes-security/' %}
+  {% assign next_title = '11.4 Serverless Security & FaaS Hardening' %}
+  {% assign next_url = '/topics/serverless-faas-security/' %}
+{% endif %}
+{% if current_url == '/topics/serverless-faas-security/' or current_url == '/topics/serverless-faas-security' %}
+  {% assign prev_title = '11.3 Infrastructure as Code (IaC) & Immutable Security' %}
+  {% assign prev_url = '/topics/iac-immutable-security/' %}
   {% assign next_title = '12.1 Digital Forensics & Evidence Handling' %}
   {% assign next_url = '/topics/digital-forensics-evidence-handling/' %}
 {% endif %}
 {% if current_url == '/topics/digital-forensics-evidence-handling/' or current_url == '/topics/digital-forensics-evidence-handling' %}
-  {% assign prev_title = '11.3 Infrastructure as Code (IaC) & Immutable Security' %}
-  {% assign prev_url = '/topics/iac-immutable-security/' %}
+  {% assign prev_title = '11.4 Serverless Security & FaaS Hardening' %}
+  {% assign prev_url = '/topics/serverless-faas-security/' %}
   {% assign next_title = '12.2 Incident Response Playbooks & SOAR' %}
   {% assign next_url = '/topics/incident-response-playbooks-soar/' %}
 {% endif %}
 {% if current_url == '/topics/incident-response-playbooks-soar/' or current_url == '/topics/incident-response-playbooks-soar' %}
   {% assign prev_title = '12.1 Digital Forensics & Evidence Handling' %}
   {% assign prev_url = '/topics/digital-forensics-evidence-handling/' %}
+  {% assign next_title = '12.3 Malware Analysis & Reverse Engineering' %}
+  {% assign next_url = '/topics/malware-analysis-reverse-engineering/' %}
+{% endif %}
+{% if current_url == '/topics/malware-analysis-reverse-engineering/' or current_url == '/topics/malware-analysis-reverse-engineering' %}
+  {% assign prev_title = '12.2 Incident Response Playbooks & SOAR' %}
+  {% assign prev_url = '/topics/incident-response-playbooks-soar/' %}
   {% assign next_title = '13.1 Cybersecurity Standards & Frameworks' %}
   {% assign next_url = '/topics/cybersecurity-standards/' %}
 {% endif %}
 {% if current_url == '/topics/cybersecurity-standards/' or current_url == '/topics/cybersecurity-standards' %}
-  {% assign prev_title = '12.2 Incident Response Playbooks & SOAR' %}
-  {% assign prev_url = '/topics/incident-response-playbooks-soar/' %}
+  {% assign prev_title = '12.3 Malware Analysis & Reverse Engineering' %}
+  {% assign prev_url = '/topics/malware-analysis-reverse-engineering/' %}
   {% assign next_title = '13.2 GRC Strategy: Framework Stacking & Assessment Models' %}
   {% assign next_url = '/topics/grc-framework-strategy/' %}
 {% endif %}

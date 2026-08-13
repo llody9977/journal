@@ -68,6 +68,6 @@ When auditing an application or data processing architecture for privacy complia
 
 ## Primary references
 
-- **Privacy by Design**: *The 7 Foundational Principles* — [Ann Cavoukian / IPC](https://www.ipc.on.ca/wp-content/uploads/2013/09/7foundationalprinciples.pdf)
+- **Privacy by Design**: *The 7 Foundational Principles* — [Ann Cavoukian / IPC](https://www.ipc.on.ca/en/privacy-organizations/privacy-by-design)
 - **ISO/IEC 27701:2025**: *Privacy Information Management System (PIMS)* — [ISO 27701 Standard](https://www.iso.org/standard/27701)
 - **NIST Privacy Framework**: *A Tool for Improving Privacy Through Risk Management* — [NIST CSRC](https://www.nist.gov/privacy-framework)
