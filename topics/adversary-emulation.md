@@ -86,9 +86,10 @@ atomic_tests:
 
 Continuous security validation transitions security testing from sporadic annual penetration tests to continuous, automated empirical measurement:
 
-```
-[1. Select TTP] ──> [2. Execute Atomic Payload] ──> [3. Verify Telemetry Log] ──> [4. Check SIEM Alert] ──> [5. Update Heatmap]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/adversary-emulation.svg' | relative_url }}" alt="Continuous Security Validation Workflow diagram.">
+  <p class="diagram-caption">Continuous Validation Sequence: Select TTP &leftrightarrow; Atomic Payload Execution &leftrightarrow; Telemetry Verification &leftrightarrow; Heatmap Update</p>
+</div>
 
 1. **Select Target TTP**: Choose a specific ATT&CK technique (*e.g., T1059.001 PowerShell Execution*).
 2. **Execute Atomic Payload**: Trigger the corresponding Atomic Red Team script via an automated BAS agent or CI/CD runner.
@@ -100,17 +101,10 @@ Continuous security validation transitions security testing from sporadic annual
 
 A critical vulnerability in enterprise security governance is mistaking **theoretical ATT&CK mapping** (vendor claims) for **empirical coverage** (proven test evidence):
 
-```
-                       ATT&CK COVERAGE DISCREPANCY
-  
-  Theoretical Mapping (Vendor / Documentation) ──> [ 100% Intended Coverage ]
-                                                             │
-                                                             ▼  - Missing Log Parsers
-                                                             ▼  - EDR Exclusions
-                                                             ▼  - SIEM Ingestion Delays
-                                                             │
-  Empirical Measured Coverage (Test-Backed)    ──> [  42% Verified Detections ]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/adversary-emulation.svg' | relative_url }}" alt="Theoretical vs Empirical Coverage Discrepancy diagram.">
+  <p class="diagram-caption">ATT&CK Coverage Discrepancy: Theoretical Documentation Mapping &leftrightarrow; Tested Empirical Detections</p>
+</div>
 
 | Coverage Dimension | Theoretical Mapping | Empirical Measured Coverage |
 |---|---|---|

@@ -35,9 +35,10 @@ Formulated in 1975 by Jerome Saltzer and Michael Schroeder, these 8 principles r
 
 **Defense-in-Depth** assumes that any single security control will eventually fail or be bypassed. Security architecture must deploy multiple independent, overlapping safeguard layers so that a failure in one tier is contained by the next:
 
-```
-[ Edge WAF & DDoS ] ──> [ Network Firewall ] ──> [ Identity & MFA ] ──> [ App Input Validation ] ──> [ Data Encryption ]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/security-design-principles.svg' | relative_url }}" alt="Defense in Depth multi-tiered safeguard layers diagram.">
+  <p class="diagram-caption">Multi-Tiered Defense-in-Depth Layering: Edge &leftrightarrow; Network &leftrightarrow; Identity &leftrightarrow; Application &leftrightarrow; Data Encryption</p>
+</div>
 
 1. **Edge Tier**: Web Application Firewall (WAF) filtering malicious HTTP payloads and Cloud DDoS mitigation.
 2. **Network Tier**: Subnet microsegmentation, default-deny security groups, and egress proxy filtering.

@@ -68,18 +68,10 @@ The **Process for Attack Simulation and Threat Analysis (PASTA)** is a 7-stage r
 
 The **OWASP 4-Question Framework** acts as a lightweight, continuous meta-process for Agile software development teams:
 
-```
-[1. What are we working on?] ──> DFDs, Architecture Specs, User Stories
-            │
-            ▼
-[2. What can go wrong?]     ──> STRIDE Categories, Abuse Cases, Threat Registers
-            │
-            ▼
-[3. What are we doing?]     ──> Security Controls, Backlog Tickets, AEAD/OAuth Fixes
-            │
-            ▼
-[4. Did we do a good job?]  ──> Sprint Retrospectives, CI/CD Automated Audits
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/threat-modeling-design.svg' | relative_url }}" alt="OWASP 4-Question Threat Modeling Execution diagram.">
+  <p class="diagram-caption">OWASP 4-Question Framework: What are we building? &leftrightarrow; What can go wrong? &leftrightarrow; What are we doing? &leftrightarrow; Did we do a good job?</p>
+</div>
 
 - **Question 1: What are we working on?** — Deconstruct the feature or service using a visual Data Flow Diagram (DFD) or architecture diagram showing inputs, outputs, processes, stores, and trust boundaries.
 - **Question 2: What can go wrong?** — Brainstorm misuse cases and vulnerabilities using STRIDE or threat modeling workshops.

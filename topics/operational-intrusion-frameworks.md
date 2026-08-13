@@ -32,9 +32,10 @@ Security Operations Centers (SOC), Incident Response (IR) teams, and Threat Inte
 
 Developed by Lockheed Martin, the **Cyber Kill Chain** models an external intrusion as a 7-stage sequential chain. Disrupting the adversary at any single stage breaks the intrusion:
 
-```
-[1. Recon] ──> [2. Weaponize] ──> [3. Deliver] ──> [4. Exploit] ──> [5. Install] ──> [6. C2] ──> [7. Actions]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/operational-intrusion-frameworks.svg' | relative_url }}" alt="Lockheed Martin Cyber Kill Chain 7-stage intrusion lifecycle diagram.">
+  <p class="diagram-caption">Cyber Kill Chain: Recon &leftrightarrow; Weaponize &leftrightarrow; Deliver &leftrightarrow; Exploit &leftrightarrow; Install &leftrightarrow; C2 &leftrightarrow; Actions on Objectives</p>
+</div>
 
 1. **Reconnaissance**: Adversary harvests target information (harvesting emails, scanning IP ranges, social engineering).
 2. **Weaponization**: Coupling malware exploit payloads with a deliverable document or file (*e.g., weaponized PDF or macro*).

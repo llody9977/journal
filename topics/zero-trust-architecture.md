@@ -28,22 +28,10 @@ Zero Trust architecture shifts security focus from network location to resource 
 
 **NIST SP 800-207** defines the authoritative logical architecture for Zero Trust deployments, separating the **Control Plane** (Policy Decision Point) from the **Data Plane** (Policy Enforcement Point):
 
-```
-                               CONTROL PLANE (Policy Decision Point - PDP)
-  ┌──────────────────────────────────────────────────────────────────────────────────┐
-  │                                                                                  │
-  │   [ Policy Engine (PE) ]  <───> [ Threat Intel / IdP / EDR Context ]             │
-  │             │                                                                    │
-  │             ▼                                                                    │
-  │   [ Policy Administrator (PA) ] ──( Issue Token / Command )──┐                   │
-  └─────────────────────────────────────────────────────────────┼────────────────────┘
-                                                                │
-                               DATA PLANE                       │
-  ┌─────────────────────────────────────────────────────────────┼────────────────────┐
-  │                                                             ▼                    │
-  │  Subject / Device ──( Request )──> [ Policy Enforcement Point (PEP) ] ──> Resource│
-  └──────────────────────────────────────────────────────────────────────────────────┘
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/zero-trust-architecture.svg' | relative_url }}" alt="NIST SP 800-207 Zero Trust logical architecture showing Control Plane PDP and Data Plane PEP.">
+  <p class="diagram-caption">NIST SP 800-207 Logical Zero Trust Architecture: Control Plane PDP (PE &amp; PA) &leftrightarrow; Data Plane PEP</p>
+</div>
 
 ### 1. Control Plane: Policy Decision Point (PDP)
 - **Policy Engine (PE)**: The brain of Zero Trust. Consumes policy rules, threat intelligence, identity attributes (IdP), and device health metrics (EDR) to make ultimate access decisions (*Grant, Deny, Require Step-Up MFA*).

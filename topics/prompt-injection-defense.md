@@ -41,12 +41,10 @@ Because all tokens are processed uniformly by attention mechanisms, an instructi
 
 Pattern-based string filtering (*e.g. searching for "ignore previous instructions"*) is easily bypassed by adversarial obfuscation, translation, or encoding. Durable defense requires structural pattern enforcement:
 
-```
-                               DUAL-LLM GUARDRAIL ARCHITECTURE
-  
-  Untrusted Data ──> [ PRIVILEGED INPUT LLM ] ──> Structural Data Extract (JSON) ──> [ EXECUTOR LLM ]
-   (Web / RAG)       (No Tool Access Allowed)                                         (Scoped Tool Access)
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/prompt-injection.svg' | relative_url }}" alt="Dual-LLM Guardrail Architecture diagram.">
+  <p class="diagram-caption">Dual-LLM Security Pattern: Untrusted Data &leftrightarrow; Input Processing LLM &leftrightarrow; Verified JSON Payload &leftrightarrow; Execution LLM</p>
+</div>
 
 ### 1. Dual-LLM Architectural Pattern
 - **Privileged Input LLM (Untrusted Processor)**: Processes raw untrusted external data (*e.g. web pages, emails*) but is **denied access to all execution tools or external network calls**. Its sole output is a strict, validated JSON schema containing extracted facts.
@@ -60,9 +58,10 @@ Pattern-based string filtering (*e.g. searching for "ignore previous instruction
 
 Retrieval-Augmented Generation (RAG) introduces severe indirect prompt injection vectors if vector database search results bypass authorization checks:
 
-```
-User Query ──> [ Vector DB Search ] ──> [ Apply User ACL Filter ] ──> [ Sanitize RAG Tokens ] ──> LLM Context
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/prompt-injection.svg' | relative_url }}" alt="RAG Document Context Isolation diagram.">
+  <p class="diagram-caption">RAG Context Isolation: User Query &leftrightarrow; Vector DB Search &leftrightarrow; ACL Metadata Filter &leftrightarrow; Token Sanitization</p>
+</div>
 
 1. **Enforce Document-Level ACLs**: Vector database embeddings must carry tenant and user authorization tags (`tenant_id`, `user_role`). Queries must apply hard metadata filters before returning document chunks.
 2. **Token Delimiter Tagging**: Wrap retrieved RAG documents in explicit XML/HTML tags (*e.g. `<external_rag_content>`*) and instruct the system prompt that text inside these tags must be treated strictly as passive reference data, never as executable commands.

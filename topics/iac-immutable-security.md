@@ -20,14 +20,10 @@ last_verified: 2026-08-13
 
 Static IaC security tools analyze infrastructure code manifests before deployment, catching security defects early in the SDLC:
 
-```
-[ Terraform / Helm Commit ] ──> [ Checkov / tfsec Scan ] ──> Security Flaw Detected? ──(YES)──> Block PR Merge
-                                                                    │
-                                                                  (NO)
-                                                                    │
-                                                                    ▼
-                                                            Execute terraform apply
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/iac-immutable-security.svg' | relative_url }}" alt="Static Infrastructure as Code security scanning pipeline diagram.">
+  <p class="diagram-caption">IaC CI/CD Security Pipeline: Terraform Commit &leftrightarrow; Static Scan Gate &leftrightarrow; Terraform Apply</p>
+</div>
 
 ### Common IaC Misconfiguration Patterns
 - **Overly Permissive Ingress**: Security groups configured with `0.0.0.0/0` on sensitive ports (*SSH 22, RDP 3389, Database 5432*).

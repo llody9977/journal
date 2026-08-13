@@ -30,10 +30,10 @@ In public cloud environments, security responsibilities are divided between the 
 
 Managing cloud security posture requires three complementary security technology categories:
 
-```
-[ CSPM: Posture Audit ] ───> [ CIEM: Entitlement Analysis ] ───> [ CWPP: Workload Protection ]
-  (Config Misconfigurations)     (Over-Privileged Roles)           (Runtime Vulnerabilities)
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cloud-security-iam-perimeters.svg' | relative_url }}" alt="Cloud Security Tooling Triad diagram showing CSPM, CIEM, and CWPP.">
+  <p class="diagram-caption">Cloud Security Tooling Triad: CSPM Config Auditing &leftrightarrow; CIEM Entitlement Analysis &leftrightarrow; CWPP Runtime Protection</p>
+</div>
 
 1. **Cloud Security Posture Management (CSPM)**:
    - Continuously scans cloud infrastructure configurations against compliance standards (*CIS Benchmarks, NIST CSF, PCI DSS*).

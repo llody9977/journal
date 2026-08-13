@@ -31,15 +31,10 @@ Traditional software security relies on strict boundary isolation between code i
 
 Published by NIST, the **AI RMF 1.0** provides a structured framework for managing risks to individuals, organizations, and society. The framework structures risk management into 4 core functions:
 
-```
-[GOVERN] ──> Establishes organizational AI risk culture, policies, &amp; risk tolerance
-   │
-   ├──> [MAP] ──────> Context identification, capabilities, &amp; system categorization
-   │
-   ├──> [MEASURE] ──> Empirical testing, quantitative metrics, &amp; bias evaluation
-   │
-   └──> [MANAGE] ───> Risk response allocation, continuous monitoring, &amp; incident playbooks
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/ai-risk-management.svg' | relative_url }}" alt="NIST AI RMF 1.0 Core Functions diagram showing Govern, Map, Measure, and Manage.">
+  <p class="diagram-caption">NIST AI RMF 1.0 Core Functions: Govern &leftrightarrow; Map Context &leftrightarrow; Measure Empirical Metrics &leftrightarrow; Manage Risk Allocation</p>
+</div>
 
 1. **GOVERN**: Establishes a culture of risk management across the AI lifecycle. Defines policies, transparent accountabilities, human-in-the-loop requirements, and organizational risk tolerance.
 2. **MAP**: Categorizes AI system context, capabilities, dependencies, and potential impacts. Identifies third-party foundation models, training data provenance, and RAG data boundaries.
@@ -67,10 +62,10 @@ The **OWASP Top 10 for LLM Applications** categorizes the most critical security
 
 **MITRE ATLAS** is a globally accessible knowledge base of real-world adversary tactics, techniques, and procedures (TTPs) targeting AI/ML systems:
 
-```
-[Reconnaissance] ──> [Initial Access] ──> [Execution] ──> [Exfiltration] ──> [Impact]
-  Model Discovery      RAG Poisoning       Prompt Injection    Model Inversion   Model Denial of Service
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/ai-risk-management.svg' | relative_url }}" alt="MITRE ATLAS AI Threat Matrix diagram.">
+  <p class="diagram-caption">MITRE ATLAS TTP Matrix: Reconnaissance &leftrightarrow; Initial Access &leftrightarrow; Execution &leftrightarrow; Exfiltration &leftrightarrow; Impact</p>
+</div>
 
 - **Initial Access**: Gaining access via poisoned training data, malicious Hugging Face model weights, or indirect prompt injection embedded in fetched web documents.
 - **Execution**: Triggering unauthorized model actions, execution of unsafe Python deserialization payloads (`.pkl`), or unexpected tool calls.

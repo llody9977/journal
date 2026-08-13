@@ -61,9 +61,10 @@ The **PEAK (Preparedness, Execution, Analysis, Knowledge Sharing)** Hunting Fram
 
 **UEBA** establishes statistical baselines for users, service accounts, and host entities to detect behavioral deviations:
 
-```
-Raw Telemetry Event ──> Feature Extraction ──> Peer Group Comparison ──> Z-Score Calculation ──> Risk Score Update
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/threat-hunting.svg' | relative_url }}" alt="UEBA Telemetry Processing and Anomaly Detection diagram.">
+  <p class="diagram-caption">UEBA Analytics Pipeline: Raw Event Ingestion &leftrightarrow; Peer Group Comparison &leftrightarrow; Z-Score Calculation &leftrightarrow; Risk Score Update</p>
+</div>
 
 ### Core UEBA Analytics Techniques
 1. **Peer Group Analytics**: Compares an individual user's behavior against their organizational cohort (*e.g., comparing a Finance Analyst's database query volume against other Finance Analysts*).
@@ -79,9 +80,10 @@ Raw Telemetry Event ──> Feature Extraction ──> Peer Group Comparison ─
 
 A threat hunt is incomplete until its findings are operationalized to permanently improve enterprise security posture:
 
-```
-[1. Conduct Hunt] ──> [2. Identify Gap] ──> [3. Remediate Host] ──> [4. Write Sigma Rule] ──> [5. Update Playbook]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/threat-hunting.svg' | relative_url }}" alt="Post-Hunt Operationalization Lifecycle diagram.">
+  <p class="diagram-caption">Threat Hunting Feedback Loop: Conduct Hunt &leftrightarrow; Remediate Host &leftrightarrow; Write Sigma Rule &leftrightarrow; Update Playbook</p>
+</div>
 
 1. **Host Remediation**: Terminate malicious processes, revoke compromised credentials, and initiate incident response playbooks for confirmed compromise.
 2. **Detection Rule Creation**: Convert the successful hunting query into a durable Detection-as-Code rule (Sigma YAML) to automate future alerts.

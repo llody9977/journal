@@ -20,9 +20,10 @@ last_verified: 2026-08-13
 
 Traditional code signing relies on long-lived asymmetric key pairs (*e.g. RSA or ECDSA private keys stored in PKCS#12 files or Hardware Security Modules*):
 
-```
-Private Key Stored in CI Secret Store ──> Leaked / Stolen ──> Attacker Signs Malicious Malware
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/sigstore-code-signing.svg' | relative_url }}" alt="Long-Lived Private Key Leakage Vector diagram.">
+  <p class="diagram-caption">Legacy Code Signing Vulnerability: Long-Lived Key Storage &leftrightarrow; Key Exfiltration &leftrightarrow; Unauthorized Malware Signing</p>
+</div>
 
 - **Key Loss & Leakage**: Private keys stored in CI secret stores or developer workstations are vulnerable to exfiltration via compromised build scripts or developer laptop compromises.
 - **Key Revocation Complexity**: Revoking a compromised key invalidates all legitimate past software releases signed by that key unless complex timestamping authorities (TSAs) were properly configured.
@@ -31,13 +32,10 @@ Private Key Stored in CI Secret Store ──> Leaked / Stolen ──> Attacker S
 
 **Sigstore** (a Linux Foundation project) eliminates long-lived signing keys entirely by introducing **Keyless Signing**:
 
-```
-[ Developer / CI Runner ] ──( 1. OIDC Auth )──> [ Fulcio (CA) ] ──( 2. Issue 10-min Cert )──> [ Developer ]
-           │                                                                                     │
-           ├──( 3. Publish SET Entry )─────────> [ Rekor (Transparency Log) ] <───────────────────┤
-           │                                                                                     │
-           └──( 4. Attach Signature &amp; Cert )───> [ OCI Registry / Artifact Store ] <─────────────┘
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/sigstore-code-signing.svg' | relative_url }}" alt="Sigstore Keyless Signing Architecture diagram.">
+  <p class="diagram-caption">Sigstore Keyless Architecture: OIDC Auth &leftrightarrow; Fulcio Short-Lived Cert (10-min) &leftrightarrow; Rekor Transparency Log</p>
+</div>
 
 ### The Three Core Sigstore Components
 
@@ -76,9 +74,10 @@ cosign verify \
 
 In March 2024, a sophisticated supply chain backdoor was discovered in `xz-utils` (versions 5.6.0 and 5.6.1), a core compression utility in Linux distributions:
 
-```
-Compromised Maintainer ──> Injects Payload into Release Tarballs ──> Bypasses Repository Audit ──> Compromises sshd
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/sigstore-code-signing.svg' | relative_url }}" alt="xz-utils Supply Chain Backdoor Vector diagram.">
+  <p class="diagram-caption">xz-utils Backdoor Vector: Maintainer Account Compromise &leftrightarrow; Release Tarball Injection &leftrightarrow; OpenSSH Target Compromise</p>
+</div>
 
 - **Attack Vector**: A compromised maintainer (`Jia Tan`) spent years building trust before injecting obfuscated payload files (`bad-3-corrupt_lzma2.xz`) into official **release tarballs** generated during the `m4` build phase. The malicious code was **not present** in plain Git repository source checkouts.
 - **Operational Impact**: Under specific build environments, the backdoored `liblzma` library hooked OpenSSH's `sshd` authentication via systemd linkage, enabling unauthorized remote code execution.

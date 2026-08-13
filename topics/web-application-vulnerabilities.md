@@ -30,9 +30,10 @@ last_verified: 2026-08-13
 
 XSS occurs when an application includes untrusted data in a web page without proper validation or escaping:
 
-```
-[ Attacker Payload ] ──> Injected into App ──> Browser Renders Page ──> Executes Malicious Script ──> Exfiltrates Session
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/web-application-vulnerabilities.svg' | relative_url }}" alt="Cross-Site Scripting execution flow diagram.">
+  <p class="diagram-caption">XSS Execution Lifecycle: Injected Payload &leftrightarrow; Browser DOM Rendering &leftrightarrow; Unauthorized Script Execution</p>
+</div>
 
 1. **Reflected XSS**: The malicious script is reflected off the web server in an immediate HTTP response (*e.g., error message or search result*).
 2. **Stored XSS**: The malicious script is permanently stored in a database or comment field and served to every user viewing the resource.

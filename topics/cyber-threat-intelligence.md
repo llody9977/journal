@@ -20,11 +20,10 @@ last_verified: 2026-08-13
 
 Per NIST SP 800-150 standards, effective threat intelligence operations follow a continuous 6-stage lifecycle driven by explicit organizational requirements:
 
-```
-[1. Requirements] ──> [2. Collection] ──> [3. Processing] ──> [4. Analysis] ──> [5. Dissemination] ──> [6. Feedback]
-         ▲                                                                                              │
-         └──────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cyber-threat-intelligence.svg' | relative_url }}" alt="Cyber Threat Intelligence 6-stage lifecycle diagram.">
+  <p class="diagram-caption">NIST SP 800-150 CTI Lifecycle: Requirements &leftrightarrow; Collection &leftrightarrow; Processing &leftrightarrow; Analysis &leftrightarrow; Dissemination &leftrightarrow; Feedback</p>
+</div>
 
 1. **Planning & Direction (Priority Intelligence Requirements - PIRs)**: Define explicit intelligence questions based on business risk, critical assets, geographic footprint, and threat landscape (*e.g., "Which ransomware groups are targeting financial services in Q3?"*).
 2. **Collection**: Ingestion of raw threat data from diverse internal and external sources (OSINT repositories, commercial feeds, darkweb forums, telemetry logs, honeytokens, and malware sandbox outputs).

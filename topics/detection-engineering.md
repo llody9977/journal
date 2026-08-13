@@ -20,9 +20,10 @@ last_verified: 2026-08-13
 
 **Detection-as-Code (DaC)** applies modern software engineering principles to the lifecycle of security detection rules:
 
-```
-[1. Rule Authoring] ──> [2. Git PR] ──> [3. CI Unit Tests] ──> [4. Event Replay] ──> [5. Transpilation] ──> [6. Auto Deploy]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/detection-engineering.svg' | relative_url }}" alt="Detection as Code (DaC) engineering pipeline diagram.">
+  <p class="diagram-caption">Detection-as-Code (DaC) Pipeline: Authoring &leftrightarrow; Git PR &leftrightarrow; Unit Testing &leftrightarrow; Event Replay &leftrightarrow; Transpilation &leftrightarrow; Auto Deploy</p>
+</div>
 
 1. **Rule Authoring (Sigma / YARA)**: Engineers write rules in declarative, vendor-neutral formats (Sigma YAML or YARA) stored in a version-controlled Git repository.
 2. **Git Pull Request & Peer Review**: Code reviews enforce naming conventions, ATT&CK tagging, and logic correctness before merging.
@@ -145,9 +146,10 @@ Siem engines ingest logs from disparate vendors (EDR, Cloud, Identity, Network).
 - **Elastic Common Schema (ECS)**: Standardized field taxonomy (`process.name`, `user.name`, `source.ip`, `destination.port`) enabling reusable detection signatures across diverse log sources.
 - **Open Cybersecurity Schema Framework (OCSF)**: An open-source, vendor-agnostic cyber telemetry taxonomy providing standardized event categories (*System Activity*, *Identity & Access Management*, *Network Activity*) and standardized class attributes.
 
-```
-Raw Vendor Log (Sysmon / AuditD / CloudTrail) ──> Ingestion Pipeline ──> OCSF / ECS Normalization ──> Transpiled Detection Query
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/detection-engineering.svg' | relative_url }}" alt="Telemetry normalization and transpilation pipeline diagram.">
+  <p class="diagram-caption">Telemetry Pipeline: Raw Vendor Log Ingestion &leftrightarrow; ECS/OCSF Normalization &leftrightarrow; Transpiled SIEM Query Execution</p>
+</div>
 
 ## Detection Performance Metrics & Tuning
 

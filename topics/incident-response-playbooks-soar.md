@@ -20,9 +20,10 @@ last_verified: 2026-08-13
 
 The **NIST SP 800-61 Rev 2** framework structures incident response into four continuous phases:
 
-```
-[ 1. Preparation ] ──> [ 2. Detection & Analysis ] ──> [ 3. Containment, Eradication & Recovery ] ──> [ 4. Post-Incident Activity ]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/incident-response-playbooks-soar.svg' | relative_url }}" alt="NIST SP 800-61 Rev 2 Incident Response lifecycle diagram.">
+  <p class="diagram-caption">NIST SP 800-61 Rev 2 IR Lifecycle: Preparation &leftrightarrow; Detection &amp; Analysis &leftrightarrow; Containment &amp; Recovery &leftrightarrow; Post-Incident Lessons Learned</p>
+</div>
 
 1. **Preparation**: Establishing IR policies, communication playbooks, jump-bag forensic tools, out-of-band communication channels (*Signal, secure emergency email*), and baseline monitoring.
 2. **Detection & Analysis**: Triage incoming SIEM/EDR alerts, determine incident scope, analyze attack vectors, and assign severity ratings (*Low, Medium, High, Critical*).
@@ -47,9 +48,10 @@ The **NIST SP 800-61 Rev 2** framework structures incident response into four co
 
 When a High-Severity Ransomware alert triggers, the automated response playbook follows a strict containment sequence:
 
-```
-[ Ransomware Alert ] ──> 1. Automated EDR Host Isolation ──> 2. Revoke AD/IdP Tokens ──> 3. Block C2 Subnet ──> 4. Trigger RAM Snapshot
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/incident-response-playbooks-soar.svg' | relative_url }}" alt="Ransomware automated containment playbook workflow diagram.">
+  <p class="diagram-caption">Automated Ransomware Containment Sequence: EDR Isolation &leftrightarrow; Token Revocation &leftrightarrow; C2 Block &leftrightarrow; RAM Snapshot</p>
+</div>
 
 1. **Immediate Host Isolation**: Issue EDR network isolation command to prevent lateral movement via SMB/RDP.
 2. **Identity Lockout**: Disable the compromised user account in Active Directory / Okta and invalidate all Kerberos/OAuth tokens.

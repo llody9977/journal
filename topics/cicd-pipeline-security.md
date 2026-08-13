@@ -37,9 +37,10 @@ OWASP published the **Top 10 CI/CD Security Risks**, drawing directly from major
 
 **Poisoned Pipeline Execution (PPE)** occurs when an attacker weaponizes the CI/CD pipeline configuration file itself:
 
-```
-Attacker Fork ──> Modifies .github/workflows/build.yml ──> Opens Pull Request ──> CI Runner Executes Payload
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cicd-pipeline-security.svg' | relative_url }}" alt="Poisoned Pipeline Execution (PPE) vector diagram.">
+  <p class="diagram-caption">Poisoned Pipeline Execution (PPE): Fork Pull Request &leftrightarrow; Workflow Modification &leftrightarrow; Malicious Runner Execution</p>
+</div>
 
 1. **Direct PPE**: The pipeline automatically runs workflow files contained within an unreviewed pull request from a public fork. The modified workflow extracts pipeline secrets (*e.g., `AWS_ACCESS_KEY_ID`*) and posts them to an attacker server.
 2. **Indirect PPE**: The workflow file calls a script or Makefile contained in the repository. The attacker modifies the Makefile without altering the workflow file itself.
@@ -51,11 +52,10 @@ Storing static, long-lived cloud credentials (*e.g. AWS IAM Access Keys*) in CI/
 
 The solution is **OpenID Connect (OIDC) Workload Identity Federation** (e.g. AWS STS via `AssumeRoleWithWebIdentity`, GCP Workload Identity, Azure Federated Credentials):
 
-```
-[ CI/CD Runner (GitHub Actions) ] ──( 1. Request Short-Lived JWT Token )──> [ GitHub OIDC Provider ]
-                                                                                   │
-[ CI/CD Runner ] <──( 3. Issue Temporary Cloud Credentials )── [ Cloud Provider (AWS STS) ] <──( 2. Validate JWT )
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cicd-pipeline-security.svg' | relative_url }}" alt="OIDC Workload Identity Federation exchange flow diagram.">
+  <p class="diagram-caption">OIDC Workload Identity Federation: Runner OIDC Token Request &leftrightarrow; Provider Claim Verification &leftrightarrow; Temporary Cloud Credential Issue</p>
+</div>
 
 1. **OIDC Token Request**: The build runner requests a short-lived JSON Web Token (JWT) from the CI platform's OIDC Provider. The token contains cryptographic claims (`sub`, `aud`, `repository`, `ref`).
 2. **Token Exchange**: The runner passes the JWT to the cloud provider's Security Token Service (STS).

@@ -20,10 +20,10 @@ last_verified: 2026-08-13
 
 Integrating security into the traditional software engineering lifecycle requires establishing security gates at every milestone:
 
-```
-[ Requirements ] ──> [ Design / Model ] ──> [ Code / Commit ] ──> [ Build & Test ] ──> [ Deploy & Operate ]
-  Privacy Review       Threat Modeling        SAST & Linter         DAST & IAST          RASP & Monitoring
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/ssdlc-security-testing.svg' | relative_url }}" alt="Secure Software Development Lifecycle (SSDLC) phase tooling diagram.">
+  <p class="diagram-caption">Secure SDLC Lifecycle: Requirements &leftrightarrow; Design Threat Modeling &leftrightarrow; Code SAST &leftrightarrow; Staging DAST &leftrightarrow; Operations RASP</p>
+</div>
 
 1. **Requirements Phase**: Define security user stories, data classification requirements, and regulatory compliance mandates (*e.g., GDPR, HIPAA, PCI DSS*).
 2. **Design Phase**: Perform architecture threat modeling (STRIDE / PASTA) to evaluate trust boundaries and misuse cases before writing code.

@@ -31,13 +31,10 @@ In multi-tenant SaaS applications, ensuring Tenant A cannot access Tenant B's da
 
 Exposing cloud storage buckets or database APIs to public IP space introduces severe exfiltration risks. Modern cloud architectures enforce private network perimeters:
 
-```
-[ Private VPC Subnet ] ──( PrivateLink Endpoint )──> [ Managed Cloud Service (S3 / BigQuery) ]
-                                                              │
-                                                              ▼
-                                               [ VPC Service Controls Perimeter ]
-                                                (Blocks External Exfiltration)
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cloud-secure-architecture-patterns.svg' | relative_url }}" alt="Cloud Network & Service Perimeters diagram showing PrivateLink and VPC Service Controls.">
+  <p class="diagram-caption">Private Cloud Perimeters: PrivateLink Subnet Endpoints &leftrightarrow; VPC Service Control Exfiltration Safeguards</p>
+</div>
 
 - **AWS PrivateLink / Azure Private Link**: Routes traffic between VPCs and cloud services over the private cloud backbone network using Elastic Network Interfaces (ENIs), eliminating public internet exposure.
 - **GCP VPC Service Controls**: Defines security perimeters around cloud API services (*e.g. BigQuery, Cloud Storage*). Prevents unauthorized data movement across API perimeters even if valid IAM credentials are compromised.
@@ -49,9 +46,10 @@ Traditional infrastructure patching involves connecting to running servers via S
 
 **Immutable Infrastructure** replaces live patching with atomic replacement:
 
-```
-Code Commit ──> Build AMI / Container Image ──> Deploy New Instances ──> Destroy Old Instances
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/cloud-secure-architecture-patterns.svg' | relative_url }}" alt="Immutable Infrastructure deployment lifecycle diagram.">
+  <p class="diagram-caption">Immutable Infrastructure Lifecycle: Git Commit &leftrightarrow; Hardened Image Build &leftrightarrow; Atomic Node Replacement</p>
+</div>
 
 1. **Zero Live Patching**: Server instances and container nodes are never modified in place.
 2. **Short Workload Lifespans**: Automatically recycle worker nodes on a 24-hour schedule to purge undetected malware or latent adversary persistence.

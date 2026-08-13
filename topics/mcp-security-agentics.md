@@ -20,14 +20,10 @@ last_verified: 2026-08-13
 
 The **Model Context Protocol (MCP)** operates as a client-server protocol over JSON-RPC 2.0 (via stdio or SSE/HTTP):
 
-```
-[ MCP Client (Agent Host) ] ──( 1. tools/list Request )──> [ MCP Server (Tool Provider) ]
-                            <──( 2. Return Tool Schema )───
-             │
-             ├──> [ 3. Ingest Schema into Context ] ──> [ LLM Decides Tool Call ]
-             │
-             └──( 4. tools/call Request )──────────────> [ Execute Tool Action ]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/mcp-tool-poisoning.svg' | relative_url }}" alt="Model Context Protocol JSON-RPC tool exchange diagram.">
+  <p class="diagram-caption">MCP Client-Server Tool Exchange: tools/list Discovery &leftrightarrow; Schema Context Ingestion &leftrightarrow; tools/call Execution</p>
+</div>
 
 During discovery (`tools/list`), the server returns a list of tools with their `name`, `description`, and `inputSchema`. The MCP Client embeds these descriptions directly into the model's context window so the LLM can reason about which tool to invoke.
 
@@ -54,9 +50,10 @@ In multi-server agent environments, an agent might hold an OAuth 2.0 access toke
 
 To prevent token misuse, MCP clients must enforce **Resource Indicators for OAuth 2.0 (RFC 8707)**:
 
-```
-Authorization Request ──> Audience (aud) Bound to Specific Resource URI (https://api.finance.internal)
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/mcp-tool-poisoning.svg' | relative_url }}" alt="RFC 8707 OAuth Resource Indicator Token Scoping diagram.">
+  <p class="diagram-caption">RFC 8707 Token Scoping: Authorization Request &leftrightarrow; Explicit Resource URI Audience Binding</p>
+</div>
 
 - **Audience Binding**: Access tokens issued to the MCP client must include explicit `aud` (audience) claims specifying the target MCP server URI.
 - **Scope Restriction**: Tokens passed to an MCP server must grant only the minimal scopes required for the requested tool operation.
@@ -65,14 +62,10 @@ Authorization Request ──> Audience (aud) Bound to Specific Resource URI (htt
 
 OWASP LLM06:2025 (*Excessive Agency*) occurs when an agent executes destructive actions autonomously. To prevent catastrophic side effects, MCP clients must enforce **Human-in-the-Loop (HITL)** approval gates based on tool privilege classification:
 
-```
-[ LLM Selects Tool Call ] ──> Is Tool High-Privilege? ──(YES)──> [ Trigger HITL Prompt ] ──(Approved)──> Execute
-                                         │
-                                       (NO)
-                                         │
-                                         ▼
-                                Execute Automatically
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/mcp-tool-poisoning.svg' | relative_url }}" alt="Human in the Loop approval gate evaluation diagram.">
+  <p class="diagram-caption">Human-in-the-Loop Approval Gate: Tool Selection &leftrightarrow; Privilege Assessment &leftrightarrow; User Prompt Gate</p>
+</div>
 
 | Tool Privilege Class | Examples | Execution Mode | Security Requirement |
 |---|---|---|---|

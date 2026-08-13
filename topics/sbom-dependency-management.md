@@ -57,14 +57,10 @@ Scanning an SBOM against vulnerability databases (NVD, OSV) often yields dozens 
 
 **VEX (Vulnerability Exploitability eXchange)** is a machine-readable format that allows software vendors to publish authoritative status assertions regarding specific CVEs:
 
-```
-[ SBOM Inventory ] ──> Finds CVE Match ──> [ Query VEX Assertion ] ──> Is Code Reachable? ──(NO)──> Suppress Alert
-                                                                                   │
-                                                                                 (YES)
-                                                                                   │
-                                                                                   ▼
-                                                                           Trigger Remediation
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/sbom-vulnerability-management.svg' | relative_url }}" alt="Vulnerability Exploitability eXchange (VEX) alert suppression workflow diagram.">
+  <p class="diagram-caption">VEX Alert Suppression Workflow: SBOM Inventory CVE Match &leftrightarrow; VEX Status Query &leftrightarrow; Reachability Justification</p>
+</div>
 
 ### The 4 Standard VEX Statuses
 1. `NOT_AFFECTED`: The vulnerability is present in a component, but the product is **not affected** due to a specific justification:

@@ -37,10 +37,10 @@ The **OWASP API Security Top 10** highlights the recurring vulnerability pattern
 
 BOLA (Insecure Direct Object Reference) is the **#1 vulnerability in API security**:
 
-```
-GET /api/v1/account/101 (User 101 Authorized)  ──> SUCCESS (200 OK)
-GET /api/v1/account/102 (User 101 Unauthorized) ──> BOLA Flaw Returns User 102 Data!
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/api-microservice-security.svg' | relative_url }}" alt="BOLA Vulnerability Request Flow Diagram.">
+  <p class="diagram-caption">Broken Object Level Authorization (BOLA): Manipulated Resource ID &leftrightarrow; Unauthorized Object Data Access</p>
+</div>
 
 ### Technical Defense: Mandatory Object-Level Context Checks
 An API endpoint must never assume that an authenticated user is authorized to access a requested resource ID simply because the user holds a valid session token. Every handler must execute explicit ownership verification:

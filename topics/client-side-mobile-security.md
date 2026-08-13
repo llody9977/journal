@@ -51,9 +51,10 @@ Referrer-Policy: strict-origin-when-cross-origin
 
 Mobile applications (iOS & Android) operate under distinct operating system security models:
 
-```
-[ App Process Sandbox ] ──( Storage Request )──> [ Hardware Enclave (iOS Keychain / Android Keystore) ]
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/client-side-mobile-security.svg' | relative_url }}" alt="Mobile Application Security Architecture showing sandbox and hardware enclave storage.">
+  <p class="diagram-caption">Mobile OS Security: Application Sandboxing &leftrightarrow; Hardware Enclave Keystore Storage</p>
+</div>
 
 1. **Application Sandboxing**: iOS and Android assign a unique User ID (UID) and isolated filesystem directory to every installed app. App A cannot read App B's local files.
 2. **Hardware-Backed Keystore**: Sensitive cryptographic keys, tokens, and biometric credentials must be stored in **iOS Keychain (Secure Enclave)** or **Android Keystore (TEE/StrongBox)**, never in unencrypted local storage (`SharedPreferences` or SQLite).

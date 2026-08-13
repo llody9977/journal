@@ -131,15 +131,19 @@ a:hover { text-decoration: underline; }
   display: grid;
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
   min-height: calc(100vh - var(--header-h));
+  align-items: start;
 }
 
 .sidebar {
   border-right: 1px solid var(--rule);
-  padding: 1.5rem 0.75rem 3rem;
+  padding: 1.25rem 0.75rem 3rem;
   position: sticky;
   top: var(--header-h);
   height: calc(100vh - var(--header-h));
+  max-height: calc(100vh - var(--header-h));
   overflow-y: auto;
+  overscroll-behavior-y: contain;
+  box-sizing: border-box;
 }
 
 .sidenav-section { margin-bottom: 0.25rem; }
@@ -1006,8 +1010,12 @@ a.topic-card:hover {
     position: fixed;
     left: 0;
     top: var(--header-h);
-    width: min(80vw, 300px);
+    width: min(85vw, 320px);
     height: calc(100vh - var(--header-h));
+    max-height: calc(100vh - var(--header-h));
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    box-sizing: border-box;
     background: var(--paper);
     transform: translateX(-100%);
     transition: transform 0.18s ease;

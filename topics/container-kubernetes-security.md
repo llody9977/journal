@@ -31,14 +31,10 @@ Containers rely on three primary Linux kernel features to establish process boun
 
 Kubernetes enforces workload isolation through **Pod Security Standards (PSS)**, built into the **Pod Security Admission** controller:
 
-```
-[ Pod Security Admission ] ──> Evaluates Pod Manifest ──> Is Profile Satisfied? ──(YES)──> Allow Schedule
-                                                                 │
-                                                               (NO)
-                                                                 │
-                                                                 ▼
-                                                         Reject Pod Admission
-```
+<div class="diagram-frame">
+  <img src="{{ '/assets/img/container-kubernetes-security.svg' | relative_url }}" alt="Kubernetes Pod Security Admission evaluation diagram.">
+  <p class="diagram-caption">Kubernetes Pod Security Admission: Manifest Evaluation &leftrightarrow; Profile Verification &leftrightarrow; Admission Schedule</p>
+</div>
 
 1. **Privileged Profile**: Unrestricted access. Disables security controls; intended only for system-level infrastructure pods (*e.g., CNI plugins, storage drivers*).
 2. **Baseline Profile**: Minimum security policy for standard workloads. Prevents known privilege escalations (*blocks host namespaces, host ports, and capabilities*).
