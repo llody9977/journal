@@ -13,7 +13,7 @@ last_verified: 2026-08-12
 
 <div class="diagram-frame">
   <img src="{{ '/assets/img/threat-frameworks-architecture.svg' | relative_url }}" alt="Threat Frameworks Architecture diagram showing Design-Time Threat Modeling (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question) and Operational Intrusion Intelligence (Cyber Kill Chain, Diamond Model, MITRE ATT&CK & D3FEND).">
-  <p class="diagram-caption">Threat Frameworks Architecture: Design-Time Threat Modeling (STRIDE, PASTA, VAST, OCTAVE, OWASP) $\longleftrightarrow$ Operational Intrusion Intelligence (Cyber Kill Chain, Diamond Model, MITRE ATT&amp;CK / D3FEND)</p>
+  <p class="diagram-caption">Threat Frameworks Architecture: Design-Time Threat Modeling (STRIDE, PASTA, VAST, OCTAVE, OWASP) &leftrightarrow; Operational Intrusion Intelligence (Cyber Kill Chain, Diamond Model, MITRE ATT&amp;CK / D3FEND)</p>
 </div>
 
 ## Design-Time Threat Modeling Methodologies
@@ -24,7 +24,7 @@ Engineering teams adopt design-time threat modeling frameworks based on system c
 |---|---|---|---|
 | **OCTAVE (Carnegie Mellon)** | Organizational asset-driven risk evaluation focusing on operational risks, assets, and vulnerabilities. | Self-directed workshops identifying operational assets, organizational threats, and defense posture. | Enterprise IT infrastructure, physical/digital asset governance, organizational risk audits. |
 | **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** | Universal meta-process for driving continuous threat modeling iterations across any architecture. | Iterates: 1. *What are we working on?* 2. *What can go wrong?* 3. *What are we doing about it?* 4. *Did we do a good job?* | Agile software engineering, sprint-level threat modeling, and team design reviews. |
-| **PASTA (Risk-Centric)** | Process for Attack Simulation and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and a risk scoring stage (commonly a simplified `Likelihood × Impact` model). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
+| **PASTA (Risk-Centric)** | Process for Attack Simulation and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates 7 risk alignment stages: 1. *Define Objectives*, 2. *Define Technical Scope*, 3. *Application Decomposition*, 4. *Threat Analysis*, 5. *Vulnerability Analysis*, 6. *Attack Modeling*, and 7. *Risk & Impact Analysis* (commonly scoring `Likelihood × Impact`). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
 | **STRIDE (Microsoft)** | Developer-centric threat taxonomy categorizing 6 threat types (*Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation*). | Maps specific STRIDE categories to each component in a Data Flow Diagram (DFD). | Application security, microservices, API route design, and code-level threat modeling. |
 | **VAST (Agile / Scalable)** | Visual, Agile, and Simple Threat modeling; divides into Application Threat Models and Operational Threat Models. | Uses automated storyboarding and integration directly into DevOps / CI/CD pipelines. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
 
@@ -36,10 +36,21 @@ Developed at Microsoft, **STRIDE** is a threat *categorization* taxonomy: it ide
 |---|---|---|---|
 | **Spoofing (S)** | **Authenticity** | Adversary impersonates a legitimate user, client, microservice, or origin server. | Phishing-resistant **WebAuthn / FIDO2 Passkeys**, mTLS client certificates, OAuth 2.1 tokens. |
 | **Tampering (T)** | **Integrity** | Attacker alters payloads, database records, network packets, or code binaries. | AEAD ciphers (**AES-256-GCM / ChaCha20-Poly1305**), HMAC payload tags, digital signatures. |
-| **Repudiation (R)** | **Non-Repudiation** | User executes an action and later denies involvement without verifiable system proof. | Asymmetric digital signatures (**Ed25519**), append-only SIEM log chains (**NIST SP 800-92**). |
+| **Repudiation (R)** | **Non-Repudiation** | User executes an action and later denies involvement without verifiable system proof. | Asymmetric digital signatures (**Ed25519**), append-only SIEM log chains ([**NIST SP 800-92**](https://csrc.nist.gov/publications/detail/sp/800-92/final)). |
 | **Information Disclosure (I)** | **Confidentiality** | Unauthorized party observes sensitive data in transit, in memory, or at rest. | Enforce **TLS 1.3 / mTLS**, AES-256 column encryption, DPoP proof-of-possession binding. |
 | **Denial of Service (D)** | **Availability** | Adversary exhausts system CPU, memory, bandwidth, or database connection pools. | WAF rate limiting, auto-scaling failover clusters, ingress BGP scrubbing, memory limits. |
 | **Elevation of Privilege (E)** | **Authorization** | Attacker bypasses access controls to execute commands with elevated permissions. | Centralized **ABAC / OPA policy checks**, container sandboxing, least-privilege execution. |
+
+### STRIDE-per-Element DFD Mapping Matrix
+
+When applying STRIDE against a Data Flow Diagram (DFD), evaluate threat categories based on the component element type:
+
+| DFD Element Type | Spoofing (S) | Tampering (T) | Repudiation (R) | Info Disclosure (I) | Denial of Service (D) | Elevation of Privilege (E) |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **External Entity** | **Yes** | — | **Yes** | — | — | — |
+| **Process** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| **Data Store** | — | **Yes** | **Yes** | **Yes** | **Yes** | — |
+| **Data Flow** | — | **Yes** | — | **Yes** | **Yes** | — |
 
 ## Operational Threat Intelligence & Intrusion Models
 
@@ -52,6 +63,15 @@ Incident response and threat intelligence teams use behavior-oriented frameworks
 | **[MITRE ATT&CK](https://attack.mitre.org/)** | Globally accessible knowledge base of adversary tactics, techniques, and procedures (TTPs). | Three platform matrices — Enterprise, Mobile, and ICS — each mapping tactics to techniques and sub-techniques; the exact counts grow with every ATT&amp;CK release, so treat any fixed number as approximate and check [attack.mitre.org](https://attack.mitre.org/) for the current figure. | Threat-informed defense, adversary emulation, detection engineering, assessment planning, and SIEM alert mapping. |
 | **[MITRE D3FEND](https://d3fend.mitre.org/)** | Defensive countermeasure knowledge graph mapped directly against ATT&CK TTPs. | Defensive Hierarchy: *Model, Harden, Detect, Isolate, Deceive, Evict, Restore*. | Security engineering control selection, countermeasure mapping &amp; gap validation. |
 | **[MITRE ATLAS](https://atlas.mitre.org/)** | Standalone knowledge base of adversary tactics and techniques against AI/ML systems, drawn from real-world attack observations and red-team findings. | Modeled after ATT&amp;CK's structure and methodology and designed to be complementary to it, but maintained as its own separate matrix rather than an ATT&amp;CK matrix. | AI/ML system threat modeling, adversarial ML red-teaming, and AI-specific detection engineering. |
+
+### MITRE ATT&CK Conceptual Hierarchy Taxonomy
+
+Understanding ATT&CK requires distinguishing the four structural tiers of adversary behavior:
+
+- **Tactic**: The adversary's tactical goal (the *why*, e.g., *Credential Access*).
+- **Technique**: The technical method used to achieve a tactic (the *how*, e.g., *OS Credential Dumping*).
+- **Sub-technique**: A specific, granular variation of a technique (e.g., *LSASS Memory*).
+- **Procedure**: The specific implementation or tool execution details used by an adversary (e.g., executing `mimikatz.exe sekurlsa::logonpasswords`).
 
 ## Design-Time Threat Modeling vs Operational Intrusion Analysis
 
@@ -86,3 +106,4 @@ When evaluating an enterprise threat modeling program or threat intelligence pip
 
 - **MITRE ATT&amp;CK**: *Adversary Tactics, Techniques, and Knowledge Base* — [MITRE ATT&amp;CK Official](https://attack.mitre.org/)
 - **Lockheed Martin Cyber Kill Chain**: *Seven Steps of Cyber Kill Chain* — [Lockheed Martin](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html)
+- **NIST SP 800-92**: *Guide to Computer Security Log Management* — [NIST CSRC](https://csrc.nist.gov/publications/detail/sp/800-92/final)

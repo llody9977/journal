@@ -1208,6 +1208,67 @@
       "originating_review_state_id": "846ff9e3232c1533d8a3f5106eb6074ce57bc14eaf30be7ace083c953b63d3f0",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0025",
+      "title": "Establish explicit STRIDE DFD matrix, PASTA 7-stage sequence, and ATT&CK conceptual taxonomy in Section 6",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/threat-frameworks.md",
+          "assets/img/threat-frameworks-architecture.svg"
+        ],
+        "concepts": [
+          "STRIDE DFD element mapping matrix",
+          "PASTA 7 stages",
+          "MITRE ATT&CK taxonomy hierarchy",
+          "diagram rendering syntax",
+          "ATT&CK tactics count"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review identified corrupted LaTeX strings in the SVG diagram, a hardcoded ATT&CK tactics count error ('15 Tactics'), unlinked NIST SP 800-92 citation, and mandatory knowledge gaps in the STRIDE DFD matrix, PASTA 7 stages, and ATT&CK hierarchy taxonomy (Tactic/Technique/Sub-technique/Procedure). The user requested remediation of all open issues.",
+      "decision": "Use visual Unicode arrows in SVG diagrams, align Enterprise ATT&CK matrix tactics count with primary sources (14 Tactics), hyper-link NIST SP 800-92, and explicitly define the STRIDE DFD element applicability matrix, PASTA 7-stage alignment process, and ATT&CK structural hierarchy taxonomy in prose.",
+      "rationale": "SVG text elements do not parse LaTeX math markup and require native Unicode/HTML arrow symbols. Fixed ATT&CK tactics counts must be accurately stated as 14 for Enterprise ATT&CK while preserving the prose qualification that total counts evolve with releases. Adding the STRIDE-per-Element matrix, PASTA 7 stages, and ATT&CK hierarchy definitions satisfies Category 2 and Category 4 completeness requirements for Section 6.",
+      "authoritative_sources": [
+        {
+          "title": "MITRE ATT&CK Enterprise Matrix",
+          "url": "https://attack.mitre.org/tactics/enterprise/",
+          "supports": "Enterprise ATT&CK matrix defines 14 tactics."
+        },
+        {
+          "title": "Microsoft Threat Modeling (Shostack 2014)",
+          "url": "https://www.shostack.org/books/threat-modeling-book",
+          "supports": "STRIDE threat categories map to specific DFD component element types (External Entity, Process, Data Store, Data Flow)."
+        },
+        {
+          "title": "PASTA Framework (UcedaVelez & Morana 2015)",
+          "url": "https://vikingcloud.com/resources/blog/pasta-threat-modeling-framework",
+          "supports": "PASTA defines 7 explicit risk-centric alignment stages."
+        },
+        {
+          "title": "NIST SP 800-92",
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-92/final",
+          "supports": "Append-only SIEM log management enforces non-repudiation."
+        }
+      ],
+      "verification_methods": [
+        "Inspect SVG diagram text nodes for visual Unicode arrow rendering and exact ATT&CK matrix count ('14 Tactics').",
+        "Verify STRIDE DFD matrix, PASTA 7 stages, ATT&CK taxonomy definitions, and NIST SP 800-92 link in rendered topic prose.",
+        "Run scripts/verify_writing_style.py and scripts/verify_content_decisions.py."
+      ],
+      "approved_outcome": "Section 6 topic page and diagram provide complete, accurate, standards-aligned threat modeling matrices and operational intrusion framework definitions with fully rendered visual SVG diagrams.",
+      "invalidation_conditions": [
+        "MITRE changes the core structure of the Enterprise ATT&CK matrix or taxonomy hierarchy.",
+        "A governing standard replaces STRIDE DFD element mapping or PASTA 7-stage alignment definitions.",
+        "Rendered evidence shows visual text truncation or alignment errors in the updated SVG diagram."
+      ],
+      "related_decisions": ["CD-0001", "CD-0024"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "4b2b97403ef028815631a65d595e771720744fae6dc42e8df8f345c9c71c47c9",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }
