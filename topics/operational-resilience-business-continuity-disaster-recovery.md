@@ -2,7 +2,7 @@
 title: Operational Resilience, Business Continuity & Disaster Recovery
 description: Operational resilience, business impact analysis, continuity planning, disaster recovery objectives, recovery strategies, cyber-recovery safeguards, and exercise evidence.
 permalink: /topics/operational-resilience-business-continuity-disaster-recovery/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -11,8 +11,10 @@ last_verified: 2026-08-12
 
 <p class="lede">Operational resilience is the ability to continue delivering critical outcomes through disruption and to recover within explicitly accepted limits. Business continuity keeps essential business services operating through people, process, facility, supplier, and technology workarounds; disaster recovery restores the supporting technology and data. Neither high availability nor backups alone establishes resilience—the design must connect business-impact priorities, recovery objectives, tested recovery strategies, decision authority, communications, and verified failback.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/operational-resilience-bcdr.svg' | relative_url }}" alt="Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection, which splits into a business-continuity lane (people, process, workarounds) and a disaster-recovery lane (systems, data, identity, keys) that converge on validating recovered service and controlled failback, with exercises and lessons feeding back into the business impact analysis.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/operational-resilience-bcdr.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the operational resilience, business continuity, and disaster recovery diagram at full size">
+    <img src="{{ '/assets/img/operational-resilience-bcdr.svg' | relative_url }}" alt="Diagram showing Business Impact Analysis and recovery objectives feeding continuity and recovery strategy selection, which compares Backup/Restore, Pilot Light, Warm Standby, Active/Passive, and Active/Active before splitting into a business-continuity lane (people, process, workarounds) and a disaster-recovery lane (systems, data, identity, keys). The lanes converge on validating recovered service and controlled failback, with exercises and lessons feeding back into the business impact analysis.">
+  </a>
   <p class="diagram-caption">Journal working model: Business Impact Analysis &amp; recovery objectives → continuity/recovery strategy selection → parallel business-continuity and disaster-recovery lanes → validated recovery → controlled failback → exercises feed back into the BIA.</p>
 </div>
 
@@ -23,9 +25,11 @@ These four terms describe related but distinct responsibilities, and conflating 
 - **Operational resilience** is the outcome: the organization's ability to continue delivering its critical services through disruption, adapting and recovering within limits it has explicitly accepted in advance. It is a property of the whole system—people, process, technology, facilities, and suppliers—not a single plan or control.
 - **Business continuity** is the discipline of keeping essential business services running during a disruption, primarily through people, process, manual workarounds, alternate facilities, and supplier substitution. A business continuity plan (BCP) can keep a claims-processing team operating from a different office with paper forms while the primary system is down.
 - **Disaster recovery (DR)** is the discipline of restoring the technology and data that business continuity depends on—systems, infrastructure, applications, and information—to a defined recovery point and within a defined recovery time.
-- **Incident response**, covered in **[Monitoring, Incident Response & Operational Learning]({{ '/topics/incident-response-operational-learning/' | relative_url }})**, manages the security incident itself: detecting it, containing it, eradicating its cause, and learning from it. Continuity and DR run in parallel with incident response when the incident causes an operational disruption—incident response decides the system is safe to restore from; DR restores it; continuity keeps the business running while that happens.
+- **Incident response**, covered in **[Monitoring, Incident Response & Operational Learning]({{ '/topics/incident-response-operational-learning/' | relative_url }})**, manages the security incident itself: detecting it, containing it, eradicating its cause, and learning from it. Continuity and DR run in parallel with incident response when the incident causes an operational disruption. Incident response provides containment, eradication, and compromise-state evidence; the designated incident and recovery authority authorizes restore and reconnection; DR performs the restoration; and continuity keeps the business running while that happens.
 
-A ransomware event illustrates the boundary: incident response isolates infected hosts, confirms the blast radius, and determines when it is safe to recover from; disaster recovery restores systems and data from a point known to predate the compromise; business continuity keeps critical business functions running—manually if necessary—for however long that recovery takes. Treating these as one undifferentiated "recovery" effort tends to lose track of who owns which decision.
+A ransomware event illustrates the boundary: incident response isolates infected hosts and provides evidence about the blast radius and compromise state; the designated authority decides when restoration and reconnection may proceed; disaster recovery restores systems and data from a point known to predate the compromise; and business continuity keeps critical business functions running—manually if necessary—for however long that recovery takes. Treating these as one undifferentiated "recovery" effort tends to lose track of who owns which decision.
+
+The standards have a related boundary. **[ISO 22301:2019 with Amendment 1:2024](https://www.iso.org/standard/75106.html)** specifies requirements for a business continuity management system (BCMS) across organizational capabilities. **[ISO/IEC 27031:2025](https://www.iso.org/standard/27031)** focuses more narrowly on information and communication technology readiness for business continuity. ISO/IEC 27031 can inform the technology-recovery capability inside a broader ISO 22301-aligned continuity program; it does not replace the business-wide BCMS.
 
 ## Business Impact Analysis
 
@@ -83,7 +87,7 @@ A continuity or disaster recovery plan that has never been exercised is a hypoth
 | Exercise Type | What It Validates | Typical Cadence |
 |---|---|---|
 | **Tabletop** | Walks the response team through a scenario verbally—decision authority, escalation paths, and plan completeness—without touching production systems. | Frequent; low cost, low disruption. |
-| **Component Restore** | Actually restores a single backup or component to verify the backup is usable and the restore procedure works as documented. | Regular; validates RPO assumptions directly. |
+| **Component Restore** | Actually restores a single backup or component to verify the backup is usable and the restore procedure works as documented. | Regular; validates RPO only when the recovered data timestamp and measured data loss are compared with the target. |
 | **Regional Failover** | Fails over a service to its standby region or environment under controlled conditions. | Periodic; validates RTO assumptions and the failover procedure itself. |
 | **Full Failover** | Fails over an entire critical service end-to-end, including dependencies, under conditions closer to a real event. | Less frequent given cost and risk; highest-fidelity validation. |
 | **Failback** | Returns operation to the original primary environment after a failover, validating that failback doesn't lose or corrupt data accumulated on the standby. | Often the most neglected exercise—failover is rehearsed far more often than the return trip. |
@@ -116,4 +120,5 @@ When auditing an organization's operational resilience posture or a specific sys
 - **[NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)** — verified the Contingency Planning control family and associated recovery-control scope.
 - **[NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework)** — verified Recover outcomes covering recovery execution, communications, integrity checks, and improvement.
 - **[ISO 22301:2019](https://www.iso.org/standard/75106.html) with [Amendment 1:2024](https://www.iso.org/standard/88412.html)** — verified the current published BCMS standard and its applicable amendment.
+- **[ISO/IEC 27031:2025](https://www.iso.org/standard/27031)** — verified the ICT-readiness scope and its boundary relative to the broader BCMS.
 - **[AWS Well-Architected disaster-recovery strategies](https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_for_recovery_disaster_recovery.html)** — verified the cloud-specific backup/restore, pilot-light, warm-standby, and multi-site active/active comparison.

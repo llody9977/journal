@@ -1,8 +1,8 @@
 ---
 title: Recommended Cryptographic Algorithms & Standards
-description: A selected comparison of NIST SP 800-57, NSA CNSA 2.0, NIST PQC Standards (finalized FIPS 203/204/205 and draft FIPS 206), BSI, and Chinese ShangMi (SM2/3/4) guidance — not a comprehensive survey of every jurisdiction's cryptographic compliance regime.
+description: A selected comparison of NIST SP 800-57, NSA CNSA 2.0, finalized NIST PQC Standards FIPS 203/204/205, FIPS 206 under development, BSI TR-02102-1, and Chinese ShangMi guidance — not a comprehensive survey of every jurisdiction's cryptographic compliance regime.
 permalink: /topics/recommended-algorithms/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Standards</span>
@@ -29,7 +29,7 @@ A critical discipline in security architecture is distinguishing between **RFC-D
 
 | Primitive / Algorithm | IETF / Industry Specification | NIST / FIPS Compliance Status | Target Engineering Guidance & Use Case |
 |---|---|---|---|
-| **AES-256-GCM** | [RFC 5288](https://www.rfc-editor.org/rfc/rfc5288) (TLS 1.2 GCM cipher suites) / [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) (TLS 1.3 AEAD negotiation) | **NIST APPROVED** ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final) defines the underlying GCM construction) | Widely deployed NIST-approved AEAD standard for TLS 1.3, IPsec, and cloud data at rest. |
+| **AES-GCM (128- or 256-bit key)** | [RFC 5288](https://www.rfc-editor.org/rfc/rfc5288) (TLS 1.2 GCM cipher suites) / [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) (TLS 1.3 AEAD negotiation) | **NIST APPROVED** ([NIST SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final) defines the underlying GCM construction) | Widely deployed AEAD, but not a universal default across protocols or storage systems. TLS 1.3 requires implementations to support AES-128-GCM and also defines AES-256-GCM, ChaCha20-Poly1305, and AES-CCM suites; IPsec and data-at-rest choices must follow their own protocol, platform, and compliance profiles. |
 | **AES-GCM-SIV** | [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) | **NOT FIPS/NIST APPROVED** (IRTF/CFRG Informational RFC, not IETF Standards Track) | Nonce-misuse-resistant AEAD mode: reusing a GCM nonce exposes the XOR of the two plaintexts and breaks GCM's forgery/authentication guarantee outright, and can additionally yield full plaintext recovery when the attacker knows, guesses, or can exploit structure in one of the reused-nonce plaintexts — GCM-SIV is designed to avoid all of that under nonce reuse. Repeated encryption of the identical (key, plaintext, AAD) tuple under GCM-SIV still reveals ciphertext equality to an observer. |
 | **ECDHE-X25519** | [RFC 7748](https://www.rfc-editor.org/rfc/rfc7748) / [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) | **NOT SP 800-56A APPROVED** (RFC 7748 is IRTF/CFRG Informational; incorporated into IETF Standards-Track RFC 9846, which obsoletes the original RFC 8446) | Modern, high-speed Ephemeral ECDH key agreement used across TLS 1.3 and SSHv2. |
 | **ECDHE (NIST P-384 / P-256)** | [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html) | **NIST APPROVED** ([NIST SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)) | NIST-approved options for FIPS 140-3 and FedRAMP boundaries, subject to the applicable profile (SP 800-52 Rev. 2 accepts either P-256 or P-384; CNSA 2.0 requires P-384). |
@@ -43,22 +43,33 @@ A critical discipline in security architecture is distinguishing between **RFC-D
 
 | Algorithm | Legacy Specification | Status &amp; Vulnerability | Migration Action |
 |---|---|---|---|
-| **3DES / TDEA** | 64-bit Block Cipher | **DISALLOWED**: Disallowed by [NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) for encryption after Dec 31, 2023; vulnerable to Sweet32 birthday collisions after 2^32 blocks. | Migrate immediately to **AES-256-GCM**. |
+| **3DES / TDEA** | 64-bit Block Cipher | **DISALLOWED**: Disallowed by [NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) for encryption after Dec 31, 2023; vulnerable to Sweet32 birthday collisions after 2^32 blocks. | Migrate to an approved AEAD supported by the target protocol or storage profile, commonly AES-GCM. |
 | **MD5** | 128-bit Hash Function | **DISALLOWED**: Disallowed by NIST SP 800-131A Rev. 2 for digital signatures &amp; certificates; practical chosen-prefix collisions have been demonstrated. | Replace with **SHA-256** or **SHA3-256**. |
-| **RC4** | Stream Cipher | **DISALLOWED**: Prohibited by IETF RFC 7465 and NIST SP 800-52 Rev. 2 for TLS; biased keystream bytes allow plaintext recovery. | Replace with **AES-256-GCM** or **ChaCha20-Poly1305**. |
+| **RC4** | Stream Cipher | **DISALLOWED**: Prohibited by IETF RFC 7465 and NIST SP 800-52 Rev. 2 for TLS; biased keystream bytes allow plaintext recovery. | For TLS, use a TLS 1.3 AEAD suite supported by both peers, such as AES-GCM or ChaCha20-Poly1305. |
 | **RSA-1024** | Public Key Cipher | **DISALLOWED FOR GENERATION**: Disallowed by [NIST SP 800-131A Rev. 2](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) for key transport and generating new digital signatures after Dec 31, 2013 (&lt; 112 bits security strength). 1024–2047-bit RSA remains permitted for legacy signature *verification* — this is not a blanket ban on accepting existing RSA-1024 signatures. | Replace with **Ed25519** or **3072-bit RSA-PSS** for anything generating new keys or signatures. |
 | **SHA-1** | 160-bit Hash Function | **DISALLOWED FOR NEW SIGNATURE GENERATION**: Disallowed by NIST SP 800-131A Rev. 2 for generating new digital signatures &amp; certificates after Dec 31, 2013, and for other collision-dependent uses; practical collision demonstrated (SHAttered, 2017). Limited legacy signature verification and non-collision-dependent uses (e.g., HMAC-SHA1) remain permitted — this is not a blanket ban on SHA-1 in every context. | Replace with **SHA-256** for anything generating new signatures or requiring collision resistance. |
 
-## NIST Post-Quantum Cryptography (PQC) Standards (FIPS 203, 204, 205 & Draft 206)
+## NIST Post-Quantum Cryptography Standards and FIPS 206 Under Development
 
-NIST finalized three quantum-resistant FIPS standards in August 2024 — [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final), [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final), and [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final) — with a fourth draft standard (FIPS 206, tracked on [NIST's PQC project page](https://csrc.nist.gov/projects/post-quantum-cryptography)) under development:
+NIST finalized three quantum-resistant FIPS standards in August 2024 — [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final), [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final), and [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final). NIST is developing **FIPS 206** for FN-DSA; it is not yet a finalized FIPS publication and should be tracked through the [NIST PQC standardization page](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography/Post-Quantum-Cryptography-Standardization?data1=v2):
 
 | Standard Number | Algorithm Name | Mathematical Paradigm | Target Cryptographic Function | NIST Status |
 |---|---|---|---|---|
 | **FIPS 203** | **ML-KEM** (Kyber) | Module Lattice (ML-WE) | Key Encapsulation (KEM) | **FINALIZED (Aug 2024)** |
 | **FIPS 204** | **ML-DSA** (Dilithium) | Module Lattice (ML-SIS) | General Digital Signatures | **FINALIZED (Aug 2024)** |
 | **FIPS 205** | **SLH-DSA** (SPHINCS+) | Stateless Hash Trees | Backup Fallback Signatures | **FINALIZED (Aug 2024)** |
-| **Draft FIPS 206** | **FN-DSA** (Falcon) | Fast-Fourier Lattice | Compact Digital Signatures | **UNDER DEVELOPMENT (Draft)** |
+| **FIPS 206 (in development)** | **FN-DSA** (Falcon) | Fast-Fourier Lattice | Compact Digital Signatures | **UNDER DEVELOPMENT; NOT FINALIZED** |
+
+## BSI TR-02102-1 Profile Snapshot (Version 2026-01)
+
+[BSI TR-02102-1 version 2026-01](https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TG02102/BSI-TR-02102-1.pdf?__blob=publicationFile) is recommendatory guidance aimed primarily at new cryptographic systems planned from 2026. It is not a universal compliance approval, and its forecast horizon extends only through the end of 2032. The current edition provides these concrete selection boundaries:
+
+| Area | Current BSI TR-02102-1 Recommendation | Scope / Transition Boundary |
+|---|---|---|
+| **Symmetric encryption** | AES-128, AES-192, and AES-256; at least a 128-bit key. AES-GCM, AES-GCM-SIV, and CCM are among the recommended authenticated modes. | For high or long-term protection requirements, BSI advises a 256-bit symmetric key. The mode and nonce rules still depend on the application. |
+| **Classical key establishment** | At least 3,000 bits for RSA or finite-field DH and at least a 250-bit elliptic-curve subgroup order for ECDH. | Sole use of classical key-establishment mechanisms is recommended only through the end of 2031; later use should be combined with a recommended quantum-safe KEM and key derivation. |
+| **Digital signatures** | At least 3,000-bit RSA or a 250-bit elliptic-curve subgroup order for the listed classical signature schemes. | BSI targets transition to quantum-safe signatures by 2035 and recommends an upgrade path for products expected to operate beyond 2030. |
+| **Hash functions** | At least a 256-bit digest for general applications. | When collision resistance is required for high or long-term protection, BSI advises an output of at least 384 bits. |
 
 ## Regional Standards: Chinese ShangMi (SM) Algorithm Suite
 
@@ -75,7 +86,7 @@ Under China's Cryptography Law (2020) and technical standards such as **[GB/T 39
 
 The tables above are a reference, not a decision procedure — picking an algorithm for a specific system means working through several independent constraints, roughly in this order, since an earlier answer can eliminate options a later one would otherwise allow:
 
-1. **Jurisdiction and regulatory regime**: Which compliance framework actually governs this system? U.S. federal or FedRAMP work is bound by NIST FIPS/SP validation; work touching National Security Systems adds NSA CNSA 2.0's stricter timeline and curve requirements (P-384 over P-256, for instance); Chinese Critical Information Infrastructure or government/financial systems may mandate the ShangMi suite depending on classification level; EU or other regional regimes may reference BSI TR-02102 or their own national guidance. A system spanning jurisdictions may need to satisfy more than one regime simultaneously, which can rule out an otherwise-fine algorithm outright.
+1. **Jurisdiction and regulatory regime**: Which compliance framework actually governs this system? U.S. federal or FedRAMP work is bound by NIST FIPS/SP validation; work touching National Security Systems adds NSA CNSA 2.0's stricter timeline and curve requirements (P-384 over P-256, for instance); Chinese Critical Information Infrastructure or government/financial systems may mandate the ShangMi suite depending on classification level; German or other European profiles may reference BSI TR-02102 or separate national/EU guidance. A system spanning jurisdictions may need to satisfy more than one regime simultaneously, which can rule out an otherwise-fine algorithm outright.
 2. **Protocol and interoperability constraints**: The algorithm has to be one the *protocol* actually negotiates — TLS 1.3's cipher suite list, SSH's `KexAlgorithms`, or a target library's supported set — not just one that's individually secure. An excellent algorithm nobody on the other end of the connection implements is not a usable choice.
 3. **Required security strength**: Match key/output size to the actual sensitivity and exposure window of what's being protected (see NIST SP 800-57's security-strength categories) — this is also where post-quantum posture enters: does this data need to resist harvest-now-decrypt-later, and if so, over what timeline (see the Post-Quantum Cryptography page)?
 4. **FIPS-module (validation) requirements**: A cryptographically sound, standards-track algorithm can still fail a compliance requirement if the specific software module implementing it hasn't completed FIPS 140-3 validation — algorithm approval and module validation are tracked separately (see the FIPS 140-3 IG reference below), and a procurement or audit requirement often means the *validated module*, not just the algorithm choice.
@@ -94,7 +105,7 @@ Treat this as a checklist to work through per system, not a one-time global choi
 - **NIST FIPS 140-3 IG**: *Implementation Guidance for FIPS 140-3* — [NIST CMVP FIPS 140-3 IG Announcements](https://csrc.nist.gov/projects/cryptographic-module-validation-program/fips-140-3-ig-announcements)
 - **NIST SP 800-56A Rev. 3**: *Recommendation for Pair-Wise Key-Establishment Schemes Using Discrete Logarithm Cryptography* — [NIST CSRC SP 800-56A R3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)
 - **NIST SP 800-108 Rev. 1**: *Recommendation for Key Derivation Using Pseudorandom Functions* — [NIST CSRC SP 800-108 R1](https://csrc.nist.gov/pubs/sp/800/108/r1/final)
-- **BSI TR-02102-1**: *Cryptographic Mechanisms: Recommendations and Key Lengths* — [BSI Technical Guideline TR-02102-1 (PDF)](https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TG02102/BSI-TR-02102-1.pdf?__blob=publicationFile)
+- **BSI TR-02102-1 (Version 2026-01)**: *Cryptographic Mechanisms: Recommendations and Key Lengths* — [BSI Technical Guideline TR-02102-1 (PDF)](https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TG02102/BSI-TR-02102-1.pdf?__blob=publicationFile)
 - **Chinese GB/T 39786-2021 Standard Record**: *Baseline for Cryptographic Application in Information Systems* — [SAMR GB/T 39786-2021 Record](https://std.samr.gov.cn/gb/search/gbDetailed?id=BD89DE8E07393D08E05397BE0A0A4FAD)
 - **Quantum Collision Bounds (BHT Algorithm)**: *Quantum Cryptanalysis of Hash Functions (Brassard, Høyer, Tapp)* — [arXiv:quant-ph/9705002](https://arxiv.org/abs/quant-ph/9705002)
 - **RFC 8452**: *AES-GCM-SIV: Nonce-Misuse-Resistant Authenticated Encryption* — [RFC 8452](https://www.rfc-editor.org/rfc/rfc8452) (IRTF/CFRG Informational)

@@ -2,7 +2,7 @@
 title: Monitoring, Incident Response & Operational Learning
 description: Continuous security monitoring, the incident response lifecycle (NIST SP 800-61 Rev. 3 / CSF 2.0), severity classification, incident roles, and post-incident operational learning that closes the loop back to risk and control decisions.
 permalink: /topics/incident-response-operational-learning/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -11,14 +11,16 @@ last_verified: 2026-08-12
 
 <p class="lede">Detective controls generate telemetry; incident response is the process that turns an actual detection into contained, recovered, and understood harm; and operational learning is what feeds the outcome back into risk and control decisions instead of letting the same failure recur silently. This closes the loop this journal has followed from objective → requirement → control → verification → residual risk, returning the outcome to where that chain started.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" alt="Incident Response and Operational Learning Loop showing Continuous Monitoring feeding Detect, where candidate signals are validated, triaged, and classified; Respond, where confirmed incidents are contained and eradicated; Recover; and Learn and Improve, which feeds findings back into Govern-level risk and control decisions. Learn and Improve maps to CSF 2.0 Identify/Improvement rather than forming a seventh CSF Function.">
-  <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model informed by NIST SP 800-61 Rev. 3): Continuous Monitoring → Detect (validate, triage, classify) → Respond (contain, eradicate) → Recover → Learn &amp; Improve → Govern-level risk and control decisions.</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the incident response and operational learning lifecycle diagram at full size">
+    <img src="{{ '/assets/img/incident-response-lifecycle.svg' | relative_url }}" alt="Incident Response and Operational Learning Loop showing Continuous Monitoring feeding Detect, where adverse events are analyzed and incidents are declared when defined criteria are met; Respond, where incident reports are triaged, validated, categorized, prioritized, contained, and eradicated; Recover; and Learn and Improve, which feeds findings back into Govern-level risk and control decisions. Learn and Improve maps to CSF 2.0 Identify/Improvement rather than forming a seventh CSF Function.">
+  </a>
+  <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model informed by NIST SP 800-61 Rev. 3): Continuous Monitoring → Detect (analyze adverse events; declare incidents against defined criteria) → Respond (triage, validate, categorize, prioritize, contain, eradicate) → Recover → Learn &amp; Improve → Govern-level risk and control decisions.</p>
 </div>
 
 ## Continuous Monitoring: Feeding the Response Pipeline
 
-The response pipeline is fed by candidate signals surfaced through automated security telemetry, or via reports from users, cloud service providers, external security researchers, business partners, or law enforcement authorities—triage, not the surfacing itself, is what determines whether one of these actually becomes an incident (see the decision boundary below). This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
+The response pipeline is fed by candidate signals surfaced through automated security telemetry, or via reports from users, cloud service providers, external security researchers, business partners, or law enforcement authorities. Under the CSF 2.0 mapping used by NIST SP 800-61 Rev. 3, Detect analyzes adverse events and declares an incident when defined criteria are met; after declaration, Respond triages and validates incident reports, then categorizes and prioritizes the incident before containment and eradication. This draws on the same **Detective Control** category introduced in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**; the inputs below are commonly run continuously (SIEM correlation, eBPF tracing), but not all detective controls are—periodic or on-demand checks (a weekly vulnerability scan, an ad hoc log review) still feed the same pipeline:
 
 | Monitoring Input | What It Surfaces | Where the Evidence Goes |
 |---|---|---|
@@ -37,7 +39,7 @@ Not every monitoring signal enters the incident response process. Three terms de
 - **Alert**: A tool or analyst indication that an event may require investigation. An alert can be a true positive (an actual security concern) or a false positive (benign activity that matched a detection rule). Alert volume without triage quality produces alert fatigue, not security.
 - **Cybersecurity incident**: An occurrence that actually or imminently jeopardizes, without lawful authority, the confidentiality, integrity, or availability of information or an information system; or constitutes a violation or imminent threat of violation of law, security policies, or acceptable use policies (**[NIST definition](https://csrc.nist.gov/glossary/term/cybersecurity_incident)**).
 
-The triage step in the lifecycle below is where an alert crosses (or does not cross) the threshold into an incident. Severity assignment and staffing decisions follow that internal declaration—but legal and regulatory notification obligations run on their own triggers, not on when the organization internally declares an incident: the SEC's disclosure-timing trigger is the registrant's own materiality determination, and GDPR's 72-hour clock starts from the controller's awareness of a qualifying personal-data breach (see the notification criteria below). This is why defining both the organization's internal incident criteria and its distinct, regulator-defined notification triggers explicitly, before an event occurs, is part of preparation.
+Detect-stage adverse-event analysis is where an alert crosses—or does not cross—the organization's defined threshold for declaring an incident. Respond-stage triage then validates the incident report, assesses scope, categorizes and prioritizes the incident, and assigns the response posture. Legal and regulatory notification obligations run on their own triggers, not on the organization's internal declaration: the SEC's disclosure-timing trigger is the registrant's own materiality determination, and GDPR's 72-hour clock starts from the controller's awareness of a qualifying personal-data breach (see the notification criteria below). This is why defining both the organization's internal incident criteria and its distinct, regulator-defined notification triggers explicitly, before an event occurs, is part of preparation.
 
 ## The Incident Response Lifecycle: Rev. 2's Phases vs. Rev. 3's Current Structure
 
@@ -46,16 +48,16 @@ The triage step in the lifecycle below is where an alert crosses (or does not cr
 | Historical Rev. 2 Phase (2012, withdrawn) | Current Rev. 3 / CSF 2.0 Mapping | What Happens |
 |---|---|---|
 | Preparation | **Govern / Identify / Protect** | Incident response plans, playbooks, roles, and tooling are established as part of ongoing risk management—not a one-time setup before the "real" lifecycle starts. |
-| Detection & Analysis | **Detect** | Monitoring surfaces a candidate event; analysis confirms whether it is a genuine incident and assesses scope and severity. |
-| Containment, Eradication & Recovery | **Respond** and **Recover** | Respond covers triage, containment (stopping the spread), and eradication (removing the cause); Recover covers restoring affected systems to normal operation. |
+| Detection & Analysis | **Detect** | Monitoring surfaces candidate adverse events; analysis determines whether defined incident criteria are met and declares an incident when they are. |
+| Containment, Eradication & Recovery | **Respond** and **Recover** | Respond triages and validates incident reports, categorizes and prioritizes confirmed incidents, contains the spread, and eradicates the cause; Recover restores affected systems to normal operation. |
 | Post-Incident Activity | **Identify — Improvement (ID.IM) Category** | Rev. 3 frames this as continuous improvement woven through the incident lifecycle and across all Functions, rather than a single retrospective meeting held only after closure—but it is organized as a Category under Identify, not a separate Function. |
 
-This journal still uses the practical operational sequence *detect → triage → contain → eradicate → recover → learn* below as a working narrative, because it remains widely used in practice—but treat it as this journal's operational lens on top of Rev. 3's structure, not a restatement of Rev. 3 itself:
+This journal uses the practical operational sequence *detect and declare → triage → contain → eradicate → recover → learn* below as a working narrative, because it remains widely used in practice—but treat it as this journal's operational lens on top of Rev. 3's structure, not a restatement of Rev. 3 itself:
 
-1. **Detect**: Monitoring or an external report surfaces a candidate incident.
-2. **Triage**: Confirm the event is real, assess scope, and assign severity (see below).
-3. **Contain**: Limit the incident's ability to spread further (isolate a workload, revoke a credential, block an IP) without necessarily removing the root cause yet.
-4. **Eradicate**: Remove the root cause—patch the vulnerability, delete the malicious artifact, close the misconfiguration.
+1. **Detect &amp; Declare**: Monitoring or an external report surfaces a candidate adverse event; Detect-stage analysis compares it with defined criteria and declares an incident when those criteria are met.
+2. **Respond — Triage**: Validate the incident report, assess scope, categorize and prioritize the incident, and assign severity (see below).
+3. **Respond — Contain**: Limit the incident's ability to spread further (isolate a workload, revoke a credential, block an IP) without necessarily removing the root cause yet.
+4. **Respond — Eradicate**: Remove the root cause—patch the vulnerability, delete the malicious artifact, close the misconfiguration.
 5. **Recover**: Restore affected systems to normal operation, validated against defined recovery criteria with residual uncertainty documented rather than declared "clean" outright—see the caveat on automated recovery controls in **[Security Controls & Defense in Depth]({{ '/topics/security-controls-defense-in-depth/' | relative_url }})**: recovery is only as clean as what it restores from.
 6. **Learn**: Conduct a blameless postmortem and track corrective actions (below)—this journal stage maps to CSF 2.0's Identify/Improvement (ID.IM) Category, not a distinct CSF Function, and its outcomes feed back across all six Functions.
 
@@ -76,8 +78,8 @@ Severity classification determines escalation speed, staffing, and communication
 |---|---|---|
 | **SEV-1 (Critical)** | Active, confirmed compromise of production data or systems; safety, legal, or large-scale customer impact. | Full incident command activated immediately; executive and, where applicable, regulatory notification triggers evaluated. |
 | **SEV-2 (High)** | Confirmed security failure with contained but significant impact (e.g., one tenant's data exposed, not the full customer base). | Dedicated response team engaged; executive awareness, not necessarily activation. |
-| **SEV-3 (Moderate)** | Suspicious activity or a control failure with limited or no confirmed impact yet. | Standard on-call investigation; escalates to SEV-2 if impact is confirmed. |
-| **SEV-4 (Low)** | Policy violation or anomaly with negligible risk (e.g., a misconfigured non-production resource). | Logged and tracked through normal remediation backlog, not incident process. |
+| **SEV-3 (Moderate)** | Confirmed incident or security-control failure with limited impact and no evidence yet of significant spread. | Standard incident workflow and on-call investigation; escalates to SEV-2 if scope or impact increases. |
+| **SEV-4 (Low)** | Confirmed low-impact policy or acceptable-use violation that meets the organization's incident criteria but presents negligible immediate harm. Benign anomalies that do not meet incident criteria remain alerts and do not enter this table. | Lightweight incident workflow with documented triage, ownership, remediation, and closure. |
 
 ## Roles During an Incident (Common Practice, Not a NIST-Defined Structure)
 
@@ -118,7 +120,7 @@ When auditing an incident response program or reviewing a specific incident's ha
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Monitoring produces candidate signals; triage determines whether they are incidents, Respond contains and eradicates confirmed incidents, and Recover restores verified service. Operational learning closes the loop only when findings update risk decisions, controls, and threat models.</p>
+  <p>Monitoring produces candidate signals; Detect analyzes adverse events and declares incidents against defined criteria; Respond triages, prioritizes, contains, and eradicates confirmed incidents; and Recover restores verified service. Operational learning closes the loop only when findings update risk decisions, controls, and threat models.</p>
 </div>
 
 ## Primary references

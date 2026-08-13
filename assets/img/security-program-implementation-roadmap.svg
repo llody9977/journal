@@ -35,12 +35,12 @@
     <!-- Bi-Directional Connectors Between GOVERN and TECHNICAL (y=375 to y=435) -->
     <!-- Top-Down Arrow (Left: x=450) -->
     <path d="M 450 375 L 450 435" fill="none" stroke="#b45309" stroke-width="3.5" marker-end="url(#arrow-amber)"/>
-    <rect x="235" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="205" y="393" width="260" height="24" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="1.5"/>
     <text x="335" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#b45309">TOP-DOWN: POLICY &amp; MANDATES ↓</text>
 
     <!-- Bottom-Up Arrow (Right: x=750) -->
     <path d="M 750 435 L 750 375" fill="none" stroke="#0f766e" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
-    <rect x="765" y="393" width="200" height="24" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
+    <rect x="725" y="393" width="280" height="24" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="1.5"/>
     <text x="865" y="409" text-anchor="middle" font-size="10.5" font-weight="900" fill="#0f766e">BOTTOM-UP: TELEMETRY &amp; EVIDENCE ↑</text>
 
     <!-- Bottom Tier Card: TECHNICAL (x=150, y=435, w=900) -->

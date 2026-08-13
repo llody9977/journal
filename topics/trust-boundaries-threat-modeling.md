@@ -1,8 +1,8 @@
 ---
 title: Trust Boundaries & Threat Modeling
-description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question), and 4-stage execution pipelines.
+description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question), and a practical 4-stage execution workflow.
 permalink: /topics/trust-boundaries-threat-modeling/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -11,8 +11,10 @@ last_verified: 2026-08-11
 
 <p class="lede">Threat modeling is the structured engineering discipline of decomposing a system architecture to identify assets, data flows, trust boundaries, and plausible failure and attack scenarios. It is most valuable early, before a design ships, but OWASP treats it as a living artifact that should be revisited after significant architectural changes, new features, or incidents—not a one-time pre-deployment gate. Scenarios worth modeling extend beyond deliberate adversarial action to misuse, human error, system or dependency failure, environmental events, and unsafe component interactions. By systematically evaluating how trust transitions can be exploited or can fail, engineering teams select targeted safeguards and validate control efficacy on an ongoing basis.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/trust-boundaries-threat-modeling.svg' | relative_url }}" alt="Data Flow Diagram showing an untrusted public client, a DMZ and application-processing zone, a high-assurance payroll-data enclave, and an external third-party bank API. Data crosses Trust Boundary 1 at public ingress, Trust Boundary 2 when the payroll service accesses the database, and Trust Boundary 3 when the service calls the external bank API.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/trust-boundaries-threat-modeling.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the trust boundaries and threat modeling diagram at full size">
+    <img src="{{ '/assets/img/trust-boundaries-threat-modeling.svg' | relative_url }}" alt="Data Flow Diagram showing an untrusted public client, a DMZ and application-processing zone, a high-assurance payroll-data enclave, and an external third-party bank API. Data crosses Trust Boundary 1 at public ingress, Trust Boundary 2 when the payroll service accesses the database, and Trust Boundary 3 when the service calls the external bank API.">
+  </a>
   <p class="diagram-caption">Trust Boundaries &amp; Threat Modeling DFD Architecture: Public client → API gateway → payroll service → protected payroll database, with a separate outbound flow to an external bank API across Trust Boundary 3. The diagram distinguishes the public zone, application zone, data enclave, and third-party trust domain.</p>
 </div>
 
@@ -25,7 +27,7 @@ Evaluating a system requires mapping eight architectural elements relevant to th
 | **Attack Surface** | Sum total of reachable network ports, API endpoints, file uploaders, identities and credentials, administrative interfaces, outbound/egress flows, local or physical interfaces, and third-party dependencies. | Total exposure area available to adversaries and, for some elements (e.g., admin interfaces, dependency supply chains), to misuse or accidental exposure as well. | Port minimization, WAF rate limiting, ingress IP filtering, admin-interface network isolation &amp; dependency/SBOM scanning. |
 | **Data Flows** | Network requests, IPC channels, gRPC streams, message queues. | Transport pathways moving data between components. | Mutual TLS (mTLS) encryption, HMAC payload tags &amp; DPoP binding. |
 | **Data Stores** | Relational databases, NoSQL clusters, cache stores, object storage. | Passive repositories holding sensitive enterprise or customer data. | AES-256-GCM encryption at rest &amp; KMS IAM policies for general confidential columns; one-way hashing (e.g., Argon2id) is appropriate specifically for values like passwords or verification tokens that must be checked but never recovered, not a general-purpose confidentiality control for other sensitive columns. |
-| **External Entities** | End users, web browsers, mobile apps, third-party webhooks—any actor that sends or receives data but sits outside the boundary of the *system being modeled*, not necessarily outside the organization (an internal team's own upstream service, called from this system's DFD, is still an "external entity" on this diagram). | Origin of inputs that must be validated at the boundary; not every external entity is adversarial—some are trusted internal callers modeled as external simply because they're outside this DFD's scope. | WebAuthn passkeys, FIDO2 MFA, input sanitization &amp; TLS 1.3. |
+| **External Entities** | End users, web browsers, mobile apps, third-party webhooks—any actor that sends or receives data but sits outside the boundary of the *system being modeled*, not necessarily outside the organization (an internal team's own upstream service, called from this system's DFD, is still an "external entity" on this diagram). | Origin of inputs that must be validated at the boundary; not every external entity is adversarial—some are trusted internal callers modeled as external simply because they're outside this DFD's scope. | WebAuthn passkeys, FIDO2 MFA, schema/type/range validation &amp; TLS 1.3. |
 | **Processes &amp; Processing Nodes** | Web servers, microservices, background workers, serverless functions. | Execution points that transform data and evaluate policies. | Least-privilege execution, container sandboxing &amp; SAST/DAST audits. |
 | **Third-Party Dependencies** | Cloud IdPs, managed DBs, external SaaS APIs, open-source libraries. | Exogenous risk vectors outside direct code control. | Dependency scanning, SLSA v1.2 build provenance &amp; SSDF audits. |
 | **Trust Boundaries** | Transitions where data or control passes between trust levels. | Enforcement points requiring explicit verification. | API Gateway Policy Enforcement Points (PEPs) &amp; mTLS sidecars. |
@@ -89,7 +91,7 @@ When evaluating a threat model for a new architecture or system refactor, evalua
 | **Scope, Assumptions &amp; Residual Risk** | Does the threat model record its own scope, explicit assumptions, an accountable owner, and the residual risk left after selected mitigations—not only the mitigations themselves? | Documented scope statement, assumptions log, named owner &amp; residual-risk sign-off. |
 | **STRIDE Coverage** | Has every DFD element type been evaluated against its applicable STRIDE threat categories? | Documented Threat Register listing component, threat vector, risk score &amp; owner. |
 | **Third-Party Risk** | Are external cloud APIs, IdP dependencies, and open-source packages integrated into the threat model? | Software Bill of Materials (SBOM), dependency vulnerability reports &amp; SLSA provenance. |
-| **Trust Boundary Rigor** | Is every trust boundary crossing evaluated, with explicit input verification and authentication applied where the risk of that crossing warrants it? | API Gateway policy rules, mTLS sidecar configs &amp; input sanitization test suites. |
+| **Trust Boundary Rigor** | Is every trust boundary crossing evaluated, with explicit input verification and authentication applied where the risk of that crossing warrants it? | API Gateway policy rules, mTLS sidecar configs, schema/type/range validation tests &amp; contextual output-encoding tests. |
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>

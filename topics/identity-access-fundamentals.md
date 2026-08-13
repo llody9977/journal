@@ -1,8 +1,8 @@
 ---
 title: Identity & Access Fundamentals
-description: Fundamentals of identity assurance (IAL/AAL/FAL), human/workload/service/device identity types, access control models (RBAC, ABAC, ReBAC), authentication vs authorization failure modes, the complete identity lifecycle, and core IAM design principles.
+description: Fundamentals of identity assurance (IAL/AAL/FAL), human/workload/service/device identity types, access control models (RBAC, ABAC, ReBAC), authentication vs authorization failure modes, the core identity and access lifecycle, and IAM design principles.
 permalink: /topics/identity-access-fundamentals/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -11,8 +11,10 @@ last_verified: 2026-08-11
 
 <p class="lede">Identity and Access Management (IAM) governs the continuous engineering lifecycle of binding subjects—verified real-world people, but also pseudonymous users, services, workloads, devices, and software agents that are never tied to a verified individual—to digital identities, verifying authenticators, asserting federated tokens, evaluating dynamic authorization policies, and enforcing automated lifecycle revocation. Securing identity boundaries requires separating authentication proofing from authorization evaluation while removing implicit trust based on network location and enforcing explicit micro-boundaries.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/identity-access-architecture.svg' | relative_url }}" alt="Identity and Access Management Architecture diagram showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement (PEP/PDP), and Automated Lifecycle Revocation (NIST SP 800-63 & NIST SP 800-207).">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/identity-access-architecture.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the identity and access management architecture diagram at full size">
+    <img src="{{ '/assets/img/identity-access-architecture.svg' | relative_url }}" alt="Identity and Access Management Architecture diagram showing Setup (IAL, AAL, FAL), Zero Trust Runtime Enforcement (PEP/PDP), and Automated Lifecycle Revocation (NIST SP 800-63 & NIST SP 800-207).">
+  </a>
   <p class="diagram-caption">Identity &amp; Access Management Architecture: Setup &amp; Enrollment (IAL/AAL/FAL) → Zero Trust Policy Enforcement (PEP/PDP) → Automated Revocation &amp; SIEM Audit (NIST SP 800-63-4 / SP 800-207)</p>
 </div>
 
@@ -58,7 +60,7 @@ Confusing authentication proof with authorization permission grants creates crit
 | **Broken Authentication** | Weak credential validation, missing MFA, or flaw in authenticator binding (**NIST SP 800-63B**). | Attacker executes credential stuffing or SIM-swaps SMS OTP to hijack account access. | For systems requiring AAL2 or higher, enforce phishing-resistant **WebAuthn / FIDO2 Passkeys**—typically AAL2, or AAL3 when using a multi-factor public-key authenticator with phishing resistance and a non-exportable private key—and avoid SMS/password-only logins; NIST SP 800-63B still permits passwords at AAL1 and SMS OTP as a restricted AAL2 authenticator, so this is a journal recommendation for higher-assurance systems, not a universal prohibition. |
 | **Broken Function-Level Authorization (BFLA)** | Administrative endpoints (`POST /api/v1/admin/delete`) aren't restricted to admin roles. | Standard user crafts HTTP request to administrative API routes and executes privileged operations. | Enforce **ABAC / OPA policy checks** for coarse-grained filtering at the API Gateway, but the owning microservice must independently enforce its own function-level authorization too—a route added, proxied, or reached by any path that bypasses the gateway must not default to open. |
 | **Broken Object-Level Authorization (BOLA / IDOR)** | API endpoint validates authentication token but fails to verify if identity owns target object ID. | Authenticated user changes `/api/v1/users/102/invoice` to `/103` and reads another user's invoice. | Enforce object-level resource ownership validation in the authoritative service or resource that owns the object, on every access path—not only at a perimeter gateway. A gateway PEP can enforce coarse-grained checks, but it typically cannot evaluate per-object ownership without calling back into the owning service, so the owning service must perform this check itself as the final authority. |
-| **Broken Session Security** | Exposure, replayability, weak storage, excessive token lifetime, or missing cryptographic binding (e.g., unbound session tokens accessible to client-side scripts). | Attacker steals a browser session cookie via XSS, or an OAuth bearer token via a compromised client/log, and replays it from a hostile IP. | Two distinct mechanisms for two distinct token types: set `HttpOnly`, `Secure`, `SameSite=Strict` on browser session cookies; sender-constrain OAuth tokens with **DPoP (RFC 9449)** or **mTLS**. |
+| **Broken Session Security** | Exposure, replayability, weak storage, excessive token lifetime, or missing cryptographic binding (e.g., unbound session tokens accessible to client-side scripts). | Attacker steals a browser session cookie via XSS, or an OAuth bearer token via a compromised client/log, and replays it from a hostile IP. | Two distinct mechanisms for two distinct token types: set `HttpOnly` and `Secure` on browser session cookies; select `SameSite=Strict`, `Lax`, or `None` according to the login, federation, and cross-site flow (`None` requires `Secure`), and retain separate CSRF defenses because SameSite is defense in depth rather than a complete CSRF control. Sender-constrain OAuth tokens with **DPoP (RFC 9449)** or **mTLS**. |
 
 ## Core Access Control Architectural Principles
 
@@ -73,19 +75,21 @@ Implementing secure identity perimeters relies on six recommended IAM design pri
 | **Non-Human Workload Identity** | Treat microservices, CI/CD runners, and containers as distinct identities requiring credentials. | Hardcoded API keys & long-lived service account tokens. | SPIFFE/SPIRE workload attestations, short-lived OIDC tokens & Vault secret rotation. |
 | **Separation of Duties (SoD)** | Prevent a single identity from possessing end-to-end authority over critical operations. | Fraudulent transaction execution & insider threat abuse. | Dual-custody approval workflows (*e.g., initiator cannot approve wire transfer*). |
 
-## The Complete Identity Lifecycle
+## The Core Identity and Access Lifecycle
 
 Authentication and authorization, covered above, are two stages inside a longer lifecycle. Weaknesses concentrate disproportionately in the stages that get the least design attention—recovery and session management are commonly the weakest links, even in systems with strong primary authentication:
 
 | Lifecycle Stage | What Happens | Common Weak Point |
 |---|---|---|
-| **Enrollment** | The subject is registered and, for human users, identity-proofed to a target IAL. | Weak proofing lets an attacker enroll under a false identity from the outset—every later control inherits this gap. |
-| **Provisioning** | Access rights are granted, ideally via SCIM 2.0 Joiner-Mover-Leaver automation tied to an authoritative source (HR system, service catalog). | Manual, out-of-band provisioning creates orphaned or over-permissioned accounts that automation would have caught. |
+| **Enrollment &amp; Identity Proofing** | The subject is registered and, for human users, identity-proofed to a target IAL; the resulting subscriber account records the proofing outcome and attributes. | Weak proofing lets an attacker enroll under a false identity from the outset—every later control inherits this gap. |
+| **Authenticator Binding &amp; Maintenance** | One or more authenticators are bound to the subscriber account, then maintained, renewed, replaced, or invalidated when lost, stolen, duplicated, expired, or compromised. | A strong authenticator is undermined if an attacker can bind a new authenticator or keep a compromised one active without equivalent authorization and notification checks. |
+| **Provisioning &amp; Account Maintenance** | Access rights are granted and account attributes are updated, ideally via SCIM 2.0 Joiner-Mover-Leaver automation tied to an authoritative source (HR system, service catalog). | Manual, out-of-band provisioning or stale account attributes create orphaned, misrouted, or over-permissioned access. |
 | **Authentication** | The subject proves control of a registered authenticator at the AAL required for this session. | Authenticator downgrade paths (e.g., an SMS fallback next to a passkey) undermine an otherwise strong AAL. |
+| **Federation &amp; Trust-Agreement Management** | An identity provider and relying party establish and maintain the trust agreement, keys, metadata, assertion protections, and FAL needed to convey identity and authentication information. | Stale signing keys, redirect endpoints, client registrations, or trust terms allow assertions to be accepted outside their intended audience or lifecycle. |
 | **Session Management** | A successful authentication is translated into a bounded session—token issuance, lifetime, and binding (see Broken Session Security above). | Long-lived, unbound session tokens outlive the trust decision that created them; theft of the token grants standing access without re-authentication. |
 | **Recovery** | A subject who has lost their authenticator re-establishes access through an alternate, typically lower-assurance path (email link, backup codes, support desk verification). | Often the weakest point in the entire chain—compromising a lower-assurance recovery path (e.g., the linked email account) can bypass a high-assurance primary authenticator entirely. |
 | **Periodic Review** | Access rights are periodically re-certified against continued need (access reviews / attestations). | Without a review cadence, provisioned access accumulates silently ("access creep") long after its original justification expired. |
-| **Revocation & Deprovisioning** | Access is removed when no longer needed—role change, offboarding, or workload termination. | Revocation is rarely instant across every resource server; see **Automated Lifecycle Revocation** above for the bounded-objective framing. |
+| **Suspension, Termination, Revocation &amp; Deprovisioning** | Accounts or access are suspended while conditions are investigated, terminated when no longer valid, and associated authenticators, sessions, tokens, federation registrations, and permissions are revoked during role change, offboarding, compromise, or workload termination. | Revocation is rarely instant across every relying party and resource server; see **Automated Lifecycle Revocation** above for the bounded-objective framing. |
 
 ## Essential Access Path Diagnostic Checklist
 
@@ -102,7 +106,7 @@ When auditing an identity perimeter, microservice API, or SSO federation flow, e
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Authentication establishes confidence in a returning subject, while authorization decides what that subject may do; IAL, AAL, and FAL measure different assurance questions. Zero trust removes implicit location-based trust and combines explicit policy enforcement with lifecycle revocation and continuous evaluation.</p>
+  <p>Authentication establishes confidence in a returning subject, while authorization decides what that subject may do; IAL, AAL, and FAL measure different assurance questions. Identity security spans proofing, authenticator binding, provisioning, federation, sessions, recovery, maintenance, suspension, and revocation—not login alone.</p>
 </div>
 
 ## Primary references
@@ -111,3 +115,5 @@ When auditing an identity perimeter, microservice API, or SSO federation flow, e
 - **NIST SP 800-63-4**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-4](https://pages.nist.gov/800-63-4/)
 - **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)* — [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449)
 - **RFC 7009**: *OAuth 2.0 Token Revocation* — [RFC 7009](https://datatracker.ietf.org/doc/html/rfc7009)
+- **RFC 10025**: *Cookies: HTTP State Management Mechanism* — [RFC Editor publication-transition copy](https://auth48-transition.rfc-editor.org/authors/rfc10025.html) (the assigned RFC's canonical RFC Editor URL was not yet serving the document when this page was verified).
+- **OWASP Cross-Site Request Forgery Prevention Cheat Sheet** — [OWASP CSRF guidance](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)

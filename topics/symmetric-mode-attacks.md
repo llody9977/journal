@@ -2,7 +2,7 @@
 title: "Symmetric Mode Attacks: ECB, CBC & CTR"
 description: Practical cryptanalysis and runnable browser-based demonstrations of ECB pattern leakage, CBC bit-flipping malleability, and CTR two-time pad nonce reuse attacks.
 permalink: /topics/symmetric-mode-attacks/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>
@@ -742,7 +742,7 @@ If a nonce is reused under the same key, the exact same keystream **KS** is gene
         <option value="guess_p2">Guess P2 snippet → Recover P1 Plaintext</option>
       </select>
       <div style="display: flex; gap: 0.5rem;">
-        <input type="text" id="ctr-guess-input" class="demo-input" readonly value="Transfer $100 to" style="background: var(--paper); color: var(--ink); cursor: not-allowed;">
+        <input type="text" id="ctr-guess-input" class="demo-input" readonly aria-label="Attacker plaintext guess" aria-describedby="ctr-mode-help" value="Transfer $100 to" style="background: var(--paper); color: var(--ink); cursor: not-allowed;">
         <button id="btn-recover-ctr" class="btn-primary" type="button" style="white-space: nowrap;">Extract Bytes</button>
       </div>
       <small class="demo-help" id="ctr-mode-help">Auto-populated snippet derived from selected mode. The attacker XORs (C1 ⊕ C2) with snippet to extract target payload.</small>

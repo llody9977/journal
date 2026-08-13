@@ -21,6 +21,8 @@ All journal entries follow [`WRITING_STYLE.md`](WRITING_STYLE.md): a concise, re
 
 All targeted verifications, fresh reviews, final passes, and gap assessments follow [`REVIEW_STANDARD.md`](REVIEW_STANDARD.md). Reviews are read-only by default and may claim complete closure only after satisfying its documented coverage and evidence requirements.
 
+Fresh reviews freeze an exact baseline with [`scripts/capture_review_state.py`](scripts/capture_review_state.py) and use [`reviews/REVIEW_TEMPLATE.md`](reviews/REVIEW_TEMPLATE.md) to record scope, claims, completeness, independent review passes, checks, findings, and limitations. Targeted fix verification is deliberately kept separate from full-review closure.
+
 ## Structure
 
 - `index.md` — landing page / overview

@@ -2,14 +2,14 @@
 title: Password Hashing & Key Derivation
 description: Password storage security guidelines, Argon2id (RFC 9106), bcrypt, PBKDF2, salting mechanics, pepper KMS integration, and bcrypt 72-byte truncation workarounds.
 permalink: /topics/password-storage/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Authentication</span>
 
 # Password Hashing & Key Derivation
 
-<p class="lede">Passwords are low-entropy user secrets highly vulnerable to offline dictionary and GPU brute-force attacks. Secure password storage requires specialized, computationally expensive Password-Based Key Derivation Functions (PBKDF) that incorporate unique per-stored-hash salts and tunable time cost parameters to raise the cost of offline cracking to a high or prohibitive level, per [NIST SP 800-63B-4](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/) — the actual outcome still depends on the chosen parameters, the password's own entropy, and the attacker's hardware, so no PBKDF makes cracking an arbitrarily weak password infeasible on its own. Memory-hard functions like Argon2id additionally impose memory cost for stronger GPU/ASIC resistance where the deployment can afford it, but accepted constructions also include time-cost-only functions like PBKDF2 and CPU-bound ones like bcrypt.</p>
+<p class="lede">Passwords are low-entropy user secrets highly vulnerable to offline dictionary and GPU brute-force attacks. Secure password storage requires specialized, computationally expensive Password-Based Key Derivation Functions (PBKDFs) that incorporate unique per-stored-hash salts and tunable cost parameters to raise the cost of offline cracking, per <a href="https://pages.nist.gov/800-63-4/sp800-63b/authenticators/">NIST SP 800-63B-4</a>. The outcome still depends on the chosen parameters, the password's entropy, and the attacker's hardware, so no PBKDF makes an arbitrarily weak password uncrackable. Memory-hard functions such as Argon2id additionally impose memory cost for stronger GPU/ASIC resistance where the deployment can afford it, while accepted constructions also include time-cost-only functions such as PBKDF2 and CPU-bound ones such as bcrypt.</p>
 
 ## Why Plain Cryptographic Hashes Fail for Passwords
 

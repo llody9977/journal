@@ -2,7 +2,7 @@
 title: What Is Security?
 description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and a journal working model of the risk management lifecycle.
 permalink: /topics/security-fundamentals/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Security / Overview</span>
@@ -19,11 +19,13 @@ While the term "Security" is used casually as a general heading, technical engin
 |---|---|---|
 | **Security** (Generic) | No single standard defines generic "Security" universally; **[CNSSI 4009](https://csrc.nist.gov/glossary)** and **[NIST SP 800-37](https://csrc.nist.gov/pubs/sp/800/37/r2/final)** (an RMF-specific publication) each use working definitions within their own scope, used here as a practical starting point. | The general condition resulting from protective measures ensuring freedom from hostile harm across physical, operational, human, and digital assets. |
 | **Information Security** (InfoSec) | **[FISMA (44 U.S.C. § 3552)](https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title44-section3552)** / **ISO/IEC 27001** | Protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to preserve **Confidentiality, Integrity, and Availability (CIA)**. |
-| **Cybersecurity** | **NIST CSF 2.0** / **ISO/IEC 27032** | Protecting digital infrastructure, software applications, cloud services, and network data streams connected to cyberspace against cyber threats. |
+| **Cybersecurity** | **[NIST CSF 2.0](https://www.nist.gov/cyberframework)** / **[ISO/IEC TS 27100:2020](https://www.iso.org/standard/72434.html)** | Protecting digital infrastructure, software applications, cloud services, and network data streams connected to cyberspace against cyber threats. ISO/IEC 27032:2023 is narrower guidance for Internet security rather than the broad definition used here. |
 | **System Security Engineering** | **[NIST SP 800-160 Vol. 1 Rev. 1](https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final)** | The engineering discipline of building trustworthy secure systems across the full system lifecycle—requirements, architecture, hardware, software, and cryptographic design—so they function predictably under hostile conditions. |
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" alt="Conceptual model of security domain scopes showing Core Security Objectives, Information Security and Cybersecurity Scopes, a common Risk Management approach, and Security Controls Execution.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the security domains overlap diagram at full size">
+    <img src="{{ '/assets/img/security-domains-overlap.svg' | relative_url }}" alt="Conceptual model of security domain scopes showing Core Security Objectives, Information Security and Cybersecurity Scopes, a common Risk Management approach, and Security Controls Execution.">
+  </a>
   <p class="diagram-caption">Conceptual model (journal working model, not a normative standard diagram): Core CIA Objectives → Information Security &amp; Cybersecurity Scopes → Common Risk Management Approach → Technical Controls Execution</p>
 </div>
 
@@ -45,7 +47,7 @@ Comprehensive security engineering expands beyond the CIA triad to address addit
 - **Accountability**: Producing evidence—via audit logging (**[NIST SP 800-92](https://csrc.nist.gov/pubs/sp/800/92/final)**)—that supports tracing system actions to an authenticated identity; the strength of that attribution still depends on identity binding, log integrity, access controls to the logs, time synchronization, and investigative context, not the logging mechanism alone.
 - **Privacy**: Ensuring data processing respects individual rights and regulatory boundaries (**[NIST Privacy Framework](https://www.nist.gov/privacy-framework)**).
 - **Safety**: Ensuring system operational failures do not cause physical injury, environmental damage, or loss of life (**[ISO 26262](https://www.iso.org/standard/68383.html) / NIST SP 800-160**).
-- **Resilience**: The capacity of a system to withstand, adapt to, and recover from adverse conditions or attacks (**NIST SP 800-160 Vol. 2**).
+- **Resilience**: The capacity of a system to withstand, adapt to, and recover from adverse conditions or attacks (**[NIST SP 800-160 Vol. 2 Rev. 1](https://csrc.nist.gov/pubs/sp/800/160/v2/r1/final)**).
 
 ## A Common Decision Engine: Continuous Risk Management
 
@@ -53,8 +55,10 @@ Whether protecting a physical paper archive (**Information Security**) or a clou
 
 The five-stage breakdown below is a practical synthesis for this journal, informed by NIST SP 800-39 and SP 800-37 rather than a direct restatement of either publication's formal process steps. It connects abstract security objectives to concrete technical controls across five continuous operational stages:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/risk-management-lifecycle.svg' | relative_url }}" alt="The Continuous Risk Management Lifecycle diagram showing Stage 1 Problem Inputs, Stage 2 Risk Assessment, Stage 3 Risk Responses, Stage 4 Security Controls Execution, and Stage 5 Continuous Monitoring Feedback Loop.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/risk-management-lifecycle.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the continuous risk management lifecycle diagram at full size">
+    <img src="{{ '/assets/img/risk-management-lifecycle.svg' | relative_url }}" alt="The Continuous Risk Management Lifecycle diagram showing Stage 1 Problem Inputs, Stage 2 Risk Assessment, Stage 3 Risk Responses, Stage 4 Security Controls Execution, and Stage 5 Continuous Monitoring Feedback Loop.">
+  </a>
   <p class="diagram-caption">A practical risk-management workflow informed by NIST SP 800-39 / SP 800-37, not a literal reproduction of either lifecycle: Inputs → Assessment → Strategic Response Selection (Share and Transfer are grouped in Stage 3 only for compact presentation—NIST SP 800-39 treats them as distinct) → Controls Execution → Continuous Monitoring Feedback Loop</p>
 </div>
 
@@ -78,7 +82,7 @@ When evaluating the security posture of any new feature or system architecture, 
 |---|---|---|
 | **Asset Categorization** | What sensitive data, critical services, or business operations require protection? | Data classification inventories, CMDB registers &amp; asset catalogues. |
 | **Control Verification** | Which preventive, detective, corrective/recovery, compensating, and deterrent controls execute the reduction strategy? | Security controls baseline mapping (**NIST SP 800-53 Rev. 5**) &amp; continuous monitoring logs. |
-| **Domain Boundary Identification** | Are you managing paper records (InfoSec), digital endpoints (Cybersecurity), or hardware roots of trust? | Scope boundary documents &amp; system security plan (SSP) architecture bounds. |
+| **Domain Boundary Identification** | Which information-security, cybersecurity, physical-security, and system-engineering scopes overlap for this asset and threat scenario? | Scope boundary documents &amp; system security plan (SSP) architecture bounds. |
 | **Exposure Assessment** | What is the risk severity based on threat likelihood and consequential impact? | Risk assessment reports (**NIST SP 800-30 Rev. 1**). |
 | **Objective Testing** | Which CIA triad properties, safety, or privacy limits would be breached if compromised? | FIPS 199 impact categorization &amp; privacy impact assessments (PIA). |
 | **Strategic Response Selection** | Which response strategy—Accept, Avoid, Mitigate, Share, or Transfer—is authorized by the risk owner? | Risk treatment decision record signed off by the policy-defined acceptance authority (**NIST SP 800-39**). |
@@ -98,3 +102,5 @@ When evaluating the security posture of any new feature or system architecture, 
 - **NIST Cybersecurity Framework 2.0** — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
 - **NIST SP 800-37 Rev. 2**: *Risk Management Framework for Information Systems and Organizations* — [NIST CSRC SP 800-37](https://csrc.nist.gov/pubs/sp/800/37/r2/final)
 - **ISO 26262:2018**: *Road vehicles — Functional safety* — [ISO 26262](https://www.iso.org/standard/68383.html)
+- **ISO/IEC TS 27100:2020**: *Information technology — Cybersecurity — Overview and concepts* — [ISO/IEC TS 27100](https://www.iso.org/standard/72434.html)
+- **NIST SP 800-160 Vol. 2 Rev. 1**: *Developing Cyber-Resilient Systems* — [NIST CSRC SP 800-160 Vol. 2](https://csrc.nist.gov/pubs/sp/800/160/v2/r1/final)

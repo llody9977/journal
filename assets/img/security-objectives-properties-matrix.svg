@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 565" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Security Objectives &amp; System Properties Matrix</title>
-  <desc id="description">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity, Accountability, Privacy, Safety, Resilience), and Technical, Administrative &amp; Physical Safeguards.</desc>
+  <desc id="description">Architecture mapping the CIA Triad (FIPS 199), six Extended Security Properties (Accountability, Authenticity, Non-Repudiation, Privacy, Resilience, Safety), and Technical, Administrative and Physical Safeguards. Authenticity mechanisms are separated from the signatures, identity assurance, and sole key control that provide evidence supporting non-repudiation.</desc>
   <rect width="1200" height="565" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
@@ -12,8 +12,8 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Security Objectives &amp; System Properties Matrix</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Architecture mapping the CIA Triad (FIPS 199), Extended Security Properties (Authenticity,</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">Accountability, Privacy, Safety, Resilience), and Technical, Administrative &amp; Physical Safeguards.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Architecture mapping the CIA Triad (FIPS 199), six Extended Security Properties (Accountability, Authenticity,</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">Non-Repudiation, Privacy, Resilience, Safety), and Technical, Administrative &amp; Physical Safeguards.</text>
   
     <!-- Top CIA Triad Section (x=40, y=115, w=1120) -->
     <!-- Card 1: Confidentiality (x=40, w=355) -->
@@ -29,8 +29,9 @@
     <text x="442" y="142" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">INTEGRITY (NIST FIPS 199)</text>
     <text x="442" y="165" font-size="15" font-weight="800" fill="#0f172a">Guarding Against State Tampering</text>
     <line x1="442" y1="178" x2="757" y2="178" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-    <text x="442" y="200" font-size="11.5" font-weight="600" fill="#0f172a">• Protects against and detects unauthorized state alteration</text>
-    <text x="442" y="220" font-size="11.5" font-weight="500" fill="#475569">• HMAC-SHA256 &amp; Ed25519 signatures</text>
+    <text x="442" y="198" font-size="11.5" font-weight="600" fill="#0f172a">• Prevents unauthorized state alteration</text>
+    <text x="442" y="215" font-size="11.5" font-weight="600" fill="#0f172a">  and detects it where verification exists</text>
+    <text x="442" y="238" font-size="11.5" font-weight="500" fill="#475569">• HMAC-SHA256 &amp; Ed25519 signatures</text>
 
     <!-- Card 3: Availability (x=805, w=355) -->
     <rect x="805" y="115" width="355" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
@@ -41,13 +42,13 @@
     <text x="825" y="220" font-size="11.5" font-weight="500" fill="#475569">• Redundant failover &amp; DDoS mitigation</text>
 
     <!-- Middle Extended Properties Section (2x2 Grid: x=40 and x=615, w=545) -->
-    <!-- Grid Row 1 Left: Authenticity & Non-Repudiation (x=40, w=545, y=275, h=105) -->
+    <!-- Grid Row 1 Left: Authenticity and Non-Repudiation Evidence (x=40, w=545, y=275, h=105) -->
     <rect x="40" y="275" width="545" height="105" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" />
-    <text x="60" y="298" font-size="10.5" font-weight="900" letter-spacing="1" fill="#7c3aed">AUTHENTICITY &amp; NON-REPUDIATION</text>
-    <text x="60" y="318" font-size="14" font-weight="800" fill="#0f172a">Origin Proof &amp; Cryptographic Evidence Supporting Non-Repudiation</text>
-    <line x1="60" y1="330" x2="565" y2="330" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
-    <text x="60" y="350" font-size="11.5" font-weight="500" fill="#475569">• PKI Mutual TLS (mTLS), FIDO2 Passkeys / WebAuthn</text>
-    <text x="60" y="368" font-size="11.5" font-weight="500" fill="#475569">• Asymmetric Cryptographic Signatures (Ed25519 / ECDSA)</text>
+    <text x="60" y="298" font-size="10.5" font-weight="900" letter-spacing="1" fill="#7c3aed">AUTHENTICITY</text>
+    <text x="60" y="316" font-size="11.5" font-weight="600" fill="#0f172a">• mTLS and WebAuthn verify endpoint, user, or message origin</text>
+    <line x1="60" y1="327" x2="565" y2="327" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="345" font-size="10.5" font-weight="900" letter-spacing="1" fill="#7c3aed">EVIDENCE SUPPORTING NON-REPUDIATION</text>
+    <text x="60" y="365" font-size="11.5" font-weight="500" fill="#475569">• Asymmetric signatures + identity assurance + sole key control</text>
 
     <!-- Grid Row 1 Right: Accountability (x=615, w=545, y=275, h=105) -->
     <rect x="615" y="275" width="545" height="105" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />

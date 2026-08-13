@@ -57,12 +57,13 @@
     <text x="70" y="258" font-size="11" font-weight="500" fill="#475569">• Attacker Controlled Inputs</text>
 
     <!-- Card 2: Process 1 API Gateway -->
-    <rect x="395" y="165" width="390" height="100" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
+    <rect x="395" y="165" width="390" height="110" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
     <text x="410" y="190" font-size="11" font-weight="900" fill="#2563eb">PROCESS 1: API GATEWAY &amp; PEP</text>
     <text x="410" y="210" font-size="13" font-weight="800" fill="#0f172a">OAuth 2.0 Token Verification &amp; WAF Rate Limiting</text>
     <line x1="410" y1="220" x2="770" y2="220" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
     <text x="410" y="238" font-size="11" font-weight="500" fill="#475569">• Validates JWT Bearer Tokens &amp; DPoP Proofs</text>
-    <text x="410" y="254" font-size="11" font-weight="500" fill="#475569">• Sanitizes Input &amp; Blocks Attack Payloads</text>
+    <text x="410" y="254" font-size="11" font-weight="500" fill="#475569">• Validates schema/type/range; rejects disallowed requests</text>
+    <text x="410" y="270" font-size="11" font-weight="500" fill="#475569">• WAF filters known attack patterns</text>
 
     <!-- Card 3: Process 2 Payroll Microservice -->
     <rect x="395" y="290" width="390" height="105" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="2" />
@@ -94,7 +95,7 @@
     <text x="325" y="204" text-anchor="middle" font-size="9" font-weight="900" fill="#b91c1c">TLS 1.3</text>
 
     <!-- Flow Arrow 2: Gateway to Microservice (x=590, y=265 to y=290) -->
-    <path d="M 590 265 L 590 290" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M 590 275 L 590 290" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
 
     <!-- Arrow 3: Microservice to Payroll DB (elbow: right, up, right) -->
     <path d="M 785 320 L 832 320 L 832 217 L 875 217" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arrow-amber)"/>

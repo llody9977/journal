@@ -7,7 +7,7 @@
   </defs>
 
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">X.509 Certificate Authority Trust Hierarchy</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Offline Root CA delegates signing authority to Intermediate CAs to issue short-lived End-Entity certificates</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Offline Root CA delegates signing authority to Intermediate CAs that issue End-Entity certificates</text>
 
   <!-- Root CA Level (x=340 to 860, w=520, y=105, h=100) -->
   <rect x="340" y="105" width="520" height="100" rx="12" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>

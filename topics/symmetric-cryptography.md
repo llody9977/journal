@@ -2,7 +2,7 @@
 title: Symmetric Cryptography
 description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), and Grover's quantum search.
 permalink: /topics/symmetric-cryptography/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
@@ -134,7 +134,7 @@ Nonce uniqueness is necessary but not sufficient — deploying AEAD at scale mea
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>AES-256-GCM is the default AEAD choice for data in transit and structured data at rest; reusing a 96-bit GCM nonce under the same key destroys both authenticity and confidentiality. ChaCha20-Poly1305 is the software-optimized alternative for hardware without dedicated AES acceleration.</p>
+  <p>Select the AEAD construction and key size from the protocol, compliance profile, workload, and implementation support: TLS 1.3 requires AES-128-GCM support and also defines AES-256-GCM, ChaCha20-Poly1305, and AES-CCM suites. For any GCM deployment, reusing a 96-bit nonce under the same key destroys both authenticity and confidentiality.</p>
 </div>
 
 ## Primary references
