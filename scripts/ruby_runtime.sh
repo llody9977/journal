@@ -68,19 +68,9 @@ EOF
     return 1
   fi
 
-  bundle_version="$(awk '/^BUNDLED WITH$/ { getline; gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print; exit }' "${project_root}/Gemfile.lock")"
+  bundle_version="$("${JOURNAL_BUNDLE_BIN}" --version 2>/dev/null | awk '{print $NF}')"
   if [[ -z "${bundle_version}" ]]; then
-    echo "Gemfile.lock does not declare a BUNDLED WITH version." >&2
-    return 1
-  fi
-
-  if ! "${JOURNAL_BUNDLE_BIN}" "_${bundle_version}_" --version >/dev/null 2>&1; then
-    cat >&2 <<EOF
-Ruby ${required_version} is available, but Bundler ${bundle_version} is not.
-Install it for the selected runtime, then rerun bin/setup:
-
-  "${JOURNAL_RUBY_BIN}" -S gem install bundler:${bundle_version}
-EOF
+    echo "Could not determine the Bundler version for ${JOURNAL_BUNDLE_BIN}." >&2
     return 1
   fi
 

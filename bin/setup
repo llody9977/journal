@@ -9,6 +9,7 @@ source "${project_root}/scripts/ruby_runtime.sh"
 resolve_journal_ruby "${project_root}"
 
 export PATH="$(dirname "${JOURNAL_RUBY_BIN}"):${PATH}"
+export BUNDLE_GEMFILE="${project_root}/Gemfile"
 export BUNDLE_PATH="${BUNDLE_PATH:-${project_root}/vendor/bundle}"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -17,6 +18,6 @@ echo "Using Ruby ${JOURNAL_RUBY_VERSION}: ${JOURNAL_RUBY_BIN}"
 echo "Using Bundler ${JOURNAL_BUNDLER_VERSION}: ${JOURNAL_BUNDLE_BIN}"
 echo "Installing repository gems into ${BUNDLE_PATH}"
 
-"${JOURNAL_BUNDLE_BIN}" "_${JOURNAL_BUNDLER_VERSION}_" install
+"${JOURNAL_BUNDLE_BIN}" install
 
 echo "Setup complete. Run bin/jekyll build or bin/jekyll serve --livereload."

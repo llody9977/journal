@@ -27,6 +27,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Verify Ignored Files Are Not Tracked
+        shell: bash
+        run: |
+          tracked_ignored="$(git ls-files -ci --exclude-standard)"
+          if [[ -n "${tracked_ignored}" ]]; then
+            echo "Ignored files are still tracked:" >&2
+            echo "${tracked_ignored}" >&2
+            exit 1
+          fi
       - name: Run Automated Page-Structure Checks
         run: python3 scripts/verify_writing_style.py
       - name: Validate Durable Content Decisions

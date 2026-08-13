@@ -55,8 +55,9 @@ bin/setup
 bin/jekyll serve --livereload
 ```
 
-The repository pins the Ruby version, Bundler version, and GitHub Pages gem
-set used for local builds. `bin/setup` installs the locked gems under the
-ignored `vendor/bundle` directory; `bin/jekyll` then uses that exact runtime.
-If the required Ruby or Bundler version is missing, the setup command prints
-the installation command or version-manager action needed before retrying.
+The repository pins the Ruby version and the direct GitHub Pages gem set used
+for local builds. `bin/setup` resolves those dependencies into the ignored
+`Gemfile.lock` file and installs the gems under the ignored `vendor/bundle`
+directory; `bin/jekyll` then uses that local bundle. If the required Ruby or
+Bundler installation is missing, the setup command explains what is needed
+before retrying.
