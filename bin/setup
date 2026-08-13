@@ -20,4 +20,4 @@ echo "Installing repository gems into ${BUNDLE_PATH}"
 
 "${JOURNAL_BUNDLE_BIN}" install
 
-echo "Setup complete. Run bin/jekyll build or bin/jekyll serve --livereload."
+echo "Setup complete. Run bin/jekyll build or bin/jekyll serve."

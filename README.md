@@ -52,7 +52,7 @@ Deliberate technical decisions are recorded in [`reviews/CONTENT_DECISIONS.yml`]
 
 ```bash
 bin/setup
-bin/jekyll serve --livereload
+bin/jekyll serve
 ```
 
 The repository pins the Ruby version and the direct GitHub Pages gem set used
