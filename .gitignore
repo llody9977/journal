@@ -4,6 +4,8 @@ _site/
 .sass-cache/
 .bundle/
 vendor/
+Gemfile.lock
+*.gem
 .DS_Store
 *.log
 *.tmp
