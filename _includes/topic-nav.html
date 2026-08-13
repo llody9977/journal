@@ -383,47 +383,83 @@
 {% if current_url == '/topics/adversary-emulation/' or current_url == '/topics/adversary-emulation' %}
   {% assign prev_title = '6.5 Threat Hunting & Behavioral Analytics' %}
   {% assign prev_url = '/topics/threat-hunting/' %}
-  {% assign next_title = '7.1 AI & LLM Security' %}
-  {% assign next_url = '/topics/ai-llm-security/' %}
+  {% assign next_title = '7.1 AI & LLM Threat Frameworks & Risk Management' %}
+  {% assign next_url = '/topics/ai-risk-management/' %}
 {% endif %}
-{% if current_url == '/topics/ai-llm-security/' or current_url == '/topics/ai-llm-security' %}
+{% if current_url == '/topics/ai-risk-management/' or current_url == '/topics/ai-risk-management' %}
   {% assign prev_title = '6.6 Adversary Emulation & Continuous Security Validation' %}
   {% assign prev_url = '/topics/adversary-emulation/' %}
-  {% assign next_title = '7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA' %}
-  {% assign next_url = '/topics/software-supply-chain-security/' %}
+  {% assign next_title = '7.2 Prompt Injection & Context Safety' %}
+  {% assign next_url = '/topics/prompt-injection-defense/' %}
 {% endif %}
-{% if current_url == '/topics/software-supply-chain-security/' or current_url == '/topics/software-supply-chain-security' %}
-  {% assign prev_title = '7.1 AI & LLM Security' %}
-  {% assign prev_url = '/topics/ai-llm-security/' %}
-  {% assign next_title = '8.1 Cybersecurity Standards & Frameworks' %}
+{% if current_url == '/topics/prompt-injection-defense/' or current_url == '/topics/prompt-injection-defense' %}
+  {% assign prev_title = '7.1 AI & LLM Threat Frameworks & Risk Management' %}
+  {% assign prev_url = '/topics/ai-risk-management/' %}
+  {% assign next_title = '7.3 Model Context Protocol (MCP) & Agentic Security' %}
+  {% assign next_url = '/topics/mcp-security-agentics/' %}
+{% endif %}
+{% if current_url == '/topics/mcp-security-agentics/' or current_url == '/topics/mcp-security-agentics' %}
+  {% assign prev_title = '7.2 Prompt Injection & Context Safety' %}
+  {% assign prev_url = '/topics/prompt-injection-defense/' %}
+  {% assign next_title = '7.4 AI Model Supply Chain & Deserialization Safety' %}
+  {% assign next_url = '/topics/ai-model-supply-chain/' %}
+{% endif %}
+{% if current_url == '/topics/ai-model-supply-chain/' or current_url == '/topics/ai-model-supply-chain' %}
+  {% assign prev_title = '7.3 Model Context Protocol (MCP) & Agentic Security' %}
+  {% assign prev_url = '/topics/mcp-security-agentics/' %}
+  {% assign next_title = '8.1 Software Bill of Materials (SBOM) & VEX' %}
+  {% assign next_url = '/topics/sbom-dependency-management/' %}
+{% endif %}
+{% if current_url == '/topics/sbom-dependency-management/' or current_url == '/topics/sbom-dependency-management' %}
+  {% assign prev_title = '7.4 AI Model Supply Chain & Deserialization Safety' %}
+  {% assign prev_url = '/topics/ai-model-supply-chain/' %}
+  {% assign next_title = '8.2 CI/CD Pipeline Security & Workload Identity' %}
+  {% assign next_url = '/topics/cicd-pipeline-security/' %}
+{% endif %}
+{% if current_url == '/topics/cicd-pipeline-security/' or current_url == '/topics/cicd-pipeline-security' %}
+  {% assign prev_title = '8.1 Software Bill of Materials (SBOM) & VEX' %}
+  {% assign prev_url = '/topics/sbom-dependency-management/' %}
+  {% assign next_title = '8.3 SLSA & Build Provenance Attestations' %}
+  {% assign next_url = '/topics/slsa-provenance-attestation/' %}
+{% endif %}
+{% if current_url == '/topics/slsa-provenance-attestation/' or current_url == '/topics/slsa-provenance-attestation' %}
+  {% assign prev_title = '8.2 CI/CD Pipeline Security & Workload Identity' %}
+  {% assign prev_url = '/topics/cicd-pipeline-security/' %}
+  {% assign next_title = '8.4 Code Signing, Binary Integrity & Sigstore' %}
+  {% assign next_url = '/topics/code-signing-sigstore/' %}
+{% endif %}
+{% if current_url == '/topics/code-signing-sigstore/' or current_url == '/topics/code-signing-sigstore' %}
+  {% assign prev_title = '8.3 SLSA & Build Provenance Attestations' %}
+  {% assign prev_url = '/topics/slsa-provenance-attestation/' %}
+  {% assign next_title = '9.1 Cybersecurity Standards & Frameworks' %}
   {% assign next_url = '/topics/cybersecurity-standards/' %}
 {% endif %}
 {% if current_url == '/topics/cybersecurity-standards/' or current_url == '/topics/cybersecurity-standards' %}
-  {% assign prev_title = '7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA' %}
-  {% assign prev_url = '/topics/software-supply-chain-security/' %}
-  {% assign next_title = '8.2 GRC Strategy: Framework Stacking & Assessment Models' %}
+  {% assign prev_title = '8.4 Code Signing, Binary Integrity & Sigstore' %}
+  {% assign prev_url = '/topics/code-signing-sigstore/' %}
+  {% assign next_title = '9.2 GRC Strategy: Framework Stacking & Assessment Models' %}
   {% assign next_url = '/topics/grc-framework-strategy/' %}
 {% endif %}
 {% if current_url == '/topics/grc-framework-strategy/' or current_url == '/topics/grc-framework-strategy' %}
-  {% assign prev_title = '8.1 Cybersecurity Standards & Frameworks' %}
+  {% assign prev_title = '9.1 Cybersecurity Standards & Frameworks' %}
   {% assign prev_url = '/topics/cybersecurity-standards/' %}
-  {% assign next_title = '8.3 Regulatory Mandates & Private-Sector Assurance' %}
+  {% assign next_title = '9.3 Regulatory Mandates & Private-Sector Assurance' %}
   {% assign next_url = '/topics/regulatory-compliance-mandates/' %}
 {% endif %}
 {% if current_url == '/topics/regulatory-compliance-mandates/' or current_url == '/topics/regulatory-compliance-mandates' %}
-  {% assign prev_title = '8.2 GRC Strategy: Framework Stacking & Assessment Models' %}
+  {% assign prev_title = '9.2 GRC Strategy: Framework Stacking & Assessment Models' %}
   {% assign prev_url = '/topics/grc-framework-strategy/' %}
-  {% assign next_title = '8.4 Security Certifications' %}
+  {% assign next_title = '9.4 Security Certifications' %}
   {% assign next_url = '/topics/security-certifications/' %}
 {% endif %}
 {% if current_url == '/topics/security-certifications/' or current_url == '/topics/security-certifications' %}
-  {% assign prev_title = '8.3 Regulatory Mandates & Private-Sector Assurance' %}
+  {% assign prev_title = '9.3 Regulatory Mandates & Private-Sector Assurance' %}
   {% assign prev_url = '/topics/regulatory-compliance-mandates/' %}
-  {% assign next_title = '8.5 Security Maturity Models' %}
+  {% assign next_title = '9.5 Security Maturity Models' %}
   {% assign next_url = '/topics/security-maturity-models/' %}
 {% endif %}
 {% if current_url == '/topics/security-maturity-models/' or current_url == '/topics/security-maturity-models' %}
-  {% assign prev_title = '8.4 Security Certifications' %}
+  {% assign prev_title = '9.4 Security Certifications' %}
   {% assign prev_url = '/topics/security-certifications/' %}
 {% endif %}
 

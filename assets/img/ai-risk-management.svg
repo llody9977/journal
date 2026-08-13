@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">AI &amp; LLM Threat Frameworks &amp; Risk Management Architecture</title>
+  <desc id="description">AI &amp; LLM Threat Frameworks diagram showing NIST AI RMF 1.0 functions (Govern, Map, Measure, Manage), OWASP Top 10 for LLMs, and MITRE ATLAS matrix mapping.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">AI &amp; LLM Threat Frameworks &amp; Risk Management</text>
+  <text x="50" y="75" font-size="14" fill="#475569">NIST AI RMF 1.0 risk functions, OWASP Top 10 LLM risks (2025), and MITRE ATLAS adversarial ML threat mapping.</text>
+  
+  <!-- Section 1: NIST AI RMF 1.0 (x=40, w=540, y=105, h=160) -->
+  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">NIST AI RMF 1.0 CORE FUNCTIONS</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Trustworthy AI Risk Management</text>
+  <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• GOVERN: Organizational culture, policy, risk tolerance &amp; accountability</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• MAP: Context identification, capability capabilities &amp; AI system scoping</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• MEASURE &amp; MANAGE: Empirical testing, quantitative scoring &amp; risk response</text>
+
+  <!-- Section 2: OWASP Top 10 LLM (x=620, w=540, y=105, h=160) -->
+  <rect x="620" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">OWASP TOP 10 FOR LLM APPLICATIONS (2025)</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Critical Application Security Vulnerabilities</text>
+  <line x1="640" y1="166" x2="1140" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• LLM01: Prompt Injection (Direct &amp; Indirect RAG Poisoning)</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• LLM02: Sensitive Information Disclosure → LLM06: Excessive Agency</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• LLM04: Model DoS → LLM05: Supply Chain Vulnerabilities</text>
+
+  <!-- Section 3: MITRE ATLAS Matrix (x=40, w=1120, y=285, h=145) -->
+  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">MITRE ATLAS (ADVERSARIAL THREAT LANDSCAPE FOR AI SYSTEMS)</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Empirical AI TTP Matrix &amp; Attack Lifecycle</text>
+  <line x1="60" y1="346" x2="1140" y2="346" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Reconnaissance &amp; ML Resource Access → Initial Access (Model Supply Chain / RAG Poisoning)</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Execution &amp; Persistence (Prompt Injection / Agent Hijacking) → Exfiltration (Model Inversion / Data Leakage)</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Impact: Data Poisoning, Model Evasion, System Hijacking, and Resource Exhaustion</text>
+
+  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">AI RISK ALIGNMENT: NIST GOVERNANCE → OWASP RISK IDENTIFICATION → MITRE ATLAS TTP MAPPING → GUARDRAIL CONTROL ENFORCEMENT</text>
+</svg>

@@ -149,21 +149,35 @@
           url: /topics/threat-hunting/
         - title: "6.6 Adversary Emulation & Continuous Security Validation"
           url: /topics/adversary-emulation/
-    - title: 7. Emerging Topics
+    - title: 7. AI & LLM Security
       children:
-        - title: 7.1 AI & LLM Security
-          url: /topics/ai-llm-security/
-        - title: "7.2 Software Supply Chain Security: SBOM, CI/CD & SLSA"
-          url: /topics/software-supply-chain-security/
-    - title: 8. Governance, Risk & Compliance
+        - title: 7.1 AI & LLM Threat Frameworks & Risk Management
+          url: /topics/ai-risk-management/
+        - title: 7.2 Prompt Injection & Context Safety
+          url: /topics/prompt-injection-defense/
+        - title: "7.3 Model Context Protocol (MCP) & Agentic Security"
+          url: /topics/mcp-security-agentics/
+        - title: 7.4 AI Model Supply Chain & Deserialization Safety
+          url: /topics/ai-model-supply-chain/
+    - title: 8. Software Supply Chain Security
       children:
-        - title: "8.1 Cybersecurity Standards & Frameworks"
+        - title: "8.1 Software Bill of Materials (SBOM) & VEX"
+          url: /topics/sbom-dependency-management/
+        - title: "8.2 CI/CD Pipeline Security & Workload Identity"
+          url: /topics/cicd-pipeline-security/
+        - title: 8.3 SLSA & Build Provenance Attestations
+          url: /topics/slsa-provenance-attestation/
+        - title: "8.4 Code Signing, Binary Integrity & Sigstore"
+          url: /topics/code-signing-sigstore/
+    - title: 9. Governance, Risk & Compliance
+      children:
+        - title: "9.1 Cybersecurity Standards & Frameworks"
           url: /topics/cybersecurity-standards/
-        - title: "8.2 GRC Strategy: Framework Stacking & Assessment Models"
+        - title: "9.2 GRC Strategy: Framework Stacking & Assessment Models"
           url: /topics/grc-framework-strategy/
-        - title: 8.3 Regulatory Mandates & Private-Sector Assurance
+        - title: 9.3 Regulatory Mandates & Private-Sector Assurance
           url: /topics/regulatory-compliance-mandates/
-        - title: 8.4 Security Certifications
+        - title: 9.4 Security Certifications
           url: /topics/security-certifications/
-        - title: 8.5 Security Maturity Models
+        - title: 9.5 Security Maturity Models
           url: /topics/security-maturity-models/

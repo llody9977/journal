@@ -1354,6 +1354,99 @@
       "originating_review_state_id": "022c70cf8fbd154542a8618c69dd6cbdfbdfaf6be71bf83e39e8462b3ea794ee",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0027",
+      "title": "Disband catch-all Emerging Topics section into two dedicated sections for AI & LLM Security (Section 7) and Software Supply Chain Security (Section 8)",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/ai-risk-management.md",
+          "topics/prompt-injection-defense.md",
+          "topics/mcp-security-agentics.md",
+          "topics/ai-model-supply-chain.md",
+          "topics/sbom-dependency-management.md",
+          "topics/cicd-pipeline-security.md",
+          "topics/slsa-provenance-attestation.md",
+          "topics/code-signing-sigstore.md",
+          "assets/img/ai-risk-management.svg",
+          "assets/img/prompt-injection.svg",
+          "assets/img/mcp-tool-poisoning.svg",
+          "assets/img/ai-model-supply-chain.svg",
+          "assets/img/sbom-vulnerability-management.svg",
+          "assets/img/cicd-pipeline-security.svg",
+          "assets/img/slsa-build-integrity.svg",
+          "assets/img/sigstore-code-signing.svg",
+          "_data/nav.yml",
+          "_includes/topic-nav.html"
+        ],
+        "concepts": [
+          "NIST AI RMF 1.0",
+          "OWASP Top 10 for LLM Applications",
+          "MITRE ATLAS AI matrix",
+          "dual-LLM guardrail architectures",
+          "Model Context Protocol (MCP) tool description poisoning",
+          "PyTorch pickle deserialization vs Safetensors",
+          "Software Bill of Materials (SBOM) and VEX",
+          "OWASP Top 10 CI/CD Security Risks",
+          "OIDC passwordless workload identity federation",
+          "SLSA v1.2 Build Track Levels (L1-L3)",
+          "Sigstore keyless signing via Fulcio and Rekor"
+        ]
+      },
+      "originating_feedback": "A fresh review of Section 7 (Emerging Topics) determined that combining AI & LLM Security and Software Supply Chain Security under a generic catch-all section caused severe topic overcrowding and obscured the operational depth of both multi-billion dollar enterprise security domains.",
+      "decision": "Disband 'Emerging Topics' and establish two dedicated sections: Section 7 (AI & LLM Security - 4 topics: 7.1 AI Risk Management, 7.2 Prompt Injection Defense, 7.3 MCP & Agentic Security, 7.4 AI Model Supply Chain) and Section 8 (Software Supply Chain Security - 4 topics: 8.1 SBOM & VEX, 8.2 CI/CD Pipeline Security, 8.3 SLSA & Build Provenance, 8.4 Code Signing & Sigstore), renumbering GRC to Section 9.",
+      "rationale": "Each topic has distinct target audiences, technical threat models, primary frameworks, open-source tooling, and operational lifecycles. Separating them enforces single-subject integrity, eliminates narrative drift, and creates complete coverage across both domains.",
+      "authoritative_sources": [
+        {
+          "title": "NIST AI RMF 1.0",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+          "supports": "Artificial Intelligence Risk Management Framework core functions."
+        },
+        {
+          "title": "OWASP Top 10 for LLMs (2025)",
+          "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+          "supports": "Top vulnerabilities impacting Large Language Model applications."
+        },
+        {
+          "title": "Model Context Protocol Specification",
+          "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+          "supports": "MCP tool discovery, annotations, and untrusted metadata handling."
+        },
+        {
+          "title": "NTIA SBOM Minimum Elements",
+          "url": "https://www.ntia.gov/report/2021/minimum-elements-software-bill-materials-sbom",
+          "supports": "7 baseline data fields for Software Bill of Materials."
+        },
+        {
+          "title": "SLSA v1.2 Specification",
+          "url": "https://slsa.dev/spec/v1.2/",
+          "supports": "Supply-chain Levels for Software Artifacts Build track (L0-L3)."
+        },
+        {
+          "title": "Sigstore Project",
+          "url": "https://www.sigstore.dev/",
+          "supports": "Keyless code signing via Fulcio short-lived certs and Rekor transparency logs."
+        }
+      ],
+      "verification_methods": [
+        "Verify navigation in nav.yml and topic-nav.html from 7.1-7.4 and 8.1-8.4.",
+        "Run scripts/verify_writing_style.py across all 77 topic files.",
+        "Run scripts/verify_content_decisions.py against CONTENT_DECISIONS.yml.",
+        "Inspect visual SVG architecture diagrams for all 8 topics."
+      ],
+      "approved_outcome": "Section 7 and Section 8 provide complete, single-subject, standards-aligned coverage of AI/LLM Security and Software Supply Chain Security with stable permalinks, clean navigation, and matching SVG diagrams.",
+      "invalidation_conditions": [
+        "The journal section architecture changes and a different grouping is explicitly adopted.",
+        "Governing primary standards (NIST AI RMF, SLSA, Sigstore) fundamentally merge or replace core frameworks."
+      ],
+      "related_decisions": ["CD-0001", "CD-0026"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "846f399757913a993ffccae05344daf6c0d15ce8aa50daa44b13de3f50188696",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }
