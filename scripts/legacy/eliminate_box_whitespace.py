@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+"""Retired one-time SVG rewrite utility; preserved for historical reference."""
+
+raise SystemExit(
+    "eliminate_box_whitespace.py is retired. The reviewed SVG files in assets/img "
+    "are canonical; use scripts/generate-journal-diagrams.mjs to export them."
+)
+
 import os, re
 
 IMG_DIR = 'assets/img'

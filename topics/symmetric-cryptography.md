@@ -24,7 +24,7 @@ Symmetric encryption transforms readable plaintext into unreadable ciphertext us
 
 - **High Speed & Low Overhead**: Hardware-accelerated CPU instructions (Intel/AMD AES-NI, ARMv8 Cryptography Extensions) make symmetric ciphers substantially faster than asymmetric operations of comparable security strength.
 - **Key Distribution Problem**: Peer endpoints must securely share key **K** prior to communication. Over an untrusted channel, this is commonly solved with asymmetric key exchange (**[ECDHE]({{ '/topics/key-exchange-derivation/' | relative_url }})**), but it is not the only mechanism — pre-shared keys (PSKs), a trusted key distribution center (KDC, as in Kerberos), or secure out-of-band distribution are also used, particularly where asymmetric infrastructure is unavailable or undesirable.
-- **No Per-Party Non-Repudiation**: Because both parties hold key **K**, either party could have generated a specific MAC tag. Symmetric MACs provide origin authenticity between key holders, but not legal non-repudiation.
+- **No Per-Party Non-Repudiation**: Because both parties hold key **K**, either party could have generated a specific MAC tag. Symmetric MACs provide integrity and authentication by some holder of the shared key, but cannot uniquely attribute one party or provide legal non-repudiation.
 
 ## Block Ciphers vs Stream Ciphers
 
@@ -46,8 +46,8 @@ Symmetric ciphers operate under two distinct mathematical paradigms:
 Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)**, the **Advanced Encryption Standard (AES)** encrypts 128-bit (16-byte) plaintext blocks by loading data into a 4×4 byte state matrix **S** and processing it through repeated transformation rounds:
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/aes-round-operations.svg' | relative_url }}" alt="AES round operations pipeline showing 128-bit state matrix transformed via SubBytes, ShiftRows, MixColumns, and AddRoundKey.">
-  <p class="diagram-caption">AES State Transformation Pipeline: 128-bit plaintext block matrix is transformed through iterative substitution, permutation, mixing, and key XOR rounds to produce ciphertext</p>
+  <img src="{{ '/assets/img/aes-round-operations.svg' | relative_url }}" alt="AES encryption sequence showing an initial AddRoundKey, repeated main rounds containing SubBytes, ShiftRows, MixColumns, and AddRoundKey, and a final round that omits MixColumns.">
+  <p class="diagram-caption">AES encryption sequence: initial key addition, N−1 complete transformation rounds, then a final round without MixColumns</p>
 </div>
 
 ### Detailed Round Execution Steps
@@ -64,24 +64,24 @@ Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)*
 
 | AES Variation | Key Length | Processing Rounds (N) | Total Round Keys Required | Idealized Grover Query Complexity |
 |---|---|---|---|---|
-| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | **~2^64 idealized quantum queries** (Below the recommended 128-bit floor; still listed by NIST as an approved algorithm — see caveats below) |
-| **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | ~2^96 idealized quantum queries |
-| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | **~2^128 idealized quantum queries (Post-Quantum Recommended)** |
+| **AES-128** | 128 bits | 10 rounds | 11 round keys (176 bytes) | ~2^64 ideal sequential queries; not a concrete practical security-strength rating. AES-128 remains NIST's Category 1 comparison baseline. |
+| **AES-192** | 192 bits | 12 rounds | 13 round keys (208 bytes) | ~2^96 ideal sequential queries; concrete cost also depends on the quantum implementation and available resources. |
+| **AES-256** | 256 bits | 14 rounds | 15 round keys (240 bytes) | ~2^128 ideal sequential queries; provides additional margin where a profile, threat model, or long protection lifetime justifies it. |
 
-## Grover's Quantum Algorithm Impact: Why AES-256 is Quantum-Safe
+## Grover's Quantum Algorithm Impact: Query Bounds vs. Practical Strength
 
-A common question in cryptographic engineering is: *"What does it mean that quantum computers halve the effective security bits of symmetric ciphers, and why does AES-256 maintain a 128-bit post-quantum security margin?"*
+A common shorthand says that Grover's algorithm "halves" the security bits of a symmetric key. That describes the exponent in an ideal sequential query model; it is not a concrete estimate of the time, hardware, or fault-tolerant quantum resources needed to attack AES.
 
 ### Classical Brute-Force vs Grover's Quantum Search
 
 1. **Classical Brute-Force Complexity**: To guess a secret key of length **n** bits, a classical computer must test keys one by one. Finding a 128-bit key takes **2^128** operations in the worst case, which is computationally infeasible (**2^128 ≈ 3.4 × 10^38** attempts).
-2. **Grover's Quantum Acceleration**: Grover's algorithm running on a Cryptographically Relevant Quantum Computer (CRQC) performs an unstructured search over a database of **N** possibilities in **O(sqrt(N))** quantum iterations.
+2. **Grover's Quantum Acceleration**: Grover's algorithm running on a Cryptographically Relevant Quantum Computer (CRQC) performs an unstructured search over **N** possibilities in **O(sqrt(N))** sequential oracle queries. Turning those queries into an AES attack additionally requires a reversible AES oracle, sufficient circuit depth, error correction, qubits, and wall-clock time. Parallelization trades hardware against depth and does not preserve the simple one-processor headline unchanged.
 3. **Impact on Symmetric Keys**:
    - Taking the square root of **2^n** key combinations yields **sqrt(2^n) = 2^(n/2)**.
-   - **AES-128**: Grover's algorithm reduces the theoretical search complexity from **2^128** down to **2^64** operations. In practice, Grover's algorithm is inherently sequential — unlike classical brute force, it cannot be efficiently split across many quantum processors without eroding its quadratic speedup — so a real attack against a 2^64 space would still demand an intractable runtime even on a future large-scale quantum computer. NIST continues to list AES-128 among its approved algorithms and uses its classical 128-bit strength as the baseline ("Category 1") for post-quantum security levels; AES-256 is nonetheless the recommended choice for new systems that want the largest available margin.
-   - **AES-256**: Grover's algorithm reduces search complexity from **2^256** down to **2^128** operations. That resulting **2^128** post-Grover search space still requires roughly **3.4 × 10^38** quantum steps — the same order of magnitude as a classical 2^128 brute-force search, and one that remains far beyond any foreseeable computational capability. (Note: 3.4 × 10^38 is the size of a 2^128 space, not a 2^256 space — the *original*, pre-Grover AES-256 keyspace of 2^256 is vastly larger still, at roughly 1.16 × 10^77.)
+   - **AES-128**: The ideal query exponent falls from 128 to 64. This does not make AES-128 equivalent to a practical classical 64-bit primitive. NIST continues to use the work needed to attack AES-128 as its Category 1 PQC comparison baseline because concrete quantum cost includes substantially more than the query count.
+   - **AES-256**: The ideal query exponent falls from 256 to 128. AES-256 therefore supplies a larger asymptotic margin, but even this value is a query bound rather than a promise that a practical attack costs exactly **2^128** ordinary operations.
 
-Deploying **AES-256** preserves a 128-bit security threshold against Grover's algorithm, keeping symmetric AES-256 quantum-resistant without needing to replace the cipher algorithm.
+Select AES key size from the applicable protocol, compliance profile, protection lifetime, and threat model. AES-128 remains an approved and meaningful post-quantum comparison baseline; AES-256 is appropriate when the design needs additional margin and the protocol and implementation support it. Grover's algorithm does not by itself require replacing AES with a different symmetric cipher.
 
 ## Cipher Modes of Operation: ECB vs CBC vs CTR vs GCM
 

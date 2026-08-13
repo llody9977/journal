@@ -61,6 +61,22 @@ Modern L2 scaling rollups (ZK-Rollups) and privacy blockchains use **Zero-Knowle
 1. **zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge)**: Enables a prover to demonstrate to a verifier that a computational statement is true (*e.g., "I know a private key that owns this UTXO and has sufficient balance"*) without revealing any private inputs.
 2. **zk-STARKs (Zero-Knowledge Scalable Transparent Arguments of Knowledge)**: Zero-knowledge proofs relying on hash-based collision-resistant assumptions generally considered post-quantum candidate constructions without requiring a trusted setup ceremony.
 
+## Post-Quantum Migration Is a Consensus and Asset-Lifecycle Change
+
+Most deployed blockchain authorization and consensus signatures — including secp256k1 ECDSA or Schnorr, Ed25519-family signatures, and BLS signatures — rely on discrete-logarithm assumptions that a sufficiently capable fault-tolerant quantum computer running Shor's algorithm would break. Hash-based commitments and STARK-style proofs have different assumptions, but their post-quantum posture does not protect an account or validator that still authorizes actions with a vulnerable classical signature.
+
+Replacing a chain's signature primitive is therefore not a local library upgrade. The change can affect address derivation, transaction and block formats, signature-verification rules, hardware wallets, custody systems, validator keys, bridge contracts, and consensus compatibility. Existing assets also need an authorized migration path before classical verification is disabled; a user who has lost the old key cannot prove ownership merely because the chain added a new algorithm.
+
+A practical migration plan should:
+
+1. Inventory every signature and public-key exposure path, including user accounts, validators, governance, bridges, upgrade keys, and cold-storage formats.
+2. Introduce explicitly algorithm-tagged post-quantum or hybrid credentials with chain-ID and purpose domain separation so new signatures cannot be replayed as old-format transactions or across forks.
+3. Define whether a transition requires both classical and post-quantum signatures, either one during a bounded migration window, or a protocol-specific threshold rule. No one transition pattern is universally safe; the downgrade and key-loss consequences differ.
+4. Give asset holders and validators a tested way to move to new credentials before deprecating the classical rule, including hardware-wallet, recovery, and exchange support.
+5. Treat activation as a consensus and governance event: incompatible verifiers can split the chain, and larger post-quantum keys and signatures can change block size, fee, bandwidth, and verification-cost limits.
+
+NIST's finalized [FIPS 204 ML-DSA](https://csrc.nist.gov/pubs/fips/204/final) and [FIPS 205 SLH-DSA](https://csrc.nist.gov/pubs/fips/205/final) provide standardized signature primitives, but neither standard defines a blockchain migration protocol. Each ledger must specify and test its own encoding, consensus, replay, custody, and activation rules.
+
 ## Blockchain Security Boundaries: What Cryptography Does and Doesn't Cover
 
 It's worth being explicit about where cryptographic guarantees end and other assumptions begin, since blockchain systems are frequently described in ways that blur the two:
@@ -75,7 +91,7 @@ It's worth being explicit about where cryptographic guarantees end and other ass
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Hash-linked blocks make modification evident; the consensus protocol and its honest-participation or safety assumptions make an alternative history costly or unable to finalize. Rewriting thresholds are protocol-specific, and bridges, oracles, and key custody remain outside the base chain's consensus guarantees.</p>
+  <p>Hash-linked blocks make modification evident; the consensus protocol and its honest-participation or safety assumptions make an alternative history costly or unable to finalize. Rewriting thresholds are protocol-specific, and bridges, oracles, key custody, and post-quantum signature migration remain system and governance concerns outside a hash chain's guarantees.</p>
 </div>
 
 ## Primary references
@@ -87,6 +103,8 @@ It's worth being explicit about where cryptographic guarantees end and other ass
 - **Ethereum EIP-155**: *Simple Replay Attack Protection* — [EIP-155 Specification](https://eips.ethereum.org/EIPS/eip-155)
 - **Polkadot Cryptography**: *Schnorrkel sr25519 Signatures over Ristretto25519* — [Polkadot Host Specification](https://spec.polkadot.network/#sect-cryptography)
 - **STARKs Specification**: *Scalable, Transparent, and Post-Quantum Secure Computational Integrity* — [IACR Cryptology ePrint 2018/046](https://eprint.iacr.org/2018/046)
+- **NIST FIPS 204**: *Module-Lattice-Based Digital Signature Standard (ML-DSA)* — [NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final)
+- **NIST FIPS 205**: *Stateless Hash-Based Digital Signature Standard (SLH-DSA)* — [NIST FIPS 205](https://csrc.nist.gov/pubs/fips/205/final)
 - **BLS Signatures Draft**: *BLS Signatures IRTF/CFRG Internet-Draft (Work in Progress — Not an IETF Standard)* — [draft-irtf-cfrg-bls-signature-07](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bls-signature/)
 - **Ethereum Consensus Specs**: *Casper FFG / Gasper Finality Gadget Specification* — [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs)
 - **Tendermint BFT**: *The latest gossip on BFT consensus* (Buchman, Kwon, Milosevic) — [arXiv:1807.04938](https://arxiv.org/abs/1807.04938)

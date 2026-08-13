@@ -62,7 +62,7 @@ For example, **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html
 </div>
 
 1. **Authentication**: In the certificate-authenticated case shown here, the server proves ownership of a public key bound to a domain via an X.509 Certificate issued by a trusted CA.
-2. **Ephemeral Key Agreement**: Peer endpoints execute **X25519 / ECDHE** (or the hybrid **X25519MLKEM768** group defined in [RFC 10024](https://www.rfc-editor.org/rfc/rfc10024.html), a separate specification from the base TLS 1.3 RFC) to derive a transient shared secret without transmitting private keys.
+2. **Ephemeral Key Establishment**: Peer endpoints use an ephemeral group such as **X25519** or the hybrid **X25519MLKEM768** group defined in [RFC 10024](https://www.rfc-editor.org/rfc/rfc10024.html), a separate specification from the base TLS 1.3 RFC. X25519 combines two Diffie-Hellman contributions; X25519MLKEM768 combines an X25519 result with an ML-KEM shared secret before the TLS key schedule derives traffic secrets. Neither construction transmits a private key or a pre-existing traffic key.
 3. **AEAD Bulk Encryption**: TLS 1.3 requires implementations to support **AES-128-GCM** (mandatory-to-implement) and commonly negotiates **AES-256-GCM** or **ChaCha20-Poly1305**; the standard also defines **AES-CCM** cipher suites for constrained environments ([RFC 9846 §9.1](https://www.rfc-editor.org/rfc/rfc9846.html#section-9.1)), so "GCM or ChaCha20-Poly1305" describes the common case, not every valid TLS 1.3 negotiation.
 
 ## Cryptographic Randomness: Pseudo-Random Number Generators (PRNG) vs. Cryptographically Secure PRNGs (CSPRNG)

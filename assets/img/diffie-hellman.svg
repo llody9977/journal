@@ -28,7 +28,7 @@
   <text x="75" y="348" font-size="13.5" font-weight="800" fill="#1e40af">S = B<tspan baseline-shift="super" font-size="70%">a</tspan> mod p = (g<tspan baseline-shift="super" font-size="70%">b</tspan>)<tspan baseline-shift="super" font-size="70%">a</tspan> mod p = g<tspan baseline-shift="super" font-size="70%">ab</tspan> mod p</text>
   <line x1="75" y1="360" x2="495" y2="360" stroke="#bfdbfe" stroke-width="1"/>
   <text x="75" y="382" font-size="12" font-weight="700" fill="#16a34a">Result: Shared Secret S derived in Alice's RAM</text>
-  <text x="75" y="402" font-size="11" fill="#475569">Passed through HKDF to derive AES-256 session traffic keys</text>
+  <text x="75" y="402" font-size="11" fill="#475569">Passed through a protocol KDF to derive traffic keys and IVs</text>
 
   <!-- Central Network Transmission Channel (x=530 to 670) -->
   <!-- Public Key A Arrow (Alice -> Bob) -->

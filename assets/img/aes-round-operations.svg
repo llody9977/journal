@@ -1,42 +1,52 @@
-<svg viewBox="0 0 1200 265" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
-  <rect width="1200" height="265" fill="#ffffff"/>
+<svg viewBox="0 0 1200 370" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="aes-title aes-desc">
+  <title id="aes-title">AES encryption round sequence</title>
+  <desc id="aes-desc">AES begins with AddRoundKey, executes N minus one main rounds containing SubBytes, ShiftRows, MixColumns, and AddRoundKey, then executes a final round containing SubBytes, ShiftRows, and AddRoundKey without MixColumns.</desc>
+  <rect width="1200" height="370" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
       <path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/>
     </marker>
   </defs>
 
-  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">AES State Matrix Round Transformation Operations</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Four internal algebraic operations executed iteratively across 10 (128-bit), 12 (192-bit), or 14 (256-bit) rounds</text>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">AES Encryption Round Sequence</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Nr = 10, 12, or 14 rounds for 128-, 192-, or 256-bit keys; the initial and final stages are structurally different</text>
 
-  <!-- 4 Round Steps -->
-  <rect x="50" y="115" width="234" height="125" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <text x="65" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">STEP 1: SUBBYTES</text>
-  <text x="65" y="165" font-size="14" font-weight="800" fill="#0f172a">Non-linear S-Box</text>
-  <text x="65" y="186" font-size="11.5" fill="#475569">• 8-bit lookup substitution</text>
-  <text x="65" y="204" font-size="11.5" fill="#475569">• Resists differential attacks</text>
+  <rect x="50" y="120" width="245" height="180" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="70" y="148" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">INITIAL TRANSFORMATION</text>
+  <text x="70" y="180" font-size="17" font-weight="800" fill="#0f172a">AddRoundKey</text>
+  <text x="70" y="207" font-size="12" fill="#475569">State ⊕ round key K₀</text>
+  <text x="70" y="232" font-size="12" fill="#475569">Occurs before round 1</text>
+  <rect x="70" y="252" width="205" height="30" rx="6" fill="#dbeafe"/>
+  <text x="172" y="272" font-size="11.5" font-weight="800" fill="#1e40af" text-anchor="middle">No SubBytes or MixColumns</text>
 
-  <path d="M 292 177 L 331 177" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <path d="M305 210 L345 210" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
 
-  <rect x="339" y="115" width="234" height="125" rx="10" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
-  <text x="354" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">STEP 2: SHIFTROWS</text>
-  <text x="354" y="165" font-size="14" font-weight="800" fill="#0f766e">Cyclic Byte Shift</text>
-  <text x="354" y="186" font-size="11.5" fill="#475569">• Row-wise state rotation</text>
-  <text x="354" y="204" font-size="11.5" fill="#475569">• Diffuses byte positions</text>
+  <rect x="355" y="105" width="490" height="210" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="375" y="133" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">MAIN ROUNDS 1 THROUGH Nr−1</text>
+  <text x="375" y="164" font-size="16" font-weight="800" fill="#0f172a">Repeat all four transformations</text>
+  <rect x="375" y="186" width="100" height="74" rx="8" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="425" y="216" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">SubBytes</text>
+  <text x="425" y="238" font-size="10.5" fill="#475569" text-anchor="middle">S-box</text>
+  <rect x="490" y="186" width="100" height="74" rx="8" fill="#ffffff" stroke="#5eead4"/>
+  <text x="540" y="216" font-size="12" font-weight="800" fill="#0f766e" text-anchor="middle">ShiftRows</text>
+  <text x="540" y="238" font-size="10.5" fill="#475569" text-anchor="middle">Permute</text>
+  <rect x="605" y="186" width="100" height="74" rx="8" fill="#ffffff" stroke="#fcd34d"/>
+  <text x="655" y="216" font-size="12" font-weight="800" fill="#92400e" text-anchor="middle">MixColumns</text>
+  <text x="655" y="238" font-size="10.5" fill="#475569" text-anchor="middle">Mix</text>
+  <rect x="720" y="186" width="105" height="74" rx="8" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="772" y="216" font-size="12" font-weight="800" fill="#5b21b6" text-anchor="middle">AddRoundKey</text>
+  <text x="772" y="238" font-size="10.5" fill="#475569" text-anchor="middle">State ⊕ Kᵢ</text>
+  <text x="600" y="291" font-size="11.5" font-weight="700" fill="#0f766e" text-anchor="middle">MixColumns is present in every main round</text>
 
-  <path d="M 581 177 L 620 177" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <path d="M855 210 L895 210" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
 
-  <rect x="628" y="115" width="234" height="125" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
-  <text x="643" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">STEP 3: MIXCOLUMNS</text>
-  <text x="643" y="165" font-size="14" font-weight="800" fill="#b45309">Matrix Multiplication</text>
-  <text x="643" y="186" font-size="11.5" fill="#475569">• Galois Field GF(2^8) math</text>
-  <text x="643" y="204" font-size="11.5" fill="#475569">• Spreads bit diffusion</text>
+  <rect x="905" y="120" width="245" height="180" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="925" y="148" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">FINAL ROUND Nr</text>
+  <text x="925" y="178" font-size="13" font-weight="800" fill="#0f172a">1. SubBytes</text>
+  <text x="925" y="203" font-size="13" font-weight="800" fill="#0f172a">2. ShiftRows</text>
+  <text x="925" y="228" font-size="13" font-weight="800" fill="#0f172a">3. AddRoundKey</text>
+  <rect x="925" y="250" width="205" height="32" rx="6" fill="#ede9fe"/>
+  <text x="1027" y="271" font-size="11.5" font-weight="900" fill="#6d28d9" text-anchor="middle">MixColumns omitted</text>
 
-  <path d="M 870 177 L 909 177" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
-
-  <rect x="916" y="115" width="234" height="125" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
-  <text x="931" y="140" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">STEP 4: ADDROUNDKEY</text>
-  <text x="931" y="165" font-size="14" font-weight="800" fill="#5b21b6">XOR Round Key</text>
-  <text x="931" y="186" font-size="11.5" fill="#475569">• State ⊕ Expanded Key</text>
-  <text x="931" y="204" font-size="11.5" fill="#475569">• Key injection phase</text>
+  <text x="600" y="345" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">FIPS 197 sequencing: initial key addition → Nr−1 complete rounds → final round without MixColumns</text>
 </svg>

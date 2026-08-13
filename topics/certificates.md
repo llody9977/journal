@@ -160,8 +160,8 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 Managing short-lived certificates at scale requires automated enrollment via the **Automated Certificate Management Environment (ACME / [RFC 8555](https://www.rfc-editor.org/rfc/rfc8555))** protocol:
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/certificate-lifecycle.svg' | relative_url }}?v=2" alt="Automated ACME certificate issuance lifecycle showing CSR submission, DV challenge validation, CA issuance, and ARI renewal.">
-  <p class="diagram-caption">Automated ACME certificate lifecycle: domain challenge verification, CSR signing, and automated renewal</p>
+  <img src="{{ '/assets/img/certificate-lifecycle.svg' | relative_url }}?v=3" alt="Automated ACME certificate lifecycle showing CSR submission, domain-control validation, CA issuance, ARI-guided renewal, and a separate best-effort emergency revocation path whose client behavior varies.">
+  <p class="diagram-caption">Automated ACME lifecycle: domain validation, issuance, renewal, and a layered revocation path whose coverage, freshness, and failure behavior depend on the relying party</p>
 </div>
 
 ### Certificate Lifetime Shrinkage Timeline

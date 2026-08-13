@@ -139,7 +139,7 @@ var SparkMD5 = (function(undefined){"use strict";var add32=function(a,b){return 
           <div class="security-layer-label">Cryptanalytic Collision Verified</div>
           <div>
             <strong>&#128680; MD5 HASH COLLISION CONFIRMED!</strong>
-            <p style="margin-bottom:0;">Both GIF files yield the <strong>identical MD5 digest</strong> (<code>${md51}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. Integrity checks relying on MD5 are vulnerable to silent file substitution.</p>
+            <p style="margin-bottom:0;">Both jointly crafted GIF files yield the <strong>identical MD5 digest</strong> (<code>${md51}</code>), but binary comparison proves they differ starting at <strong>byte offset ${diffOffset}</strong>. If one member of this prepared collision pair was accepted initially, the other can replace it without changing an MD5-only check. This does not demonstrate arbitrary substitution for a fixed, pre-existing file or digest.</p>
           </div>
         </div>`;
       } else {
@@ -167,7 +167,7 @@ var SparkMD5 = (function(undefined){"use strict";var add32=function(a,b){return 
 
 
 
-If an integrity check relies solely on MD5 to verify file authenticity, an adversary can substitute `md5-collision-2.gif` for `md5-collision-1.gif` without triggering hash validation errors.
+If an integrity check accepts `md5-collision-1.gif` and records only its MD5 digest, `md5-collision-2.gif` can replace it without changing that digest because the two files were deliberately constructed as a collision pair. The required attacker state matters: this demonstrates substitution when the attacker can prepare or influence both candidate inputs, not arbitrary replacement of a fixed, pre-existing file. MD5 must not protect adversary-influenced integrity or authenticity workflows, but collision resistance and second-preimage resistance remain different search problems.
 
 ## 2. SHA-1 Collisions: The SHAttered Attack Strategy
 

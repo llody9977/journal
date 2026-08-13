@@ -39,6 +39,6 @@
   <text x="960" y="152" font-size="11" font-weight="900" letter-spacing="1" fill="#ccfbf1" text-anchor="middle">3. FINAL RESULT</text>
   <text x="960" y="176" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">HMAC-SHA256 Tag</text>
   <line x1="830" y1="188" x2="1090" y2="188" stroke="#5eead4" stroke-width="1"/>
-  <text x="960" y="208" font-size="11" fill="#ccfbf1" text-anchor="middle">Prevents Length Extension</text>
-  <text x="960" y="226" font-size="11" fill="#ccfbf1" text-anchor="middle">&amp; Authenticates Origin (Keyed)</text>
+  <text x="960" y="208" font-size="11" fill="#ccfbf1" text-anchor="middle">Integrity + Shared-Key Authentication</text>
+  <text x="960" y="226" font-size="11" fill="#ccfbf1" text-anchor="middle">Valid Tag: Some Holder of K</text>
 </svg>

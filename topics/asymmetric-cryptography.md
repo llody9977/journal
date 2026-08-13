@@ -1,5 +1,5 @@
 ---
-title: Asymmetric Cryptography & Public-Key Infrastructure
+title: Asymmetric Cryptography
 description: Core principles of asymmetric key pairs, HPKE, RSA vs ECC comparison, Ed25519 signatures, and an interactive RSA-OAEP/RSA-PSS playground showing why private keys aren't used to encrypt data.
 permalink: /topics/asymmetric-cryptography/
 last_verified: 2026-08-13
@@ -7,9 +7,9 @@ last_verified: 2026-08-13
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
-# Asymmetric Cryptography & Public-Key Infrastructure
+# Asymmetric Cryptography
 
-<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives enable public-key distribution without a pre-shared secret channel and establish ephemeral keys for transport security — but distribution alone does not establish whose key it is; that requires an authenticated binding, such as a CA-issued certificate or an out-of-band fingerprint check. A digital signature validates under a public key for specific data, while attribution to a signer additionally depends on that binding and evidence that the private key was not shared, delegated, or compromised.</p>
+<p class="lede">Asymmetric cryptography uses mathematically linked pairs of keys: a Public Key that can be shared freely with any endpoint, and a Private Key that must be kept secret by its owner. Asymmetric primitives enable public-key distribution without a pre-shared secret channel and establish ephemeral keys for transport security — but distribution alone does not establish whose key it is; that requires an authenticated binding, such as a CA-issued certificate or an out-of-band fingerprint check. The <a href="{{ '/topics/certificates/' | relative_url }}">Certificates</a> page covers the broader Public Key Infrastructure (PKI) trust, validation, issuance, renewal, and revocation lifecycle. A digital signature validates under a public key for specific data, while attribution to a signer additionally depends on that binding and evidence that the private key was not shared, delegated, or compromised.</p>
 
 ## Asymmetric Paradigm: Linked Key Pairs
 
@@ -58,14 +58,14 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
     <div class="demo-form-group">
       <label>1. Browser Asymmetric Key Pair Management:</label>
       <div class="demo-actions" style="margin: 0.5rem 0;">
-        <button id="btn-gen-rsa-keys" class="btn-primary" type="button">🔑 Generate Real 2048-bit RSA Keypair</button>
+        <button id="btn-gen-rsa-keys" class="btn-primary" type="button">🔑 Generate Two Real 2048-bit RSA Keypairs</button>
       </div>
       <small class="demo-help" id="rsa-key-status">Status: Keys generated on page load via Web Crypto API.</small>
     </div>
 
     <!-- Public / Private Key Display -->
     <div class="demo-form-group">
-      <label>Generated Public &amp; Private Keys (PEM Format):</label>
+      <label>Generated RSA-OAEP Encryption Keys (PEM Format):</label>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
         <div>
           <label for="rsa-pub-pem"><small><strong>Recipient Public Key (Shareable):</strong></small></label>
@@ -76,6 +76,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
           <textarea id="rsa-priv-pem" rows="4" class="demo-textarea" readonly style="font-size: 0.72rem; cursor: default;"></textarea>
         </div>
       </div>
+      <small class="demo-help">The displayed PEM values belong to the RSA-OAEP encryption keypair. The demo separately generates an RSA-PSS signing keypair for the signature controls; that signing public key is not displayed here.</small>
     </div>
 
     <!-- 2. Asymmetric Encryption Section -->
@@ -97,7 +98,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
     <!-- 3. Digital Signature Section -->
     <div class="demo-form-group">
       <label>3. Digital Signature &amp; Integrity Verification:</label>
-      <p style="font-size: 0.85rem; color: var(--muted); margin: 0.25rem 0 0.75rem;">Proving that signing locks a hash digest tag, leaving the original payload file 100% unencrypted in cleartext.</p>
+      <p style="font-size: 0.85rem; color: var(--muted); margin: 0.25rem 0 0.75rem;">Demonstrating that signing produces a verification value without encrypting the original payload.</p>
       <div class="demo-actions" style="margin-bottom: 0.5rem;">
         <button id="btn-rsa-sign" class="btn-primary" type="button">✍️ Sign Payload with Private Key</button>
         <button id="btn-rsa-verify" class="btn-secondary" type="button">✔ Verify Signature with Public Key</button>
@@ -157,7 +158,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
 
   async function generateRSAKeys() {
     try {
-      keyStatus.innerHTML = '<span style="color: var(--amber); font-weight: 600;">⏳ Generating 2048-bit RSA keys...</span>';
+      keyStatus.innerHTML = '<span style="color: var(--amber); font-weight: 600;">⏳ Generating separate 2048-bit RSA-OAEP and RSA-PSS keypairs...</span>';
 
       // 1. RSA-OAEP Keys for Encryption
       encKeyPair = await window.crypto.subtle.generateKey(
@@ -193,7 +194,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
       const privB64 = arrayBufferToBase64(privPkcs8);
       privPemText.value = formatPEM(privB64, "PRIVATE KEY");
 
-      keyStatus.innerHTML = '<span style="color: #15803d; font-weight: 600;">✔ 2048-bit RSA Keypair Generated Successfully!</span>';
+      keyStatus.innerHTML = '<span style="color: #15803d; font-weight: 600;">✔ RSA-OAEP encryption and RSA-PSS signing keypairs generated successfully!</span>';
     } catch (err) {
       keyStatus.innerHTML = `<span style="color: #b91c1c;">Key Generation Error: ${escapeHtml(err.message || String(err))}</span>`;
     }
@@ -362,7 +363,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
           <div class="security-layer-label">Signature Verification Successful</div>
           <div>
             <strong>✔ Signature Verified OK!</strong>
-            <p style="margin-bottom:0;">The signature validates for this message under the displayed public key. This demonstrates signature and payload verification within this in-page key pair; it does not prove real-world identity or exclusive private-key custody.</p>
+            <p style="margin-bottom:0;">The signature validates for this message under the demo's generated RSA-PSS signing public key. The displayed PEM above belongs to the separate RSA-OAEP encryption keypair. This demonstrates signature and payload verification within the demo; it does not prove real-world identity or exclusive private-key custody.</p>
           </div>
         </div>`;
       } else {
@@ -390,7 +391,7 @@ A **Private Key is used for Digital Signing** (and for decrypting incoming data 
   btnSign.addEventListener('click', handleSign);
   btnVerify.addEventListener('click', handleVerify);
 
-  // Generate initial keypair on load
+  // Generate the initial encryption and signing keypairs on load
   generateRSAKeys();
 })();
 </script>
@@ -416,7 +417,7 @@ To achieve a given **Symmetric Security Strength** (measured in bits of brute-fo
 1. **Security Strength Scaling**: The chart compares the required key lengths in bits to achieve equivalent NIST symmetric security levels.
 2. **Sub-Exponential Attacks on RSA**: General Number Field Sieve (GNFS) algorithms allow attackers to factor RSA primes faster than pure brute-force. GNFS runs in **sub-exponential time** — faster than exponential, but slower than any polynomial — so counteracting it requires RSA key sizes to grow sub-exponentially with the target security level (2,048 bits → 3,072 bits → 7,680 bits → 15,360 bits). This growth is not literally "exponential," but it is still far steeper than ECC's scaling.
 3. **Linear Scaling of ECC**: For appropriately selected curves such as those in [NIST SP 800-186](https://csrc.nist.gov/pubs/sp/800/186/final), there is no known general-purpose classical sub-exponential attack against Elliptic Curve Discrete Logarithms (ECDLP) — the best known generic attack (Pollard's rho) costs roughly 2<sup>n/2</sup> for an n-bit curve group, so security strength scales roughly linearly with curve size, at about half the curve's bit length. This reflects the current state of cryptanalysis, not a proof that no future or curve-specific algorithm exists. It is the mental model behind the table above (224 → 256 → 384 → 521 bits); the specific NIST-approved curve sizes are discrete parameter choices dictated by [NIST SP 800-57 Part 1 Rev. 5](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)'s strength ranges, not an exact doubling sequence.
-4. **Engineering Consequence**: At 192-bit security, RSA requires a towering **7,680-bit key** (a 2.5x spike from 3,072 bits!), rendering RSA handshakes extremely slow and CPU-intensive compared to a compact **384-bit ECC key**.
+4. **Engineering Consequence**: At 192-bit security, RSA requires a **7,680-bit key**, compared with a compact **384-bit ECC key**. Large RSA private-key operations such as signing or decryption therefore incur substantially more CPU and bandwidth overhead than the corresponding ECC operations; the exact difference depends on the operation, implementation, and hardware.
 
 ### Why Ed25519 (EdDSA) is Preferred for Modern Applications
 

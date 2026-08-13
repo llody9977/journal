@@ -371,6 +371,340 @@
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0009",
+      "title": "Treat Grover exponents as ideal query bounds rather than concrete security-strength ratings",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/symmetric-cryptography.md",
+          "topics/symmetric-vs-asymmetric.md",
+          "topics/post-quantum-cryptography.md",
+          "topics/recommended-algorithms.md",
+          "assets/img/quantum-algorithm-impact.svg"
+        ],
+        "concepts": [
+          "Grover query complexity",
+          "concrete quantum security strength",
+          "AES-128 Category 1",
+          "AES-256 post-quantum margin",
+          "symmetric key doubling"
+        ]
+      },
+      "originating_feedback": "The Section 2 review found that several pages and the shared quantum diagram converted Grover's ideal 2^(n/2) sequential query exponent into a concrete security-strength rating and a universal requirement to double symmetric key sizes.",
+      "decision": "Present 2^(n/2) as an ideal sequential query bound and separately explain the implementation resources that determine concrete attack cost. Retain AES-128 as NIST's Category 1 comparison baseline and frame AES-256 as additional profile- and risk-dependent margin.",
+      "rationale": "A query exponent does not account for reversible-oracle cost, circuit depth, error correction, parallelization, qubit count, or wall-clock time. Calling AES-128 a practical 64-bit primitive contradicts NIST's PQC comparison model and overstates what the asymptotic result proves.",
+      "authoritative_sources": [
+        {
+          "title": "NIST PQC Security Evaluation Criteria",
+          "url": "https://csrc.nist.gov/Projects/Post-Quantum-Cryptography/Post-Quantum-Cryptography-Standardization/Evaluation-Criteria/Security-%28Evaluation-Criteria%29",
+          "supports": "NIST defines Category 1 relative to the resources required to attack AES-128 and cautions that concrete quantum security is more nuanced than simple asymptotic estimates."
+        }
+      ],
+      "verification_methods": [
+        "Compare every Grover repetition in prose, tables, captions, alt text, and the shared SVG.",
+        "Confirm that key-size recommendations remain scoped to protocol, profile, threat model, and protection lifetime."
+      ],
+      "approved_outcome": "Grover is described as an ideal sequential query bound, AES-128 remains the Category 1 comparison baseline, and AES-256 is additional margin rather than a universal doubling mandate.",
+      "invalidation_conditions": [
+        "NIST changes its PQC security-category comparison model or publishes a superseding concrete symmetric-key requirement.",
+        "A page adopts a specific quantum architecture and resource model that supports a narrower concrete estimate.",
+        "New primary cryptanalytic evidence materially changes the best-known attack model."
+      ],
+      "related_decisions": ["CD-0014"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0010",
+      "title": "Keep key agreement, transport, KEM encapsulation, and traffic-key derivation distinct",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cryptography-overview.md",
+          "topics/asymmetric-cryptography.md",
+          "topics/symmetric-vs-asymmetric.md",
+          "topics/post-quantum-cryptography.md",
+          "topics/key-exchange-derivation.md",
+          "topics/tls-ssl-handshake.md",
+          "assets/img/diffie-hellman.svg",
+          "assets/img/tls-cryptography-layers.svg",
+          "assets/img/tls-handshake.svg"
+        ],
+        "concepts": [
+          "key establishment taxonomy",
+          "ML-KEM encapsulation",
+          "Diffie-Hellman agreement",
+          "key transport",
+          "TLS traffic-key derivation",
+          "X25519MLKEM768"
+        ]
+      },
+      "originating_feedback": "The Section 2 review found repeated wording that described DH or ML-KEM as wrapping, distributing, or directly producing a pre-existing AES key and diagrams that rendered the hybrid TLS group as pure Diffie-Hellman.",
+      "decision": "State who contributes or creates the shared secret for each mechanism, identify what crosses the wire, and show that a protocol KDF derives traffic secrets, keys, and IVs from key-establishment output. Draw X25519MLKEM768 using its actual ML-KEM and X25519 share components.",
+      "rationale": "Agreement, transport, and encapsulation have different message flows, compromise consequences, and forward-secrecy properties. TLS negotiates an AEAD and derives its traffic keys; it does not distribute a pre-existing AES-256 key.",
+      "authoritative_sources": [
+        {
+          "title": "FIPS 203",
+          "url": "https://csrc.nist.gov/pubs/fips/203/final",
+          "supports": "ML-KEM encapsulation outputs a shared secret and ciphertext; decapsulation recovers the shared secret."
+        },
+        {
+          "title": "RFC 9846",
+          "url": "https://www.rfc-editor.org/rfc/rfc9846.html",
+          "supports": "TLS 1.3 defines the handshake modes and HKDF key schedule that derive traffic secrets and keys."
+        },
+        {
+          "title": "RFC 10024",
+          "url": "https://www.rfc-editor.org/rfc/rfc10024.html",
+          "supports": "X25519MLKEM768 concatenates an ML-KEM encapsulation key or ciphertext with an X25519 share in the client and server key shares."
+        }
+      ],
+      "verification_methods": [
+        "Trace the inputs, outputs, and transmitted values for each mechanism across every affected page and diagram.",
+        "Exercise the RSA, ECDH, and TLS-related demonstrations and compare their displayed explanations with the actual code paths."
+      ],
+      "approved_outcome": "Agreement and KEM output shared secret material, transport protects a sender-selected key, and protocol KDFs derive negotiated traffic keys and IVs; hybrid TLS visuals show both ML-KEM and X25519 components.",
+      "invalidation_conditions": [
+        "A page narrows to a construction that explicitly wraps a caller-supplied key and labels that construction precisely.",
+        "TLS or ML-KEM is superseded by a specification with materially different message flow or key-schedule semantics.",
+        "A clearer taxonomy preserves the same actors, transmitted values, and compromise boundaries."
+      ],
+      "related_decisions": ["CD-0009", "CD-0014"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0011",
+      "title": "Attribute an HMAC tag to some holder of the shared key, not a unique origin",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/hash-functions-macs.md",
+          "assets/img/hmac-flow.svg"
+        ],
+        "concepts": [
+          "HMAC origin authentication",
+          "shared-key attribution",
+          "HMAC non-repudiation",
+          "holder of key K"
+        ]
+      },
+      "originating_feedback": "The HMAC diagram said that the tag authenticates origin even though the prose correctly explained that either shared-key holder can generate it.",
+      "decision": "Describe HMAC as providing integrity and shared-key authentication and state that a valid tag came from some holder of K. Do not use the diagram to imply unique-sender attribution or non-repudiation.",
+      "rationale": "A symmetric verifier also possesses the key needed to create valid tags, so the tag cannot distinguish sender from verifier without an additional trust and key-distribution boundary.",
+      "authoritative_sources": [
+        {
+          "title": "RFC 2104",
+          "url": "https://www.rfc-editor.org/rfc/rfc2104.html",
+          "supports": "HMAC is a shared-secret message-authentication construction."
+        }
+      ],
+      "verification_methods": [
+        "Compare the lede, HMAC body, diagram, caption, alt text, demonstration labels, and summary for the same attribution boundary."
+      ],
+      "approved_outcome": "All representations say that HMAC authenticates some holder of the shared key and does not uniquely attribute one party.",
+      "invalidation_conditions": [
+        "The page narrows to a deployment where only one principal can generate tags and the verifier is implemented in a separately trusted verification service.",
+        "The mechanism changes from a shared-key MAC to a digital-signature construction.",
+        "A clearer phrase preserves the same shared-key attribution boundary."
+      ],
+      "related_decisions": ["CD-0003"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0012",
+      "title": "State the jointly crafted-input prerequisite for collision substitution demonstrations",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/hash-collisions-length-extension.md"
+        ],
+        "concepts": [
+          "MD5 collision substitution",
+          "jointly crafted inputs",
+          "second-preimage resistance",
+          "collision attacker state"
+        ]
+      },
+      "originating_feedback": "The MD5 demo generalized from one prepared collision pair to silent substitution without identifying that the attacker must prepare or influence both candidate inputs.",
+      "decision": "Preserve the fact that the bundled collision pair can substitute for itself after one member is accepted, while explicitly stating that the demonstration does not find a replacement for an arbitrary fixed file or digest.",
+      "rationale": "Collision resistance asks for any two colliding inputs; second-preimage resistance fixes one input first. Collapsing those attacker states overstates what the executable pair proves.",
+      "authoritative_sources": [
+        {
+          "title": "NIST Collision Resistance Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/collision_resistance",
+          "supports": "Collision resistance concerns finding any two distinct inputs with the same hash."
+        }
+      ],
+      "verification_methods": [
+        "Verify the bundled files are distinct, have the same MD5 digest, and differ under SHA-256.",
+        "Compare every displayed demo result and explanatory paragraph with the collision and second-preimage attacker states."
+      ],
+      "approved_outcome": "The demo proves substitution within a prepared pair and explicitly disclaims arbitrary substitution for a pre-existing target.",
+      "invalidation_conditions": [
+        "The page adds a genuine second-preimage or chosen-target demonstration and distinguishes its stronger result.",
+        "The bundled assets or demonstrated property changes.",
+        "A clearer attacker-state explanation preserves the same boundary."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0013",
+      "title": "Scope CNSA 2.0 to NSS and keep P-384 in the CNSA 1.0 transition",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/recommended-algorithms.md",
+          "topics/post-quantum-cryptography.md"
+        ],
+        "concepts": [
+          "CNSA 2.0 applicability",
+          "National Security Systems",
+          "P-384 CNSA 1.0",
+          "ML-KEM-1024 crosswalk",
+          "ML-DSA-87 crosswalk",
+          "CNSA transition dates"
+        ]
+      },
+      "originating_feedback": "The standards page promised CNSA 2.0 coverage without providing it and incorrectly described P-384 as a CNSA 2.0 requirement; the PQC page also attributed advisory dates to CSfC capability packages without separate evidence.",
+      "decision": "Add a dedicated NSS-only CNSA 2.0 comparison, retain the advisory's 2022 Kyber and Dilithium names alongside an explicit final-NIST crosswalk, and label P-384 as a classical CNSA 1.0 transition algorithm rather than the CNSA 2.0 end state.",
+      "rationale": "CNSA 2.0 is an NSS transition profile, not a general federal or FedRAMP rule. The advisory predates the final NIST algorithm names and its post-quantum end state is conceptually different from the classical CNSA 1.0 curve profile.",
+      "authoritative_sources": [
+        {
+          "title": "NSA CNSA 2.0 Cybersecurity Advisory",
+          "url": "https://media.defense.gov/2025/May/30/2003728741/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS.PDF",
+          "supports": "The advisory defines NSS scope, the CNSA 2.0 algorithm suite, classical transition context, and 2030 or 2033 timelines."
+        }
+      ],
+      "verification_methods": [
+        "Compare every CNSA and P-384 statement with the advisory tables and timeline.",
+        "Confirm that FedRAMP and ordinary federal scope are not conflated with NSS."
+      ],
+      "approved_outcome": "The journal contains an NSS-scoped CNSA 2.0 section, an explicit old-to-final algorithm-name crosswalk, correct timelines, and no claim that P-384 is the CNSA 2.0 end-state curve.",
+      "invalidation_conditions": [
+        "NSA publishes a superseding CNSA advisory with different scope, names, algorithms, or deadlines.",
+        "The page narrows to CNSA 1.0 and removes the CNSA 2.0 comparison promise.",
+        "Current primary evidence changes the relationship between the transition and end-state suites."
+      ],
+      "related_decisions": ["CD-0009", "CD-0010"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0014",
+      "title": "Treat blockchain post-quantum migration as a consensus and asset-lifecycle change",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/blockchain-cryptography.md"
+        ],
+        "concepts": [
+          "blockchain post-quantum migration",
+          "signature algorithm transition",
+          "consensus compatibility",
+          "asset migration",
+          "hybrid signatures",
+          "replay protection"
+        ]
+      },
+      "originating_feedback": "The optional Section 2 gap noted that the blockchain page identified post-quantum STARK assumptions without explaining how Shor-vulnerable account and validator signatures can be migrated safely.",
+      "decision": "Include a concise migration section that covers affected signature roles, address and format changes, asset movement, replay and domain separation, hybrid or dual-signature policy choices, performance limits, and consensus activation without selecting one universal migration scheme.",
+      "rationale": "Replacing a ledger signature changes the validation rules shared by every node and can strand assets whose owners cannot authorize migration. A primitive standard alone does not define the chain's encoding, activation, custody, or fork behavior.",
+      "authoritative_sources": [
+        {
+          "title": "FIPS 204",
+          "url": "https://csrc.nist.gov/pubs/fips/204/final",
+          "supports": "ML-DSA is a finalized post-quantum digital-signature primitive."
+        },
+        {
+          "title": "FIPS 205",
+          "url": "https://csrc.nist.gov/pubs/fips/205/final",
+          "supports": "SLH-DSA is a finalized stateless hash-based digital-signature primitive."
+        }
+      ],
+      "verification_methods": [
+        "Compare the migration section with the page's existing signature, replay, consensus, custody, and key-recovery boundaries.",
+        "Verify that no specific chain migration pattern is mislabeled as a NIST requirement or universal standard."
+      ],
+      "approved_outcome": "The page explains why post-quantum signature adoption is a chain-wide consensus and asset-lifecycle migration, lists the main transition decisions, and leaves protocol-specific choices explicit.",
+      "invalidation_conditions": [
+        "A governing blockchain protocol standardizes a complete migration that the page explicitly narrows itself to.",
+        "NIST signature standards or the chain's active signature assumptions materially change.",
+        "The page scope changes to exclude protocol migration and links clearly to equivalent coverage elsewhere."
+      ],
+      "related_decisions": ["CD-0009", "CD-0010"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0015",
+      "title": "Keep reviewed SVG assets canonical and retire one-time rewrite utilities",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/generate-journal-diagrams.mjs",
+          "scripts/legacy/fix_remaining_box_gaps.py",
+          "scripts/legacy/standardize_sec2_svgs.py",
+          "scripts/legacy/eliminate_box_whitespace.py"
+        ],
+        "concepts": [
+          "canonical SVG source",
+          "diagram generator determinism",
+          "one-time SVG rewrite scripts",
+          "generated asset drift"
+        ]
+      },
+      "originating_feedback": "Section 2 diagram corrections exposed three obsolete one-time Python utilities that still contained stale embedded SVGs and could overwrite the reviewed canonical assets if executed.",
+      "decision": "Keep assets/img SVGs as the canonical reviewed sources exported by generate-journal-diagrams.mjs, move obsolete rewrite utilities under scripts/legacy, and make each retired utility refuse execution before reaching its preserved historical body.",
+      "rationale": "Maintaining independent executable SVG definitions recreates the drift that the canonical exporter was designed to prevent. Preserving the old bodies under a hard guard retains history without allowing accidental destructive regeneration.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Run the canonical exporter twice into clean directories and compare hashes.",
+        "Execute each retired utility and confirm it exits before writing any file.",
+        "Search active scripts for stale managed SVG definitions."
+      ],
+      "approved_outcome": "Only the canonical exporter remains active for journal SVGs; the three historical rewrite utilities live in scripts/legacy and terminate without modifying the repository.",
+      "invalidation_conditions": [
+        "The repository adopts one validated declarative diagram source that deterministically regenerates the canonical SVGs without semantic drift.",
+        "The legacy files are removed under an approved repository-retention policy.",
+        "A replacement generator passes full byte, accessibility, and rendered-output validation."
+      ],
+      "related_decisions": ["CD-0004", "CD-0008"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }

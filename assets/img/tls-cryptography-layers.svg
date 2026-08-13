@@ -26,7 +26,7 @@
       <rect x="80" y="289" width="1040" height="115" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
       <text x="105" y="320" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">KEY ESTABLISHMENT</text>
       <text x="105" y="354" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Derive fresh traffic secrets</text>
-      <text x="105" y="394" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Ephemeral Diffie-Hellman and HKDF establish keys without sending them directly.</text>
+      <text x="105" y="394" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">An ephemeral DH or hybrid ECDHE+ML-KEM result feeds HKDF; traffic keys are not sent directly.</text>
     </g>
 
     <g>

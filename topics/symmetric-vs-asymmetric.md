@@ -20,7 +20,7 @@ last_verified: 2026-08-13
 | **Data Size Limits** | Arbitrary message length | Applies to **public-key encryption specifically** (e.g., RSA-OAEP), not to signatures or key agreement: RSA-2048 with OAEP-SHA256 encrypts &le; 190 bytes (modulus_bytes &minus; 2&times;hashLen &minus; 2). ECDSA/EdDSA sign a fixed-size digest regardless of message length, and ECDH/X25519 key agreement has no payload to size-limit at all. | Asymmetric *encryption* wraps symmetric keys rather than encrypting bulk files; signatures and key agreement aren't subject to this limit in the first place. |
 | **Key Architecture** | Single shared secret key (**K**) | Linked Key Pair: Public Key (<b>K<sub>pub</sub></b>) + Private Key (<b>K<sub>priv</sub></b>) | Symmetric keys require secure out-of-band distribution or key agreement. |
 | **Key Distribution Requirement** | Requires pre-shared secret key over secure channel | Public key can be distributed freely; binding requires authentication (PKI) | Public keys eliminate shared secret transport but require an authenticated binding — X.509 certificates are the common mechanism, but out-of-band fingerprint verification and pinned keys are also used. |
-| **Post-Quantum Resilience** | **AES-256** retains 128-bit security under Grover's Algorithm | **RSA and ECC** would be rendered tractable to break by Shor's Algorithm, once a sufficiently capable, fault-tolerant quantum computer exists (none does today) | A future CRQC would break classical asymmetric keys; symmetric keys only need doubling to 256 bits. |
+| **Post-Quantum Resilience** | Grover's algorithm gives an ideal sequential key-search query bound of roughly 2^(n/2), but concrete attack cost also depends on circuit depth, error correction, oracle cost, and available hardware. AES-128 remains NIST's Category 1 comparison baseline; AES-256 provides additional margin. | **RSA and ECC** would be rendered tractable to break by Shor's Algorithm once a sufficiently capable, fault-tolerant quantum computer exists (none does today). | A future CRQC would require migration away from classical asymmetric primitives. Symmetric key size remains a profile- and threat-model decision rather than a universal doubling rule. |
 | **Primary Architectural Role** | Bulk payload encryption at rest and in transit | Key exchange, digital signatures, identity authentication | Complementary paradigms combined in hybrid encryption protocols. |
 | **Primary Primitives** | AES-256-GCM, ChaCha20-Poly1305, HMAC-SHA256 | RSA-OAEP / PSS, ECDSA, Ed25519, X25519 | Modern protocols prefer AEAD (AES-GCM) and ECC (Ed25519 / X25519). |
 
@@ -36,7 +36,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 ### Standardized Hybrid Protocols
 
 1. **HPKE (Hybrid Public Key Encryption, [RFC 9180](https://www.rfc-editor.org/rfc/rfc9180))**: Modern standard combining KEM key encapsulation, KDF key derivation, and AEAD symmetric encryption.
-2. **TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446))**: Uses ephemeral ECDHE (or hybrid **X25519MLKEM768**, defined by [RFC 10024](https://www.rfc-editor.org/info/rfc10024/)) for key agreement and AES-GCM / ChaCha20-Poly1305 for transport encryption.
+2. **TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446))**: Certificate-authenticated full handshakes use ephemeral key establishment, commonly X25519 or the hybrid **X25519MLKEM768** group defined by [RFC 10024](https://www.rfc-editor.org/info/rfc10024/), followed by HKDF and a negotiated AEAD such as AES-GCM or ChaCha20-Poly1305. TLS 1.3 also permits PSK-only operation, which does not provide forward secrecy for that connection.
 3. **OpenPGP ([RFC 9580](https://www.rfc-editor.org/rfc/rfc9580))**: Encrypts files/messages using a symmetric session key wrapped under the recipient's RSA or ECC public key.
 
 ## Cryptographic Objective Selection Matrix
@@ -45,7 +45,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 |---|---|---|---|
 | **Bulk Data Confidentiality at Rest** | Symmetric Encryption | AES-256-GCM for records, objects, and files; **AES-XTS** (not GCM) for block-device/disk-volume encryption | Encrypt database fields, files, and objects using AES-GCM within a DEK/KEK hierarchy; full-disk/block-device encryption conventionally uses AES-XTS instead (see Full-Disk &amp; File Encryption) since fixed-size disk sectors don't have room for an AEAD tag. |
 | **Key Encapsulation to Single Receiver** | Asymmetric HPKE | HPKE (RFC 9180) | Sender's KEM operation against the receiver's public key yields a shared secret, which HKDF expands into an AEAD context (key + nonce schedule) used to encrypt the payload directly; using that context to wrap a separate DEK is one common application pattern, not HPKE's only mode of operation (RFC 9180 also defines PSK and auth modes). |
-| **Network Transit Confidentiality** | Hybrid Encryption | TLS 1.3 (ECDHE + AES-GCM) | Ephemeral key agreement establishes shared secret for symmetric transport. |
+| **Network Transit Confidentiality** | Hybrid Encryption | TLS 1.3 (ephemeral key establishment + HKDF + negotiated AEAD) | A certificate-authenticated full handshake uses an ephemeral group such as X25519 or X25519MLKEM768 to establish shared keying material; HKDF derives the traffic secrets and keys used by the negotiated AEAD. |
 | **Payload Integrity &amp; Authentication** | Symmetric MAC | HMAC-SHA256 | Both endpoints share secret key; verifier checks HMAC tag over message. |
 | **Unforgeable Signature Evidence** | Asymmetric Digital Signature | Ed25519 (RFC 8032) / RSA-PSS | Signer uses a private key; verifier checks that the signature validates for the payload under the public key. Identity and custody remain separate checks. |
 
@@ -57,7 +57,7 @@ Production systems rarely use asymmetric cryptography to encrypt large files or 
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Symmetric encryption is far faster per byte but requires a shared secret; asymmetric cryptography solves distributing that secret, but only once the public key itself is authenticated. Production systems combine both: asymmetric keys negotiate or wrap a single-use symmetric key that then encrypts the bulk data.</p>
+  <p>Symmetric encryption is far faster per byte but requires shared keying material; asymmetric cryptography can establish or protect that material, but only once the public key itself is authenticated. Production systems combine them: authenticated key agreement or a KEM establishes session keying material, while public-key encryption can wrap a per-object DEK; the resulting symmetric keys protect bulk data within protocol-defined usage and lifetime limits.</p>
 </div>
 
 ## Primary references

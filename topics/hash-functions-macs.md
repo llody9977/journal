@@ -2,14 +2,14 @@
 title: Hash Functions & MACs
 description: Cryptographic hash properties (Preimage, 2nd-Preimage, Collision resistance), SHA-2/SHA-3 standards, HMAC-SHA256, KMAC, BLAKE3, and length-extension mitigation.
 permalink: /topics/hash-functions-macs/
-last_verified: 2026-08-11
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>
 
 # Hash Functions & MACs
 
-<p class="lede">Cryptographic hash functions map arbitrary-length data streams into fixed-size digest values, providing integrity verification and avalanche diffusion. An unkeyed hash detects accidental corruption when the verifier compares it against a digest obtained through a trusted channel — the hash alone doesn't "prove" anything if an attacker can also tamper with that reference value. Hash-based Message Authentication Codes (HMAC) incorporate a shared secret key to provide origin authentication and protect against active tampering, where an unkeyed hash cannot.</p>
+<p class="lede">Cryptographic hash functions map arbitrary-length data streams into fixed-size digest values, providing integrity verification and avalanche diffusion. An unkeyed hash detects accidental corruption when the verifier compares it against a digest obtained through a trusted channel — the hash alone doesn't "prove" anything if an attacker can also tamper with that reference value. Hash-based Message Authentication Codes (HMAC) incorporate a shared secret key to provide integrity and shared-key authentication against active tampering; a valid tag identifies some holder of the shared key, not one uniquely attributable sender.</p>
 
 ## The Three Formal Security Properties
 
@@ -52,11 +52,11 @@ Unkeyed hashes like `SHA-256(message)` do not prove origin authenticity; an atta
 
 Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, **HMAC** binds a secret key **K** to the message. Before use, **K** is normalized to the underlying hash function's block size **B**: keys longer than **B** bytes are first hashed down to **L** bytes, and keys shorter than **B** bytes are zero-padded up to **B** bytes — call this normalized value **K₀** ([RFC 2104 §2](https://www.rfc-editor.org/rfc/rfc2104.html#section-2)). **K₀**, not the raw **K**, is what's actually XORed with the inner and outer pads:
 
-**HMAC(K, M) = H((K₀ ⊕ opad) || H((K₀ ⊕ ipad) || M))**
+<p><strong>HMAC(K, M)</strong> = H((K₀ ⊕ opad) &#124;&#124; H((K₀ ⊕ ipad) &#124;&#124; M))</p>
 
 <div class="diagram-frame">
-  <img src="{{ '/assets/img/hmac-flow.svg' | relative_url }}" alt="HMAC nested hash flow diagram showing inner and outer key padding blocks.">
-  <p class="diagram-caption">HMAC-SHA256 nested construction: double-hashing with inner (ipad) and outer (opad) key padding</p>
+  <img src="{{ '/assets/img/hmac-flow.svg' | relative_url }}" alt="HMAC nested hash flow showing inner and outer key padding and a final tag that provides integrity and authentication by some holder of the shared key.">
+  <p class="diagram-caption">HMAC-SHA256 nested construction: inner and outer key padding produce a tag attributable to some holder of the shared key, not one unique party</p>
 </div>
 
 HMAC's guarantees are specific: it prevents length-extension attacks against the underlying Merkle–Damgård hash, and it authenticates that the tag was produced by a holder of key **K**. Because both communicating parties share the same key **K**, that guarantee is symmetric: *any* holder of **K** — sender or receiver — can produce a tag that verifies correctly, so HMAC cannot tell the two apart, cannot attribute a tag to one specific party over the other, and provides no evidence to a third party who doesn't already trust both key holders (i.e., no non-repudiation). It does not protect the key itself — HMAC provides no defense if **K** is compromised through memory disclosure, a side-channel leak, weak key generation, or insecure storage; key protection is a separate concern handled by key management practices, not by the HMAC construction.
@@ -217,7 +217,7 @@ HMAC's nested construction prevents length-extension attacks by wrapping the inn
           <div class="security-layer-label">Authentication Status</div>
           <div>
             <strong>✔ AUTHENTICATION SUCCESSFUL!</strong>
-            <p style="margin-bottom:0;">The receiver verification key <code>"${escapeHtml(verifyKeyStr)}"</code> matches the sender key. The HMAC tag is consistent with payload integrity and origin authenticity under this key.</p>
+            <p style="margin-bottom:0;">The receiver verification key <code>"${escapeHtml(verifyKeyStr)}"</code> matches the sender key. The HMAC tag is consistent with payload integrity and creation by some holder of this shared key; it does not distinguish the sender from another key holder.</p>
           </div>
         </div>`;
       } else {
