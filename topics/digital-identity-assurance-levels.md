@@ -1,62 +1,68 @@
 ---
 title: Digital Identity Assurance Levels (IAL, AAL, FAL)
-description: NIST SP 800-63-4 Identity, Authenticator, and Federation Assurance Levels, authenticator-to-AAL mapping, and phishing-resistance trade-offs.
+description: NIST SP 800-63-4 identity-proofing, authentication, and federation assurance levels, including selection boundaries and deployment prerequisites.
 permalink: /topics/digital-identity-assurance-levels/
-last_verified: 2026-08-09
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Authentication & Authorization / Decision Guide</span>
 
 # Digital Identity Assurance Levels (IAL, AAL, FAL)
 
-<p class="lede">Digital identity assurance answers three separate questions with three independent scales: how confident is the enrollment that this person is who they claim to be, how confident is each login that the same person is back, and how much can a relying party trust an identity assertion forwarded by someone else's login. Conflating these three—for example, treating a strong login as proof of identity, or a signed token as proof of non-repudiation—is a common source of access-control design errors.</p>
+<p class="lede">Digital identity assurance separates three questions: how strongly an applicant was proofed, how strongly a subscriber authenticates, and how a relying party receives a federated assertion. The three scales are independent. A phishing-resistant login cannot repair weak enrollment, and a strongly protected federation assertion cannot establish facts the identity provider never verified.</p>
 
-## Three Independent Assurance Dimensions (NIST SP 800-63-4)
+## Three independent assurance dimensions
 
-The **[NIST SP 800-63](https://pages.nist.gov/800-63-4/)** Digital Identity Guidelines decompose identity architecture into three independent assurance dimensions: **Identity Assurance Level (IAL)**, **Authenticator Assurance Level (AAL)**, and **Federation Assurance Level (FAL)**. **Revision 4** finalized in 2025 and is the current version referenced below.
+The **[NIST SP 800-63-4 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/)** define Identity Assurance Level (IAL), Authenticator Assurance Level (AAL), and Federation Assurance Level (FAL). Revision 4 was finalized in 2025. These requirements apply to U.S. federal online services within the Guidelines' scope; non-federal organizations can adopt them voluntarily as an assurance vocabulary.
 
-| Assurance Dimension &amp; Level | Assurance Level Tier | Technical Requirements &amp; Mechanics | Primary Engineering Application |
+| Dimension | Level | Current Rev. 4 boundary | Selection implication |
 |---|---|---|---|
-| **IAL1: Self-Asserted Identity** | Level 1 | No identity verification or attribute proofing required (**[NIST SP 800-63A § 4.1](https://pages.nist.gov/800-63-4/sp800-63a.html#ial1)**). | Public consumer registration, anonymous trial access. |
-| **IAL2: Verified Identity** | Level 2 | Remote identity document validation, PII verification &amp; address proofing (**[NIST SP 800-63A § 4.2](https://pages.nist.gov/800-63-4/sp800-63a.html#ial2)**). | B2B SaaS onboarding, customer KYC verification. |
-| **IAL3: In-Person or Supervised-Remote Verified Proof** | Level 3 | In-person or supervised-remote identity verification with physical/biometric comparison and higher-assurance evidence validation (**[NIST SP 800-63A § 4.3](https://pages.nist.gov/800-63-4/sp800-63a.html#ial3)**). | Federal clearance systems, high-assurance banking credentials. |
-| **AAL1: Single-Factor Assurance** | Level 1 | Password, PIN, or single-factor memorized secret, or single-factor OTP device (**[NIST SP 800-63B § 4.1](https://pages.nist.gov/800-63-4/sp800-63b.html#aal1)**). | Basic consumer accounts, non-sensitive read-only portals. |
-| **AAL2: Multi-Factor Assurance** | Level 2 | Multi-factor authentication combining two distinct factors—e.g., Password + TOTP App, or a single multi-factor authenticator such as a FIDO2 Passkey (**[NIST SP 800-63B § 4.2](https://pages.nist.gov/800-63-4/sp800-63b.html#aal2)**). | Standard enterprise employee SSO, B2B SaaS applications. |
-| **AAL3: Hardware Cryptographic Assurance** | Level 3 | Hardware cryptographic key bound to physical device with PIN/Biometric (**[NIST SP 800-63B § 4.3](https://pages.nist.gov/800-63-4/sp800-63b.html#aal3)**). | Financial ledgers, root administrator access, federal enclaves. |
-| **FAL1: Bearer Assertion** | Level 1 | Standard OpenID Connect (OIDC) or SAML bearer assertion (**[NIST SP 800-63C § 4.1](https://pages.nist.gov/800-63-4/sp800-63c.html#fal1)**). | Public OAuth clients, basic SSO federation. |
-| **FAL2: Bearer Assertion with Injection Protection** | Level 2 | Still a bearer assertion (not exportable holder-of-key), but adds audience restriction, replay protection, and assertion-injection protection under a pre-established IdP–RP trust relationship (**[NIST SP 800-63C § 4.2](https://pages.nist.gov/800-63-4/sp800-63c.html#fal2)**). Encryption of the assertion is a common implementation choice, not the defining FAL2 requirement. | B2B enterprise federation, cross-domain SSO. |
-| **FAL3: Holder-of-Key Assertion** | Level 3 | Assertion cryptographically bound to a key held by the subscriber ("holder-of-key" / bound authenticator), so a stolen bearer token alone is insufficient. **DPoP (RFC 9449)** and **mTLS** are common implementation mechanisms, not the only ones NIST recognizes (**[NIST SP 800-63C § 4.3](https://pages.nist.gov/800-63-4/sp800-63c.html#fal3)**). | Zero Trust microservices, high-assurance token binding. |
+| **Identity proofing** | **IAL1** | Collects qualifying identity evidence, core attributes including a government identifier, validates the evidence and attributes, and verifies ownership of one piece of evidence. Biometrics are optional. | Use only when the consequences of identity-proofing error are consistent with IAL1. A service that does not need a verified real-world identity is outside the IAL model rather than automatically “IAL1.” |
+| | **IAL2** | Uses stronger evidence combinations and offers non-biometric, biometric, or digital-evidence verification pathways. It may be remote unattended, remote attended, on-site unattended, or on-site attended when the applicable requirements are met. | Select when impersonation harm requires stronger evidence and verification than IAL1. Record which verification pathway was used. |
+| | **IAL3** | Adds IAL3 evidence, validation, biometric, and issuance controls. Proofing is on-site attended; the proofing agent may be co-located or attend through a CSP-controlled kiosk or device. | Reserve for the highest proofing-assurance needs and account for biometric retention, supervised issuance, privacy, and accessibility impacts. |
+| **Authentication** | **AAL1** | Permits one or more single-factor or multifactor authenticators. Authentication must be replay resistant, but phishing resistance is not required. | Appropriate only where the assessed authentication risk permits single-factor assurance. |
+| | **AAL2** | Requires proof of two distinct factors, through one multifactor authenticator or two separate single-factor authenticators. A phishing-resistant option must be offered. | Typical target for protected enterprise and consumer accounts; select the actual authenticator combination and recovery path, not merely a product label. |
+| | **AAL3** | Requires a phishing-resistant public-key authenticator with a non-exportable key, verifier-compromise resistance, an activation factor, and approved cryptography under the federal profile. | A hardware key or smart card qualifies only when the complete authenticator and verifier deployment satisfies every AAL3 requirement. |
+| **Federation** | **FAL1** | Uses a signed bearer assertion with audience restriction and the required assertion protections. Possession is enough to present the assertion. | Suitable where the assessed federation risk permits a bearer assertion. |
+| | **FAL2** | Adds assertion-injection protection and a pre-established trust relationship between the identity provider and relying party. The assertion remains a bearer assertion. | Use when injection and federation-relationship risks require stronger controls than FAL1. Encryption can be profile-specific but is not the defining property. |
+| | **FAL3** | Requires the subscriber to demonstrate possession of a key referenced by the assertion or use an RP-bound authenticator. | Requires a protocol profile that binds the federation assertion or RP authentication accordingly. NIST notes that no current industry-standard OIDC FAL3 profile exists. |
 
-IAL, AAL, and FAL are chosen independently for a given system—a consumer app might run IAL1/AAL2/FAL1, while a banking core might require IAL2/AAL3/FAL3. There is no requirement that the three levels move together.
+IAL, AAL, and FAL do not move together. A pseudonymous service could have no IAL requirement while using AAL2; a proofed subscriber can still authenticate at AAL1; and an AAL3 event can be carried in a lower-FAL bearer assertion.
 
-## Authentication Mechanism vs AAL & Step-Up Suitability Matrix (NIST SP 800-63B)
+## Authenticators do not map to an AAL by product name alone
 
-Mapping specific authentication implementations (*SMS, TOTP, WebAuthn, Push, Passwords*) to NIST AAL assurance levels, 1st-factor login suitability, 2nd-factor / step-up authorization, and target risk profiles:
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/authentication-assurance-levels.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the authentication assurance levels diagram at full size">
+    <img src="{{ '/assets/img/authentication-assurance-levels.svg' | relative_url }}" alt="NIST AAL1, AAL2, and AAL3 compared by factor proof, phishing resistance, key exportability, verifier compromise resistance, and cryptographic requirements.">
+  </a>
+  <p class="diagram-caption">An authenticator reaches an AAL only as part of a deployment that satisfies the complete level requirements.</p>
+</div>
 
-| Authentication Control Mechanism | NIST AAL Level | 1st-Factor Login Suitability | 2nd-Factor / Step-Up Suitability | Target Risk Level &amp; Vulnerability Profile | Engineering Guidance &amp; Recommendation |
-|---|---|---|---|---|---|
-| **Email Link / Magic Link** | **Not an AAL1 out-of-band authenticator under NIST SP 800-63B**—NIST explicitly excludes email as an out-of-band channel (§ 5.1.3.1). | **Used in practice** (Passwordless onboarding) despite not meeting NIST's OOB bar. | **Not Recommended** (Shared email dependency) | **HIGH RISK**: Email account takeover compromises all magic links; vulnerable to phishing &amp; link interception. | Treat as a convenience mechanism for low-risk consumer onboarding, not as an assured authenticator; do not use for privileged enterprise or admin access. |
-| **Hardware Security Key / PIV Smart Card (YubiKey / CAC)** | **AAL3** (Hardware Crypto) | **Highly Recommended** (Passwordless PIN + FIDO2) | **Highly Recommended** (Mandatory for Level 2 Step-Up) | **VERY LOW RISK**: Hardware tamper-resistant, phishing-resistant and MitM-resistant under the WebAuthn origin-binding model, non-exportable private key. | Enforce for root/global administrators, financial wire transfers, KMS key destruction, and federal enclaves. |
-| **In-App Push Notification (Prompt / Number Match)** | **AAL2** (Multi-Factor) | **Prohibited** (Requires primary identity context) | **Acceptable with Number Match** (Not Recommended if simple Accept) | **MODERATE RISK**: Vulnerable to Push Fatigue attacks (*e.g., Lapsus$ breach*) &amp; proxy MitM unless number matching is enforced. | Enforce mandatory **Number Matching** (displaying login numbers to type into push prompt) to block push fatigue exploits. |
-| **SMS / Voice OTP** | **Restricted** (NIST SP 800-63B §5.1.3.3)—NIST places conditions on its use (e.g., verifying the number is not VoIP) rather than banning it outright. | **Restricted** | **Restricted** | **HIGH RISK**: Vulnerable to SIM-swapping, SS7 network wiretapping, carrier porting fraud, and real-time phishing kits. | Journal recommendation: phase out in favor of WebAuthn/FIDO2 or authenticator apps where feasible, even though NIST's own status is "restricted" rather than "prohibited." |
-| **Software TOTP (Authenticator App e.g. Google/Microsoft Auth)** | **AAL1 as a standalone single-factor OTP device, or AAL2 when combined with a second distinct factor** (**NIST SP 800-63B § 4**)—TOTP is not inherently AAL2. | **Acceptable** as a single factor at AAL1; not sufficient alone for AAL2. | **Acceptable** (Standard 2FA fallback) | **MODERATE RISK**: Neutralizes static credential stuffing; vulnerable to real-time reverse-proxy phishing kits (**Evilginx**). | Acceptable standard 2FA fallback for consumer users; migrate enterprise workforce to WebAuthn / FIDO2 Passkeys. |
-| **Username + Password** | **AAL1** (Memorized Secret) | **Acceptable** (Legacy standard) | **Prohibited** (Not an independent second factor) | **HIGH RISK**: Vulnerable to credential stuffing, password spraying, keylogging, database leaks, and dictionary attacks. | Must be paired with AAL2/AAL3 MFA or replaced with passwordless WebAuthn / FIDO2 Passkeys. |
-| **WebAuthn / FIDO2 Passkey (Platform / Roaming)** | **Typically AAL2**; a **non-exportable, hardware-bound** passkey (e.g., roaming security key or a platform authenticator whose key cannot leave the device) can meet **AAL3**. A syncable/cloud-backed passkey does not satisfy AAL3's non-exportability requirement, regardless of platform. | **Highly Recommended** (Passwordless Passkey) | **Highly Recommended** (Strong default for Step-Up) | **LOW / VERY LOW RISK**: Phishing-resistant and MitM/replay-resistant under the WebAuthn authentication model via domain `rp.id` origin binding—not an absolute, unconditional guarantee. | Strong default for modern enterprise SSO, B2B SaaS applications, and high-risk step-up authorization flows; confirm non-exportable key storage before relying on it for AAL3. |
+| Mechanism | Potential NIST treatment | Important preconditions and limits | Journal selection rule |
+|---|---|---|---|
+| **Password** | Single-factor memorized secret usable at AAL1. | Not phishing resistant; not an independent second factor when repeated. | Avoid as the only factor for sensitive accounts. |
+| **Email magic link** | Email is not an approved out-of-band authenticator under SP 800-63B-4. | Security inherits the email account, link handling, and recovery path. | Limit to low-risk convenience flows outside a claimed NIST AAL. |
+| **PSTN SMS or voice OTP** | A restricted authenticator; it can participate in AAL2 when all restrictions and the second-factor requirement are met. | Susceptible to number reassignment, SIM swap, routing attacks, and phishing. | Retain only as a risk-accepted fallback while migrating to phishing-resistant options. |
+| **TOTP app** | A single-factor OTP authenticator alone can satisfy AAL1; paired with an independent factor it can participate in AAL2. | Codes can be relayed by an adversary-in-the-middle and seeds can be exposed by endpoint compromise. | Use as an AAL2 fallback, not as the preferred high-risk control. |
+| **Push approval** | Can participate in AAL2 when the implementation proves two factors. | Generic approval prompts remain susceptible to fatigue and relay. Number matching reduces blind approvals but does not make the method phishing resistant. | Apply rate limits, context display, and anomaly detection; prefer WebAuthn for high-risk use. |
+| **Syncable passkey** | A multifactor cryptographic authenticator that can satisfy AAL2 when its activation and deployment meet the requirements. | Key synchronization means it does not satisfy AAL3's non-exportable-key requirement. Recovery and provider-account security remain dependencies. | Strong default for usable phishing-resistant authentication. |
+| **Device-bound WebAuthn credential, security key, or PIV** | Can participate in AAL2 or AAL3. | AAL3 additionally requires a non-exportable key, phishing resistance, activation, verifier-compromise resistance, and approved cryptography; hardware alone is insufficient. | Verify the complete authenticator profile before claiming AAL3. |
 
-For the runtime protocol used to raise a session from a baseline AAL to a higher one mid-session (RFC 9470 step-up challenges), see **[Step-Up Authentication & MFA]({{ '/topics/step-up-authentication/' | relative_url }})**.
+## Selecting and operating an assurance profile
 
-## Key Architectural Insights
-
-1. **The Phishing-Resistance Divide (Legacy AAL2 vs FIDO2 Passkeys)**: Traditional AAL2 authenticators (*SMS OTP, TOTP apps, push notifications*) fail against automated reverse-proxy phishing kits (*e.g., Evilginx, Modlishka*), which proxy authentication requests in real time and capture both credentials and active session cookies. WebAuthn / FIDO2 Passkeys enforce cryptographic origin binding (`rp.id`), so authentication payloads cannot be replayed to an adversary's proxy server.
-2. **IAL, AAL, and FAL Solve Different Failure Modes**: A system can have strong login assurance (AAL3) with weak identity proofing (IAL1)—e.g., a hardware key registered against a self-asserted email address. Each dimension must be evaluated against the specific harm it is meant to prevent: account takeover (AAL), impersonation at enrollment (IAL), or a forged or replayed federation assertion (FAL).
-3. **SMS &amp; Voice OTP Restriction**: NIST's own status for SMS/voice OTP is "restricted," not a blanket prohibition. Given the SIM-swapping, SS7 interception, and carrier routing hijack risk, this journal's engineering recommendation is still to phase out SMS OTP where feasible in favor of FIDO2 Passkeys or authenticator apps.
+1. **Start with impact assessment**: Select each dimension from the harm caused by proofing, authentication, or federation failure rather than copying one level across all three.
+2. **Document the complete profile**: Record evidence and proofing pathway, authenticator type and key properties, federation protocol/profile, recovery path, and every exception.
+3. **Validate dependencies**: Test verifier configuration, trusted issuers, audience restrictions, authenticator metadata where relied on, key non-exportability evidence, and recovery controls.
+4. **Preserve lifecycle evidence**: Log proofing-pathway changes, authenticator binding/removal, federation key rotation, revocation, and account recovery. Reassess when the threat model or service impact changes.
+5. **Treat step-up separately**: A runtime request for fresher or stronger authentication is covered in **[Step-Up Authentication & MFA]({{ '/topics/step-up-authentication/' | relative_url }})**; it does not change the original proofing level.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>IAL, AAL, and FAL are three independent dimensions chosen separately — strong login assurance doesn't imply strong identity proofing, and neither implies federation assertion strength. A hardware-bound WebAuthn passkey can meet AAL3; a syncable, cloud-backed passkey cannot, regardless of platform.</p>
+  <p>IAL, AAL, and FAL measure different failure boundaries and must be selected independently. Never infer an assurance level from a product name: verify the full proofing process, authenticator deployment, federation profile, recovery path, and lifecycle controls.</p>
 </div>
 
 ## Primary references
 
-- **NIST SP 800-63-4**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-4](https://pages.nist.gov/800-63-4/)
-- **NIST SP 800-63B § 5.1.3**: *Restricted Authenticators (SMS/Voice OTP)* — [NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b.html)
+- **[NIST SP 800-63A-4: Identity Proofing and Enrollment](https://pages.nist.gov/800-63-4/sp800-63a/ial/)** — verified the IAL1–IAL3 evidence, verification, biometric, and proofing-type requirements.
+- **[NIST SP 800-63B-4: Authentication and Authenticator Management](https://pages.nist.gov/800-63-4/sp800-63b/aal/)** — verified the AAL factor, phishing-resistance, key-exportability, and cryptographic requirements.
+- **[NIST SP 800-63C-4: Federation and Assertions](https://pages.nist.gov/800-63-4/sp800-63c/fal/)** — verified FAL assertion protections and the FAL3 holder-of-key boundary.

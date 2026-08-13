@@ -1,73 +1,96 @@
 ---
 title: Security Token Service (STS)
-description: Deep architectural guide to Security Token Services (STS), WS-Trust origins, AWS STS assume-role mechanisms, and OAuth 2.0 Token Exchange (RFC 8693).
+description: Security token issuance and exchange across trust domains, AWS STS role assumption, workload federation, and OAuth 2.0 Token Exchange.
 permalink: /topics/security-token-service/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Authentication & Authorization / Concepts</span>
 
 # Security Token Service (STS)
 
-<p class="lede">A Security Token Service (STS) is an architectural service component that issues, exchanges, and validates security tokens across trust boundaries. An STS accepts identity evidence (SAML assertions, OIDC tokens, or client credentials) and trades it for short-lived, down-scoped security tokens (AWS IAM temporary credentials, OAuth 2.0 delegation tokens).</p>
+<p class="lede">A Security Token Service (STS) validates configured evidence and issues a new credential or assertion under its own policy. The output's audience, scope, subject, actor, lifetime, and sender constraints are choices of the service and protocol profile; token exchange does not inherently down-scope, shorten, or revoke the input credential.</p>
 
-## The Security Token Service Paradigm
+## STS is an architectural role, not one wire protocol
 
-Originated in the OASIS **WS-Trust** specification, an STS acts as a trusted broker between identity providers and relying party APIs:
+WS-Trust standardized an STS model for SOAP security. AWS STS and OAuth 2.0 Token Exchange implement related brokerage patterns through different protocols and token semantics. None is the historical origin of every service that issues or exchanges credentials.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/security-token-service-flow.svg' | relative_url }}" alt="Security token exchange from identity evidence through STS policy evaluation to a short-lived down-scoped resource token.">
-  <p class="diagram-caption">An STS exchanges trusted identity evidence for a purpose-limited token</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/security-token-service-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the security token service policy flow at full size">
+    <img src="{{ '/assets/img/security-token-service-flow.svg' | relative_url }}" alt="Security token service flow: configured caller evidence and client authentication enter policy validation; the service selects subject, actor, audience, scope, lifetime, and token type; it may then issue a target credential under that policy.">
+  </a>
+  <p class="diagram-caption">An STS can narrow, preserve, or transform authority only as its validated policy and output profile define.</p>
 </div>
 
-Rather than sharing static long-lived credentials (*e.g., permanent AWS access keys or master database passwords*), clients present short-lived evidence to an STS to obtain dynamic, time-limited credentials.
+The service must validate the input issuer, audience, signature or introspection result, time bounds, token type, intended use, client authentication, and any proof-of-possession requirement before treating evidence as trusted. It then applies local authorization rather than assuming that a valid input token is exchangeable.
 
-## AWS Security Token Service (AWS STS)
+## AWS STS operations and duration boundaries
 
-AWS STS provides short-lived temporary security credentials for AWS IAM authorization. The valid session-duration range depends on the specific STS API operation: `AssumeRole` accepts 15 minutes up to the target role's configured maximum session duration (which itself is capped between 1 and 12 hours, default 1 hour if unspecified), while `GetSessionToken` and `GetFederationToken` accept 15 minutes up to 36 hours (default 12 hours), except when called with AWS account root user credentials, which are capped at 1 hour. See the [AWS STS API Reference](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html) for the exact current values per operation:
-
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/aws-sts-mechanisms.svg' | relative_url }}" alt="Comparison of AWS STS AssumeRole, AssumeRoleWithWebIdentity, and AssumeRoleWithSAML.">
-  <p class="diagram-caption">The APIs differ mainly in the evidence accepted for role assumption</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/aws-sts-mechanisms.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the AWS STS role-assumption mechanisms diagram at full size">
+    <img src="{{ '/assets/img/aws-sts-mechanisms.svg' | relative_url }}" alt="AWS STS mechanisms comparing AssumeRole for an AWS principal, AssumeRoleWithWebIdentity for trusted OIDC evidence, and AssumeRoleWithSAML for a trusted SAML assertion.">
+  </a>
+  <p class="diagram-caption">Each operation accepts different caller evidence and evaluates a role trust policy before returning temporary AWS credentials.</p>
 </div>
 
-### GitHub Actions OIDC to AWS STS Flow
+- `AssumeRole` accepts 15 minutes through the role's configured maximum session duration, which can be 1–12 hours. **Role chaining is limited to one hour**, even if the target role allows longer sessions.
+- `AssumeRoleWithWebIdentity` and `AssumeRoleWithSAML` apply their own operation and role-duration rules.
+- `GetSessionToken` and `GetFederationToken` support operation-specific ranges; calls using root credentials are capped at one hour. Root credentials should not be used for routine federation.
 
-Modern CI/CD pipelines avoid storing static AWS secret keys in repository secrets. Instead, GitHub Actions requests an OIDC token from GitHub's identity provider and trades it via `AssumeRoleWithWebIdentity` for temporary AWS STS credentials:
+AWS temporary credentials remain bearer-like credential sets: access key ID, secret access key, and session token. Their permissions are the intersection and union effects defined by the role, resource policies, permissions boundaries, session policy, SCPs, and other AWS policy layers—not simply “the scopes in the source token.”
 
-$$\text{GitHub OIDC JWT} \xrightarrow{\text{AWS STS}} \text{Temporary AWS Access Key + Secret Key + Session Token}$$
+### GitHub Actions OIDC trust must restrict the workflow identity
 
-## OAuth 2.0 Token Exchange (RFC 8693)
+The role trust policy should validate GitHub's token issuer and `aud`, and restrict `sub` to the intended organization, repository, branch, tag, environment, or reusable workflow pattern. A trust policy that accepts every subject from the GitHub issuer turns any eligible repository or workflow into a role-assumption path. Protect the workflow files and environment approval rules because they become authorization inputs.
 
-Standardized in **[RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)**, OAuth 2.0 Token Exchange brings the STS model to RESTful APIs and microservice architectures:
+For the wider lifecycle, provider mapping, and SPIFFE comparison, see **[Workload Identity Federation]({{ '/topics/workload-identity-federation/' | relative_url }})**.
+
+## OAuth 2.0 Token Exchange
+
+RFC 8693 defines a grant in which a client presents a `subject_token` and may request a token type, resource, audience, and scope. The client still authenticates under the authorization server's normal token-endpoint policy when authentication is required.
 
 ```http
 POST /oauth/token HTTP/1.1
-Host: auth.example.com
+Host: authorization.example
+Authorization: Basic BASE64-OF-CLIENT-CREDENTIALS
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
-&subject_token=eyJhbGciOiJKV1...
+&subject_token=eyJhbGciOiJSUzI1NiIs...
 &subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Aaccess_token
 &requested_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Aaccess_token
-&audience=https://backend-service.internal/
+&resource=https%3A%2F%2Fbackend.example%2F
+&scope=records.read
 ```
 
-### Impersonation vs Delegation Claims (RFC 8693)
+The illustrative Basic client authentication above is appropriate only over TLS and only where that client method is configured; private-key JWT or mTLS may be preferable. A successful response includes `access_token`, `issued_token_type`, `token_type`, and possibly `expires_in`, `scope`, and `refresh_token`. The client and target resource server must interpret the output under its declared token profile.
 
-| Exchange Mode | JSON Claim Structure | Architectural Audit Meaning |
+### Subject, actor, impersonation, and delegation
+
+| Representation | Meaning available to the recipient | Limit |
 |---|---|---|
-| **Impersonation** | `{"sub": "user_123"}` | Client A assumes User B's identity completely; if the token carries only the `sub` claim, downstream APIs relying on the token alone cannot distinguish Client A from User B. |
-| **Delegation** | `{"sub": "user_123", "act": {"sub": "client_A"}}` | Client A acts *on behalf of* User B. Downstream APIs can identify both the subject and current actor from the token; nested `act` claims can retain prior actors. Operational auditability still depends on issuer behavior and downstream logging. |
+| `{"sub":"user_123"}` | Identifies the token subject. | Does not reveal which client or service initiated the exchange unless another claim or audit record carries it. |
+| `{"sub":"user_123","act":{"sub":"service_A"}}` | Identifies a current actor acting for the subject; nested `act` can retain a prior actor chain. | Downstream attribution still depends on issuer integrity, claim validation, logging, and local authorization. |
 
-Whether actor context is preserved is a design choice of the issuing system, not an inherent property of "impersonation" as a category. RFC 8693 defines the `act` claim to express delegation, but does not prohibit an authorization server from populating it (or logging the original actor separately, e.g., in an audit trail) even when the resulting token otherwise behaves as an impersonation token. Systems that want auditability across an impersonation exchange can retain it; systems that strip actor identity by design cannot recover it downstream.
+RFC 8693 does not guarantee down-scoping. The authorization server must define how requested resource/audience/scope interact with the input authority and must reject escalation. Chained exchanges amplify policy mistakes and make revocation harder because invalidating an input may not automatically invalidate already issued outputs.
+
+## Operational and lifecycle controls
+
+1. Inventory trusted issuers, input token types, client-authentication methods, claim mappings, target audiences, output formats, signing keys, and maximum lifetimes.
+2. Apply explicit allowlists for exchange paths; reject arbitrary issuer-to-resource or token-type conversion.
+3. Preserve subject and actor context required for downstream audit, while minimizing personal data.
+4. Detect replay, unusual exchange chains, audience expansion, anomalous subject/client combinations, and repeated denied exchanges.
+5. Define revocation propagation: introspection, short lifetimes, deny lists, session revocation, or provider-specific invalidation. State what happens to already issued descendants.
+6. Test key rollover, issuer outage, expired evidence, unknown token type, target-resource mismatch, client-authentication failure, scope escalation, chain depth, and emergency trust removal.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>An STS exchanges security tokens for new tokens appropriate to another trust domain or resource; credential type and duration depend on the implementation and operation. RFC 8693's <code>act</code> claim can identify the current actor, and nested <code>act</code> claims can retain prior actors. That improves downstream attribution but does not replace audit logging or guarantee full auditability.</p>
+  <p>An STS issues a new credential according to its own trust and authorization policy. Validate both caller and evidence, constrain every exchange path, preserve subject/actor semantics, and define lifetime and revocation propagation; do not assume exchange automatically narrows authority.</p>
 </div>
 
 ## Primary references
 
-- **AWS STS Documentation**: *Temporary security credentials in IAM* — [AWS IAM User Guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) — verified per-operation session duration ranges via the [AWS STS API Reference](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html).
-- **RFC 8693**: *OAuth 2.0 Token Exchange* — [IETF RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) — verified the `act` claim is not restricted to delegation-labeled exchanges.
+- **[OASIS WS-Trust 1.4](https://docs.oasis-open.org/ws-sx/ws-trust/v1.4/ws-trust.html)** — verified the WS-Trust STS model without treating it as the origin of all token services.
+- **[AWS STS API Reference](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html)** and **[AssumeRole](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)** — verified temporary-credential operations, durations, and the one-hour role-chaining limit.
+- **[AWS IAM OIDC federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html)** and **[GitHub OIDC for AWS](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws)** — verified trust-policy audience and subject restrictions.
+- **[RFC 8693: OAuth 2.0 Token Exchange](https://www.rfc-editor.org/rfc/rfc8693.html)** — verified request, response, actor, delegation, and token-exchange semantics.

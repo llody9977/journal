@@ -263,30 +263,48 @@
 {% if current_url == '/topics/http-auth-schemes/' or current_url == '/topics/http-auth-schemes' %}
   {% assign prev_title = '4.6 SAML 2.0' %}
   {% assign prev_url = '/topics/saml/' %}
-  {% assign next_title = '4.8 SSH Architecture & Authentication' %}
+  {% assign next_title = '4.8 Model Context Protocol Authorization' %}
+  {% assign next_url = '/topics/mcp-authorization/' %}
+{% endif %}
+{% if current_url == '/topics/mcp-authorization/' or current_url == '/topics/mcp-authorization' %}
+  {% assign prev_title = '4.7 NTLM, Kerberos & HTTP Authentication Schemes' %}
+  {% assign prev_url = '/topics/http-auth-schemes/' %}
+  {% assign next_title = '4.9 SSH Architecture & Authentication' %}
   {% assign next_url = '/topics/ssh/' %}
 {% endif %}
 {% if current_url == '/topics/ssh/' or current_url == '/topics/ssh' %}
-  {% assign prev_title = '4.7 NTLM, Kerberos & HTTP Authentication Schemes' %}
-  {% assign prev_url = '/topics/http-auth-schemes/' %}
-  {% assign next_title = '4.9 Security Token Service (STS)' %}
+  {% assign prev_title = '4.8 Model Context Protocol Authorization' %}
+  {% assign prev_url = '/topics/mcp-authorization/' %}
+  {% assign next_title = '4.10 Security Token Service (STS)' %}
   {% assign next_url = '/topics/security-token-service/' %}
 {% endif %}
 {% if current_url == '/topics/security-token-service/' or current_url == '/topics/security-token-service' %}
-  {% assign prev_title = '4.8 SSH Architecture & Authentication' %}
+  {% assign prev_title = '4.9 SSH Architecture & Authentication' %}
   {% assign prev_url = '/topics/ssh/' %}
-  {% assign next_title = '4.10 Machine-to-Machine API Authentication' %}
+  {% assign next_title = '4.11 Machine-to-Machine API Authentication' %}
   {% assign next_url = '/topics/api-security/' %}
 {% endif %}
 {% if current_url == '/topics/api-security/' or current_url == '/topics/api-security' %}
-  {% assign prev_title = '4.9 Security Token Service (STS)' %}
+  {% assign prev_title = '4.10 Security Token Service (STS)' %}
   {% assign prev_url = '/topics/security-token-service/' %}
+  {% assign next_title = '4.12 Workload Identity Federation' %}
+  {% assign next_url = '/topics/workload-identity-federation/' %}
+{% endif %}
+{% if current_url == '/topics/workload-identity-federation/' or current_url == '/topics/workload-identity-federation' %}
+  {% assign prev_title = '4.11 Machine-to-Machine API Authentication' %}
+  {% assign prev_url = '/topics/api-security/' %}
+  {% assign next_title = '4.13 Identity Provisioning, Access Lifecycle & PAM' %}
+  {% assign next_url = '/topics/identity-provisioning-access-lifecycle-pam/' %}
+{% endif %}
+{% if current_url == '/topics/identity-provisioning-access-lifecycle-pam/' or current_url == '/topics/identity-provisioning-access-lifecycle-pam' %}
+  {% assign prev_title = '4.12 Workload Identity Federation' %}
+  {% assign prev_url = '/topics/workload-identity-federation/' %}
   {% assign next_title = '5.1 DNS Security' %}
   {% assign next_url = '/topics/dns-security/' %}
 {% endif %}
 {% if current_url == '/topics/dns-security/' or current_url == '/topics/dns-security' %}
-  {% assign prev_title = '4.10 Machine-to-Machine API Authentication' %}
-  {% assign prev_url = '/topics/api-security/' %}
+  {% assign prev_title = '4.13 Identity Provisioning, Access Lifecycle & PAM' %}
+  {% assign prev_url = '/topics/identity-provisioning-access-lifecycle-pam/' %}
   {% assign next_title = '5.2 Network Segmentation & Microsegmentation' %}
   {% assign next_url = '/topics/network-segmentation-microsegmentation/' %}
 {% endif %}

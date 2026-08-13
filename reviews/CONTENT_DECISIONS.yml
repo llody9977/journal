@@ -907,6 +907,235 @@
       "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0020",
+      "title": "Map NIST assurance levels from complete deployments, not product labels",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/digital-identity-assurance-levels.md",
+          "topics/step-up-authentication.md",
+          "topics/webauthn-passkeys.md",
+          "assets/img/authentication-assurance-levels.svg"
+        ],
+        "concepts": [
+          "IAL1",
+          "IAL2",
+          "IAL3",
+          "AAL1",
+          "AAL2",
+          "AAL3",
+          "FAL3",
+          "authenticator product mapping"
+        ]
+      },
+      "originating_feedback": "The Section 4 review found obsolete Rev. 3-style IAL wording and repeated claims that a named hardware key, passkey, or smart card automatically satisfies an AAL or FAL.",
+      "decision": "Describe the Rev. 4 proofing routes directly and assign AAL or FAL only when the complete authenticator, verifier, federation profile, recovery path, and cryptographic requirements are established.",
+      "rationale": "NIST defines assurance levels through combinations of process and technical requirements. A device category alone does not prove activation, non-exportability, verifier compromise resistance, approved cryptography, or the required federation binding.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-63A-4 IAL requirements",
+          "url": "https://pages.nist.gov/800-63-4/sp800-63a/ial/",
+          "supports": "Rev. 4 requires evidence and verification at IAL1, permits several proofing types at IAL2, and limits IAL3 to on-site attended proofing with a CSP-controlled kiosk option."
+        },
+        {
+          "title": "NIST SP 800-63B-4 AAL requirements",
+          "url": "https://pages.nist.gov/800-63-4/sp800-63b/aal/",
+          "supports": "AALs are defined by factor, key, phishing-resistance, verifier, activation, and cryptographic requirements."
+        },
+        {
+          "title": "NIST SP 800-63C-4 FAL requirements",
+          "url": "https://pages.nist.gov/800-63-4/sp800-63c/fal/",
+          "supports": "FAL3 requires subscriber holder-of-key or RP-bound-authenticator proof and is not automatically provided by a generic access-token sender constraint."
+        }
+      ],
+      "verification_methods": [
+        "Compare every IAL/AAL/FAL table row, diagram, passkey classification, and step-up example with the current Rev. 4 normative sections.",
+        "Search for product-name-to-level statements and require deployment preconditions beside every remaining mapping.",
+        "Check that journal recommendations are labeled separately from NIST requirements."
+      ],
+      "approved_outcome": "Section 4 uses current Rev. 4 proofing routes and treats hardware keys, passkeys, smart cards, mTLS, and DPoP as mechanisms that can participate in an assurance profile rather than automatic assurance labels.",
+      "invalidation_conditions": [
+        "NIST publishes a newer revision with materially different assurance-level requirements.",
+        "A page narrows to a named certified deployment whose complete configuration is independently established.",
+        "A protocol profile standardizes a currently absent FAL3 binding."
+      ],
+      "related_decisions": ["CD-0019"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0021",
+      "title": "Separate OAuth authorization, OIDC authentication, token format, and sender constraint",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/oauth-oidc.md",
+          "topics/step-up-authentication.md",
+          "topics/security-token-service.md",
+          "topics/api-security.md",
+          "assets/img/oauth-auth-code-flow.svg",
+          "assets/img/sender-constrained-tokens.svg"
+        ],
+        "concepts": [
+          "OAuth authorization",
+          "OpenID Connect authentication",
+          "access token",
+          "ID Token",
+          "PKCE",
+          "mTLS client authentication",
+          "certificate-bound token",
+          "DPoP"
+        ]
+      },
+      "originating_feedback": "The Section 4 review found that OAuth was restricted to human third-party delegation, access tokens were treated as arbitrary JWTs, the diagram mixed OAuth and login, and mTLS client authentication was conflated with certificate-bound access tokens.",
+      "decision": "Define OAuth, OIDC, token format/profile, client authentication, sender constraint, and resource authorization as separate boundaries, then show how a selected flow composes them.",
+      "rationale": "These layers have different consumers, validation rules, and failure modes. Collapsing them encourages ID Token misuse, algorithm confusion, incomplete token validation, and assumptions that client authentication automatically constrains an access token.",
+      "authoritative_sources": [
+        {
+          "title": "RFC 6749",
+          "url": "https://www.rfc-editor.org/rfc/rfc6749.html",
+          "supports": "OAuth includes delegated and client-credentials authorization and defines roles without requiring every resource owner to be a human."
+        },
+        {
+          "title": "OpenID Connect Core 1.0",
+          "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+          "supports": "OIDC defines ID Tokens and client validation for end-user authentication."
+        },
+        {
+          "title": "RFC 8705",
+          "url": "https://www.rfc-editor.org/rfc/rfc8705.html",
+          "supports": "Mutual-TLS client authentication and certificate-bound access tokens are separate mechanisms."
+        },
+        {
+          "title": "RFC 9449",
+          "url": "https://www.rfc-editor.org/rfc/rfc9449.html",
+          "supports": "DPoP uses an application-layer proof JWT and confirmation binding with defined validation and replay limitations."
+        }
+      ],
+      "verification_methods": [
+        "Trace the Authorization Code with PKCE diagram as a pure OAuth flow and verify the page separately states the OIDC additions.",
+        "Execute the illustrative JWS code and confirm its explanation limits the demonstrated property.",
+        "Check every mTLS and DPoP claim for token-endpoint, resource-server, key-binding, freshness, and replay preconditions."
+      ],
+      "approved_outcome": "The pages use protocol-defined credential and assertion terminology, validate tokens under explicit profiles, and separate client authentication from sender-constrained token enforcement.",
+      "invalidation_conditions": [
+        "A page explicitly narrows to one profile that composes these boundaries differently and documents that scope.",
+        "A later Standards Track specification replaces the cited mechanism or validation model."
+      ],
+      "related_decisions": ["CD-0019"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0022",
+      "title": "Give evolving MCP and workload lifecycle subjects dedicated Section 4 pages",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/http-auth-schemes.md",
+          "topics/mcp-authorization.md",
+          "topics/workload-identity-federation.md",
+          "topics/identity-provisioning-access-lifecycle-pam.md",
+          "_data/nav.yml",
+          "_includes/topic-nav.html"
+        ],
+        "concepts": [
+          "MCP authorization",
+          "Streamable HTTP",
+          "workload identity federation",
+          "SPIFFE",
+          "SCIM",
+          "joiner mover leaver",
+          "PAM",
+          "JIT access"
+        ]
+      },
+      "originating_feedback": "The review identified MCP specification drift inside a broad HTTP-authentication page and optional gaps for workload federation, SCIM/JML, PAM, and JIT operations. The user requested remediation of optional items as well as required findings.",
+      "decision": "Maintain MCP authorization, workload identity federation, and identity provisioning/access lifecycle as three dedicated Section 4 pages, with narrow cross-links from the protocol and authorization pages.",
+      "rationale": "Each subject has an independent mechanism, trust boundary, lifecycle, and source cadence. Dedicated pages preserve single-subject integrity and make future currentness reviews less likely to overlook changes hidden inside an unrelated page.",
+      "authoritative_sources": [
+        {
+          "title": "MCP Authorization 2025-11-25",
+          "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization",
+          "supports": "The current HTTP authorization profile includes protected-resource discovery, resource indicators, and multiple registration approaches."
+        },
+        {
+          "title": "SPIFFE overview",
+          "url": "https://spiffe.io/docs/latest/spiffe-about/overview/",
+          "supports": "SPIFFE defines workload identity and SVID/trust-domain concepts that require separate attestation and authorization treatment."
+        },
+        {
+          "title": "RFC 7644",
+          "url": "https://www.rfc-editor.org/rfc/rfc7644.html",
+          "supports": "SCIM defines cross-domain identity resource management but leaves organizational authorization and governance to the deployment."
+        }
+      ],
+      "verification_methods": [
+        "Verify the Section 4 navigation and previous/next chain through all thirteen topics.",
+        "Check each page for its own definition, actors, mechanism, trust dependencies, operations, failure modes, lifecycle, and primary sources.",
+        "Confirm the HTTP authentication page links to MCP instead of retaining a stale duplicate profile."
+      ],
+      "approved_outcome": "Section 4 contains dedicated 4.8 MCP, 4.12 workload federation, and 4.13 identity provisioning/access lifecycle pages, with stable permalinks and complete navigation.",
+      "invalidation_conditions": [
+        "The journal's chapter architecture changes and an equally complete, clearly linked location replaces a page.",
+        "A subject is removed from the journal scope together with all metadata, navigation, and cross-links.",
+        "A new MCP specification materially changes the transport or authorization model."
+      ],
+      "related_decisions": ["CD-0019"],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0023",
+      "title": "Keep semantic page endings canonical in topic source",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/add_style_sections_all.py",
+          "WRITING_STYLE.md"
+        ],
+        "concepts": [
+          "summary callout generation",
+          "primary references generation",
+          "template drift",
+          "semantic source of truth"
+        ]
+      },
+      "originating_feedback": "The Section 4 review found that the helper retained stale summaries and source lists after the live pages had changed, creating a path for old security claims to return.",
+      "decision": "Treat each topic's reviewed summary and primary references as canonical. The compatibility helper verifies their presence and ordering but refuses to synthesize or append generic semantic content.",
+      "rationale": "A generic script cannot know which security conclusion or primary source directly supports a changed page. Duplicating semantic text creates silent drift and violates the repository's source-to-claim review discipline.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Run the helper and confirm it resolves the repository root from its own path.",
+        "Verify that every topic passes while a missing or empty ending would fail with an explicit authoring instruction.",
+        "Search the helper for copied topic summaries or hard-coded workstation paths."
+      ],
+      "approved_outcome": "The helper is repository-relative, contains no copied security conclusions, verifies all topic endings, and directs authors to write page-specific summaries and sources.",
+      "invalidation_conditions": [
+        "A structured canonical metadata source is introduced that can generate both page bodies and endings without duplicated semantic text.",
+        "The repository removes the mandatory ending format."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
+      "originated_on": "2026-08-13",
+      "last_reviewed_on": "2026-08-13"
     }
   ]
 }

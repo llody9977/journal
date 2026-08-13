@@ -1,66 +1,92 @@
 ---
 title: Machine-to-Machine API Authentication
-description: Technical breakdown of M2M API authentication patterns (API Keys, OAuth Client Credentials, mTLS, AWS SigV4, DPoP RFC 9449).
+description: API keys, OAuth client authentication, mTLS, HMAC request signing, AWS SigV4, DPoP, sender constraints, rotation, and workload selection.
 permalink: /topics/api-security/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Authentication & Authorization / Decision Guide</span>
 
 # Machine-to-Machine API Authentication
 
-<p class="lede">Machine-to-Machine (M2M) API authentication secures automated service-to-service calls, background cron tasks, microservices, and webhooks where no human user is present. Unlike user authentication, M2M authentication cannot rely on interactive MFA or step-up challenges, requiring cryptographic request signing, mutual TLS (mTLS), or sender-constrained tokens.</p>
+<p class="lede">Machine-to-machine authentication identifies an automated caller and protects the credential used to reach an API. It may use bearer credentials, client-authenticated token issuance, certificate-bound tokens, proof-of-possession tokens, or signed requests. No mechanism replaces resource-level authorization, credential rotation, replay policy, and workload lifecycle management.</p>
 
-## M2M Authentication Patterns Comparison
+## Compare mechanisms by what the API verifies
 
-| Authentication Pattern | Primary Mechanism | Sender Constrained? | Threat Profile & Failure Mode |
+| Pattern | What proves the caller | Sender-constrained? | Main failure boundary |
 |---|---|---|---|
-| **API Keys** | Static secret token in HTTP Header (`X-API-Key`) | **No** (Bearer credential) | High leakage risk (committed to repos, logged in cleartext). No expiration by default. |
-| **OAuth 2.0 Client Credentials** | `client_id` + `client_secret` exchanged for Access Token (RFC 6749) | **No** (Unless using mTLS/DPoP) | Shared secret exfiltration allows full client impersonation across token lifetime. |
-| **Mutual TLS (mTLS)** | Bi-directional X.509 certificate validation ([RFC 8705](https://datatracker.ietf.org/doc/html/rfc8705)) | **Yes** (Bound to TLS connection) | Requires PKI infrastructure; a stolen bearer token is useless without the bound client certificate's private key, but compromise of that private key (or the client machine holding it) defeats the binding, and it protects only if the server checks certificate binding on every request. |
-| **HMAC Request Signing** | Per-request HMAC digest over headers/body (*AWS SigV4, Stripe*) | **Yes** (Bound to request payload) | Prevents payload tampering and replay attacks via timestamps and nonces. |
-| **DPoP ([RFC 9449](https://datatracker.ietf.org/doc/rfc9449/))** | Demonstrating Proof-of-Possession signed JWT header | **Yes** (Bound to client private key) | Replay resistance depends on the server validating proof-of-possession and rejecting proofs outside a short acceptance window (`iat`) — RFC 9449 §11.1 requires this baseline. Server-issued nonces and `jti` single-use tracking are optional, stronger hardening the spec explicitly does not mandate (nonce tracking, and `jti` checking isn't always feasible across multiple servers with no shared state); without them, a captured proof can still be replayed within that acceptance window. |
+| **API key** | Possession of a static identifier/secret accepted by the API. | Usually no. | Repository/log leakage and indefinite reuse unless expiry, scope, and rotation are added. |
+| **OAuth Client Credentials** | The authorization server authenticates the client using an allowed method—such as client secret, `private_key_jwt`, or mTLS—and issues an access token for the client's own authorization. | The access token is bearer unless a sender-constrained profile is used. | Client-key/secret compromise, over-broad token audience or scope, and weak resource-server validation. |
+| **mTLS client authentication** | The TLS peer proves possession of the private key for an accepted client certificate. | The connection is mutually authenticated, but an independently issued bearer token remains bearer. | PKI issuance/revocation and correct client identity mapping. |
+| **mTLS certificate-bound access token** | RFC 8705 token confirmation binds the token to the client certificate; the resource server matches it on each request. | Yes. | Incorrect certificate-thumbprint enforcement or compromise of the bound private key/client endpoint. |
+| **HMAC request signing** | A MAC over a canonicalized request proves possession of a shared signing secret. | Bound to the covered request fields. | Canonicalization differences, shared-secret disclosure, unsigned fields, and replay unless freshness and duplicate detection are enforced. |
+| **DPoP-bound access token** | A `DPoP` HTTP header carries a signed proof JWT; the resource server matches its key to the token confirmation claim and request. | Yes. | Proof validation, endpoint/method binding, freshness window, nonce policy, and bound-key compromise. |
 
-## AWS Signature Version 4 (SigV4) Signing Protocol
+## Request signing needs explicit freshness and canonicalization
 
-AWS SigV4 never transmits long-term AWS secret keys over the network. Instead, SigV4 derives a single-use daily/regional **signing key** via nested HMACs to sign a canonical HTTP request digest:
+An HMAC or asymmetric signature detects modification of the fields included in its canonical input. Replay resistance is separate. Define which method, path, query, headers, body digest, timestamp, nonce, and credential identifier are signed; define normalization identically at both endpoints; enforce a bounded clock window; and track duplicates when the threat model requires single use.
+
+### AWS Signature Version 4 key derivation
+
+SigV4 derives a signing key scoped to a date, region, and service. That derived key can sign multiple requests in its scope; it is not single-use. The following runnable example demonstrates only key derivation, not canonical-request construction or final request signing:
 
 ```python
-# sigv4_demo.py: Deriving an AWS SigV4 regional signing key
-import hmac, hashlib
+import hashlib
+import hmac
 
-def hmac_sha256(key, msg):
-    return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
+def hmac_sha256(key, message):
+    return hmac.new(key, message.encode(), hashlib.sha256).digest()
 
-secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" # AWS Example Key
-date, region, service = "20260806", "us-east-1", "s3"
+secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"  # AWS documentation example
+date, region, service = "20260813", "us-east-1", "s3"
 
-# 1. Derive nested scoped signing key
-k_date    = hmac_sha256(("AWS4" + secret_key).encode('utf-8'), date)
-k_region  = hmac_sha256(k_date, region)
+k_date = hmac_sha256(("AWS4" + secret_key).encode(), date)
+k_region = hmac_sha256(k_date, region)
 k_service = hmac_sha256(k_region, service)
 k_signing = hmac_sha256(k_service, "aws4_request")
 
-print("Derived 256-bit Signing Key (Hex):", k_signing.hex())
-# Output: Derives 64-character hex string unique to date/region/service
+print(len(k_signing), k_signing.hex())
+# Output invariant: 32 bytes and 64 lowercase hexadecimal characters.
 ```
 
-## Closing the Impersonation Gap: Sender-Constrained Tokens
+A full SigV4 implementation also constructs a canonical request, hashes it, creates a credential-scoped string to sign, calculates the signature, and sends signed headers. Use the cloud SDK where possible because canonicalization edge cases are security- and interoperability-sensitive.
 
-Traditional bearer tokens can be intercepted and replayed by unauthorized third parties. Modern high-assurance M2M architectures deploy sender-constrained tokens:
+## DPoP and mTLS bind tokens differently
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/sender-constrained-tokens.svg' | relative_url }}" alt="Comparison of mTLS-bound and DPoP-bound access tokens, showing how each binds a token to a client-held private key.">
-  <p class="diagram-caption">Sender-constrained tokens require proof of the bound private key</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/sender-constrained-tokens.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the sender-constrained token comparison at full size">
+    <img src="{{ '/assets/img/sender-constrained-tokens.svg' | relative_url }}" alt="Comparison of RFC 8705 certificate-bound access tokens, which are matched to the request's TLS client certificate, and RFC 9449 DPoP-bound access tokens, which are matched to a signed per-request proof JWT.">
+  </a>
+  <p class="diagram-caption">mTLS client authentication and mTLS token binding are distinct; DPoP carries application-layer proof in the DPoP header.</p>
 </div>
+
+For DPoP, validate proof signature and key, `typ`, algorithm, HTTP method (`htm`), target URI (`htu`), issued-at time, unique identifier (`jti`) under the server's replay policy, access-token hash (`ath`) at the resource server, and server nonce when used. RFC 9449 requires an acceptance window for `iat`; nonce and duplicate-`jti` tracking provide stronger replay handling but are not universally mandatory. A captured proof may remain replayable to the same endpoint within the accepted window when stronger controls are absent.
+
+For RFC 8705, distinguish:
+
+1. **mTLS client authentication at the token endpoint**, which authenticates the OAuth client; and
+2. **certificate-bound access tokens**, in which the authorization server records certificate binding and the resource server enforces the same certificate association.
+
+Deploying the first does not automatically provide the second.
+
+## Workload selection and lifecycle
+
+1. Prefer platform/workload federation over distributed static secrets when a trustworthy workload identity is available. See **[Workload Identity Federation]({{ '/topics/workload-identity-federation/' | relative_url }})**.
+2. Scope credentials to one workload, environment, resource, and minimum permission. Separate production from development identities.
+3. Store private keys and secrets in workload-appropriate protected storage; prevent accidental logging and repository inclusion.
+4. Automate issuance and rotation; document overlap, cache, revocation, and outage behavior. Short lifetime reduces but does not eliminate theft risk.
+5. Validate authentication and authorization separately at every API path, including batch, queue consumer, webhook, administrative, and retry paths.
+6. Observe failed proof validation, replay indicators, unusual audiences/scopes, stale credentials, signing-clock drift, and credential use from unexpected environments.
+7. Test compromise and recovery: revoke or remove trust, rotate issuers and keys, invalidate caches, restore service, and prove the old credential no longer works.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Machine-to-machine API authentication must match the caller and threat model: bearer credentials are replayable, while request signing, mTLS-bound tokens, and DPoP-bound tokens add sender proof under their stated verification preconditions. For JWT access tokens, validate the signature and algorithm plus every claim required by the applicable token profile and resource server, including issuer, audience, and time bounds. DPoP still permits limited same-endpoint proof replay unless single-use or nonce checks are enforced.</p>
+  <p>M2M security depends on the exact proof the API validates. Separate client authentication from token binding, request integrity from replay defense, and successful authentication from authorization; prefer short-lived federated workload credentials with tested rotation and revocation.</p>
 </div>
 
 ## Primary references
 
-- **OWASP API Security Top 10:2023**: *Top 10 API Security Risks* — [OWASP API Security Top 10](https://owasp.org/API-Security/)
-- **RFC 7519**: *JSON Web Token (JWT)* — [IETF RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
-- **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)*, verified §11.1's required proof-freshness (`iat`) acceptance window versus its optional nonce and `jti` replay-check mechanisms — [IETF RFC 9449](https://datatracker.ietf.org/doc/rfc9449/)
+- **[RFC 6749: Client Credentials Grant](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.4)** and **[RFC 7523: JWT Client Authentication](https://www.rfc-editor.org/rfc/rfc7523.html)** — verified client-authorization and client-authentication choices.
+- **[RFC 8705: OAuth Mutual-TLS Client Authentication and Certificate-Bound Access Tokens](https://www.rfc-editor.org/rfc/rfc8705.html)** — verified the separation of mTLS client authentication and token binding.
+- **[RFC 9449: OAuth DPoP](https://www.rfc-editor.org/rfc/rfc9449.html)** — verified proof construction, binding, freshness, nonce, and replay considerations.
+- **[AWS Signature Version 4](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html)** — verified signing-key scope and the full canonical-request signing sequence.

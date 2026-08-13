@@ -1,81 +1,82 @@
 ---
 title: "NTLM, Kerberos & HTTP Authentication Schemes"
-description: Architectural guide to HTTP authentication frameworks (RFC 9110), Basic Auth (RFC 7617), NTLM vs Kerberos, AD FS, and Model Context Protocol (MCP) OAuth 2.1.
+description: HTTP challenge-response authentication, Basic, Bearer, and Digest schemes, Windows Negotiate with Kerberos or NTLM, delegation, and AD FS boundaries.
 permalink: /topics/http-auth-schemes/
-last_verified: 2026-08-12
+last_verified: 2026-08-13
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocols</span>
 
 # NTLM, Kerberos & HTTP Authentication Schemes
 
-<p class="lede">HTTP authentication mechanisms specify how callers prove identity to web services and APIs. Standardized under RFC 9110, HTTP authentication uses explicit challenge-response headers (<code>WWW-Authenticate</code> and <code>Authorization</code>). This page analyzes standard HTTP schemes (Basic, Bearer), Windows Active Directory protocols (NTLM, Kerberos), and the Model Context Protocol (MCP) OAuth 2.1 authorization profile.</p>
+<p class="lede">HTTP defines a challenge framework in which a server advertises authentication schemes and a client retries with credentials. Basic, Digest, Bearer, and Negotiate have different credential and replay properties. Authentication success identifies or authenticates a credential holder under the selected scheme; authorization remains a separate resource decision.</p>
 
-## The HTTP Authentication Framework (RFC 9110)
+## The RFC 9110 challenge framework
 
-Standardized in **[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#name-http-authentication)** (which obsoletes RFC 7235), the HTTP authentication handshake uses a standardized challenge-response pattern:
-
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/http-authentication-challenge.svg' | relative_url }}" alt="HTTP authentication sequence in which a server returns a 401 challenge and the client retries with an Authorization header.">
-  <p class="diagram-caption">The challenge selects an authentication scheme; authorization remains a separate decision</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/http-authentication-challenge.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the HTTP authentication challenge diagram at full size">
+    <img src="{{ '/assets/img/http-authentication-challenge.svg' | relative_url }}" alt="HTTP authentication sequence in which a server returns 401 with a WWW-Authenticate challenge, the client selects a supported scheme, and the client retries with Authorization credentials before a separate authorization decision.">
+  </a>
+  <p class="diagram-caption">The challenge selects a credential scheme; the application still evaluates authorization after authentication.</p>
 </div>
 
-| HTTP Authentication Scheme | RFC Standard | Credential Format / Payload | Security Profile |
-|---|---|---|---|
-| **Basic** | RFC 7617 | `Authorization: Basic Base64(username:password)` | **Unsafe over HTTP**; Base64 is cleartext encoding. Requires mandatory TLS. |
-| **Bearer** | RFC 6750 | `Authorization: Bearer <opaque_or_JWT_access_token>` | Requires TLS; token grants access to whoever holds it (possession-based). |
-| **Negotiate (SPNEGO)** | RFC 4559 | `Authorization: Negotiate <Kerberos_Ticket_or_NTLM_Blob>` | Used in Windows enterprise environments for SSO (Kerberos / NTLM). |
-| **Digest** | RFC 7616 | `Authorization: Digest username=..., response=...` | Legacy challenge-response scheme replacing cleartext passwords (*Rarely used today*). |
+| Scheme | Credential behavior | Main boundary |
+|---|---|---|
+| **Basic (RFC 7617)** | Sends Base64-encoded `user-id:password` with requests. | Base64 provides no confidentiality; TLS, credential storage, scope, and rotation carry the security burden. |
+| **Bearer (RFC 6750)** | Sends an access token whose possession authorizes use under the token's scope and resource-server policy. | A stolen valid token can normally be replayed until it expires or is revoked unless a sender-constrained profile is used. |
+| **Digest (RFC 7616)** | Sends a digest response derived from credentials, method, URI, challenge, and nonce rather than sending the password directly. | Legacy and rarely deployed; protects neither the entity body nor all headers by default, depends on password-equivalent verifier handling, and still needs TLS against active attacks and metadata exposure. |
+| **Negotiate (RFC 4559)** | Carries SPNEGO tokens that commonly select Kerberos and may fall back to NTLM in Windows environments. | Security depends on the selected mechanism, service principal, channel/configuration, and whether fallback is allowed. |
 
-## HTTP Basic Authentication (RFC 7617)
-
-**HTTP Basic Auth** concatenates `username` and `password` separated by a colon, Base64-encoding the resulting string:
+### Basic authentication demonstration
 
 ```bash
-# Generate HTTP Basic Auth Header Payload
 python3 -c "import base64; print(base64.b64encode(b'Aladdin:open sesame').decode())"
 # Output: QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 ```
 
-<div class="callout warn">
-  <span class="callout-title">Base64 Encodes Data; It Does Not Encrypt It</span>
-  <p>Base64 encoding provides zero confidentiality. Anyone inspecting an HTTP trace can decode `QWxhZGRpbjpvcGVuIHNlc2FtZQ==` instantly back into cleartext credentials. Basic Auth must strictly run over encrypted TLS transport channels.</p>
-</div>
+Anyone who obtains that header can decode and reuse the credentials. TLS protects the header in transit only between its TLS endpoints; logs, proxies, browser storage, endpoint compromise, and over-broad credential scope remain risks.
 
-## Windows Enterprise Authentication: NTLM vs Kerberos
+## Kerberos and NTLM under Windows Negotiate
 
-Active Directory (AD) enterprise environments use two primary authentication protocols:
-
-| Feature | NTLM (NT LAN Manager) | Kerberos v5 (RFC 4120) |
+| Axis | NTLM | Kerberos v5 |
 |---|---|---|
-| **Protocol Type** | 3-Way Challenge-Response (Negotiate, Challenge, Authenticate) | Key Distribution Center (KDC) Ticket-Granting Architecture |
-| **Mutual Authentication** | **No**: Server authenticates client; client cannot verify server. | **Yes**: Client and server verify each other's identity via KDC. |
-| **Delegation Support** | No support (Vulnerable to NTLM relay attacks). | Full support via Kerberos constrained delegation (KCD). |
-| **Performance Impact** | Challenge-response handshake occurs per connection/session, not per individual HTTP request; a domain account may still require a Domain Controller round-trip whenever a new access token is needed unless the server can validate locally (e.g., a local account lookup). | Client requests reusable Ticket-Granting Ticket (TGT); no DC load per call. |
-| **Security Status** | **Deprecated Fallback**: Vulnerable to relay and pass-the-hash attacks. | **Primary AD Standard**: Fast, scalable, mutually authenticated. |
+| **Mechanism** | Challenge-response based on password-derived secrets. | The client obtains a ticket-granting ticket (TGT), then service tickets from the Key Distribution Center (KDC). |
+| **Server authentication** | Does not provide Kerberos-equivalent service authentication and is exposed to relay when channel/service protections are absent. | The service proves possession of the service key; mutual authentication depends on the protocol exchange and application configuration. |
+| **Credential reuse attacks** | Password-hash disclosure can enable pass-the-hash and relaying in susceptible configurations. | Ticket or key disclosure can enable pass-the-ticket or forged-ticket attacks within the compromised principal/key scope. |
+| **Delegation** | Does not provide Kerberos delegation semantics. | Unconstrained, constrained, and resource-based constrained delegation have different trust and blast-radius properties; delegation is not automatically enabled or safe. |
+| **Directory traffic** | A server handling a domain account may need a domain-controller exchange for a new NTLM authentication. Connection reuse can avoid doing so for every HTTP request. | The client contacts a KDC to obtain/renew TGTs and service tickets; a cached valid service ticket avoids a KDC request for every application call. |
 
-## Model Context Protocol (MCP) Authorization Profile
+Kerberos failures commonly fall back to NTLM because of missing service principal names, name-resolution errors, aliases, clock problems, or application configuration. Monitor the negotiated mechanism rather than assuming “Negotiate” means Kerberos.
 
-The **Model Context Protocol (MCP)** specification profiles **OAuth 2.1** for securing client-to-server AI agent communications over HTTP/SSE transports:
+Microsoft has removed NTLMv1 from Windows Server 2025 and deprecated broader NTLM use, including NTLMv2, for future removal. Existing dependencies require discovery, Kerberos remediation, explicit fallback reduction, and validation—not merely disabling NTLM without understanding service accounts, workgroups, local accounts, and legacy devices.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/mcp-oauth-discovery.svg' | relative_url }}" alt="MCP OAuth discovery sequence using Protected Resource Metadata to locate an authorization server and obtain a resource-bound token.">
-  <p class="diagram-caption">The MCP client discovers the authorization server before requesting a token for the resource</p>
-</div>
+## Delegation and AD FS boundaries
 
-### Core MCP Security Requirements
+Kerberos delegation lets a front-end service obtain or use credentials to call a downstream service for a user. Prefer narrowly scoped constrained or resource-based constrained delegation, protect service-account keys, and test the exact service principal and protocol-transition configuration. Unconstrained delegation expands the credential-theft blast radius.
 
-- **RFC 9728 (Protected Resource Metadata)**: MCP servers return a `401 Unauthorized` with `WWW-Authenticate` pointing to protected resource metadata.
-- **RFC 8707 (Resource Indicators)**: Token requests MUST specify the `resource` parameter set to the target MCP server's canonical URI.
-- **Anti-Token Passthrough Rule**: MCP servers MUST validate the token audience (`aud`) and reject incoming tokens that were issued for third-party upstream APIs to prevent "confused deputy" attacks.
+Active Directory Federation Services (AD FS) is a federation service that can issue SAML assertions and OAuth/OIDC tokens after authenticating against Active Directory or another source. It is not an HTTP authentication scheme alongside Basic or Negotiate. A deployment may use Windows Integrated Authentication to sign into AD FS and then use a federation protocol to reach the application; keep those two protocol boundaries distinct.
+
+The current MCP OAuth profile is maintained separately in **[Model Context Protocol Authorization]({{ '/topics/mcp-authorization/' | relative_url }})**.
+
+## Operational selection and validation
+
+- Prefer short-lived, audience-restricted access tokens or Kerberos for managed SSO scenarios rather than distributing reusable passwords through Basic.
+- Require TLS for all schemes; TLS does not repair replayable credential design or a compromised endpoint.
+- Pin allowed authentication schemes and disable unsafe downgrade/fallback paths where dependencies permit.
+- Validate the final authenticated principal, service name, token audience/scope where relevant, and local authorization on every protected route.
+- Observe scheme negotiation, authentication failures, fallback, ticket/token age, service-account use, and privileged delegation.
+- Test credential rotation, key rollover, password change, account disablement, ticket/token expiry, revocation behavior, and disaster recovery.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>A bearer token authenticates whoever holds it, not a specific client — anyone possessing it can impersonate the subject, so pair it with TLS and short lifetimes. DPoP and mTLS instead bind a token to a client-held private key, so a stolen token alone can't be replayed.</p>
+  <p>HTTP authentication is a challenge framework, not one security property. Identify the actual negotiated scheme, protect its credential lifecycle and transport, prevent unintended downgrade, and enforce authorization after authentication. AD FS federation is a separate layer that may itself use Windows authentication.</p>
 </div>
 
 ## Primary references
 
-- **RFC 6750**: *The OAuth 2.0 Authorization Framework: Bearer Token Usage* — [IETF RFC 6750](https://www.rfc-editor.org/rfc/rfc6750)
-- **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)* — [IETF RFC 9449](https://www.rfc-editor.org/rfc/rfc9449)
-- **NTLM overview**: *Microsoft Learn, Windows Server security* — [NTLM overview](https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview) — verified when a resource server contacts a domain controller vs. validates a domain/local account locally.
+- **[RFC 9110: HTTP Semantics — Authentication](https://www.rfc-editor.org/rfc/rfc9110.html#name-http-authentication)** — verified HTTP challenge and credential framework semantics.
+- **[RFC 7617: The Basic HTTP Authentication Scheme](https://www.rfc-editor.org/rfc/rfc7617.html)** and **[RFC 7616: HTTP Digest Access Authentication](https://www.rfc-editor.org/rfc/rfc7616.html)** — verified Basic and Digest credential behavior and limitations.
+- **[RFC 4559: SPNEGO-based Kerberos and NTLM HTTP Authentication](https://www.rfc-editor.org/rfc/rfc4559.html)** — verified HTTP Negotiate behavior.
+- **[RFC 4120: The Kerberos Network Authentication Service](https://www.rfc-editor.org/rfc/rfc4120.html)** — verified ticket, KDC, and service-authentication mechanics.
+- **[Microsoft: NTLM overview](https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview)** and **[removed or deprecated Windows Server features](https://learn.microsoft.com/en-us/windows-server/get-started/removed-deprecated-features-windows-server)** — verified NTLM operating behavior and current lifecycle status.
+- **[Microsoft: AD FS overview](https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/ad-fs-overview)** — verified the federation-service boundary.
