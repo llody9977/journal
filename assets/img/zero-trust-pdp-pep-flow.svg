@@ -1,0 +1,78 @@
+<svg viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ztflow-title ztflow-desc">
+  <title id="ztflow-title">One access request through the SP 800-207 control plane and data plane</title>
+  <desc id="ztflow-desc">A control plane band at the top holds three boxes: policy inputs from the identity provider, asset posture systems, and threat intelligence; the policy engine, which makes and logs the grant or deny decision using a trust algorithm; and the policy administrator, which establishes or shuts down the communication path and issues session credentials. A data plane band below holds the subject and device, the policy enforcement point, and the enterprise resource. Numbered arrows run from the subject to the enforcement point, up the control plane to the administrator and engine, back down as a configure or terminate command, and finally through to the resource. A footer notes that the control plane carries decisions and the data plane carries application traffic, and that terminating a session at the enforcement point is not the same as invalidating an already-issued self-contained token.</desc>
+  <rect width="1200" height="580" fill="#ffffff"/>
+
+  <defs>
+    <marker id="ztfA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="ztfB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">One request through the PDP and the PEP</text>
+  <text x="50" y="72" font-size="14" fill="#475569">SP 800-207 splits the policy decision point into a policy engine and a policy administrator, on a control plane separate from application traffic.</text>
+
+  <rect x="40" y="96" width="1120" height="152" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">CONTROL PLANE &#8212; POLICY DECISION POINT</text>
+
+  <rect x="62" y="132" width="320" height="98" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="82" y="156" font-size="13" font-weight="800" fill="#0f172a">Policy inputs</text>
+  <text x="82" y="178" font-size="12" fill="#475569">Identity and attributes (IdP)</text>
+  <text x="82" y="197" font-size="12" fill="#475569">Asset posture (CDM / EDR)</text>
+  <text x="82" y="216" font-size="12" fill="#475569">Threat intelligence, activity logs</text>
+
+  <rect x="410" y="132" width="330" height="98" rx="11" fill="#193e9f"/>
+  <text x="432" y="156" font-size="13" font-weight="800" fill="#ffffff">Policy engine (PE)</text>
+  <text x="432" y="178" font-size="12" fill="#c9d7fb">Runs the trust algorithm and makes</text>
+  <text x="432" y="197" font-size="12" fill="#c9d7fb">the ultimate grant, deny, or revoke</text>
+  <text x="432" y="216" font-size="12" fill="#c9d7fb">decision, and logs it.</text>
+
+  <rect x="768" y="132" width="370" height="98" rx="11" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <text x="790" y="156" font-size="13" font-weight="800" fill="#0f172a">Policy administrator (PA)</text>
+  <text x="790" y="178" font-size="12" fill="#475569">Executes the decision: establishes or shuts</text>
+  <text x="790" y="197" font-size="12" fill="#475569">down the communication path and issues any</text>
+  <text x="790" y="216" font-size="12" fill="#475569">session credential or token.</text>
+
+  <path d="M386 181 L406 181" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#ztfB)"/>
+  <path d="M744 172 L764 172" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#ztfB)"/>
+  <path d="M764 196 L744 196" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#ztfB)"/>
+
+  <rect x="40" y="304" width="1120" height="140" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="328" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">DATA PLANE &#8212; APPLICATION TRAFFIC</text>
+
+  <rect x="62" y="342" width="300" height="86" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="82" y="368" font-size="13" font-weight="800" fill="#0f172a">Subject and device</text>
+  <text x="82" y="390" font-size="12" fill="#475569">Untrusted by default, wherever</text>
+  <text x="82" y="409" font-size="12" fill="#475569">it sits on the network.</text>
+
+  <rect x="450" y="342" width="300" height="86" rx="11" fill="#0f766e"/>
+  <text x="470" y="368" font-size="13" font-weight="800" fill="#ffffff">Policy enforcement point</text>
+  <text x="470" y="390" font-size="12" fill="#cdeae6">Enables, monitors, and eventually</text>
+  <text x="470" y="409" font-size="12" fill="#cdeae6">terminates the connection.</text>
+
+  <rect x="838" y="342" width="300" height="86" rx="11" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+  <text x="858" y="368" font-size="13" font-weight="800" fill="#0f172a">Enterprise resource</text>
+  <text x="858" y="390" font-size="12" fill="#475569">Reached only through the</text>
+  <text x="858" y="409" font-size="12" fill="#475569">enforcement point.</text>
+
+  <path d="M366 385 L446 385" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ztfA)"/>
+  <text x="406" y="376" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0f172a">1</text>
+
+  <path d="M754 385 L834 385" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ztfA)"/>
+  <text x="794" y="376" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0f172a">4</text>
+
+  <path d="M640 338 L640 252" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ztfA)"/>
+  <text x="656" y="298" font-size="11.5" font-weight="800" fill="#0f172a">2 forward request</text>
+
+  <path d="M900 252 L900 338" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ztfA)"/>
+  <text x="916" y="298" font-size="11.5" font-weight="800" fill="#0f172a">3 configure or terminate</text>
+
+  <rect x="40" y="462" width="1120" height="98" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="486" font-size="12.5" fill="#475569">The split matters operationally: the <tspan font-weight="700" fill="#0f172a">control plane carries decisions</tspan> and the <tspan font-weight="700" fill="#0f172a">data plane carries application traffic</tspan>, so a compromise of</text>
+  <text x="62" y="506" font-size="12.5" fill="#475569">one does not automatically hand over the other. SP 800-207 section 5 treats the decision process itself as a target, along with denial of service</text>
+  <text x="62" y="526" font-size="12.5" fill="#475569">against the PE and PA, stolen credentials, and the enterprise's own store of asset and network information.</text>
+  <text x="62" y="550" font-size="12.5" font-weight="700" fill="#9f1239">Terminating a session at the PEP is not the same as invalidating a self-contained token a resource server validates locally.</text>
+</svg>

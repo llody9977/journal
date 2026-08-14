@@ -2828,6 +2828,341 @@
       "superseded_by": null,
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0052",
+      "title": "Extend the one-image-per-diagram-frame rule to Section 9 and give all eight frames their own diagram",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-design-principles.md",
+          "topics/zero-trust-architecture.md",
+          "topics/privacy-by-design-pets.md",
+          "topics/cloud-secure-architecture-patterns.md",
+          "assets/img/security-design-principles.svg",
+          "assets/img/defense-in-depth-tiers.svg",
+          "assets/img/zero-trust-architecture.svg",
+          "assets/img/zero-trust-pdp-pep-flow.svg",
+          "assets/img/privacy-by-design-pets.svg",
+          "assets/img/cloud-secure-architecture-patterns.svg",
+          "assets/img/cloud-service-perimeters.svg",
+          "assets/img/immutable-infrastructure-lifecycle.svg"
+        ],
+        "concepts": [
+          "diagram caption agreement",
+          "duplicate diagram reuse",
+          "alt text accuracy",
+          "full-size diagram affordance",
+          "mobile diagram legibility"
+        ]
+      },
+      "originating_feedback": "A fresh Section 9 review rendered every page and found seven diagram frames drawing on three images: 9.1 embedded one image twice, 9.2 twice, and 9.4 three times, under captions promising a five-tier defense-in-depth stack, a PDP and PEP logical architecture, PrivateLink subnet endpoints, and a Git commit to atomic node replacement lifecycle, none of which existed in any image. Browser measurement at a 375px viewport found the 1200-wide diagrams rendering 285px across, putting 11.5px body text at an effective 2.7 CSS px, and only 9.3 offered the full-size affordance already used by 34 other topic pages. The 9.3 diagram's alt text and caption also claimed seven Privacy by Design principles while the panel showed five.",
+      "decision": "Apply the rule recorded in CD-0033 and extended by CD-0038 and CD-0049 to Section 9: build a dedicated SVG for every diagram frame, rewrite each caption and alt string to describe only what its own image shows, complete the Privacy by Design panel so all seven principles appear, and wrap every Section 9 frame in the repository's diagram-frame-openable pattern.",
+      "rationale": "CD-0033 established this rule from a Section 6 review, CD-0038 extended it to Section 7 and CD-0049 to Section 8, but each recorded only its own section's files in scope, so the identical defect class survived untouched into Section 9 for the fourth time. The rule is repository-wide in substance: a caption naming content the image lacks teaches the wrong thing, and an alt string describing a non-existent diagram is worse for a screen-reader user than no diagram at all. Neither is visible to syntax, link, or structure checks, which is why CD-0057 adds a detector rather than relying on the next reviewer noticing.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-207: Zero Trust Architecture",
+          "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+          "supports": "The PE, PA, and PEP relationships and the control-plane/data-plane split drawn in the new request-flow diagram."
+        }
+      ],
+      "verification_methods": [
+        "Render every Section 9 page and confirm no image appears in two frames.",
+        "Measure every Section 9 SVG in a browser for text crossing its viewBox or panel strokes.",
+        "Confirm each caption and alt string names only content visible in its own image."
+      ],
+      "approved_outcome": "Eight Section 9 diagram frames, each with its own purpose-built image — seven newly built or rebuilt plus the corrected Privacy by Design panel — matching caption and alt text, zero measured text overflow across all eight SVGs (216 text nodes), and a full-size link on every frame.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated.",
+        "Rendered evidence shows a replacement diagram clipping or misrepresenting its subject."
+      ],
+      "related_decisions": [
+        "CD-0033",
+        "CD-0038",
+        "CD-0049",
+        "CD-0057"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0053",
+      "title": "Label Section 9 author-created checklists as journal working models and scope its page descriptions",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-design-principles.md",
+          "topics/zero-trust-architecture.md",
+          "topics/privacy-by-design-pets.md",
+          "topics/cloud-secure-architecture-patterns.md"
+        ],
+        "concepts": [
+          "journal working model labelling",
+          "diagnostic checklist provenance",
+          "comprehensive scope claim",
+          "page description accuracy"
+        ]
+      },
+      "originating_feedback": "A fresh Section 9 review found that all four pages presented six-row author-created diagnostic checklists with audit-evidence columns as though drawn from a published standard, with no qualifying label anywhere in the section, while 24 other journal pages label such content explicitly. All four descriptions opened 'Comprehensive technical guide to' while required foundational gaps remained on three of the four pages.",
+      "decision": "Apply the rule recorded in CD-0035 and extended by CD-0050 to Section 9: prefix every author-created diagnostic checklist with an explicit journal-working-model statement, and change each page description from 'Comprehensive technical guide to' to 'Technical reference for'.",
+      "rationale": "WRITING_STYLE requires an author-created synthesis to be labelled so a reader cannot mistake it for an official model, and requires a comprehensiveness claim to define and justify its scope. CD-0050 recorded that the remaining pages carrying the phrase were an unsettled scoping question; this settles it for Section 9 only. Eleven further journal pages in Sections 10 to 12 still open with the phrase.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm each Section 9 checklist carries a journal-working-model statement.",
+        "Confirm no Section 9 description opens with a comprehensiveness claim."
+      ],
+      "approved_outcome": "Every Section 9 checklist states its provenance, and no Section 9 description claims comprehensive coverage.",
+      "invalidation_conditions": [
+        "A checklist is replaced by one derived from a published audit standard, which should then be cited instead of labelled.",
+        "A page's scope is defined and justified such that a comprehensiveness claim becomes supportable."
+      ],
+      "related_decisions": [
+        "CD-0035",
+        "CD-0050"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0054",
+      "title": "Teach the seven tenets of NIST SP 800-207, attribute the Microsoft and Gartner framings, and state what revocation actually ends",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/zero-trust-architecture.md",
+          "assets/img/zero-trust-architecture.svg",
+          "assets/img/zero-trust-pdp-pep-flow.svg"
+        ],
+        "concepts": [
+          "zero trust tenets",
+          "assume breach attribution",
+          "CARTA attribution",
+          "token revocation semantics",
+          "ZTA threat model",
+          "normative strength of NIST guidance"
+        ]
+      },
+      "originating_feedback": "A fresh Section 9 review found that Topic 9.2, titled for NIST SP 800-207, taught 'The Three Core Tenets of Zero Trust' as assume breach, explicit verification, and least privilege access, repeated across the description, callout, diagram, and alt text. Text extracted directly from the SP 800-207 PDF shows section 2.1 enumerates seven tenets and that the strings 'assume breach' and 'CARTA' appear zero times in the document. The page also presented CARTA inside a box labelled as the NIST control plane, described SP 800-207 as governing and authoritative, claimed a risk signal revokes an active session token immediately via short-lived JWTs or RFC 7009, and carried no threat model for the architecture at all.",
+      "decision": "Replace the three-principle section with the seven tenets as SP 800-207 states them, including the document's own framing of them as an ideal goal. Attribute 'verify explicitly, least privilege, assume breach' to Microsoft and CARTA to Gartner, and present tenet 6 and the section 3.3 trust algorithm as the NIST statement of continuous re-evaluation. Describe SP 800-207 as a reference model rather than governing or authoritative. Separate what a PEP termination, an RFC 7009 revocation, and a locally validated self-contained JWT each actually end. Add the seven threats from SP 800-207 section 5, and the three approaches and four deployment variations from section 3.",
+      "rationale": "Attributing a vendor's three-principle summary to a NIST publication on a page titled for that publication is the most consequential defect available on this page: it is the reader's whole recall of what the standard says. The revocation claim is the second: treating a short token lifetime as revocation leaves a residual window equal to the token's remaining life, and self-contained tokens validated locally are the common deployment. Section 5 was the largest gap, because concentrating access decisions into a control plane makes the PDP simultaneously the highest-value target and a hard availability dependency, and no summary of Zero Trust that omits this is usable for design.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-207: Zero Trust Architecture",
+          "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+          "supports": "Seven tenets in section 2.1 and their ideal-goal framing; PE, PA, and PEP definitions and the trust algorithm in section 3; three approaches and four deployment variations; seven threats in section 5; and the absence of the terms 'assume breach' and 'CARTA'."
+        },
+        {
+          "title": "Microsoft: Zero Trust as a security foundation",
+          "url": "https://learn.microsoft.com/en-us/security/zero-trust/zero-trust-overview",
+          "supports": "That verify explicitly, use least privilege access, and assume breach are Microsoft's three Zero Trust principles."
+        },
+        {
+          "title": "RFC 7009: OAuth 2.0 Token Revocation",
+          "url": "https://www.rfc-editor.org/rfc/rfc7009",
+          "supports": "That revocation is performed at the authorization server, so a self-contained token validated locally by a resource server stays acceptable until it expires."
+        }
+      ],
+      "verification_methods": [
+        "Compare the enumerated tenets against section 2.1 of the SP 800-207 PDF.",
+        "Confirm no representation on the page or in its diagrams attributes 'assume breach' or CARTA to NIST.",
+        "Confirm the revocation paragraph distinguishes PEP termination, authorization-server revocation, and local token validation."
+      ],
+      "approved_outcome": "Topic 9.2 teaches SP 800-207's seven tenets with correct attribution for the vendor and analyst framings, states SP 800-207's guidance status, separates the three revocation mechanisms, and covers the section 5 threats to the architecture itself.",
+      "invalidation_conditions": [
+        "NIST publishes a revision of SP 800-207 that changes the tenet set or the component model.",
+        "A later specification changes how token revocation propagates to locally validated tokens."
+      ],
+      "related_decisions": [
+        "CD-0028",
+        "CD-0052"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0055",
+      "title": "State cloud isolation and perimeter controls as bounded by the condition each depends on, using what the providers document",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cloud-secure-architecture-patterns.md",
+          "assets/img/cloud-secure-architecture-patterns.svg",
+          "assets/img/cloud-service-perimeters.svg",
+          "assets/img/immutable-infrastructure-lifecycle.svg"
+        ],
+        "concepts": [
+          "multi-tenant isolation",
+          "gVisor classification",
+          "VPC Service Controls limits",
+          "PrivateLink scope",
+          "tmpfs noexec default",
+          "service control policies",
+          "shared responsibility model"
+        ]
+      },
+      "originating_feedback": "A fresh Section 9 review found Topic 9.4 classifying gVisor as a MicroVM, naming AWS Service Catalog as the AWS analogue of VPC Service Controls, claiming that microVM isolation eliminates container breakout, that PrivateLink eliminates public internet exposure, and that VPC Service Controls prevents unauthorized data movement even if valid IAM credentials are compromised, and stating that a read-only root filesystem forces writes into non-executable tmpfs mounts. The page also attributed AWS elastic network interface terminology to Azure Private Link, gave an unsourced 24-hour node recycling interval, and never defined the shared responsibility model the rest of the page assumes.",
+      "decision": "Give every isolation layer an explicit condition column stating what has to hold. Classify gVisor as a userspace application kernel distinct from a hardware-virtualized microVM. Replace AWS Service Catalog with service control policies, resource control policies, and VPC endpoint policies. Restate the VPC Service Controls claim inside Google's documented scope, including unsupported services, metadata movement, and callers already inside the perimeter. State that PrivateLink does not remove a service's public endpoint or restrict the reachable target set without an endpoint policy, and use Azure's own term, private endpoint. State that neither Docker's --tmpfs nor a Kubernetes memory-backed emptyDir applies noexec by default. Label the node recycling interval as local operational policy, and open the page with the shared responsibility model.",
+      "rationale": "Every corrected claim failed in the same direction: an absolute where the provider documents a condition. The tmpfs claim is the most directly exploitable, because a reader following it believes scratch space is non-executable when it is not, which is exactly the surface a post-exploitation dropper uses. The gVisor classification matters because the row's whole purpose is to distinguish isolation strengths, and a userspace syscall interceptor has a materially different threat model from hardware virtualization.",
+      "authoritative_sources": [
+        {
+          "title": "Google Cloud: VPC Service Controls overview",
+          "url": "https://cloud.google.com/vpc-service-controls/docs/overview",
+          "supports": "That the perimeter denies access from unauthorized networks using stolen credentials, covers supported services only, is not designed to enforce comprehensive controls on metadata movement, and complements rather than replaces IAM."
+        },
+        {
+          "title": "gVisor documentation",
+          "url": "https://gvisor.dev/docs/",
+          "supports": "That gVisor is an application kernel intercepting system calls in userspace and is explicitly not a virtual machine."
+        },
+        {
+          "title": "Docker: tmpfs mounts",
+          "url": "https://docs.docker.com/engine/storage/tmpfs/",
+          "supports": "That noexec is not a default tmpfs mount option and must be specified explicitly."
+        },
+        {
+          "title": "Microsoft: What is Azure Private Link?",
+          "url": "https://learn.microsoft.com/en-us/azure/private-link/private-link-overview",
+          "supports": "That Azure's construct is a private endpoint in a virtual network and that instance-level mapping is what provides leakage protection."
+        },
+        {
+          "title": "AWS: What Is Service Catalog?",
+          "url": "https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html",
+          "supports": "That AWS Service Catalog governs provisioning of approved products and is not a service perimeter or exfiltration control."
+        }
+      ],
+      "verification_methods": [
+        "Confirm no isolation or perimeter claim on the page is stated without its condition.",
+        "Confirm each provider claim matches the scope stated in that provider's own documentation."
+      ],
+      "approved_outcome": "Topic 9.4 states each isolation layer with the assumption it rests on, each perimeter control with what it does not stop, and the tmpfs and node-recycling details as the providers and local policy actually define them.",
+      "invalidation_conditions": [
+        "A provider changes the documented scope or default behavior of one of these controls.",
+        "Docker or Kubernetes changes the default mount options for tmpfs or memory-backed emptyDir."
+      ],
+      "related_decisions": [
+        "CD-0052",
+        "CD-0053"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0056",
+      "title": "Restore the fail-safe versus fail-open boundary and the layer-independence condition on Topic 9.1, and align complete mediation with Topics 1.6 and 4.2",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-design-principles.md",
+          "assets/img/security-design-principles.svg",
+          "assets/img/defense-in-depth-tiers.svg"
+        ],
+        "concepts": [
+          "Saltzer and Schroeder principles",
+          "fail-safe versus fail-open",
+          "complete mediation caching",
+          "layer independence",
+          "normative strength",
+          "work factor and compromise recording"
+        ]
+      },
+      "originating_feedback": "A fresh Section 9 review found Topic 9.1 defining complete mediation as checking every request 'without relying on cached decisions', which contradicts Topic 1.6's 'without caching permission decisions indefinitely' and Topic 4.2's statement that a bounded, revocable cached decision preserves complete mediation. The page also called the eight principles 'the authoritative foundation' and rendered all eight as must statements, asserted without condition that a failure in one tier is contained by the next, omitted the fail-safe versus fail-open boundary that Topic 1.6 explicitly warns about, omitted that defense in depth is not one of the eight, and cited the paper through a West Virginia University URL that no longer resolves while labelling the link IEEE Proceedings.",
+      "decision": "Define complete mediation as checking every access on every invocation with caching permitted only under bounded freshness and propagating revocation. Present the eight as design heuristics rather than an authoritative standard, add the paper's two further principles (work factor and compromise recording) with its own caveat that they apply only imperfectly, and state that defense in depth and separation of duties are not among the eight. Add a section separating fail-safe defaults, fail-closed, and fail-open, and noting that the safe direction in safety engineering is hazard-dependent. Add the independence condition to defense in depth and state that layering lowers likelihood rather than eliminating it. Replace the dead reference with the author-hosted MIT copy and correct the citation.",
+      "rationale": "The caching definition was a direct cross-page contradiction, and 9.1 is the page a reader consults first, so the stricter wrong reading is the one that sticks. The fail-safe boundary is the omission with the largest practical consequence: 'fail-safe' and 'fail-open' are not synonyms, and a system that fails in the wrong direction during an outage fails silently. Stating layer independence matters because counting boxes on an architecture diagram is the usual substitute for counting independent failure modes.",
+      "authoritative_sources": [
+        {
+          "title": "Saltzer & Schroeder, The Protection of Information in Computer Systems",
+          "url": "https://web.mit.edu/Saltzer/www/publications/protection/",
+          "supports": "The eight enumerated design principles and their definitions, and the two further principles from physical security that the paper states apply only imperfectly to computer systems."
+        }
+      ],
+      "verification_methods": [
+        "Compare the complete mediation wording against Topics 1.6 and 4.2.",
+        "Confirm the reference URL resolves and that the citation names the correct publication venue.",
+        "Confirm the page states that defense in depth is not among the eight."
+      ],
+      "approved_outcome": "Topic 9.1 states the eight principles as heuristics with their trade-offs, separates fail-safe from fail-open, gives defense in depth its independence condition, and cites a resolving primary source.",
+      "invalidation_conditions": [
+        "Topic 1.6 or 4.2 changes its position on bounded caching, which would require all three to move together.",
+        "A different authoritative copy of the 1975 paper becomes the repository's preferred citation."
+      ],
+      "related_decisions": [
+        "CD-0006",
+        "CD-0052",
+        "CD-0053"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0057",
+      "title": "Detect Markdown inside block-level raw HTML and reused diagram images in the rendering-hazard check",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_rendering_hazards.py",
+          "topics/certificates.md",
+          "topics/security-objectives-properties.md",
+          "topics/tls-ssl-handshake.md",
+          "topics/zero-trust-architecture.md",
+          "topics/hash-collisions-length-extension.md",
+          "topics/key-exchange-derivation.md"
+        ],
+        "concepts": [
+          "rendering hazard check",
+          "check coverage gap",
+          "kramdown block HTML",
+          "duplicate diagram reuse",
+          "markdown emphasis",
+          "pipe reparsed as table",
+          "rendered-output verification"
+        ]
+      },
+      "originating_feedback": "A fresh Section 9 review found the Topic 9.2 lede rendering literal asterisks around 'Assume Breach' in the browser, because kramdown does not parse Markdown inside block-level raw HTML such as a <p class=\"lede\"> element. Every automated check in the repository passed on that page. The same review found seven diagram frames drawing on three images, the fourth consecutive section to carry that defect, with no check able to see it. A scan of the built HTML for literal asterisks additionally found two formula lines whose '||' concatenation operators had been counted by kramdown as GFM table delimiters, restructuring the paragraph into a table and breaking the emphasis: the naive MAC construction on Topic 2.8 and the HKDF-Expand block formula on Topic 2.9.",
+      "decision": "Extend scripts/verify_rendering_hazards.py with two detectors: Markdown emphasis or links inside block-level raw HTML, reported as a blocking failure; and one image used by more than one diagram frame on a page, reported as a non-blocking warning that names every remaining occurrence. Fix the three pre-existing block-HTML findings on Topics 2.12, 1.3, and 2.13. Fix the two pipe-reparsed formulas with the <p class=\"formula\"> pattern and HTML pipe entities. Do not add a source-level detector for that class: both candidate patterns tested against the repository matched dozens of Liquid filter expressions and JavaScript logical-or operators, so the reliable detector is a scan of built HTML for literal Markdown, which is a rendered-output check rather than a source check.",
+      "rationale": "Both defects are invisible to syntax, link, and structure checks and both had survived multiple reviews, which is the same argument that produced CD-0034, CD-0042, and CD-0047 for math spans. The block-HTML case blocks because the fix is a one-line substitution with no judgment involved. The reused-image case warns rather than blocks because replacing a frame requires a purpose-built diagram whose content has been checked against a page, which the register has done one section at a time; a warning keeps the remaining eight files visible instead of letting each review rediscover them.",
+      "authoritative_sources": [
+        {
+          "title": "kramdown syntax: HTML blocks",
+          "url": "https://kramdown.gettalong.org/syntax.html",
+          "supports": "That Markdown inside block-level HTML is not parsed unless the parser is configured for it, so emphasis written there reaches the reader as source text."
+        }
+      ],
+      "verification_methods": [
+        "Run the check against a page with known Markdown inside a lede and confirm it fails.",
+        "Run the check against Section 9 after remediation and confirm no reused image is reported.",
+        "Confirm the warning path exits zero so the publishing gate is not blocked by the tracked backlog.",
+        "Scan the built HTML of all 94 topic pages for literal '**' and confirm none remains."
+      ],
+      "approved_outcome": "The rendering-hazard check blocks on Markdown inside block-level raw HTML, reports every reused diagram image as a named warning, and passes cleanly across all 94 topic files after the three pre-existing block-HTML findings are fixed.",
+      "invalidation_conditions": [
+        "The site adopts a kramdown configuration that parses Markdown inside block HTML.",
+        "The one-image-per-frame rule is completed across every section, at which point the warning can become a blocking failure."
+      ],
+      "related_decisions": [
+        "CD-0034",
+        "CD-0047",
+        "CD-0052"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
     }
   ]
 }

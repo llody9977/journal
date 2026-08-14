@@ -9,7 +9,7 @@ last_verified: 2026-08-13
 
 # Public Key Infrastructure (PKI) & X.509 Certificates
 
-<p class="lede">Public Key Infrastructure (PKI) binds public keys to an identifier vetted by a trusted Certificate Authority (CA), using digital signatures. What that identifier actually proves depends on the validation level: the overwhelming majority of publicly-trusted TLS certificates today are **Domain Validated (DV)**, meaning the CA confirmed the applicant controls the domain name — not that it verified any real-world organizational identity behind it. **Organization Validated (OV)** and **Extended Validation (EV)** certificates additionally vet a legal entity, but DV is the default for most web traffic. X.509 certificates provide the trust anchor for TLS, S/MIME, code signing, and mutual TLS (mTLS) identity verification across open networks.</p>
+<p class="lede">Public Key Infrastructure (PKI) binds public keys to an identifier vetted by a trusted Certificate Authority (CA), using digital signatures. What that identifier actually proves depends on the validation level: the overwhelming majority of publicly-trusted TLS certificates today are <strong>Domain Validated (DV)</strong>, meaning the CA confirmed the applicant controls the domain name — not that it verified any real-world organizational identity behind it. <strong>Organization Validated (OV)</strong> and <strong>Extended Validation (EV)</strong> certificates additionally vet a legal entity, but DV is the default for most web traffic. X.509 certificates provide the trust anchor for TLS, S/MIME, code signing, and mutual TLS (mTLS) identity verification across open networks.</p>
 
 ## Core PKI Components & Trust Model
 

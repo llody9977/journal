@@ -1,0 +1,42 @@
+<svg viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="didt-title didt-desc">
+  <title id="didt-title">Five defensive tiers on one request path, and the condition that makes layering work</title>
+  <desc id="didt-desc">A request descends through five tiers in order: edge, network, identity, application, and data. Each tier row names its controls and states what an attacker still holds after that tier is bypassed. An arrow runs down the left side marking the attacker's path. A footer states that layering only reduces the likelihood of systemic compromise when the tiers fail for largely independent reasons, and that stacking controls which share a parsing or detection weakness gives correlated failure rather than depth.</desc>
+  <rect width="1200" height="580" fill="#ffffff"/>
+
+  <defs>
+    <marker id="didtArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9f1239"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Five tiers on one request path</text>
+  <text x="50" y="72" font-size="14" fill="#475569">A tier is only a layer if it fails for a different reason than the tier above it.</text>
+
+  <path d="M62 108 L62 452" stroke="#9f1239" stroke-width="2.5" fill="none" marker-end="url(#didtArrow)" stroke-dasharray="6 5"/>
+  <text x="46" y="290" font-size="11.5" font-weight="800" fill="#9f1239" transform="rotate(-90 46 290)" text-anchor="middle">ATTACKER PATH</text>
+
+  <rect x="86" y="100" width="1074" height="64" rx="11" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="108" y="124" font-size="12" font-weight="900" letter-spacing="0.8" fill="#2563eb">1. EDGE</text>
+  <text x="108" y="146" font-size="12.5" fill="#475569">WAF payload filtering, cloud DDoS mitigation, TLS termination. <tspan fill="#9f1239">Bypassed by novel encodings: the request still reaches the network.</tspan></text>
+
+  <rect x="86" y="176" width="1074" height="64" rx="11" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="108" y="200" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">2. NETWORK</text>
+  <text x="108" y="222" font-size="12.5" fill="#475569">Microsegmentation, default-deny security groups, egress proxy. <tspan fill="#9f1239">Bypassed from an allowed peer: reachability is not authorization.</tspan></text>
+
+  <rect x="86" y="252" width="1074" height="64" rx="11" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="108" y="276" font-size="12" font-weight="900" letter-spacing="0.8" fill="#b45309">3. IDENTITY</text>
+  <text x="108" y="298" font-size="12.5" fill="#475569">Phishing-resistant MFA, scoped tokens, short sessions. <tspan fill="#9f1239">Bypassed by a stolen live session: the caller now looks legitimate.</tspan></text>
+
+  <rect x="86" y="328" width="1074" height="64" rx="11" fill="#f5f3ff" stroke="#6d28d9" stroke-width="2.5"/>
+  <text x="108" y="352" font-size="12" font-weight="900" letter-spacing="0.8" fill="#6d28d9">4. APPLICATION</text>
+  <text x="108" y="374" font-size="12.5" fill="#475569">Parameterized queries, per-object authorization, output encoding. <tspan fill="#9f1239">Bypassed by a logic flaw: the app acts with its own credentials.</tspan></text>
+
+  <rect x="86" y="404" width="1074" height="64" rx="11" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="108" y="428" font-size="12" font-weight="900" letter-spacing="0.8" fill="#9f1239">5. DATA</text>
+  <text x="108" y="450" font-size="12.5" fill="#475569">Envelope encryption, row-level security, append-only audit logs. <tspan fill="#9f1239">Encryption at rest does not stop an app entitled to decrypt.</tspan></text>
+
+  <rect x="40" y="486" width="1120" height="76" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="510" font-size="12.5" fill="#475569">Layering <tspan font-weight="700" fill="#0f172a">lowers the likelihood</tspan> that one failure becomes systemic compromise. It does not eliminate it, and it only helps when the tiers</text>
+  <text x="62" y="530" font-size="12.5" fill="#475569">fail for <tspan font-weight="700" fill="#0f172a">largely independent reasons</tspan>. Two engines sharing one parser fail together, which is duplication rather than depth.</text>
+  <text x="62" y="552" font-size="12.5" font-weight="700" fill="#9f1239">Count independent failure modes, not boxes on the diagram.</text>
+</svg>

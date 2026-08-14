@@ -1,0 +1,66 @@
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="iil-title iil-desc">
+  <title id="iil-title">The immutable infrastructure lifecycle, from Git commit to node retirement</title>
+  <desc id="iil-desc">A left-to-right pipeline of five stages: a Git commit changes the image definition; CI builds a hardened image and records its digest; the image is scanned and signed; a new node group launches from that digest; and traffic shifts before the old nodes are terminated. A band below lists what the pattern removes: no interactive SSH for patching, no in-place package upgrades, and no configuration drift between a running node and its definition. A second band covers the writable-scratch detail: a read-only root filesystem still needs an explicitly mounted tmpfs, and neither Docker's tmpfs flag nor a Kubernetes memory-backed emptyDir applies noexec by default. A footer records that any node recycling interval is a local operational policy rather than a standard requirement.</desc>
+  <rect width="1200" height="560" fill="#ffffff"/>
+
+  <defs>
+    <marker id="iilA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Immutable infrastructure: replace, never patch</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The running node is a disposable instance of a versioned artifact, so the artifact is the only thing anyone edits.</text>
+
+  <rect x="40" y="98" width="206" height="112" rx="11" fill="#193e9f"/>
+  <text x="143" y="126" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">1. Git commit</text>
+  <text x="143" y="150" text-anchor="middle" font-size="11.5" fill="#c9d7fb">The image definition</text>
+  <text x="143" y="168" text-anchor="middle" font-size="11.5" fill="#c9d7fb">changes in version</text>
+  <text x="143" y="186" text-anchor="middle" font-size="11.5" fill="#c9d7fb">control, reviewed.</text>
+
+  <rect x="268" y="98" width="206" height="112" rx="11" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="371" y="126" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">2. Hardened build</text>
+  <text x="371" y="150" text-anchor="middle" font-size="11.5" fill="#475569">CI builds from a minimal</text>
+  <text x="371" y="168" text-anchor="middle" font-size="11.5" fill="#475569">base and records the</text>
+  <text x="371" y="186" text-anchor="middle" font-size="11.5" fill="#475569">image digest.</text>
+
+  <rect x="496" y="98" width="206" height="112" rx="11" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="599" y="126" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">3. Scan and sign</text>
+  <text x="599" y="150" text-anchor="middle" font-size="11.5" fill="#475569">Vulnerability scan, then</text>
+  <text x="599" y="168" text-anchor="middle" font-size="11.5" fill="#475569">signature over the digest</text>
+  <text x="599" y="186" text-anchor="middle" font-size="11.5" fill="#475569">admission will check.</text>
+
+  <rect x="724" y="98" width="206" height="112" rx="11" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="827" y="126" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">4. Launch new nodes</text>
+  <text x="827" y="150" text-anchor="middle" font-size="11.5" fill="#475569">A fresh node group boots</text>
+  <text x="827" y="168" text-anchor="middle" font-size="11.5" fill="#475569">from that digest &#8212; existing</text>
+  <text x="827" y="186" text-anchor="middle" font-size="11.5" fill="#475569">nodes are untouched.</text>
+
+  <rect x="952" y="98" width="208" height="112" rx="11" fill="#f5f3ff" stroke="#6d28d9" stroke-width="2.5"/>
+  <text x="1056" y="126" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">5. Shift, then retire</text>
+  <text x="1056" y="150" text-anchor="middle" font-size="11.5" fill="#475569">Traffic moves to the new</text>
+  <text x="1056" y="168" text-anchor="middle" font-size="11.5" fill="#475569">group; the old nodes are</text>
+  <text x="1056" y="186" text-anchor="middle" font-size="11.5" fill="#475569">terminated, not repaired.</text>
+
+  <path d="M250 154 L264 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iilA)"/>
+  <path d="M478 154 L492 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iilA)"/>
+  <path d="M706 154 L720 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iilA)"/>
+  <path d="M934 154 L948 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iilA)"/>
+
+  <rect x="40" y="234" width="1120" height="94" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="62" y="258" font-size="12" font-weight="900" letter-spacing="0.8" fill="#9f1239">WHAT THE PATTERN REMOVES</text>
+  <text x="62" y="282" font-size="12.5" fill="#475569">&#183; No interactive SSH session for patching, so no un-audited change and no persistence planted through one.</text>
+  <text x="62" y="302" font-size="12.5" fill="#475569">&#183; No in-place package upgrade, so a node's software set always matches a reviewed commit.</text>
+  <text x="62" y="322" font-size="12.5" fill="#475569">&#183; No configuration drift, because the difference between a node and its definition is always zero or the node is replaced.</text>
+
+  <rect x="40" y="344" width="1120" height="94" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="368" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">WRITABLE SCRATCH, DONE CORRECTLY</text>
+  <text x="62" y="392" font-size="12.5" fill="#475569">A read-only root filesystem still needs somewhere to write. Mount it explicitly and set the options:</text>
+  <text x="62" y="414" font-size="12.5" font-family="ui-monospace,monospace" fill="#0f766e">docker run --read-only --tmpfs /tmp:rw,noexec,nosuid &#8230;</text>
+  <text x="62" y="432" font-size="12.5" font-weight="700" fill="#9f1239">Neither Docker's --tmpfs nor a Kubernetes memory-backed emptyDir applies noexec by default.</text>
+
+  <rect x="40" y="454" width="1120" height="80" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="478" font-size="12.5" fill="#475569">Recycling nodes on a fixed interval caps how long an undetected foothold can survive. <tspan font-weight="700" fill="#0f172a">Any specific interval is a local</tspan></text>
+  <text x="62" y="498" font-size="12.5" fill="#475569"><tspan font-weight="700" fill="#0f172a">operational policy, not a standard requirement</tspan> &#8212; pick it from workload restart cost and how long a foothold is tolerable.</text>
+  <text x="62" y="522" font-size="12.5" font-weight="700" fill="#9f1239">Replacement removes persistence on disk. It does not remove a foothold that reappears through the image, the pipeline, or stored data.</text>
+</svg>

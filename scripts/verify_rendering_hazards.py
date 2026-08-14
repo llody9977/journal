@@ -69,6 +69,45 @@ DISPLAY_BLOCK = re.compile(r"^\s*\$\$.*\$\$\s*$")
 # Bare \[ ... \] display delimiters, which kramdown does not process at all.
 DISPLAY_DELIM = re.compile(r"(?<!\\)\\\[|(?<!\\)\\\]")
 
+# kramdown does not parse Markdown inside block-level raw HTML, so emphasis or
+# a link written inside a <p class="lede"> or a callout reaches the reader as
+# literal asterisks or brackets. The page still passes every syntax, link, and
+# structure check, which is why this needs its own detector. A single-line
+# block element is matched whole so the check does not need to track nesting.
+BLOCK_HTML_LINE = re.compile(
+    r"^\s*<(p|div|li|td|th|figcaption|blockquote)\b[^>]*>(?P<inner>.*)</(?:\1)>\s*$",
+    re.I,
+)
+BLOCK_HTML_OPEN = re.compile(r"^\s*<(p|div)\b[^>]*class=\"(?:lede|callout)[^\"]*\"", re.I)
+MD_EMPHASIS = re.compile(r"\*\*[^*\n]+\*\*|(?<![\w*])\*[^*\n]+\*(?![\w*])")
+MD_LINK = re.compile(r"(?<!!)\[[^\]\n]+\]\([^)\n]+\)")
+
+# Every diagram frame must carry its own purpose-built image. Reusing one image
+# under a second caption is a cross-format defect that no syntax or link check
+# can see: the caption and alt text describe content the image does not hold.
+IMAGE_SRC = re.compile(r"<img[^>]*\bsrc=\"\{\{\s*'(?P<src>[^']+)'")
+
+
+def scan_duplicate_images(text: str) -> list[tuple[int, str, str]]:
+    """Report any image used by more than one diagram frame on one page."""
+    seen: dict[str, int] = {}
+    findings: list[tuple[int, str, str]] = []
+    for number, raw in enumerate(text.splitlines(), start=1):
+        match = IMAGE_SRC.search(raw)
+        if not match:
+            continue
+        src = match.group("src")
+        if src in seen:
+            findings.append((
+                number,
+                f"image reused on this page (first used on line {seen[src]}) — "
+                "each diagram frame needs its own purpose-built image",
+                src,
+            ))
+        else:
+            seen[src] = number
+    return findings
+
 
 def scan(text: str) -> list[tuple[int, str, str]]:
     """Return (line number, hazard kind, offending excerpt) for one file."""
@@ -96,6 +135,20 @@ def scan(text: str) -> list[tuple[int, str, str]]:
             continue
         if in_fence or in_script or in_raw:
             continue
+
+        block = BLOCK_HTML_LINE.match(raw)
+        inner = block.group("inner") if block else (raw if BLOCK_HTML_OPEN.match(raw) else None)
+        if inner is not None:
+            stripped = CODE_SPAN.sub("", inner)
+            markdown = MD_EMPHASIS.search(stripped) or MD_LINK.search(stripped)
+            if markdown:
+                findings.append((
+                    number,
+                    "Markdown inside block-level raw HTML — kramdown does not "
+                    "parse it, so it reaches the reader as source text",
+                    markdown.group(0).strip()[:120],
+                ))
+                continue
 
         line = CODE_SPAN.sub("", raw)
 
@@ -172,10 +225,30 @@ def main() -> int:
     print(f"Scanning {len(files)} topic files for rendering hazards...\n")
 
     failures: list[tuple[str, list[tuple[int, str, str]]]] = []
+    warnings: list[tuple[str, list[tuple[int, str, str]]]] = []
     for path in files:
-        findings = scan(path.read_text(encoding="utf-8"))
+        text = path.read_text(encoding="utf-8")
+        findings = scan(text)
         if findings:
             failures.append((path.name, findings))
+        reused = scan_duplicate_images(text)
+        if reused:
+            warnings.append((path.name, reused))
+
+    # Duplicate-image reuse is reported but does not block publishing. Replacing
+    # a reused frame needs a purpose-built diagram whose content has been checked
+    # against the page, which the register has done one section at a time
+    # (CD-0033 → CD-0038 → CD-0049 → CD-0052). Listing what remains keeps the
+    # backlog visible instead of letting each review rediscover it.
+    if warnings:
+        total = sum(len(f) for _, f in warnings)
+        print(f"⚠️  {total} reused diagram image(s) in {len(warnings)} file(s):\n")
+        for name, findings in warnings:
+            print(f"  File: topics/{name}")
+            for number, kind, excerpt in findings:
+                print(f"    - line {number}: {kind}")
+                print(f"      {excerpt}")
+        print()
 
     if failures:
         total = sum(len(f) for _, f in failures)
@@ -191,11 +264,11 @@ def main() -> int:
         )
         return 1
 
-    print(f"✅ All {len(files)} topic files are free of known rendering hazards.")
+    print(f"✅ All {len(files)} topic files are free of blocking rendering hazards.")
     print(
-        "ℹ️  This check does not verify factual accuracy, diagram/caption "
-        "agreement, or that any diagram renders legibly. Inspect rendered "
-        "output for those."
+        "ℹ️  This check does not verify factual accuracy, whether a caption "
+        "matches its diagram, or that any diagram renders legibly. Inspect "
+        "rendered output for those."
     )
     return 0
 

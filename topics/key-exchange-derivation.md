@@ -631,7 +631,7 @@ Extracts uniform pseudorandom key **PRK** from input key material **IKM** and an
 
 Internally, HKDF-Expand builds its output keying material (OKM) block by block, and each block feeds into the next — the formula from [RFC 5869 §2.3](https://www.rfc-editor.org/rfc/rfc5869) is:
 
-**T(i) = HMAC(PRK, T(i&minus;1) || info || i)**, with **T(0)** defined as the empty string
+<p class="formula"><strong>T(i) = HMAC(PRK, T(i&minus;1) &#124;&#124; info &#124;&#124; i)</strong>, with <strong>T(0)</strong> defined as the empty string</p>
 
 Expands **PRK** into sub-keys of any length up to `HKDF-Expand`'s own bound — [RFC 5869 §2.3](https://www.rfc-editor.org/rfc/rfc5869.html#section-2.3) caps output at **255 × HashLen** bytes, not an arbitrary length — using application-specific info context strings. Generic RFC 5869 applications call `HKDF-Expand` with a plain `info` byte string directly, e.g.:
 

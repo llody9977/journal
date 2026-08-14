@@ -329,7 +329,9 @@ In 2017, Google and CWI Amsterdam published the **SHAttered** attack, demonstrat
 
 ## 3. Length-Extension Attack: Forging Naive Hash MACs
 
-Naive MAC constructions like **MAC = H(Secret || Message)** built on Merkle–Damgård hash functions (MD5, SHA-1, SHA-256) are vulnerable to **length-extension attacks**.
+Naive MAC constructions built on Merkle–Damgård hash functions (MD5, SHA-1, SHA-256) are vulnerable to **length-extension attacks**:
+
+<p class="formula"><strong>MAC = H(Secret &#124;&#124; Message)</strong></p>
 
 Because a Merkle–Damgård hash output exposes the internal compression state **H**, an adversary who knows the message and the length of the secret — whether from prior knowledge or simply by guessing it (secret lengths are typically drawn from a small, brute-forceable range, e.g. common key sizes) — can resume hashing from that state to append malicious payload bytes **Appended_Data** without knowing **Secret** itself.
 
@@ -652,7 +654,9 @@ Because a Merkle–Damgård hash output exposes the internal compression state *
 
 Deploying **HMAC-SHA256** ([FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)) neutralizes length-extension attacks by executing a nested double-hash algorithm:
 
-**HMAC(K, M) = H((K₀ ⊕ opad) || H((K₀ ⊕ ipad) || M))**, where **K₀** is **K** normalized to the hash function's block size — hashed down if longer, zero-padded if shorter (see [RFC 2104 §2](https://www.rfc-editor.org/rfc/rfc2104.html#section-2) and the Hash Functions &amp; MACs page).
+<p class="formula"><strong>HMAC(K, M) = H((K₀ &oplus; opad) &#124;&#124; H((K₀ &oplus; ipad) &#124;&#124; M))</strong></p>
+
+Here **K₀** is **K** normalized to the hash function's block size — hashed down if longer, zero-padded if shorter (see [RFC 2104 §2](https://www.rfc-editor.org/rfc/rfc2104.html#section-2) and the Hash Functions &amp; MACs page).
 
 Modern hash constructions also resist length extension at the algorithm level, for two distinct structural reasons. Sponge-based functions (**SHA-3** / [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)) squeeze outputs through an internal capacity state that the attacker cannot observe or extend. **BLAKE3** ([BLAKE3 Specification](https://github.com/BLAKE3-team/BLAKE3-specs)) is not sponge-based — it is a Merkle-tree hash built over a compression function, and it resists length extension by construction because each chunk/node is processed with an explicit finalization flag that only the root node receives, so an attacker cannot extend a digest into a valid continuation of the tree.
 

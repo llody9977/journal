@@ -1,8 +1,8 @@
 ---
 title: Privacy by Design (PbD) & Privacy-Enhancing Technologies
-description: "Comprehensive technical guide to Privacy by Design (PbD), Ann Cavoukian's 7 Foundational Principles, Privacy-Enhancing Technologies (PETs: Differential Privacy, ZKP, FHE, SMPC), and Pseudonymization vs Anonymization."
+description: "Technical reference for Privacy by Design and how it differs from GDPR Article 25 and ISO/IEC 27701, what each privacy-enhancing technology bounds (differential privacy, ZKP, FHE, SMPC), and pseudonymization versus anonymization under the reasonable-means test."
 permalink: /topics/privacy-by-design-pets/
-last_verified: 2026-08-13
+last_verified: 2026-08-14
 ---
 
 <span class="eyebrow">Security Architecture & Design Principles / Privacy Engineering</span>
@@ -13,14 +13,14 @@ last_verified: 2026-08-13
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/privacy-by-design-pets.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the privacy by design and PETs diagram at full size">
-    <img src="{{ '/assets/img/privacy-by-design-pets.svg' | relative_url }}" alt="Three panels: Ann Cavoukian's seven Privacy by Design principles as organizational design rules; privacy-enhancing technologies with the property each one bounds; and a de-identification panel separating pseudonymization, which stays in GDPR scope, from anonymization, judged against a reasonable-means test.">
+    <img src="{{ '/assets/img/privacy-by-design-pets.svg' | relative_url }}" alt="Three panels: all seven of Ann Cavoukian's Privacy by Design principles grouped three to a line as organizational design rules; privacy-enhancing technologies with the property each one bounds; and a de-identification panel separating pseudonymization, which stays in GDPR scope, from anonymization, judged against a reasonable-means test.">
   </a>
-  <p class="diagram-caption">Privacy architecture: the seven design principles, the PETs that bound disclosure mathematically, and where de-identification sits in GDPR scope</p>
+  <p class="diagram-caption">Privacy architecture: all seven design principles, the PETs that bound disclosure mathematically, and where de-identification sits in GDPR scope</p>
 </div>
 
 ## Ann Cavoukian’s 7 Foundational Principles
 
-The **7 Principles of Privacy by Design** are a design framework, not a legal instrument. GDPR Article 25 imposes a separate and binding obligation — *data protection by design and by default* — whose drafting was influenced by this thinking, but the two are not the same text and satisfying one does not automatically satisfy the other. The principles govern system architecture as follows:
+The **7 Principles of Privacy by Design** are a design framework, not a legal instrument. [GDPR Article 25](https://eur-lex.europa.eu/eli/reg/2016/679/oj) imposes a separate and binding obligation — *data protection by design and by default* — whose drafting was influenced by this thinking, but the two are not the same text and satisfying one does not automatically satisfy the other. The principles govern system architecture as follows:
 
 1. **Proactive not Reactive; Preventive not Remedial**: Anticipate and prevent privacy-invasive events before they occur; privacy is designed into the system upfront.
 2. **Privacy as the Default Setting**: Automatically protect personal data in any IT system or business practice without requiring user action.
@@ -29,6 +29,8 @@ The **7 Principles of Privacy by Design** are a design framework, not a legal in
 5. **End-to-End Security — Full Lifecycle Protection**: Secure data throughout its entire lifecycle—from collection to storage, processing, and secure destruction.
 6. **Visibility and Transparency — Keep it Open**: Assure stakeholders that business practices and technology operate according to stated promises and independent verification.
 7. **Respect for User Privacy — Keep it User-Centric**: Architect systems to empower users with strong defaults, clear notices, and user-friendly privacy controls.
+
+Three things are commonly merged and are worth keeping apart: the **principles** are a design framework with no enforcement mechanism; **GDPR Article 25** is a binding legal obligation on controllers within the Regulation's scope; and **ISO/IEC 27701:2025** is a certifiable management-system standard — its second edition, published October 2025, is stand-alone, so a privacy information management system can now be certified without first certifying an ISO/IEC 27001 ISMS. Demonstrating any one of the three does not demonstrate the other two.
 
 ## Privacy-Enhancing Technologies (PETs) Comparison
 
@@ -55,14 +57,14 @@ FHE and SMPC are **distinct primitives**, not variants of one another: FHE compu
 
 The practical consequence: "we anonymized it" is a claim that has to be re-examined when new auxiliary datasets become public, because the reasonableness test moves as linkage data and compute get cheaper.
 
-## Essential Privacy Engineering Diagnostic Checklist
+## Privacy engineering review checklist
 
-When auditing an application or data processing architecture for privacy compliance, evaluate these 6 criteria:
+The checklist below is a journal working model, not a published audit standard. When auditing an application or data processing architecture, evaluate these six criteria:
 
 | Diagnostic Area | Architectural Evaluation Question | Verification &amp; Audit Evidence |
 |---|---|---|
 | **Privacy Default Settings** | Are privacy settings set to maximum protection by default without requiring user action? | Application onboarding configuration reviews. |
-| **Data Minimisation Limits** | Is PII collection strictly limited to fields essential for declared processing goals? | Data inventory schemas &amp; API payload specifications. |
+| **Data minimization limits** | Is PII collection strictly limited to fields essential for declared processing goals? | Data inventory schemas &amp; API payload specifications. |
 | **Pseudonymization Encryption** | Are PII identifiers pseudonymized using HMAC or format-preserving encryption with isolated keys? | Encryption code review &amp; key management policies. |
 | **Differential Privacy Bounding** | Do analytical queries add calibrated noise, and is the &epsilon; budget accounted across queries with its chosen value justified? | Differential privacy library configs &amp; budget accounting records. |
 | **Automated Data Retention Expiry** | Do database records enforce automatic deletion or anonymization upon expiration of retention windows? | Database TTL policies &amp; automated purge scripts. |
@@ -76,6 +78,7 @@ When auditing an application or data processing architecture for privacy complia
 ## Primary references
 
 - **[Privacy by Design: The 7 Foundational Principles](https://www.ipc.on.ca/en/privacy-organizations/privacy-by-design)** — Information and Privacy Commissioner of Ontario. Verified the wording and intent of the seven principles.
+- **[Regulation (EU) 2016/679 (GDPR)](https://eur-lex.europa.eu/eli/reg/2016/679/oj)** — verified Article 4(5) on pseudonymization, Article 25 on data protection by design and by default, Article 17 on erasure, and Recital 26's means-reasonably-likely test for anonymous data.
 - **[ISO/IEC 27701:2025](https://www.iso.org/standard/27701)** — *Information security, cybersecurity and privacy protection — Privacy information management systems — Requirements and guidance*, second edition, October 2025. Verified the standard's current edition and its stand-alone scope.
 - **[NIST Privacy Framework](https://www.nist.gov/privacy-framework)** — verified the risk-management framing used for the privacy engineering checklist.
 - **[NIST SP 800-226: Guidelines for Evaluating Differential Privacy Guarantees](https://doi.org/10.6028/NIST.SP.800-226)** — verified that differential privacy states a bound rather than eliminating inference, and that no universal &epsilon; threshold is specified.

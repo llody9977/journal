@@ -1,0 +1,54 @@
+<svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="csp-title csp-desc">
+  <title id="csp-title">Private endpoints, service perimeters, and egress allowlists: what each one actually stops</title>
+  <desc id="csp-desc">A path strip at the top shows a workload inside a virtual private network reaching a provider service through a private interface, while the route over the public internet is drawn as a crossed dashed line. Three bands follow, one per control. The private endpoint band states that it keeps the request off the public internet but does not remove the service's own public endpoint and does not restrict which accounts or buckets can be reached. The service perimeter band states that it denies access from outside the perimeter even with valid credentials, and records Google's own limits: supported services only, no comprehensive control of metadata movement, and no restraint on a caller already inside. The egress allowlist band states that it blocks unlisted outbound destinations but does not stop exfiltration to a destination that is on the list. A footer states that these are network-position controls and do not replace identity authorization.</desc>
+  <rect width="1200" height="620" fill="#ffffff"/>
+
+  <defs>
+    <marker id="cspA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Three perimeter controls, three different limits</text>
+  <text x="50" y="72" font-size="14" fill="#475569">All three are controls on network position. None of them authorizes a caller.</text>
+
+  <rect x="40" y="94" width="1120" height="104" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <rect x="62" y="116" width="230" height="60" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="177" y="141" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Workload</text>
+  <text x="177" y="161" text-anchor="middle" font-size="11.5" fill="#475569">private subnet, no public IP</text>
+
+  <rect x="400" y="116" width="230" height="60" rx="10" fill="#0f766e"/>
+  <text x="515" y="141" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">Private interface</text>
+  <text x="515" y="161" text-anchor="middle" font-size="11.5" fill="#cdeae6">ENI on AWS &#183; private endpoint on Azure</text>
+
+  <rect x="738" y="116" width="230" height="60" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="853" y="141" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0f172a">Provider service</text>
+  <text x="853" y="161" text-anchor="middle" font-size="11.5" fill="#475569">object store, database, API</text>
+
+  <path d="M296 146 L396 146" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#cspA)"/>
+  <path d="M634 146 L734 146" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#cspA)"/>
+
+  <path d="M990 146 L1140 146" stroke="#9f1239" stroke-width="2.5" fill="none" stroke-dasharray="7 5"/>
+  <path d="M1053 132 L1077 160 M1077 132 L1053 160" stroke="#9f1239" stroke-width="3"/>
+  <text x="1065" y="180" text-anchor="middle" font-size="11.5" font-weight="800" fill="#9f1239">public internet path</text>
+
+  <rect x="40" y="216" width="1120" height="112" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="240" font-size="12" font-weight="900" letter-spacing="0.8" fill="#2563eb">PRIVATE ENDPOINT &#8212; AWS PRIVATELINK / AZURE PRIVATE LINK</text>
+  <text x="62" y="264" font-size="12.5" fill="#475569"><tspan font-weight="700" fill="#0f172a">Does:</tspan> carries the request over the provider backbone through an interface in your own network, so the traffic never transits the internet.</text>
+  <text x="62" y="286" font-size="12.5" fill="#9f1239"><tspan font-weight="700">Does not:</tspan> remove the service's own public endpoint, and does not by itself restrict which accounts or buckets the workload may reach.</text>
+  <text x="62" y="310" font-size="12.5" fill="#475569">Restricting the target set needs an endpoint policy, not the endpoint itself.</text>
+
+  <rect x="40" y="344" width="1120" height="112" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="368" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">SERVICE PERIMETER &#8212; GCP VPC SERVICE CONTROLS</text>
+  <text x="62" y="392" font-size="12.5" fill="#475569"><tspan font-weight="700" fill="#0f172a">Does:</tspan> denies access originating outside the perimeter even when the IAM credential is valid, which covers stolen credentials and misconfigured IAM.</text>
+  <text x="62" y="414" font-size="12.5" fill="#9f1239"><tspan font-weight="700">Does not:</tspan> cover unsupported services, comprehensively control metadata movement, or restrain a caller already inside the perimeter.</text>
+  <text x="62" y="438" font-size="12.5" fill="#475569">Google documents all three limits; it is defense in depth alongside IAM, not a replacement for it.</text>
+
+  <rect x="40" y="472" width="1120" height="90" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="62" y="496" font-size="12" font-weight="900" letter-spacing="0.8" fill="#b45309">EGRESS ALLOWLIST &#8212; INSPECTING FORWARD PROXY</text>
+  <text x="62" y="520" font-size="12.5" fill="#475569"><tspan font-weight="700" fill="#0f172a">Does:</tspan> forces outbound traffic through a proxy that permits only listed destinations, blocking command-and-control to unlisted hosts.</text>
+  <text x="62" y="542" font-size="12.5" fill="#9f1239"><tspan font-weight="700">Does not:</tspan> stop exfiltration to a destination that is on the list &#8212; a permitted SaaS domain or code-hosting service is a working channel.</text>
+
+  <text x="62" y="590" font-size="12.5" font-weight="700" fill="#9f1239">All three answer &#8220;where did this come from&#8221;. None answers &#8220;is this caller allowed to read this object&#8221; &#8212; that stays with IAM and the application.</text>
+</svg>
