@@ -242,4 +242,36 @@ CD-0045 (4.8 currency), CD-0046 (9.3 PET framing), CD-0047 (detector widening). 
 ### Still open
 
 - The `Comprehensive technical guide to …` front-matter formula on 22 pages outside Section 7.
-- The OWASP 2026 enumeration, pending an ungated primary source (CD-0039).
+
+---
+
+## Follow-up 2: OWASP 2026 enumeration closed against the primary document
+
+The user supplied `OWASP-GenAI-LLM-Top-10-2026-v1.0.pdf` (122 pages, CC BY-SA 4.0), meeting CD-0039's recorded reopen condition exactly. CD-0039 is **superseded by CD-0048**; the earlier record is preserved.
+
+The document confirms the ordering CD-0039 declined to publish from secondary summaries, so the earlier caution was correct but no longer necessary. Verified from its own table of contents and per-entry description pages:
+
+| ID | Name | Doc. page |
+| --- | --- | ---: |
+| LLM01:2026 | Prompt Injection | 10 |
+| LLM02:2026 | Sensitive Information Disclosure | 18 |
+| LLM03:2026 | Excessive Agency | 23 |
+| LLM04:2026 | Supply Chain | 27 |
+| LLM05:2026 | Data and Model Poisoning | 33 |
+| LLM06:2026 | Unbounded Consumption | 38 |
+| LLM07:2026 | Misinformation | 43 |
+| LLM08:2026 | Hidden Context Exposure | 46 |
+| LLM09:2026 | Vector and Embedding Weaknesses | 50 |
+| LLM10:2026 | Improper Output Handling | 55 |
+
+Reading it supplied three things the secondary sources did not:
+
+1. **Ranking methodology and its bias.** The community vote carries three-quarters of the weight against an incident corpus of 7,714 reports, 6,639 of which carried enough detail to classify. Prompt injection falls out of the top ten on raw incident count yet holds first place — a defense effect, since well-defended risks generate fewer public reports. Added to 7.1 as both a methodology note and a limitation.
+2. **A scope boundary that matters for 7.3.** The list owns the model *as a component*; once it becomes an *actor* with tools and cross-session memory, risk moves to the OWASP Agentic Top 10 and its `ASI` identifiers. An MCP deployment sits on that boundary, so 7.3 now points at both.
+3. **Stronger support for 7.2 than it previously had.** The 2026 LLM01 entry states that prompt injection is intrinsic to current generative AI and that **no reliable prevention mechanism exists today**, that defense is therefore architectural rather than interceptive, and it separates controls that reduce attack success — expected to degrade against adaptive attackers — from controls that bound blast radius, which are what survive. It also records that provenance marking reduces attack success in non-adaptive tests only. That is the enforced-versus-advisory split 7.2 already argued, now carrying a primary citation, and the injection scope widened to multimodal input, intermediate reasoning, and persistent memory.
+
+Changes: 7.1's table, methodology note, limitations, callout and references; 7.1's diagram; 7.3's identifier, agentic boundary and references; 7.2's identifier, payload-source row, residual-risk section and references.
+
+**A caveat on the document itself:** the copy read carries `[Publication date to be set]` on its title page and `[2026 release date] Version 2026 Release` in its revision history. The journal therefore cites the edition as 2026 without asserting a precise publication date from the document. That is recorded as an invalidation condition on CD-0048.
+
+Verification: all ten identifiers and names render correctly and match the document; no 2025-era identifier or per-risk 2025 URL survives except the one deliberate migration note mapping `LLM06:2025` → `LLM03:2026` and `LLM07:2025` → `LLM08:2026`. Gate clean — structure 94/94, hazards 94/94, links 12/12 on the touched files, register 48 records.

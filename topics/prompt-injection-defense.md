@@ -36,7 +36,7 @@ This is why the fix is architectural rather than lexical. Pattern filtering for 
 
 | Dimension | Direct injection (jailbreaking) | Indirect injection |
 |---|---|---|
-| **Payload source** | The user's own query, typed into the interface. | Untrusted third-party data: retrieved documents, emails, fetched pages, tool output. |
+| **Payload source** | The user's own query, typed into the interface. | Any content the system ingests: retrieved documents, emails, fetched pages, tool output — and, in the current scope, images, audio, video, intermediate reasoning, and persistent memory. It need not be human-readable or visible in the rendered interface. |
 | **Attacker identity** | The attacker is the user. | The user is the victim; the attacker planted content earlier and elsewhere. |
 | **Attacker goal** | Bypass safety policy, recover hidden context, unlock restricted behavior. | Silent action on the user's behalf: exfiltration, tool misuse, privilege reach. |
 | **Who is harmed** | Usually the operator (policy and reputational exposure). | Usually the user and the operator's data. |
@@ -92,11 +92,12 @@ Steps 1 and 4 are enforced by software. Steps 2 and 3 are advisory — a delimit
 
 ## What none of this fixes
 
-OWASP's own entry for this class states that, given how these models work, it is unclear whether fool-proof prevention methods for prompt injection exist. That framing should carry through to any design that depends on these controls:
+OWASP's 2026 entry for this class is unambiguous: prompt injection is intrinsic to current generative AI, and because models draw no architectural distinction between instructions and data and behave stochastically, **no reliable prevention mechanism exists today**. Its conclusion is that defense is architectural rather than interceptive. That framing should carry through to any design depending on these controls:
 
 - **No control here eliminates the class.** Isolation, classifiers, and delimiters reduce how often injection succeeds and how much it reaches. They do not make the model unable to follow injected instructions.
-- **Guardrails fail the same way filters do.** They are probabilistic classifiers with a false-negative rate that adversarial input is specifically shaped to exploit.
-- **Delimiters are advisory.** Tag injection, encoding tricks, and simple persuasion all survive them.
+- **Sort controls by whether they survive an adaptive attacker.** Controls that reduce injection success are expected to degrade once an attacker can probe the system. Controls that bound blast radius after injection succeeds are the ones that hold. Design as though the first category will eventually fail.
+- **Guardrails fail the same way filters do.** They are probabilistic classifiers with a false-negative rate that adversarial input is shaped to exploit, and encodings the classifier never trained on — Base64, ROT13, emoji, low-resource languages — bypass them.
+- **Delimiters are advisory.** Provenance marking reduces attack success in non-adaptive testing only: an attacker who knows the scheme can mimic it, and published marking schemes have been bypassed under adaptive attack.
 - **The dual LLM pattern narrows the channel, it does not seal it.** A loose schema, an over-broad handle, or a controller that passes text through reopens it.
 
 The design consequence: assume the model will eventually be hijacked and constrain what it can reach when that happens — scoped credentials per tool, human approval on irreversible actions, egress restrictions on the rendering surface, and an audit trail that shows which retrieved document was in context when an action was taken.
@@ -121,7 +122,7 @@ When evaluating an LLM application for injection exposure, audit these six crite
 
 ## Primary references
 
-- **[OWASP LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)** — verified the direct and indirect definitions and the statement that fool-proof prevention is not established.
+- **[OWASP LLM01:2026 Prompt Injection](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/)** — in *OWASP Top 10 for LLM Applications 2026*. Verified the direct and indirect definitions, the multimodal and memory scope, the statement that no reliable prevention mechanism exists today, and the split between controls that reduce attack success and controls that bound blast radius.
 - **[The Dual LLM pattern for building AI assistants that can resist prompt injection](https://simonwillison.net/2023/Apr/25/dual-llm-pattern/)** — verified the quarantined and privileged roles and the controller's variable-substitution mechanism.
 - **[Meta PurpleLlama](https://github.com/meta-llama/PurpleLlama)** — verified the Llama Guard model cards, hazard category identifiers, and response format.
 - **[NVIDIA NeMo Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)** — verified the programmable rails model and the input/output interception points.

@@ -61,29 +61,33 @@ Retirement means revoking the model from inference endpoints and routing tables,
 
 ## OWASP Top 10 for LLM Applications
 
-The [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/) ranks the risks most commonly seen in LLM-backed applications. The entries below are the **2025 edition**, which is the edition OWASP currently publishes as per-risk reference pages.
+The [OWASP Top 10 for LLM Applications](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) ranks the risks most commonly seen in LLM-backed applications. The entries below are the **2026 edition**.
 
 | ID | Name | Operational description |
 |---|---|---|
-| **LLM01:2025** | [Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) | Direct jailbreaks, or instructions embedded in untrusted data, redirect model behavior. |
-| **LLM02:2025** | Sensitive Information Disclosure | The model reveals confidential training data, personal data, or internal context in its output. |
-| **LLM03:2025** | Supply Chain | Compromised foundation models, poisoned datasets, or vulnerable third-party packages. |
-| **LLM04:2025** | Data and Model Poisoning | Adversaries manipulate pre-training corpora or fine-tuning data to introduce backdoors. |
-| **LLM05:2025** | Improper Output Handling | Unvalidated model output is passed to a browser, database, shell, or terminal sink. |
-| **LLM06:2025** | [Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) | Agents hold tool permissions or autonomy beyond what their task requires. |
-| **LLM07:2025** | System Prompt Leakage | Crafted prompts recover proprietary system instructions and operational context. |
-| **LLM08:2025** | Vector and Embedding Weaknesses | Weak access control or adversarial influence over the retrieval and embedding pipeline. |
-| **LLM09:2025** | Misinformation | Confident, plausible, incorrect output relied on without verification. |
-| **LLM10:2025** | Unbounded Consumption | Resource and cost exhaustion through expensive inference or runaway agent loops. |
+| **LLM01:2026** | Prompt Injection | Any input — user text, retrieved content, tool output, image, audio, video, intermediate reasoning, or persistent memory — alters model behavior in ways the developer did not intend. |
+| **LLM02:2026** | Sensitive Information Disclosure | Confidential, regulated, or proprietary data escapes through an unauthorized channel. Not only the final answer: tool-call arguments, reasoning traces, retrieved chunks, logs, embeddings, and timing all count. |
+| **LLM03:2026** | Excessive Agency | Tool access, permissions, or autonomy beyond what the task requires, so a malfunctioning model can take damaging action regardless of what caused the malfunction. |
+| **LLM04:2026** | Supply Chain | Compromised training data, models, adapters, conversion pipelines, or deployment platforms — including a promoted model artifact that is not what it claims to be. |
+| **LLM05:2026** | Data and Model Poisoning | Manipulation of data or model artifacts at any ingestion point — pre-training, fine-tuning, embedding creation, retrieval, or distribution — to embed harmful behavior or backdoors. |
+| **LLM06:2026** | Unbounded Consumption | Uncontrolled inference enabling denial of service, unsustainable cost, or model cloning. The defining property is cost asymmetry: cheap for the attacker, expensive for the operator. |
+| **LLM07:2026** | Misinformation | Incorrect or unsupported output credible enough to be acted on by a person, a workflow, or an agent. |
+| **LLM08:2026** | Hidden Context Exposure | Extraction or reconstruction of non-user-facing context — system prompts, policy text, tool schemas, workflow rules — that materially increases attacker capability. |
+| **LLM09:2026** | Vector and Embedding Weaknesses | Attacks on the geometry of the embedding space and similarity search itself, which succeed even when retrieved content carries no malicious instructions. |
+| **LLM10:2026** | Improper Output Handling | Model output passed downstream without validation, reaching browsers, databases, shells, or terminal sinks — including insecure generated code. |
 
-### Edition currency
+### How the 2026 ranking was built, and where its scope ends
 
-OWASP published a **2026 edition** of this list in August 2026, announced on the [OWASP GenAI Security Project resource page](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/). It re-ranks several entries and renames at least one. At the time of writing, the 2026 document is distributed behind a registration form and OWASP's per-risk reference pages still serve the 2025 entries, so the identifiers above have deliberately been kept on the 2025 edition, where every entry is verifiable against a published primary page.
+Two things about this edition change how it should be read.
 
-Two consequences worth carrying:
+**The ranking is no longer vote-only.** Community voting carries three-quarters of the weight; the remaining quarter comes from an incident corpus of 7,714 real reports, of which 6,639 carried enough detail to classify. The two disagreed in useful places. Prompt injection falls out of the top ten on raw incident count alone yet holds first place, which the project attributes to a defense effect — teams already spend heavily holding it off, so fewer clean exploits reach public databases. Misinformation runs the other way: voters placed it near the bottom and the incident record near the top, and it lands in the middle.
 
-- **Always write the edition into the identifier.** `LLM06:2025` is precise; a bare `LLM06` silently changes meaning between editions.
-- **Re-check the mapping before quoting a rank.** An identifier from one edition should never be pasted into a document that claims another.
+**This list stops where the model stops being a component.** The project draws the boundary explicitly: these ten own the risk when a model is a component inside an application. Once it becomes an actor — calling tools, carrying memory between sessions, setting downstream consequences in motion — the risk moves to the OWASP Agentic Top 10 and its `ASI` identifiers. Neither list covers that ground alone, so an agentic system needs both. [MCP & Agentic Security](../mcp-security-agentics/) is where that boundary matters in practice.
+
+Two habits worth keeping:
+
+- **Write the edition into the identifier.** `LLM03:2026` is precise; a bare `LLM03` silently changes meaning between editions, and this edition moved six of the ten.
+- **Re-check the mapping before quoting a rank.** Excessive Agency was `LLM06:2025` and is `LLM03:2026`; System Prompt Leakage was `LLM07:2025` and is now, renamed and broadened, `LLM08:2026 Hidden Context Exposure`.
 
 ## MITRE ATLAS
 
@@ -108,10 +112,11 @@ ATLAS is not a control framework and carries no compliance weight. Use it to pop
 
 Stacking all three still leaves gaps that have to be closed elsewhere:
 
-- **No framework here supplies a mitigation that eliminates prompt injection.** They classify and rank it. See [Prompt Injection & Context Safety](../prompt-injection-defense/) for why the class has no complete fix.
+- **No framework here supplies a mitigation that eliminates prompt injection.** They classify and rank it; OWASP's own 2026 entry states that no reliable prevention mechanism exists today. See [Prompt Injection & Context Safety](../prompt-injection-defense/).
 - **None of them is a legal or regulatory obligation by itself.** Jurisdictional AI regulation is separate, and adopting a voluntary framework does not discharge it.
-- **The OWASP list is a ranking, not a coverage guarantee.** A risk that did not make the top ten is not thereby acceptable in a given system.
+- **The OWASP list is a ranking, not a coverage guarantee.** A risk that did not make the top ten is not thereby acceptable in a given system, and the list explicitly hands agentic risk to a separate Agentic Top 10.
 - **ATLAS lags novel technique classes**, because it records what has been observed and reported.
+- **An incident-weighted ranking inherits reporting bias.** A well-defended risk produces fewer public reports, which is precisely why prompt injection ranks first on the vote while falling out of the top ten on raw incident count.
 
 ## Diagnostic checklist
 
@@ -128,12 +133,12 @@ When auditing an enterprise AI deployment, evaluate these six criteria:
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>The root AI risk is the missing instruction/data boundary, not nondeterminism. NIST AI RMF 1.0 is voluntary governance structure, the OWASP Top 10 for LLM Applications is a versioned ranking of application risks — always cite the edition — and MITRE ATLAS records observed adversary behavior rather than prescribing controls.</p>
+  <p>The root AI risk is the missing instruction/data boundary, not nondeterminism. NIST AI RMF 1.0 is voluntary governance structure, the OWASP Top 10 for LLM Applications is a versioned ranking — always cite the edition, because 2026 moved six of ten — and MITRE ATLAS records observed adversary behavior rather than prescribing controls. The OWASP list covers the model as a component; once it becomes an actor with tools and memory, pair it with the Agentic Top 10.</p>
 </div>
 
 ## Primary references
 
 - **[NIST AI Risk Management Framework (AI RMF 1.0)](https://www.nist.gov/itl/ai-risk-management-framework)** — verified the four core functions, the January 2023 publication, and the framework's voluntary status.
-- **[OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/)** — verified the 2025 identifiers and names against the per-risk pages OWASP currently publishes.
-- **[OWASP GenAI LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/)** — verified that a 2026 edition exists and was published in August 2026; the document itself is registration-gated and was not read for this page.
+- **[OWASP Top 10 for LLM Applications 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/)** — version 2026, CC BY-SA 4.0. Verified all ten identifiers, names, and descriptions from the document itself, along with the 75/25 vote-to-incident weighting, the 7,714-report corpus with 6,639 classified, and the boundary handing agentic risk to the Agentic Top 10.
+- **[OWASP Agentic Security Initiative](https://genai.owasp.org/initiatives/agentic-security-initiative/)** — the project home for the `ASI` agentic identifiers referenced by the LLM Top 10.
 - **[MITRE ATLAS](https://atlas.mitre.org/)** — verified the tactic names and the knowledge-base framing.

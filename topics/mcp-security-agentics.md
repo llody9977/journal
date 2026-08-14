@@ -74,7 +74,9 @@ Note the direction of the requirement: RFC 8707 governs the *request* parameter.
 
 ## Approval gates for high-privilege calls
 
-Excessive agency — an agent holding capability beyond what its task requires — is [LLM06:2025](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) in the OWASP Top 10 for LLM Applications, and it moved further up the list in the 2026 edition. The specification's position is a **SHOULD**: there should always be a human in the loop able to deny a tool invocation, and applications should show which tools are exposed, indicate when they are invoked, and present confirmation prompts.
+Excessive agency — an agent holding capability beyond what its task requires — is **LLM03:2026** in the [OWASP Top 10 for LLM Applications](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/), up from LLM06 in the 2025 edition and the largest single move on that list. The specification's position is a **SHOULD**: there should always be a human in the loop able to deny a tool invocation, and applications should show which tools are exposed, indicate when they are invoked, and present confirmation prompts.
+
+Note the scope boundary OWASP draws. The LLM Top 10 owns the risk while a model is a *component* inside an application. Once it becomes an *actor* — calling tools, carrying memory between sessions, setting downstream consequences in motion — the list hands that ground to the OWASP Agentic Top 10 and its `ASI` identifiers, including `ASI01 Agent Goal Hijack`, `ASI02 Tool Misuse & Exploitation`, `ASI03 Identity & Privilege`, and `ASI04 Agentic Supply Chain`. An MCP deployment is squarely on that boundary, so it needs both lists rather than either alone.
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/mcp-hitl-gate.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the human-in-the-loop approval gate diagram at full size">
@@ -135,3 +137,4 @@ When auditing an MCP deployment or agentic application, evaluate these six crite
 - **[MCP Authorization specification (2026-07-28)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)** — verified the RFC 8707 resource-parameter requirements and the audience validation rules.
 - **[MCP Security Best Practices](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices)** — verified the confused deputy definition, token passthrough prohibition, and the local server compromise guidance.
 - **[RFC 8707: Resource Indicators for OAuth 2.0](https://www.rfc-editor.org/rfc/rfc8707.html)** — verified the `resource` parameter definition and its Proposed Standard status.
+- **[OWASP Top 10 for LLM Applications 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/)** — verified that Excessive Agency is LLM03:2026, and the stated boundary handing model-as-actor risk to the Agentic Top 10.

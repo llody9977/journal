@@ -2138,7 +2138,7 @@
     {
       "id": "CD-0039",
       "title": "Enumerate the OWASP LLM Top 10 from the primary-verifiable 2025 edition and record the 2026 edition's existence separately",
-      "status": "accepted",
+      "status": "superseded",
       "implementation_state": "implemented",
       "scope": {
         "files": [
@@ -2182,7 +2182,7 @@
         "CD-0027"
       ],
       "supersedes": [],
-      "superseded_by": null,
+      "superseded_by": "CD-0048",
       "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
@@ -2616,6 +2616,63 @@
         "CD-0042"
       ],
       "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0048",
+      "title": "Enumerate the OWASP LLM Top 10 from the 2026 edition now that the primary document is available",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/ai-risk-management.md",
+          "topics/prompt-injection-defense.md",
+          "topics/mcp-security-agentics.md",
+          "assets/img/ai-risk-management.svg"
+        ],
+        "concepts": [
+          "OWASP Top 10 for LLM Applications",
+          "edition versioning",
+          "LLM01 LLM03 identifiers",
+          "incident-weighted ranking",
+          "agentic scope boundary"
+        ]
+      },
+      "originating_feedback": "CD-0039 recorded the deliberate choice to enumerate the primary-verifiable 2025 edition because the 2026 document was behind a registration wall, with the reopen condition that it should move to 2026 once an ungated primary source existed. The user supplied the 2026 document directly.",
+      "decision": "Supersede CD-0039. Enumerate the 2026 edition from the document itself, with identifiers, names, and descriptions taken from it. Add the ranking methodology — community vote at three-quarters weight against an incident corpus of 7,714 reports of which 6,639 were classified — and the project's stated scope boundary handing model-as-actor risk to the OWASP Agentic Top 10. Update Topic 7.3 from LLM06:2025 to LLM03:2026 and Topic 7.2's LLM01 citation to the 2026 entry. Retain the rule that every identifier carries its edition suffix.",
+      "rationale": "The reopen condition recorded in CD-0039 was met exactly as written: an ungated primary source became available. The document confirms the ordering that CD-0039 declined to publish from secondary summaries, so no earlier reasoning was wrong — the caution was simply no longer necessary. Reading it also supplied material CD-0039 could not: the vote-to-incident weighting and its reporting-bias consequence, the model-as-component boundary, and, for Topic 7.2, an explicit statement that no reliable prevention mechanism exists today together with the distinction between controls that reduce attack success and controls that bound blast radius.",
+      "authoritative_sources": [
+        {
+          "title": "OWASP Top 10 for LLM Applications 2026",
+          "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+          "supports": "All ten 2026 identifiers, names and descriptions; the 75/25 vote-to-incident weighting; the 7,714-report corpus with 6,639 classified; the agentic scope boundary; and the LLM01 statement that no reliable prevention mechanism exists today."
+        },
+        {
+          "title": "OWASP Agentic Security Initiative",
+          "url": "https://genai.owasp.org/initiatives/agentic-security-initiative/",
+          "supports": "The project home for the ASI agentic identifiers the LLM Top 10 defers to."
+        }
+      ],
+      "verification_methods": [
+        "Confirm every LLM identifier in the journal carries a 2026 suffix and matches the document's table of contents.",
+        "Confirm no 2025-era identifier or per-risk 2025 URL survives.",
+        "Re-check the OWASP resource page when a later edition is announced."
+      ],
+      "approved_outcome": "Section 7 enumerates the 2026 edition from the primary document, records how the ranking was built and where its scope ends, and carries edition suffixes throughout.",
+      "invalidation_conditions": [
+        "OWASP publishes a later edition.",
+        "The 2026 document is revised, since the copy read carried unfilled publication-date placeholders."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0038",
+        "CD-0041"
+      ],
+      "supersedes": [
+        "CD-0039"
+      ],
       "superseded_by": null,
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
