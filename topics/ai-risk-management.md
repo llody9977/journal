@@ -1,6 +1,6 @@
 ---
 title: AI & LLM Threat Frameworks & Risk Management
-description: What NIST AI RMF 1.0, the OWASP Top 10 for LLM Applications, and MITRE ATLAS each cover, how their scopes differ, edition currency, and a model retirement working rule.
+description: What NIST AI RMF 1.0, the OWASP Top 10 for LLM Applications 2026, and MITRE ATLAS each cover, how the 2026 ranking was built, where its scope ends, and a model retirement working rule.
 permalink: /topics/ai-risk-management/
 last_verified: 2026-08-14
 ---
@@ -13,7 +13,7 @@ last_verified: 2026-08-14
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/ai-risk-management.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the AI risk framework comparison diagram at full size">
-    <img src="{{ '/assets/img/ai-risk-management.svg' | relative_url }}" alt="Three panels comparing what each AI risk framework covers: NIST AI RMF 1.0 governance functions, the OWASP Top 10 for LLM Applications 2025 entries, and the MITRE ATLAS tactic progression, with a footer noting the OWASP list is versioned.">
+    <img src="{{ '/assets/img/ai-risk-management.svg' | relative_url }}" alt="Three panels comparing what each AI risk framework covers: NIST AI RMF 1.0 governance functions, the OWASP Top 10 for LLM Applications 2026 entries, and the MITRE ATLAS tactic progression, with a footer noting that the OWASP list covers the model as a component and hands agentic risk to a separate list.">
   </a>
   <p class="diagram-caption">Three frameworks, three questions: how to govern (NIST AI RMF 1.0), what goes wrong (OWASP Top 10 for LLM Applications), and what has been done (MITRE ATLAS)</p>
 </div>
@@ -61,7 +61,7 @@ Retirement means revoking the model from inference endpoints and routing tables,
 
 ## OWASP Top 10 for LLM Applications
 
-The [OWASP Top 10 for LLM Applications](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) ranks the risks most commonly seen in LLM-backed applications. The entries below are the **2026 edition**.
+The [OWASP Top 10 for LLM Applications](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) ranks the risks the community and the incident record together judge most critical for LLM-backed applications — which, as the next section shows, is not the same as most frequent. The entries below are the **2026 edition**.
 
 | ID | Name | Operational description |
 |---|---|---|
@@ -86,8 +86,8 @@ Two things about this edition change how it should be read.
 
 Two habits worth keeping:
 
-- **Write the edition into the identifier.** `LLM03:2026` is precise; a bare `LLM03` silently changes meaning between editions, and this edition moved six of the ten.
-- **Re-check the mapping before quoting a rank.** Excessive Agency was `LLM06:2025` and is `LLM03:2026`; System Prompt Leakage was `LLM07:2025` and is now, renamed and broadened, `LLM08:2026 Hidden Context Exposure`.
+- **Write the edition into the identifier.** `LLM03:2026` is precise; a bare `LLM03` silently changes meaning between editions. Only Prompt Injection and Sensitive Information Disclosure held their rank — the other eight all moved.
+- **Re-check the mapping before quoting a rank.** Excessive Agency was `LLM06:2025` and is `LLM03:2026`; System Prompt Leakage was `LLM07:2025` and is now, renamed and broadened, `LLM08:2026 Hidden Context Exposure`. The furthest single move was Improper Output Handling, down five places from `LLM05:2025` to `LLM10:2026`.
 
 ## MITRE ATLAS
 
@@ -133,7 +133,7 @@ When auditing an enterprise AI deployment, evaluate these six criteria:
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>The root AI risk is the missing instruction/data boundary, not nondeterminism. NIST AI RMF 1.0 is voluntary governance structure, the OWASP Top 10 for LLM Applications is a versioned ranking — always cite the edition, because 2026 moved six of ten — and MITRE ATLAS records observed adversary behavior rather than prescribing controls. The OWASP list covers the model as a component; once it becomes an actor with tools and memory, pair it with the Agentic Top 10.</p>
+  <p>The root AI risk is the missing instruction/data boundary, not nondeterminism. NIST AI RMF 1.0 is voluntary governance structure, the OWASP Top 10 for LLM Applications is a versioned ranking — always cite the edition, because only two of ten held their rank in 2026 — and MITRE ATLAS records observed adversary behavior rather than prescribing controls. The OWASP list covers the model as a component; once it becomes an actor with tools and memory, pair it with the Agentic Top 10.</p>
 </div>
 
 ## Primary references

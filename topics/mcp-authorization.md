@@ -20,7 +20,7 @@ last_verified: 2026-08-14
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/mcp-oauth-discovery.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the MCP authorization discovery diagram at full size">
-    <img src="{{ '/assets/img/mcp-oauth-discovery.svg' | relative_url }}" alt="MCP authorization discovery: a client makes an unauthenticated call, obtains protected-resource metadata from the 401 WWW-Authenticate challenge or by probing well-known URIs, discovers and registers with an authorization server, sends the canonical resource URI in both the authorization and token requests, and presents the resource-bound token. A footer lists the three validations the client owns.">
+    <img src="{{ '/assets/img/mcp-oauth-discovery.svg' | relative_url }}" alt="MCP authorization discovery: a client makes an unauthenticated call, obtains protected-resource metadata from the 401 WWW-Authenticate challenge, falling back to well-known URI probing, discovers and registers with an authorization server, sends the canonical resource URI in both the authorization and token requests, and presents the resource-bound token. A footer lists the three validations the client owns.">
   </a>
   <p class="diagram-caption">The header path is preferred and well-known probing is the fallback; the resource indicator binds both requests to the target MCP server</p>
 </div>
