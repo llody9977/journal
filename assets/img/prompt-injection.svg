@@ -1,4 +1,6 @@
-<svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+<svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif" role="img" aria-labelledby="pi-title pi-desc">
+  <title id="pi-title">Parameterized SQL isolation compared with the LLM context window</title>
+  <desc id="pi-desc">Two sides. On the left, a parameterized SQL query: a fixed developer-supplied template and a user-supplied parameter, which the database engine binds as a literal value and never parses as SQL. On the right, an LLM context window: the system prompt, the user message, and a retrieved document or tool output that may carry hidden attacker instructions all flow into one undifferentiated context the model cannot reliably separate.</desc>
   <rect x="0" y="0" width="900" height="380" fill="#ffffff" />
 
   <text x="230" y="30" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">Parameterized SQL query</text>

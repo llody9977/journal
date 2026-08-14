@@ -1,0 +1,61 @@
+<svg viewBox="0 0 1200 460" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ri-title ri-desc">
+  <title id="ri-title">RFC 8707 resource indicators binding an access token to one MCP server</title>
+  <desc id="ri-desc">The MCP client sends the resource parameter carrying the canonical URI of the target server in both the authorization request and the token request. The authorization server issues a token scoped to that single resource. Server A accepts the token because it is the intended audience. Server B rejects the same token because it is not. A footer records that the specification requires clients to send the resource parameter regardless of whether the authorization server supports it, and requires servers to reject tokens not issued for them.</desc>
+  <rect width="1200" height="460" fill="#ffffff"/>
+
+  <defs>
+    <marker id="riA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">RFC 8707 resource indicators: one token, one audience</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Without an audience-bound token, a server that receives it can replay it against a different server the user also authorized.</text>
+
+  <!-- client -->
+  <rect x="40" y="104" width="248" height="118" rx="12" fill="#193e9f"/>
+  <text x="164" y="132" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">MCP client</text>
+  <text x="164" y="158" text-anchor="middle" font-size="12.5" fill="#c9d7fb">sends on both the authorization</text>
+  <text x="164" y="176" text-anchor="middle" font-size="12.5" fill="#c9d7fb">request and the token request:</text>
+  <text x="164" y="202" text-anchor="middle" font-size="12.5" font-family="ui-monospace,monospace" fill="#ffffff">resource=https://a.example/mcp</text>
+
+  <!-- AS -->
+  <rect x="360" y="104" width="290" height="118" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="382" y="132" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">AUTHORIZATION SERVER</text>
+  <text x="382" y="158" font-size="13.5" font-weight="800" fill="#0f172a">Issues an audience-bound token</text>
+  <text x="382" y="184" font-size="12.5" fill="#475569">The canonical server URI becomes the</text>
+  <text x="382" y="204" font-size="12.5" fill="#475569">token&#8217;s intended audience.</text>
+
+  <path d="M288 163 L356 163" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#riA)"/>
+
+  <!-- token -->
+  <rect x="722" y="122" width="230" height="82" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="837" y="148" text-anchor="middle" font-size="13" font-weight="800" fill="#0f766e">Access token</text>
+  <text x="837" y="172" text-anchor="middle" font-size="12.5" font-family="ui-monospace,monospace" fill="#0f766e">aud: https://a.example/mcp</text>
+  <text x="837" y="192" text-anchor="middle" font-size="12.5" fill="#475569">valid for server A only</text>
+
+  <path d="M650 163 L718 163" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#riA)"/>
+
+  <!-- server A accept -->
+  <rect x="330" y="266" width="380" height="122" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="352" y="292" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">SERVER A &#8212; ACCEPTS</text>
+  <text x="352" y="316" font-size="13" font-weight="800" fill="#0f172a">https://a.example/mcp</text>
+  <text x="352" y="342" font-size="12.5" fill="#475569">Validates that the token was issued</text>
+  <text x="352" y="362" font-size="12.5" fill="#475569">for this resource, then serves the</text>
+  <text x="352" y="378" font-size="12.5" fill="#475569">request.</text>
+
+  <!-- server B reject -->
+  <rect x="750" y="266" width="380" height="122" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="772" y="292" font-size="12" font-weight="900" letter-spacing="1" fill="#9f1239">SERVER B &#8212; REJECTS</text>
+  <text x="772" y="316" font-size="13" font-weight="800" fill="#0f172a">https://b.example/mcp</text>
+  <text x="772" y="342" font-size="12.5" fill="#475569">A replayed token names the wrong</text>
+  <text x="772" y="362" font-size="12.5" fill="#475569">audience, so the request fails with</text>
+  <text x="772" y="378" font-size="12.5" font-family="ui-monospace,monospace" fill="#9f1239">401 Unauthorized</text>
+
+  <path d="M790 204 L560 262" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#riA)"/>
+  <path d="M884 204 L930 262" stroke="#9f1239" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#riA)"/>
+  <text x="1010" y="238" text-anchor="middle" font-size="12.5" font-weight="700" fill="#9f1239">attempted replay</text>
+
+  <rect x="40" y="404" width="1120" height="42" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="600" y="430" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">The specification requires clients to send the resource parameter even when the authorization server ignores it, and requires servers to reject tokens not issued for them.</text>
+</svg>

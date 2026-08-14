@@ -1,0 +1,56 @@
+<svg viewBox="0 0 1200 450" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="hitl-title hitl-desc">
+  <title id="hitl-title">Human-in-the-loop approval gate keyed on tool privilege class</title>
+  <desc id="hitl-desc">A proposed tool call is classified into one of three privilege classes. Read-only calls execute automatically with an audit log. State-modifying calls execute with a user notification. Destructive calls are blocked until the user approves the resolved arguments in the client interface. A footer notes that the three-class split is this journal's working model, that the specification states only that there should be a human able to deny a tool invocation, and that approval fatigue is the failure mode of an over-broad destructive class.</desc>
+  <rect width="1200" height="450" fill="#ffffff"/>
+
+  <defs>
+    <marker id="hitlA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Approval gate keyed on tool privilege class</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The gate evaluates the resolved arguments, not the tool name &#8212; the arguments are what the injected instruction controls.</text>
+
+  <rect x="40" y="104" width="230" height="88" rx="12" fill="#193e9f"/>
+  <text x="155" y="134" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">Proposed tool call</text>
+  <text x="155" y="158" text-anchor="middle" font-size="12.5" fill="#c9d7fb">tool name plus the</text>
+  <text x="155" y="176" text-anchor="middle" font-size="12.5" fill="#c9d7fb">arguments the model chose</text>
+
+  <rect x="318" y="104" width="200" height="88" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="418" y="136" text-anchor="middle" font-size="13" font-weight="800" fill="#0f172a">Classify privilege</text>
+  <text x="418" y="160" text-anchor="middle" font-size="12.5" fill="#475569">against the client&#8217;s</text>
+  <text x="418" y="178" text-anchor="middle" font-size="12.5" fill="#475569">tool permission manifest</text>
+
+  <path d="M270 148 L314 148" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#hitlA)"/>
+
+  <!-- three outcomes -->
+  <rect x="580" y="96" width="580" height="86" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="602" y="120" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">READ-ONLY</text>
+  <text x="602" y="142" font-size="12.5" font-family="ui-monospace,monospace" fill="#0f766e">get_weather, search_docs, read_calendar</text>
+  <text x="602" y="166" font-size="12.5" fill="#475569">Runs automatically. An audit record is written.</text>
+
+  <rect x="580" y="194" width="580" height="86" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="602" y="218" font-size="12" font-weight="900" letter-spacing="0.8" fill="#b45309">STATE-MODIFYING</text>
+  <text x="602" y="240" font-size="12.5" font-family="ui-monospace,monospace" fill="#b45309">create_draft_email, update_record</text>
+  <text x="602" y="264" font-size="12.5" fill="#475569">Runs automatically, with a notification the user can act on afterwards.</text>
+
+  <rect x="580" y="292" width="580" height="102" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="602" y="316" font-size="12" font-weight="900" letter-spacing="0.8" fill="#9f1239">DESTRUCTIVE OR IRREVERSIBLE</text>
+  <text x="602" y="338" font-size="12.5" font-family="ui-monospace,monospace" fill="#9f1239">delete_database, send_wire_transfer, execute_shell</text>
+  <text x="602" y="362" font-size="12.5" fill="#475569">Blocked. The client shows the resolved arguments and waits for an</text>
+  <text x="602" y="382" font-size="12.5" fill="#475569">explicit approval before dispatching.</text>
+
+  <path d="M518 140 L576 139" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#hitlA)"/>
+  <path d="M518 148 L576 237" stroke="#b45309" stroke-width="2.5" fill="none" marker-end="url(#hitlA)"/>
+  <path d="M518 158 L576 340" stroke="#9f1239" stroke-width="2.5" fill="none" marker-end="url(#hitlA)"/>
+
+  <rect x="40" y="222" width="478" height="172" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="248" font-size="13" font-weight="800" fill="#0f172a">What this model is</text>
+  <text x="62" y="272" font-size="12.5" fill="#475569">The three-class split is a working model used in</text>
+  <text x="62" y="292" font-size="12.5" fill="#475569">this journal, not a protocol requirement.</text>
+  <text x="62" y="318" font-size="12.5" fill="#475569">The specification states only that there should</text>
+  <text x="62" y="338" font-size="12.5" fill="#475569">always be a human able to deny a tool invocation.</text>
+  <text x="62" y="366" font-size="12.5" font-weight="700" fill="#9f1239">Failure mode: an over-broad destructive class</text>
+  <text x="62" y="384" font-size="12.5" font-weight="700" fill="#9f1239">produces approval fatigue and reflexive consent.</text>
+</svg>

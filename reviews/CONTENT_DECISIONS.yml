@@ -2079,6 +2079,388 @@
       "superseded_by": null,
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0038",
+      "title": "Extend the one-image-per-diagram-frame rule to Section 7 and build eight purpose-built diagrams",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/ai-risk-management.md",
+          "topics/prompt-injection-defense.md",
+          "topics/mcp-security-agentics.md",
+          "topics/ai-model-supply-chain.md",
+          "topics/federated-learning-privacy.md",
+          "assets/img/nist-ai-rmf-functions.svg",
+          "assets/img/mitre-atlas-matrix.svg",
+          "assets/img/dual-llm-pattern.svg",
+          "assets/img/rag-context-isolation.svg",
+          "assets/img/mcp-tool-discovery-flow.svg",
+          "assets/img/mcp-resource-indicators.svg",
+          "assets/img/mcp-hitl-gate.svg",
+          "assets/img/pickle-rce-mechanism.svg"
+        ],
+        "concepts": [
+          "diagram caption agreement",
+          "duplicate diagram reuse",
+          "alt text accuracy",
+          "full-size diagram affordance",
+          "mobile diagram legibility"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review rendered every page and found that twelve of fourteen diagram frames reused one image under captions and alt text describing content the image did not contain. Topic 7.2 embedded the SQL-versus-context comparison three times under captions promising a dual-LLM pattern and a retrieval pipeline; Topic 7.3 embedded the tool-poisoning image four times under captions promising a discovery sequence, RFC 8707 token scoping, and an approval gate. No frame offered the full-size affordance, and at 375px the 1200-wide diagrams rendered 285px across, putting 11.5px body text at an effective 2.7 CSS px.",
+      "decision": "Apply the rule recorded in CD-0033 to Section 7: build a dedicated SVG for every diagram frame, rewrite each caption and alt string to describe only what its own image shows, and wrap every frame in the repository's diagram-frame-openable pattern.",
+      "rationale": "CD-0033 established this rule from a Section 6 review but recorded only Section 6 files in scope, so the identical defect class survived untouched in Section 7. The rule is repository-wide in substance: a caption naming content the image lacks teaches the wrong thing, and an alt string describing a non-existent diagram is worse for a screen-reader user than no diagram at all. Neither is visible to syntax, link, or structure checks. The openable affordance was already the accepted remedy for wide diagrams and is used by twenty-five other pages.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Render every Section 7 page and confirm no image is used twice within a page.",
+        "Confirm each caption and alt string matches the labels visible in its own image.",
+        "Measure every Section 7 SVG for text crossing a panel edge or the viewBox.",
+        "Confirm every frame carries the diagram-frame-openable pattern and an aria-label."
+      ],
+      "approved_outcome": "Thirteen Section 7 diagram frames, each with its own purpose-built image, matching caption and alt text, no clipped or overflowing text, and a full-size link.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated.",
+        "Rendered evidence shows a replacement diagram clipping or misrepresenting its subject."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0029",
+        "CD-0033"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0039",
+      "title": "Enumerate the OWASP LLM Top 10 from the primary-verifiable 2025 edition and record the 2026 edition's existence separately",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/ai-risk-management.md",
+          "topics/mcp-security-agentics.md",
+          "assets/img/ai-risk-management.svg"
+        ],
+        "concepts": [
+          "OWASP Top 10 for LLM Applications",
+          "edition versioning",
+          "LLM01 LLM06 identifiers",
+          "primary source availability"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review found the page presenting the 2025 risk list under 2026 identifiers: the table was headed '2026 Edition' and every row carried a :2026 suffix, while the entries, their order, and their names were the 2025 list. The page's own Primary references simultaneously said 2025. Topic 7.3 cited LLM06:2026 for Excessive Agency, and its link returned HTTP 404 because OWASP had renamed the 2025 slugs.",
+      "decision": "Enumerate identifiers, names, and ranks from the 2025 edition, always written with an explicit :2025 suffix and linked to the per-risk pages OWASP currently publishes. Record the existence and August 2026 publication of the 2026 edition in a short 'Edition currency' note citing OWASP's own resource page, without reproducing a 2026 ranking that could not be read from a primary source.",
+      "rationale": "OWASP published a 2026 edition, but distributes the document behind a registration form and still serves 2025 content on its per-risk reference pages and on the llmrisk2026 path. Multiple independent secondary summaries agree on a 2026 ordering, but the journal's rule is that material standards claims rest on primary sources, and a table of ten ranked identifiers is exactly such a claim. Publishing a version-tagged 2025 list is precise, fully verifiable, and cannot mislead; publishing an unverified 2026 ranking would trade a verifiable statement for an unverifiable one. Writing the edition into every identifier is the durable fix, because a bare LLM06 silently changes meaning between editions.",
+      "authoritative_sources": [
+        {
+          "title": "OWASP Top 10 for LLM Applications",
+          "url": "https://genai.owasp.org/llm-top-10/",
+          "supports": "The 2025 identifiers, names, and per-risk reference pages OWASP currently publishes."
+        },
+        {
+          "title": "OWASP GenAI LLM Top 10 2026",
+          "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+          "supports": "That a 2026 edition exists and was published in August 2026."
+        }
+      ],
+      "verification_methods": [
+        "Confirm every LLM identifier in Section 7 carries an explicit edition suffix.",
+        "Confirm each linked per-risk page resolves and matches the name beside it.",
+        "Re-check whether OWASP has published the 2026 entries as reference pages or ungated document."
+      ],
+      "approved_outcome": "Section 7 enumerates the 2025 edition with edition-suffixed identifiers and live per-risk links, plus an Edition currency note recording the 2026 edition and why it is not enumerated.",
+      "invalidation_conditions": [
+        "OWASP publishes the 2026 entries as reference pages or an ungated document, at which point the enumeration should move to 2026 and the note should be rewritten.",
+        "A later edition supersedes 2026 while 2025 pages are withdrawn."
+      ],
+      "related_decisions": [
+        "CD-0027"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0040",
+      "title": "Name the dual LLM roles as the source defines them and restore the controller as the security boundary",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/prompt-injection-defense.md",
+          "assets/img/dual-llm-pattern.svg"
+        ],
+        "concepts": [
+          "dual LLM pattern",
+          "quarantined LLM",
+          "privileged LLM",
+          "controller",
+          "prompt injection residual risk"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review found the component that ingests untrusted content labelled 'Privileged Input LLM (Untrusted Processor)' — the inverse of the pattern's own naming — with the controller absent entirely and the untrusted model's JSON output routed directly into the execution model.",
+      "decision": "Use the source's names: the quarantined LLM reads untrusted content and holds no tools or network access; the privileged LLM holds the tools and never ingests raw untrusted strings. Restore the controller as a non-model component that stores each extracted value and passes only an opaque handle, and state explicitly that a schema constrains output shape rather than string contents. Add a section recording that no control in the page eliminates prompt injection.",
+      "rationale": "The naming was not a cosmetic slip: calling the untrusted processor 'privileged' inverts the property the pattern is built on, and omitting the controller removes the actual boundary. Passing schema-valid JSON straight through reopens the channel the pattern exists to close, because attacker-controlled prose inside a string field reaches the privileged model unchanged. OWASP's own LLM01 entry states that fool-proof prevention is not established, so a page presenting these controls without a residual-risk statement overclaims.",
+      "authoritative_sources": [
+        {
+          "title": "The Dual LLM pattern for building AI assistants that can resist prompt injection",
+          "url": "https://simonwillison.net/2023/Apr/25/dual-llm-pattern/",
+          "supports": "The quarantined and privileged role definitions and the controller's variable-substitution mechanism."
+        },
+        {
+          "title": "OWASP LLM01:2025 Prompt Injection",
+          "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+          "supports": "That fool-proof prompt injection prevention methods are not established."
+        }
+      ],
+      "verification_methods": [
+        "Confirm prose and diagram agree that the quarantined model holds no tools and the privileged model reads no raw untrusted text.",
+        "Confirm the controller appears as a non-model component in both prose and diagram.",
+        "Confirm the page states what none of its controls fixes."
+      ],
+      "approved_outcome": "Topic 7.2 describes the pattern with the source's role names, includes the controller, and separates enforced controls from advisory ones.",
+      "invalidation_conditions": [
+        "The pattern's originating description is revised with different role names.",
+        "A capability-based successor pattern replaces the handle-substitution mechanism."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0038"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0041",
+      "title": "Track the current MCP specification revision on Topic 7.3 and align its transport and normative claims with Topic 4.8",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/mcp-security-agentics.md",
+          "topics/mcp-authorization.md"
+        ],
+        "concepts": [
+          "MCP specification revision",
+          "Streamable HTTP",
+          "tool annotation trust",
+          "human in the loop",
+          "confused deputy",
+          "token audience validation",
+          "local MCP server compromise"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review found Topic 7.3 citing MCP 2025-06-18 and describing the transport as 'stdio or SSE/HTTP' while Topic 4.8 cited 2025-11-25 and stated that Streamable HTTP replaces standalone HTTP+SSE — a direct contradiction between two pages, both behind the current 2026-07-28 revision. The same page rendered a conditional, annotation-scoped MUST as an unconditional rule covering descriptions, raised the specification's human-in-the-loop SHOULD to a must, used 'confused deputy' for what the specification calls audience validation failure, and omitted local MCP server compromise entirely.",
+      "decision": "Cite the current 2026-07-28 revision on Topic 7.3, describe stdio and Streamable HTTP as the two standard transports, quote the annotation-trust requirement with its scope and its 'unless they come from trusted servers' condition, present human-in-the-loop as the specification's SHOULD with the three-class privilege table labelled a journal working model, reserve 'confused deputy' for the proxy consent-cookie attack the specification names, and add a section on local MCP server compromise.",
+      "rationale": "Two pages in one journal contradicting each other on a protocol's transport model is worse than either being merely stale, because a reader cannot tell which is current. The normative errors all ran in the same direction — making the specification appear to require more than it does — which is the failure mode the claim-discipline rules exist to prevent. Local server compromise is the largest exposure in a typical local deployment and the specification treats it as a first-class risk, so a page whose checklist claims to cover auditing an MCP deployment cannot omit it.",
+      "authoritative_sources": [
+        {
+          "title": "MCP Tools specification (2026-07-28)",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools",
+          "supports": "The conditional annotation-trust requirement, the tools/list field set, and the human-in-the-loop SHOULD."
+        },
+        {
+          "title": "MCP Transports specification (2026-07-28)",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports",
+          "supports": "That stdio and Streamable HTTP are the two standard transport bindings."
+        },
+        {
+          "title": "MCP Security Best Practices",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices",
+          "supports": "The confused deputy definition, the token passthrough prohibition, and local MCP server compromise."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topics 4.8 and 7.3 state the same transport model.",
+        "Confirm every normative word on Topic 7.3 matches the strength used by the cited specification section.",
+        "Re-check the current revision identifier at modelcontextprotocol.io/specification/versioning."
+      ],
+      "approved_outcome": "Topic 7.3 cites 2026-07-28 throughout, agrees with Topic 4.8 on transports, distinguishes specification requirements from journal working rules, and covers local server compromise.",
+      "invalidation_conditions": [
+        "A new MCP revision changes the transport set, the annotation trust rule, or the human-in-the-loop guidance.",
+        "Topic 4.8 is restructured so the transport statement no longer lives there."
+      ],
+      "related_decisions": [
+        "CD-0022",
+        "CD-0027"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0042",
+      "title": "Extend the rendering-hazard check to math spans that carry no backslash command",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_rendering_hazards.py",
+          "topics/federated-learning-privacy.md",
+          "topics/recommended-algorithms.md"
+        ],
+        "concepts": [
+          "LaTeX rendering",
+          "math renderer",
+          "rendering hazard check",
+          "formula presentation",
+          "check coverage gap"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review rendered Topic 7.5 and found $W_t$, $D_k$, $W_t^k$, and $W_{t+1}$ reaching the reader as literal source. That file is named in CD-0034's scope and the decision was marked implemented, so the check created by CD-0034 to make this defect class mechanically detectable had missed it: its pattern requires a backslash command inside the span, and subscript notation needs none.",
+      "decision": "Add a second inline pattern that reports a '$ ... $' span carrying subscript, superscript, or brace notation without a backslash command, restricted to math-shaped characters and a non-whitespace opening so prose about currency is not matched. Rewrite the Topic 7.5 formulas as literal text, and fix the one further instance the widened check surfaced in Topic 2.11.",
+      "rationale": "CD-0034's rationale was that a wording convention is not durable and the fix has to be mechanical. That reasoning holds, and the gap proved it: the convention was recorded, the file was in scope, the decision was marked implemented, and the defect shipped anyway because the detector was narrower than the defect class. Widening the detector is the same fix applied properly. The check surfacing a previously invisible instance in Section 2 on its first run is evidence the widening was warranted.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Run the check against all four previously observed defect shapes plus subscript, superscript, and brace spans.",
+        "Confirm the negative cases — currency amounts, shell variables, and literal formulas — are not reported.",
+        "Build the site and confirm no dollar-delimited math notation appears in the rendered text."
+      ],
+      "approved_outcome": "verify_rendering_hazards.py reports subscript and superscript math spans, the repository is clean under the widened check, and it remains in the blocking deploy gate.",
+      "invalidation_conditions": [
+        "A math renderer is added to the site layout, which would make dollar-delimited notation render as intended.",
+        "The check produces false positives on legitimate prose that cannot be resolved by tightening the character class."
+      ],
+      "related_decisions": [
+        "CD-0034"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0043",
+      "title": "Correct the federated learning primitives, sources, and thresholds, and state the SecAgg / robust-aggregation conflict",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/federated-learning-privacy.md",
+          "assets/img/federated-learning-privacy.svg",
+          "topics/privacy-by-design-pets.md"
+        ],
+        "concepts": [
+          "secure aggregation",
+          "differential privacy mechanism",
+          "robust aggregation",
+          "Bulyan",
+          "cross-device cross-silo",
+          "epsilon threshold"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review found Topic 7.5 naming 'Bruma' as a robust aggregation algorithm, attributing secure aggregation to homomorphic encryption folded inside SMPC, pairing (epsilon, delta) differential privacy with the Laplace mechanism in its diagram, citing NIST SP 800-226 under a fabricated title behind a generic index URL, asserting an unsourced epsilon of 1.0 or less, and recommending both plain secure aggregation and Krum-style robust aggregation without noting that they conflict.",
+      "decision": "Name Bulyan as the third robust aggregation rule, describe SecAgg as pairwise masking with secret-shared dropout recovery under an honest-but-curious server with a non-collusion threshold, pair (epsilon, delta) with the Gaussian mechanism, cite NIST SP 800-226 under its real title and DOI, present any epsilon value as a recorded local policy decision rather than a standard, add the cross-device versus cross-silo distinction, and state explicitly that robust aggregation must rank individual updates while plain SecAgg exists to hide them.",
+      "rationale": "'Bruma' is not a recognized algorithm, and a fabricated name in a technical journal is worse than an omission because it cannot be looked up. Folding homomorphic encryption inside SMPC also contradicted Topic 9.3, which lists them as distinct primitives. The Laplace mechanism yields pure epsilon-DP, so pairing it with a delta was a mechanism error the neighbouring page already had right. The fabricated NIST title passed the link check because the generic index URL resolves, which is why citations need content verification and not only a status code. The SecAgg and robust-aggregation conflict is the single most consequential omission: a deployment cannot naively do both, and the page recommended both as mandatory audit criteria.",
+      "authoritative_sources": [
+        {
+          "title": "Practical Secure Aggregation for Federated Learning on User-Held Data",
+          "url": "https://arxiv.org/abs/1611.04482",
+          "supports": "The pairwise masking and secret-sharing construction, dropout recovery, and honest-but-curious threat model."
+        },
+        {
+          "title": "NIST SP 800-226: Guidelines for Evaluating Differential Privacy Guarantees",
+          "url": "https://doi.org/10.6028/NIST.SP.800-226",
+          "supports": "The publication's real title and status, the local and central DP distinction, and the absence of a universal epsilon threshold."
+        },
+        {
+          "title": "Communication-Efficient Learning of Deep Networks from Decentralized Data",
+          "url": "https://arxiv.org/abs/1602.05629",
+          "supports": "The FedAvg loop only; this paper does not describe secure aggregation."
+        }
+      ],
+      "verification_methods": [
+        "Confirm every algorithm and primitive named on the page can be located in a cited source.",
+        "Confirm Topics 7.5 and 9.3 agree that SMPC and homomorphic encryption are distinct primitives.",
+        "Confirm every numeric privacy parameter is presented as a local decision or carries a source."
+      ],
+      "approved_outcome": "Topic 7.5 states the two federated learning regimes, the real SecAgg construction and its assumptions, correctly paired DP mechanisms, sourced references, and the conflict between robust aggregation and plain secure aggregation.",
+      "invalidation_conditions": [
+        "A standards body publishes a recommended epsilon range for a comparable deployment context.",
+        "A widely adopted protocol resolves the robust aggregation and secure aggregation conflict, changing the recommendation."
+      ],
+      "related_decisions": [
+        "CD-0029",
+        "CD-0038"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0044",
+      "title": "Replace absolute safetensors claims with the audited scope and correct the ModelScan invocation",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/ai-model-supply-chain.md",
+          "assets/img/ai-model-supply-chain.svg",
+          "assets/img/pickle-rce-mechanism.svg"
+        ],
+        "concepts": [
+          "safetensors",
+          "weights_only",
+          "pickle deserialization",
+          "ModelScan CLI",
+          "residual risk symmetry"
+        ]
+      },
+      "originating_feedback": "A fresh Section 7 review found the page claiming 'ZERO RCE RISK' for safetensors in prose and 'Eliminates pickle RCE completely' in its diagram, with no source and no residual risk, while weights_only=True two sections later carried a correct three-item residual-risk bullet. Both ModelScan commands used a -d flag that the tool does not accept and a --fail-on-error option it does not document, and the checklist demanded weights_only=True on all torch.load calls, which contradicts PyTorch's own guidance for legacy nn.Module checkpoints.",
+      "decision": "State the safetensors property as what the independent audit established — no code-execution path in the format — with the audit cited and the residual scope named, add that both controls protect the container rather than the weights, correct the ModelScan invocation to -p / --path with exit-status gating, and rewrite the loader checklist row to allow a justified weights_only=False for legacy nn.Module checkpoints backed by provenance and a scan.",
+      "rationale": "Granting one side of a comparison an unqualified absolute while qualifying the other is the comparative-symmetry defect the writing standard names directly, and 'zero risk' is not a claim a page can make without a source. The audit supports a precise statement, which is more useful than the absolute one because it says what was tested. The command errors are the more immediate harm: a reader copying the CI snippet gets a failure, and a blanket weights_only=True rule fails on exactly the legacy checkpoints the row targets.",
+      "authoritative_sources": [
+        {
+          "title": "PyTorch serialization notes",
+          "url": "https://docs.pytorch.org/docs/main/notes/serialization.html",
+          "supports": "The weights_only mechanism, the 2.6 default and its pickle_module condition, the nn.Module exception, and the stated residual risks."
+        },
+        {
+          "title": "Safetensors audited as really safe and becoming the default",
+          "url": "https://huggingface.co/blog/safetensors-security-audit",
+          "supports": "The audit scope, absence of critical findings, and the medium-severity issues that were fixed."
+        },
+        {
+          "title": "ModelScan",
+          "url": "https://github.com/protectai/modelscan",
+          "supports": "The -p / --path flag, reporting options, and supported model formats."
+        }
+      ],
+      "verification_methods": [
+        "Confirm every command in the page matches the tool's documented flags.",
+        "Confirm both mitigations carry a residual-risk statement of comparable strength.",
+        "Confirm prose and diagram agree on the set of supported scan formats."
+      ],
+      "approved_outcome": "Topic 7.4 states audited scope rather than absolutes, gives runnable ModelScan commands, and separates container safety from weight-level risk.",
+      "invalidation_conditions": [
+        "A new audit or disclosed vulnerability changes what the safetensors format guarantees.",
+        "ModelScan changes its CLI surface.",
+        "PyTorch changes the weights_only default or its guidance for nn.Module checkpoints."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0038"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
     }
   ]
 }

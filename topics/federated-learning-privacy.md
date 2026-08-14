@@ -1,73 +1,105 @@
 ---
 title: Federated Learning & Privacy-Preserving Machine Learning
-description: Comprehensive technical guide to Federated Learning (FL), decentralized edge model training, Secure Aggregation (SMPC), Differential Privacy noise injection, and Model Poisoning / Membership Inference defenses.
+description: Cross-device and cross-silo federated learning, the FedAvg loop, what secure aggregation and differential privacy each assume and guarantee, and why robust aggregation conflicts with plain SecAgg.
 permalink: /topics/federated-learning-privacy/
-last_verified: 2026-08-13
+last_verified: 2026-08-14
 ---
 
 <span class="eyebrow">AI & LLM Security / Privacy-Preserving ML</span>
 
 # Federated Learning & Privacy-Preserving Machine Learning
 
-<p class="lede">Centralizing sensitive user datasets for machine learning training creates severe privacy and regulatory compliance risks. Federated Learning (FL) shifts the training paradigm: instead of bringing data to the model, FL brings the model to the data. Edge devices compute local gradient updates on private datasets, which are combined via Secure Aggregation (SecAgg) and Differential Privacy without raw data ever leaving the client device. However, securing FL requires defending against model poisoning attacks and membership inference exploits.</p>
+<p class="lede">Centralizing user data for training concentrates both privacy risk and regulatory exposure in one place. Federated Learning (FL) inverts the arrangement: the model goes to the data. Clients train locally and send only model updates, which are combined into a new global model. That removes the central dataset, but it does not by itself remove the privacy problem — updates leak information about the data that produced them — and it introduces a new one, because the participants computing those updates are no longer trusted. Secure aggregation and differential privacy address the first; robust aggregation addresses the second, and the two pull against each other.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/federated-learning-privacy.svg' | relative_url }}" alt="Federated Learning diagram showing edge client model training, Secure Aggregation, Differential Privacy noise injection, and Central Server global model update.">
-  <p class="diagram-caption">Federated Learning Architecture: Edge Local Training &leftrightarrow; Secure Aggregation (SecAgg/SMPC) &leftrightarrow; Global Model Broadcast</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/federated-learning-privacy.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the federated learning architecture diagram at full size">
+    <img src="{{ '/assets/img/federated-learning-privacy.svg' | relative_url }}" alt="Three panels: decentralized edge client training with local data staying on device and Gaussian noise added for differential privacy; secure aggregation where the server sees only the aggregate sum, with its honest-but-curious and non-collusion assumptions stated; and defenses against poisoning and membership inference, noting the tension between robust aggregation and secure aggregation.">
+  </a>
+  <p class="diagram-caption">Federated learning: local training, secure aggregation of updates, and the poisoning and inference defenses layered over it</p>
 </div>
 
-## Federated Learning Architecture & Training Lifecycle
+## Two regimes, not one
 
-Federated Learning replaces centralized data collection with a 4-step iterative training loop:
+"Federated learning" covers two settings whose threat models and engineering constraints differ enough that a control appropriate to one is often wrong for the other.
 
-1. **Global Model Broadcast**: The central server broadcasts current global model weights $W_t$ to selected participating edge clients (*mobile phones, IoT nodes, hospital servers*).
-2. **Local Edge Training**: Each client trains the model on its private local dataset $D_k$ for a fixed number of epochs, computing updated local weights $W_t^k$.
-3. **Secure Weight Aggregation**: Clients send encrypted local model updates back to the central server using **Secure Aggregation (SecAgg)** protocol based on Secure Multi-Party Computation (SMPC). The server computes the aggregate sum (the sum of the client weight updates) without inspecting individual client updates.
-4. **Global Model Update**: The central server updates the master model weights $W_{t+1}$ using Federated Averaging (**FedAvg**) and redistributes the updated model.
-
-## Cryptographic & Differential Privacy Safeguards
-
-To prevent gradient inversion attacks (*where an adversary reconstructs raw training images or text from raw gradient updates*), FL integrates dual privacy safeguards:
-
-| Privacy Safeguard | Cryptographic / Mathematical Primitive | Security Guarantee Provided |
+| | **Cross-device** | **Cross-silo** |
 |---|---|---|
-| **Secure Aggregation (SecAgg)** | Secret-Sharing &amp; Homomorphic Encryption (SMPC). | Central server learns only the combined sum of client gradients; zero visibility into individual client updates. |
-| **Local Differential Privacy (LDP)** | Injects bounded noise (&epsilon;, &delta;) into client gradients before transmission. | Mathematically bounds the ability of an adversary to infer whether a specific record was present in a client's dataset. |
-| **Central Differential Privacy (CDP)** | Server adds noise to global aggregated weights before broadcasting. | Bounds membership inference attacks against the published global model weights. |
+| **Participants** | Up to millions of consumer devices. | A handful to a few hundred organizations. |
+| **Availability** | Intermittent; clients drop mid-round routinely. | Reliable, usually always-on infrastructure. |
+| **Round participation** | A small sampled subset each round; a client may never be selected twice. | Typically all participants, every round. |
+| **Client state** | Stateless — no assumption that a client returns. | Stateful across rounds. |
+| **Identity** | Weak. Devices generally cannot be enrolled in an organizational trust domain. | Strong. Each participant is a known, contracted legal entity. |
+| **Dominant threat** | Many cheap, individually weak malicious clients. | Few clients, but each holds a large data share and real incentives. |
 
-## Adversarial Attacks & Defense Countermeasures
+Dropout recovery machinery matters in the cross-device setting and is close to irrelevant in cross-silo. Client authentication is practical in cross-silo and largely unavailable cross-device. Read every claim below against the regime you are in.
 
-Federated Learning introduces unique decentralized attack vectors:
+## The training loop
 
-- **Model Poisoning & Sybil Attacks**: Compromised clients submit corrupted gradient updates designed to derail global model convergence or inject backdoor triggers.
-  - *Defense*: Deploy robust aggregation algorithms (**Krum**, **Trimmed Mean**, **Bruma**) and enforce Bounded Norm Clipping to filter out outlier gradient submissions.
-- **Membership Inference Attacks**: Adversaries query the global model to determine whether a target individual's private data was used in training.
-  - *Defense*: Enforce strict Central Differential Privacy (&epsilon; &le; 1.0) during model aggregation.
+Federated Averaging (FedAvg) iterates four steps. Writing `W_t` for the global weights at round `t` and `D_k` for client `k`'s local dataset:
 
-### Performance Trade-Offs & Limitations
-Federated Learning imposes severe operational and theoretical constraints:
-- **Privacy-Utility Trade-Off**: The Differential Privacy noise parameter (&epsilon;) operates on an inverse curve with model utility. Stricter privacy bounds (lower &epsilon;) mathematically guarantee higher privacy but proportionally degrade model accuracy.
-- **Aggregation Overhead**: Secure Multi-Party Computation (SMPC) used in SecAgg requires extensive cryptographic overhead, dramatically increasing network bandwidth consumption and latency across participating edge clients.
+1. **Broadcast** — the server sends `W_t` to the clients selected for this round.
+2. **Local training** — each client trains on its own `D_k` for a fixed number of local epochs, producing `W_t^k`.
+3. **Aggregation** — clients return their updates, which the server combines into a single weighted sum.
+4. **Update** — the server forms `W_(t+1)` from that sum and the round repeats.
 
-## Essential Federated Learning Diagnostic Checklist
+Raw data never leaves the client. Model updates do, and a gradient or weight delta is a function of the training data — gradient inversion attacks reconstruct recognizable training images and text from unprotected updates. Step 3 is therefore where the privacy engineering has to happen.
 
-When auditing a privacy-preserving machine learning deployment, evaluate these 6 criteria:
+## Secure aggregation and differential privacy
 
-| Diagnostic Area | Architectural Evaluation Question | Verification &amp; Audit Evidence |
+These are different tools solving different halves of the problem. Neither replaces the other.
+
+| Safeguard | Mechanism | What it guarantees | What it assumes |
+|---|---|---|---|
+| **Secure aggregation (SecAgg)** | Clients apply pairwise masks derived from key agreement, which cancel when the updates are summed; secret sharing lets the server recover the sum when clients drop out. | The server learns the aggregate sum and nothing about any individual update. | An honest-but-curious server, and no collusion above the protocol's threshold. It hides individuals, not the sum. |
+| **Local differential privacy** | Each client clips its update to a bounded norm, then adds calibrated Gaussian noise before sending it. | A bounded (&epsilon;, &delta;) limit on what any observer — including the server — can infer about one record, independent of the aggregation protocol. | Correct clipping and noise calibration on every client. Utility cost is highest here. |
+| **Central differential privacy** | The server adds calibrated noise to the aggregate before publishing the new global model. | A bounded limit on membership inference against the published model. | A trusted server, since it sees the clean aggregate before adding noise. |
+
+Two things follow that are easy to miss:
+
+- **SecAgg is not differential privacy.** It hides who contributed what, while the aggregate itself is still a function of everyone's data. With a small cohort, inversion against the aggregate remains feasible. The DP layer is what bounds that, and it must be chosen for the regime — local DP where the server is untrusted, central DP where it is.
+- **&epsilon; has no universal safe value.** Deployed systems span a wide range and NIST's guidance deliberately declines to set a threshold, so treat any specific figure as a local policy decision that must be recorded with its justification, not as a standard. Tightening &epsilon; increases privacy and costs accuracy; the exchange rate is model- and task-specific, not proportional.
+
+For the broader family of privacy-enhancing technologies these sit within — differential privacy, secure multi-party computation, homomorphic encryption, and zero-knowledge proofs as distinct primitives — see [Privacy by Design & Privacy-Enhancing Technologies](../privacy-by-design-pets/).
+
+## Poisoning, and the conflict it creates
+
+The participants are untrusted, which is the structural difference from centralized training.
+
+- **Model poisoning and Sybil attacks** — malicious clients submit crafted updates to degrade convergence or implant a backdoor trigger. Cross-device is the harder case: identities are cheap.
+  - *Defenses*: bounded norm clipping applied to every submission, and robust aggregation rules — **Krum**, **Trimmed Mean**, and **Bulyan**, which composes a Krum-style selection stage with coordinate-wise trimming.
+- **Membership inference** — an adversary queries the global model to determine whether a particular record was in the training data.
+  - *Defense*: differential privacy at the layer matching the trust model, with the privacy budget tracked across rounds rather than per round.
+
+**The conflict.** Plain SecAgg is designed so the server sees only the sum. Krum, Trimmed Mean, and Bulyan all work by ranking or trimming *individual* updates. Deploying both naively is contradictory: whatever lets the server rank submissions also lets it inspect them. Reconciling them requires a protocol built for it — verifiable or robust secure aggregation schemes that compute the robust statistic inside the protected computation, or norm bounds enforced cryptographically on each masked submission rather than by inspection. A deployment claiming both should be asked which scheme it uses.
+
+Client authentication helps in cross-silo, where participants are known entities: short-lived OIDC tokens raise the cost of registering extra identities and bound how many one principal can hold. It does not *prevent* Sybil attacks — one authenticated principal can still control many enrolled devices — and in cross-device settings it is usually unavailable in the first place.
+
+## Operational cost
+
+- **Communication.** SecAgg's masking and secret-sharing rounds add bandwidth and latency on top of transmitting the updates themselves, which is the binding constraint on intermittently-connected devices.
+- **Dropout handling.** Cross-device clients disappear mid-round. Recovery machinery exists precisely for that, and it is where much of the protocol complexity lives.
+- **Heterogeneity.** Client datasets are not identically distributed, so FedAvg converges more slowly and less predictably than centralized training on the pooled equivalent.
+
+## Diagnostic checklist
+
+When auditing a privacy-preserving machine learning deployment, evaluate these six criteria:
+
+| Diagnostic area | Evaluation question | Audit evidence |
 |---|---|---|
-| **Zero Raw Data Transmission** | Is raw training data retained strictly on local client devices without transmission to central servers? | Edge client code &amp; network traffic packet captures. |
-| **Secure Aggregation Protocol** | Is Secure Aggregation (SecAgg) enforced using cryptographic SMPC secret-sharing? | Server aggregation codebase &amp; protocol specs. |
-| **Local Differential Privacy** | Are local gradient updates obfuscated using calibrated Differential Privacy noise (&epsilon;, &delta;)? | Gradient clipping &amp; noise addition code configs. |
-| **Outlier Gradient Clipping** | Are client gradient submissions clipped using bounded norm thresholds to prevent poisoning? | Server FedAvg implementation parameters. |
-| **Robust Aggregation Functions** | Does the server employ robust aggregation (Krum / Trimmed Mean) to withstand malicious clients? | Aggregation algorithm configuration files. |
-| **OIDC Client Authentication** | Are participating edge clients authenticated using short-lived OIDC identity tokens to prevent Sybil node creation? | Client authentication gateway logs. |
+| **Regime and threat model** | Is the deployment cross-device or cross-silo, and are the server trust assumptions written down? | Architecture records &amp; documented trust boundaries. |
+| **Data locality** | Does raw training data stay on the client, verified rather than assumed? | Client code review &amp; network captures. |
+| **Aggregation protection** | Is secure aggregation in use, and what does it assume about server honesty and collusion? | Aggregation implementation &amp; protocol specification. |
+| **Privacy budget** | Is noise calibrated at the layer matching the trust model, with &epsilon; accounted across rounds and its value justified? | Clipping and noise configuration &amp; budget accounting records. |
+| **Poisoning defense** | Are norm bounds enforced on every submission, and does the robust aggregation rule coexist with secure aggregation by design? | Aggregation configuration &amp; the scheme reconciling the two. |
+| **Participant identity** | In cross-silo, are participants authenticated with short-lived credentials, and is the residual Sybil exposure recorded? | Authentication gateway logs &amp; risk register entry. |
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Federated Learning trains machine learning models on edge devices without centralizing private data. Protect gradient updates using Secure Aggregation (SecAgg) and Differential Privacy, and defend against model poisoning via robust aggregation algorithms like Krum.</p>
+  <p>Federated learning removes the central dataset, not the leakage — updates still encode the data. Secure aggregation hides individual updates from an honest-but-curious server; differential privacy bounds what the aggregate reveals; they solve different halves. Robust aggregation like Krum or Bulyan needs to rank individual updates, which plain SecAgg exists to prevent, so any deployment claiming both must name the scheme that reconciles them.</p>
 </div>
 
 ## Primary references
 
-- **McMahan et al. (2017)**: *Communication-Efficient Learning of Deep Networks from Decentralized Data (FedAvg)* — [arXiv:1602.05629](https://arxiv.org/abs/1602.05629)
-- **NIST SP 800-226**: *Guidelines for Evaluating Privacy-Preserving Machine Learning Systems* — [NIST CSRC](https://csrc.nist.gov/publications)
+- **[Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629)** — McMahan et al., 2017. Verified the FedAvg loop, local epochs, and client sampling.
+- **[Practical Secure Aggregation for Federated Learning on User-Held Data](https://arxiv.org/abs/1611.04482)** — Bonawitz et al. Verified the pairwise masking and secret-sharing construction, its dropout recovery, and its honest-but-curious threat model.
+- **[NIST SP 800-226: Guidelines for Evaluating Differential Privacy Guarantees](https://doi.org/10.6028/NIST.SP.800-226)** — final, March 2025. Verified the local and central differential privacy distinction and that no universal &epsilon; threshold is specified.

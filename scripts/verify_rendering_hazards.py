@@ -38,6 +38,16 @@ CODE_SPAN = re.compile(r"`[^`\n]*`")
 # A "$ ... $" span carrying a LaTeX command, e.g. $\frac{a}{b}$.
 MATH_COMMAND = re.compile(r"\$\$?[^$\n]*\\[A-Za-z]+[^$\n]*\$\$?")
 
+# A "$ ... $" span with no backslash command at all, e.g. $W_t$ or $W_{t+1}$.
+# MATH_COMMAND misses these because subscript and superscript notation needs no
+# command, and they reach the reader as literal source exactly the same way.
+# The candidate span must open without whitespace and hold only math-shaped
+# characters, so prose about two separate currency amounts is not matched; a
+# candidate is only reported when it actually carries subscript, superscript,
+# or brace notation.
+MATH_INLINE = re.compile(r"\$(?!\s)([A-Za-z0-9_^{}\\+\-*/=(),.]{1,40})\$")
+MATH_NOTATION = frozenset("_^{}")
+
 # A "$ ... $" span containing a pipe, e.g. $|Z| > 3.0$. This is the worst
 # case: kramdown counts the pipes and silently reparses the whole paragraph
 # as a GFM table, so the sentence is restructured, not merely unrendered.
@@ -95,6 +105,23 @@ def scan(text: str) -> list[tuple[int, str, str]]:
                 number,
                 "raw LaTeX — no math renderer is loaded, so it reaches the reader as source",
                 match.group(0).strip(),
+            ))
+            continue
+
+        inline = next(
+            (
+                found
+                for found in MATH_INLINE.finditer(line)
+                if MATH_NOTATION & set(found.group(1))
+            ),
+            None,
+        )
+        if inline:
+            findings.append((
+                number,
+                "math notation in a '$ ... $' span — no math renderer is loaded, "
+                "so it reaches the reader as source",
+                inline.group(0).strip(),
             ))
             continue
 

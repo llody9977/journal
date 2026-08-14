@@ -1,0 +1,61 @@
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="rmf-title rmf-desc">
+  <title id="rmf-title">NIST AI RMF 1.0 core functions</title>
+  <desc id="rmf-desc">Four core functions of the voluntary NIST AI Risk Management Framework 1.0. Govern is the continuous function surrounding the other three. Map categorizes context and dependencies, Measure evaluates the system empirically, and Manage allocates risk response. Map, Measure, and Manage repeat as an iterative loop across the AI lifecycle.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="rmfArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">NIST AI RMF 1.0 &#8212; four core functions</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Voluntary framework published January 2023. Govern runs continuously; Map, Measure, and Manage iterate across the AI lifecycle.</text>
+
+  <!-- Govern band -->
+  <rect x="40" y="96" width="1120" height="86" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="122" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">GOVERN &#8212; CONTINUOUS, SURROUNDS THE OTHER THREE</text>
+  <text x="62" y="146" font-size="14" font-weight="800" fill="#0f172a">Culture, policy, accountability, and risk tolerance</text>
+  <text x="62" y="168" font-size="12.5" fill="#475569">Documented AI risk tolerance, named accountabilities, human-in-the-loop policy, and workforce competency.</text>
+
+  <!-- Map -->
+  <rect x="40" y="206" width="352" height="176" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="232" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">MAP</text>
+  <text x="62" y="256" font-size="14" font-weight="800" fill="#0f172a">Establish context</text>
+  <text x="62" y="282" font-size="12.5" fill="#475569">Categorize system purpose, actors,</text>
+  <text x="62" y="302" font-size="12.5" fill="#475569">and intended use.</text>
+  <text x="62" y="326" font-size="12.5" fill="#475569">Identify third-party foundation</text>
+  <text x="62" y="346" font-size="12.5" fill="#475569">models, training-data provenance,</text>
+  <text x="62" y="366" font-size="12.5" fill="#475569">and retrieval data boundaries.</text>
+
+  <!-- Measure -->
+  <rect x="424" y="206" width="352" height="176" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="446" y="232" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">MEASURE</text>
+  <text x="446" y="256" font-size="14" font-weight="800" fill="#0f172a">Evaluate empirically</text>
+  <text x="446" y="282" font-size="12.5" fill="#475569">Quantitative and qualitative metrics</text>
+  <text x="446" y="302" font-size="12.5" fill="#475569">for safety, security, robustness,</text>
+  <text x="446" y="322" font-size="12.5" fill="#475569">bias, and privacy.</text>
+  <text x="446" y="346" font-size="12.5" fill="#475569">Red-team exercises and adversarial</text>
+  <text x="446" y="366" font-size="12.5" fill="#475569">benchmark evaluation.</text>
+
+  <!-- Manage -->
+  <rect x="808" y="206" width="352" height="176" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="830" y="232" font-size="12" font-weight="900" letter-spacing="1" fill="#b91c1c">MANAGE</text>
+  <text x="830" y="256" font-size="14" font-weight="800" fill="#0f172a">Allocate risk response</text>
+  <text x="830" y="282" font-size="12.5" fill="#475569">Prioritize risks and assign</text>
+  <text x="830" y="302" font-size="12.5" fill="#475569">treatment resources.</text>
+  <text x="830" y="326" font-size="12.5" fill="#475569">Deploy technical controls and</text>
+  <text x="830" y="346" font-size="12.5" fill="#475569">define incident response for</text>
+  <text x="830" y="366" font-size="12.5" fill="#475569">AI-specific failures.</text>
+
+  <!-- flow arrows between the three -->
+  <path d="M392 294 L418 294" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#rmfArrow)"/>
+  <path d="M776 294 L802 294" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#rmfArrow)"/>
+
+  <!-- iteration return -->
+  <path d="M984 382 L984 410 L216 410 L216 386" stroke="#64748b" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#rmfArrow)"/>
+  <text x="600" y="404" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">measurement and incident evidence re-enter Map on the next iteration</text>
+
+  <rect x="40" y="424" width="1120" height="34" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="600" y="446" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">The framework is voluntary guidance: it structures how risk decisions are made, not which controls are mandatory.</text>
+</svg>

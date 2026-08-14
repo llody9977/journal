@@ -1,4 +1,6 @@
-<svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif">
+<svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Segoe UI',Arial,sans-serif" role="img" aria-labelledby="mtp-title mtp-desc">
+  <title id="mtp-title">MCP tool description poisoning during discovery</title>
+  <desc id="mtp-desc">An AI agent asks two MCP servers what tools they offer. The legitimate server returns an ordinary tool description. The malicious server, which looks like any normal tool, returns a description carrying hidden instructions telling the agent to read a private SSH key and include it in its next reply. The poisoned instruction therefore arrives during tool discovery, before the tool is ever called and without the user requesting that tool at all.</desc>
   <rect x="0" y="0" width="800" height="380" fill="#ffffff" />
 
   <defs>

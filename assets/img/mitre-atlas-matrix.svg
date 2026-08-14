@@ -1,0 +1,77 @@
+<svg viewBox="0 0 1200 430" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="atlas-title atlas-desc">
+  <title id="atlas-title">MITRE ATLAS tactic progression against an AI system</title>
+  <desc id="atlas-desc">Five ATLAS tactics shown left to right as an attack progression: reconnaissance, initial access, execution, exfiltration, and impact. Each column lists representative techniques observed against AI and machine-learning systems. A footer notes that ATLAS is a knowledge base of observed adversary behavior, not a control framework.</desc>
+  <rect width="1200" height="430" fill="#ffffff"/>
+
+  <defs>
+    <marker id="atlasArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">MITRE ATLAS &#8212; tactic progression against an AI system</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Adversarial Threat Landscape for Artificial-Intelligence Systems: observed adversary tactics and techniques, modeled after ATT&amp;CK.</text>
+
+  <!-- 5 columns -->
+  <rect x="40" y="98" width="212" height="232" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="146" y="126" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">RECONNAISSANCE</text>
+  <line x1="60" y1="138" x2="232" y2="138" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="60" y="162" font-size="12.5" fill="#475569">Search public model</text>
+  <text x="60" y="182" font-size="12.5" fill="#475569">repositories and papers</text>
+  <text x="60" y="210" font-size="12.5" fill="#475569">Probe a deployed model</text>
+  <text x="60" y="230" font-size="12.5" fill="#475569">to infer its family,</text>
+  <text x="60" y="250" font-size="12.5" fill="#475569">guardrails, and limits</text>
+  <text x="60" y="278" font-size="12.5" fill="#475569">Identify the retrieval</text>
+  <text x="60" y="298" font-size="12.5" fill="#475569">corpus and tool surface</text>
+
+  <rect x="268" y="98" width="212" height="232" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="374" y="126" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">INITIAL ACCESS</text>
+  <line x1="288" y1="138" x2="460" y2="138" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="288" y="162" font-size="12.5" fill="#475569">Poisoned training data</text>
+  <text x="288" y="182" font-size="12.5" fill="#475569">or fine-tuning corpus</text>
+  <text x="288" y="210" font-size="12.5" fill="#475569">Backdoored model</text>
+  <text x="288" y="230" font-size="12.5" fill="#475569">weights from a public</text>
+  <text x="288" y="250" font-size="12.5" fill="#475569">hub</text>
+  <text x="288" y="278" font-size="12.5" fill="#475569">Indirect injection in a</text>
+  <text x="288" y="298" font-size="12.5" fill="#475569">fetched web document</text>
+
+  <rect x="496" y="98" width="212" height="232" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="602" y="126" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">EXECUTION</text>
+  <line x1="516" y1="138" x2="688" y2="138" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="516" y="162" font-size="12.5" fill="#475569">Unsafe deserialization</text>
+  <text x="516" y="182" font-size="12.5" fill="#475569">of a pickle-based</text>
+  <text x="516" y="202" font-size="12.5" fill="#475569">model artifact</text>
+  <text x="516" y="230" font-size="12.5" fill="#475569">Unintended tool calls</text>
+  <text x="516" y="250" font-size="12.5" fill="#475569">driven by injected</text>
+  <text x="516" y="270" font-size="12.5" fill="#475569">instructions</text>
+
+  <rect x="724" y="98" width="212" height="232" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="830" y="126" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">EXFILTRATION</text>
+  <line x1="744" y1="138" x2="916" y2="138" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="744" y="162" font-size="12.5" fill="#475569">Extract hidden system</text>
+  <text x="744" y="182" font-size="12.5" fill="#475569">or operational context</text>
+  <text x="744" y="210" font-size="12.5" fill="#475569">Recover memorized</text>
+  <text x="744" y="230" font-size="12.5" fill="#475569">training records by</text>
+  <text x="744" y="250" font-size="12.5" fill="#475569">inversion queries</text>
+  <text x="744" y="278" font-size="12.5" fill="#475569">Steal model weights</text>
+
+  <rect x="952" y="98" width="208" height="232" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="1056" y="126" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="0.8" fill="#b91c1c">IMPACT</text>
+  <line x1="972" y1="138" x2="1140" y2="138" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="972" y="162" font-size="12.5" fill="#475569">Evade classification</text>
+  <text x="972" y="182" font-size="12.5" fill="#475569">at inference time</text>
+  <text x="972" y="210" font-size="12.5" fill="#475569">Degrade or exhaust</text>
+  <text x="972" y="230" font-size="12.5" fill="#475569">inference capacity</text>
+  <text x="972" y="258" font-size="12.5" fill="#475569">Drive an unauthorized</text>
+  <text x="972" y="278" font-size="12.5" fill="#475569">downstream action</text>
+
+  <!-- progression arrows -->
+  <path d="M252 214 L264 214" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#atlasArrow)"/>
+  <path d="M480 214 L492 214" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#atlasArrow)"/>
+  <path d="M708 214 L720 214" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#atlasArrow)"/>
+  <path d="M936 214 L948 214" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#atlasArrow)"/>
+
+  <rect x="40" y="352" width="1120" height="52" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="374" font-size="12.5" font-weight="700" fill="#0f172a">ATLAS is a knowledge base of observed adversary behavior, not a control catalog or a compliance framework.</text>
+  <text x="60" y="393" font-size="12.5" fill="#475569">It answers &#8220;what has been done to systems like this&#8221;; the control decision still belongs to the deploying organization.</text>
+</svg>

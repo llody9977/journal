@@ -1,38 +1,42 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">AI &amp; LLM Threat Frameworks &amp; Risk Management Architecture</title>
-  <desc id="description">AI &amp; LLM Threat Frameworks diagram showing NIST AI RMF 1.0 functions (Govern, Map, Measure, Manage), OWASP Top 10 for LLMs, and MITRE ATLAS matrix mapping.</desc>
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="airm-title airm-desc">
+  <title id="airm-title">Three AI risk frameworks and the question each one answers</title>
+  <desc id="airm-desc">Three panels. NIST AI RMF 1.0 supplies voluntary governance structure through the Govern, Map, Measure, and Manage functions. The OWASP Top 10 for LLM Applications supplies a ranked application risk list, shown here as the 2025 edition with its ten identifiers. MITRE ATLAS supplies observed adversary tactics against AI systems. A footer notes that the three answer different questions and that the OWASP list was re-ranked in an August 2026 edition.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
-  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">AI &amp; LLM Threat Frameworks &amp; Risk Management</text>
-  <text x="50" y="75" font-size="14" fill="#475569">NIST AI RMF 1.0 risk functions, OWASP Top 10 LLM risks (2025), and MITRE ATLAS adversarial ML threat mapping.</text>
-  
-  <!-- Section 1: NIST AI RMF 1.0 (x=40, w=540, y=105, h=160) -->
-  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">NIST AI RMF 1.0 CORE FUNCTIONS</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Trustworthy AI Risk Management</text>
-  <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• GOVERN: Organizational culture, policy, risk tolerance &amp; accountability</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• MAP: Context identification, capability capabilities &amp; AI system scoping</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• MEASURE &amp; MANAGE: Empirical testing, quantitative scoring &amp; risk response</text>
 
-  <!-- Section 2: OWASP Top 10 LLM (x=620, w=540, y=105, h=160) -->
-  <rect x="620" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
-  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">OWASP TOP 10 FOR LLM APPLICATIONS (2025)</text>
-  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Critical Application Security Vulnerabilities</text>
-  <line x1="640" y1="166" x2="1140" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• LLM01: Prompt Injection (Direct &amp; Indirect RAG Poisoning)</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• LLM02: Sensitive Information Disclosure → LLM06: Excessive Agency</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• LLM04: Model DoS → LLM05: Supply Chain Vulnerabilities</text>
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Three AI risk frameworks, three different questions</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Governance structure, ranked application risk, and observed adversary behavior. None of the three substitutes for another.</text>
 
-  <!-- Section 3: MITRE ATLAS Matrix (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">MITRE ATLAS (ADVERSARIAL THREAT LANDSCAPE FOR AI SYSTEMS)</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Empirical AI TTP Matrix &amp; Attack Lifecycle</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Reconnaissance &amp; ML Resource Access → Initial Access (Model Supply Chain / RAG Poisoning)</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Execution &amp; Persistence (Prompt Injection / Agent Hijacking) → Exfiltration (Model Inversion / Data Leakage)</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Impact: Data Poisoning, Model Evasion, System Hijacking, and Resource Exhaustion</text>
+  <!-- NIST AI RMF -->
+  <rect x="40" y="98" width="540" height="176" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="60" y="124" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">NIST AI RMF 1.0 &#8212; VOLUNTARY, JANUARY 2023</text>
+  <text x="60" y="148" font-size="14" font-weight="800" fill="#0f172a">&#8220;How do we decide and govern?&#8221;</text>
+  <line x1="60" y1="160" x2="560" y2="160" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="60" y="184" font-size="12.5" fill="#475569">GOVERN &#8212; culture, policy, risk tolerance, accountability</text>
+  <text x="60" y="206" font-size="12.5" fill="#475569">MAP &#8212; context, dependencies, and system scoping</text>
+  <text x="60" y="228" font-size="12.5" fill="#475569">MEASURE &#8212; empirical testing and adversarial evaluation</text>
+  <text x="60" y="250" font-size="12.5" fill="#475569">MANAGE &#8212; risk response, controls, and AI incident handling</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">AI RISK ALIGNMENT: NIST GOVERNANCE → OWASP RISK IDENTIFICATION → MITRE ATLAS TTP MAPPING → GUARDRAIL CONTROL ENFORCEMENT</text>
+  <!-- OWASP -->
+  <rect x="620" y="98" width="540" height="176" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="640" y="124" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">OWASP TOP 10 FOR LLM APPLICATIONS &#8212; 2025 EDITION</text>
+  <text x="640" y="148" font-size="14" font-weight="800" fill="#0f172a">&#8220;What goes wrong in these applications?&#8221;</text>
+  <line x1="640" y1="160" x2="1140" y2="160" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="640" y="184" font-size="12.5" fill="#475569">LLM01 Prompt Injection &#183; LLM02 Sensitive Information Disclosure</text>
+  <text x="640" y="206" font-size="12.5" fill="#475569">LLM03 Supply Chain &#183; LLM04 Data and Model Poisoning</text>
+  <text x="640" y="228" font-size="12.5" fill="#475569">LLM05 Improper Output Handling &#183; LLM06 Excessive Agency</text>
+  <text x="640" y="250" font-size="12.5" fill="#475569">LLM07&#8211;LLM10 System Prompt Leakage, Vector and Embedding</text>
+  <text x="640" y="268" font-size="12.5" fill="#475569">Weaknesses, Misinformation, Unbounded Consumption</text>
+
+  <!-- ATLAS -->
+  <rect x="40" y="292" width="1120" height="132" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="60" y="318" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">MITRE ATLAS &#8212; ADVERSARIAL THREAT LANDSCAPE FOR ARTIFICIAL-INTELLIGENCE SYSTEMS</text>
+  <text x="60" y="342" font-size="14" font-weight="800" fill="#0f172a">&#8220;What has actually been done to systems like this?&#8221;</text>
+  <line x1="60" y1="354" x2="1140" y2="354" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="60" y="378" font-size="12.5" fill="#475569">Reconnaissance &#8594; Initial Access (poisoned data, backdoored weights, indirect injection) &#8594; Execution (unsafe deserialization,</text>
+  <text x="60" y="398" font-size="12.5" fill="#475569">unintended tool calls) &#8594; Exfiltration (hidden context, memorized records, model weights) &#8594; Impact (evasion, exhaustion, unauthorized action)</text>
+  <text x="60" y="416" font-size="12.5" font-weight="700" fill="#0f766e">A knowledge base of observed behavior &#8212; not a control catalog.</text>
+
+  <rect x="40" y="440" width="1120" height="46" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="462" font-size="12.5" font-weight="700" fill="#0f172a">Use them together: ATLAS and OWASP tell you what to look for; the AI RMF tells you how to decide what to do about it.</text>
+  <text x="60" y="480" font-size="12.5" fill="#475569">The OWASP list is versioned &#8212; a 2026 edition published in August 2026 re-ranked several entries, so always cite the edition you mean.</text>
 </svg>
