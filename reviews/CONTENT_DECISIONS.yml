@@ -2774,6 +2774,60 @@
       "superseded_by": null,
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0051",
+      "title": "State the CISA 2026 SBOM minimum elements from the source document, in its own recommendation voice",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/sbom-dependency-management.md",
+          "assets/img/sbom-vulnerability-management.svg"
+        ],
+        "concepts": [
+          "CISA 2026 SBOM minimum elements",
+          "NTIA 2021 minimum elements",
+          "normative strength",
+          "minimum-element structure",
+          "Package URL standardization"
+        ]
+      },
+      "originating_feedback": "The Section 8 remediation wrote the CISA 2026 minimum elements into topic 8.1 from secondary reporting, because three CISA hosts returned HTTP 403 to automated fetching, and the review disclosed that limitation. The source PDF was subsequently supplied and read in full.",
+      "decision": "Restate the 2026 minimum elements from the source document: two areas rather than three, 17 data fields in Appendix A Table 1, ten new elements including SBOM Version, four renames, the removal of Access Control, the move of Automation Support to Machine-Processable Data under Practices and Processes, RFC 9557 timestamps, and the separation of unknown from withheld information. Describe the elements in the document's own recommendation voice rather than as requirements. Cite ECMA-427 as the purl specification, as the document itself does.",
+      "rationale": "Secondary reporting was right about the renames, the new fields, the date and the authorship, but wrong about strength: it described component hash and license as moving from recommended to required. The document uses 'should' about 150 times, never uses 'shall', and its two uses of 'must' are descriptive. WRITING_STYLE permits 'required' only when the source justifies that strength, so the guidance had to be re-voiced. Secondary reporting also missed the structural change from three areas to two, which is the more consequential fact for anyone mapping tooling, and gave a field count that does not match Appendix A.",
+      "authoritative_sources": [
+        {
+          "title": "2026 Minimum Elements for a Software Bill of Materials (SBOM)",
+          "url": "https://www.cisa.gov/resources-tools/resources/2026-minimum-elements-software-bill-materials-sbom",
+          "supports": "Version 2.1 published 29 July 2026; version history records NTIA 2021 as version 1.0 of the same lineage; two areas; 17 data fields; ten new elements; recommendation voice throughout."
+        },
+        {
+          "title": "ECMA-427: Package URL (PURL) Specification",
+          "url": "https://ecma-international.org/publications-and-standards/standards/ecma-427/",
+          "supports": "purl was standardized by Ecma International in December 2025 and is cited as such by the 2026 minimum elements."
+        }
+      ],
+      "verification_methods": [
+        "Read the source PDF in full rather than relying on the landing page or secondary summaries.",
+        "Count the data fields in Appendix A Table 1 rather than trusting a reported total.",
+        "Count occurrences of should, shall, must, and required before assigning normative strength.",
+        "Confirm the page, alt text, diagram, and callout all carry the same strength."
+      ],
+      "approved_outcome": "Topic 8.1 states the 2026 elements from the source document, names the two-area structure and the 17 data fields, and presents them as what an SBOM should carry rather than must, with the same strength in prose, diagram, alt text, and callout.",
+      "invalidation_conditions": [
+        "CISA publishes a later revision; the document carries a version history, so check it rather than the landing page.",
+        "A regulation or contract imposes the elements as binding in a jurisdiction the page addresses, which would justify describing that obligation separately from the guidance itself."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0049",
+        "CD-0050"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
     }
   ]
 }

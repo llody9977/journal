@@ -13,7 +13,7 @@ last_verified: 2026-08-14
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/sbom-vulnerability-management.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the SBOM and VEX architecture diagram at full size">
-    <img src="{{ '/assets/img/sbom-vulnerability-management.svg' | relative_url }}" alt="Three panels. Minimum elements and formats: NTIA 2021 covers seven data fields plus automation support and practices, the CISA 2026 elements update and replace that baseline, and the two formats are SPDX (ISO) and CycloneDX (Ecma ECMA-424). VEX: four statuses, five defined justifications for a not-affected assertion, carried by CSAF VEX, OpenVEX, or CycloneDX VEX. Package URLs and automation: purl syntax, per-build generation, and continuous correlation against OSV and NVD.">
+    <img src="{{ '/assets/img/sbom-vulnerability-management.svg' | relative_url }}" alt="Three panels. Minimum elements and formats: NTIA 2021 covers seven data fields plus automation support and practices across three areas; the CISA 2026 elements supersede that baseline with 17 data fields across two areas, adding component hash, algorithm and license, and are stated as what an SBOM should carry rather than must; the two formats are SPDX (ISO) and CycloneDX (Ecma ECMA-424). VEX: four statuses, five defined justifications for a not-affected assertion, carried by CSAF VEX, OpenVEX, or CycloneDX VEX. Package URLs and automation: purl syntax, per-build generation, and continuous correlation against OSV and NVD.">
   </a>
   <p class="diagram-caption">SBOM and VEX architecture: minimum-element baselines, SPDX and CycloneDX formats, purl identifiers, and exploitability assertions</p>
 </div>
@@ -32,13 +32,29 @@ In response to Executive Order 14028, the National Telecommunications and Inform
 
 Those seven fields are one of **three** NTIA elements, not the whole baseline. The other two are **automation support** (expressing the data in predictable, machine-readable formats so it scales across organizational boundaries) and **practices and processes** (how SBOMs are requested, generated, distributed, and updated). Shipping all seven fields satisfies one element of three.
 
-In July 2026, CISA, the NSA, the FBI, and international partners published the **2026 Minimum Elements for a Software Bill of Materials**, which updates and replaces the NTIA 2021 baseline. The material changes:
+On 29 July 2026, CISA, the NSA, the FBI, and sixteen international partner agencies published the **2026 Minimum Elements for a Software Bill of Materials**. Its own version history records the NTIA 2021 document as version 1.0 of the same lineage and this as version 2.1, so it supersedes rather than supplements the 2021 baseline — while stating that it preserves that document's core principles.
 
-- **Component hash value** and **hash algorithm** move from recommended to required.
-- **Component license** is promoted from optional to a core field.
-- **"Supplier name" becomes "component producer"**, and **"depth" becomes "coverage."**
-- New document-level fields describe the SBOM itself: author signature, tool name and version, data format name and version, and the lifecycle phase at which it was generated (**generation context**).
-- Missing data must be **explicitly marked** as unknown, redacted, or not applicable rather than silently omitted.
+**Read the strength correctly.** The document is written in recommendation voice: "should" appears roughly 150 times, "shall" not at all, and the two uses of "must" are descriptive rather than normative. These are elements an SBOM *should* meet, published as joint guidance. A binding obligation to produce them comes from a contract or a regulation — the EU Cyber Resilience Act, for example — not from this document.
+
+The structure changed. The 2026 elements define **two** areas rather than NTIA's three:
+
+- **Data fields** — the data making up the SBOM document. Appendix A lists **17**, up from NTIA's seven.
+- **Practices and processes** — how an entity engages with and documents the SBOM data.
+
+Automation support is no longer a top-level area: it became **machine-processable data** and moved under practices and processes, and SWID tags were dropped from the list of data formats. The standalone **access control** element was removed, absorbed into distribution and delivery.
+
+Ten data fields are new: **component hash value**, **component hash algorithm**, **component license**, and seven describing the SBOM document itself — **SBOM author signature**, **SBOM tool name**, **SBOM tool version**, **SBOM data format name**, **SBOM data format version**, **SBOM version**, and **SBOM generation context** (the lifecycle phase and data available when the SBOM was generated).
+
+Four renames matter when mapping older tooling:
+
+| 2021 NTIA | 2026 |
+|---|---|
+| Supplier name | **Component producer** |
+| Version of the component | **Component version** |
+| Author of SBOM data | **SBOM author** |
+| Depth | **Coverage** |
+
+Two further changes affect how gaps are read. **Known unknowns** became **explicitly identifying unknown information**: where a data field is not populated, the SBOM author should state whether the value is unknown to them or is being deliberately withheld — the two now mean different things to a recipient. And timestamps should follow **RFC 9557**.
 
 Both CycloneDX and SPDX provide native fields for nearly all of these, though the mapping differs by format.
 
@@ -64,6 +80,8 @@ To eliminate ambiguity across ecosystem package managers (*e.g. distinguishing a
 <p class="formula">Example: <code>pkg:npm/%40angular/core@16.2.0</code></p>
 
 The npm scope `@` prefix is always percent-encoded as `%40`, which leaves exactly one literal `@` in the string — unambiguously the version separator. Package URLs provide a standardized string scheme for identifying software packages across heterogeneous ecosystems (npm, PyPI, Maven, Cargo, Go, Debian, RPM).
+
+purl was standardized by Ecma International as **[ECMA-427](https://ecma-international.org/publications-and-standards/standards/ecma-427/)** in December 2025, and the CISA 2026 elements cite that standard rather than the original repository. Treat ECMA-427 as the authority where a specification reference is needed.
 
 ## Vulnerability Exploitability eXchange (VEX)
 
@@ -108,7 +126,7 @@ The checklist below is a journal working model, not a published audit standard. 
 
 | Diagnostic area | Architectural evaluation question | Verification &amp; audit evidence |
 |---|---|---|
-| **Minimum-element coverage** | Does the generated SBOM carry the current CISA 2026 field set, including component hash, hash algorithm, and license? | Sample SBOM validated field-by-field against the 2026 element list. |
+| **Minimum-element coverage** | Does the generated SBOM carry the 17 CISA 2026 data fields, including component hash value, hash algorithm, and license? | Sample SBOM validated field-by-field against Appendix A of the 2026 elements. |
 | **Continuous generation** | Is a fresh, build-specific SBOM generated automatically during every CI/CD pipeline run? | CI/CD build scripts &amp; SBOM storage repository logs. |
 | **Package URL standard** | Are all software components identified using standardized Package URLs (`purl`)? | SBOM inspection for `purl` fields, plus the unmatched-component rate. |
 | **VEX processing** | Is an automated VEX ingestion pipeline deployed, and does it validate status and justification strings against the defined sets? | VEX document integration &amp; SIEM/AppSec alert logs. |
@@ -117,13 +135,13 @@ The checklist below is a journal working model, not a published audit standard. 
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>An SBOM is a machine-readable component inventory; the CISA 2026 minimum elements now replace the NTIA 2021 baseline and require hashes and licenses. SPDX (ISO) leans to license compliance, CycloneDX (ECMA-424) to AppSec. Pair SBOMs with VEX assertions — four statuses, five exact justification strings — to remove non-exploitable CVE matches from the queue.</p>
+  <p>An SBOM is a machine-readable component inventory; the CISA 2026 minimum elements supersede the NTIA 2021 baseline, moving to 17 data fields across two areas — and they say what an SBOM <em>should</em> carry, not what it must. SPDX (ISO) leans to license compliance, CycloneDX (ECMA-424) to AppSec. Pair SBOMs with VEX assertions — four statuses, five exact justification strings — to remove non-exploitable CVE matches from the queue.</p>
 </div>
 
 ## Primary references
 
-- **[2026 Minimum Elements for a Software Bill of Materials (SBOM)](https://www.cisa.gov/resources-tools/resources/2026-minimum-elements-software-bill-materials-sbom)** — CISA/NSA/FBI joint guidance that updates and replaces the NTIA 2021 baseline; verified the new and revised data fields.
+- **[2026 Minimum Elements for a Software Bill of Materials (SBOM)](https://www.cisa.gov/resources-tools/resources/2026-minimum-elements-software-bill-materials-sbom)** — read in full (v2.1, 29 July 2026, 23pp). Verified against the source document: the publication date and version history, the two-area structure, the 17 data fields in Appendix A Table 1, the ten new elements, the four renames, the removal of Access Control, the move of automation support to machine-processable data, RFC 9557 for timestamps, and the document's use of "should" rather than mandatory language throughout.
 - **[NTIA Minimum Elements for an SBOM (2021)](https://www.ntia.gov/report/2021/minimum-elements-software-bill-materials-sbom)** — verified the seven data fields and the three-element structure of the original baseline.
 - **[OpenVEX specification](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md)** — verified the four status values and the five `not_affected` justification identifiers exactly as spelled.
-- **[CycloneDX specification](https://cyclonedx.org/)** — verified format capabilities and ECMA-424 standardization status.
-- **[Package URL specification](https://github.com/package-url/purl-spec)** — verified purl syntax and the npm scoped-package encoding.
+- **[ECMA-424: CycloneDX Bill of Materials Specification](https://ecma-international.org/publications-and-standards/standards/ecma-424/)** — verified CycloneDX's standardization status and the December 2025 edition.
+- **[ECMA-427: Package URL (PURL) Specification](https://ecma-international.org/publications-and-standards/standards/ecma-427/)** — verified that purl is now an Ecma standard, as cited by the CISA 2026 elements.
