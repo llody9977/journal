@@ -42,7 +42,7 @@ The **Factor Analysis of Information Risk (FAIR)** framework translates qualitat
 <p class="formula"><strong>Risk = Loss Event Frequency &times; Loss Magnitude</strong></p>
 
 - **Loss Event Frequency**: Threat Event Frequency &times; Threat Capability vs Resistance Strength (Control Efficacy).
-- **Loss Magnitude**: Primary Loss (Immediate incident response, productivity loss) $+$ Secondary Loss (Fines, reputational damage, customer churn).
+- **Loss Magnitude**: Primary Loss (Immediate incident response, productivity loss) + Secondary Loss (Fines, reputational damage, customer churn).
 
 Quantifying risk in financial figures enables security leadership to justify control investments to executive boards using standard business metrics.
 

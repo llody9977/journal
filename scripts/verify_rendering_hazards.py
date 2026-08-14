@@ -48,6 +48,15 @@ MATH_COMMAND = re.compile(r"\$\$?[^$\n]*\\[A-Za-z]+[^$\n]*\$\$?")
 MATH_INLINE = re.compile(r"\$(?!\s)([A-Za-z0-9_^{}\\+\-*/=(),.]{1,40})\$")
 MATH_NOTATION = frozenset("_^{}")
 
+# A "$ ... $" span carrying neither a command nor subscript notation, e.g. the
+# italic-variable convention in $k$-Anonymity, an operator in $+$, or a term
+# list in $zk-SNARKs / zk-STARKs$. These render literally like every other
+# case. Currency prose is excluded structurally rather than by charset: a
+# money span would carry a digit, and a sentence that merely contains two
+# separate amounts leaves whitespace against one of the delimiters.
+MATH_ITALIC = re.compile(r"\$(?!\s)([^$\n]{1,40})(?<!\s)\$")
+DIGIT = re.compile(r"[0-9]")
+
 # A "$ ... $" span containing a pipe, e.g. $|Z| > 3.0$. This is the worst
 # case: kramdown counts the pipes and silently reparses the whole paragraph
 # as a GFM table, so the sentence is restructured, not merely unrendered.
@@ -122,6 +131,23 @@ def scan(text: str) -> list[tuple[int, str, str]]:
                 "math notation in a '$ ... $' span — no math renderer is loaded, "
                 "so it reaches the reader as source",
                 inline.group(0).strip(),
+            ))
+            continue
+
+        italic = next(
+            (
+                found
+                for found in MATH_ITALIC.finditer(line)
+                if not DIGIT.search(found.group(1))
+            ),
+            None,
+        )
+        if italic:
+            findings.append((
+                number,
+                "math span in '$ ... $' — no math renderer is loaded, so the "
+                "dollar signs reach the reader as source",
+                italic.group(0).strip(),
             ))
             continue
 

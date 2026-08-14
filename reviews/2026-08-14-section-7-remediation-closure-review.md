@@ -184,3 +184,62 @@ All 12 optional items (O1–O12) were applied, except as scoped below:
 - [x] Required findings, optional coverage, and limitations are separated.
 
 Closure conclusion: every finding raised by the 2026-08-14 fresh review of Section 7 is closed against scoped content fingerprint `48aa90d7000b999bf9c7d91e72675aac1be3c516294f8a1b5e88fbeda010baf1`. This is closure of the *originating findings*, not a gap-free assertion about the rewritten content — see Limitations item 1.
+
+---
+
+## Follow-up: the two out-of-scope items
+
+Requested after the Section 7 remediation shipped. Both were identified by the originating review and deliberately excluded from its scope; they are closed here.
+
+### Topic 4.8 — [mcp-authorization.md](../topics/mcp-authorization.md)
+
+Refreshed from MCP `2025-11-25` to `2026-07-28`. Reading the current revision to make that change surfaced more than a version bump, so the following were added rather than only relabelled:
+
+- Authorization is **optional** for an MCP implementation; the profile applies where HTTP authorization is used.
+- Protected-resource discovery has a **client-side priority**: the `WWW-Authenticate` `resource_metadata` URL when present, falling back to well-known probing (sub-path form, then root). The page previously presented the two as symmetric alternatives.
+- **Authorization-server metadata probing order** (OAuth AS Metadata before OIDC Discovery, with path-insertion rules) and the requirement to reject a document whose `issuer` does not match the URL it was fetched from.
+- **Dynamic Client Registration is deprecated**, retained only for backwards compatibility. The registration priority is pre-registration → Client ID Metadata Documents → DCR → prompt. The previous table presented all three neutrally, which would have led a reader to the wrong default.
+- **Authorization-server binding**: client credentials are keyed to the issuing AS and must not be reused when the AS changes; CIMD client IDs are portable.
+- **RFC 9207 `iss` validation** on the authorization response, by exact string comparison with no normalization, including on error responses. PKCE alone does not prevent the mix-up attack this mitigates.
+- **Scope selection and step-up**, including the union rule on re-authorization and `insufficient_scope`.
+- Localhost redirect URIs cannot be attributed to a process; statelessness means a state handle is not proof of identity.
+- Cross-links added in both directions between 4.8 and 7.3.
+- `assets/img/mcp-oauth-discovery.svg`: subtitle and step-2 label aligned with the discovery priority, and a footer band added for the three validations the client owns.
+
+### Topic 9.3 — [privacy-by-design-pets.md](../topics/privacy-by-design-pets.md)
+
+The reported item was the differential-privacy overclaim. Applying the fix-verification rule to the whole affected content unit surfaced three neighbouring claims failing under the same rule, all corrected together:
+
+- **Differential privacy** "guarantees that query outputs reveal no information about any single individual" → a bound set by ε on how much any record can change the output. Now consistent with 7.5.
+- **Anonymization** "irreversible by any party under any circumstances" → judged by GDPR Recital 26's *means reasonably likely to be used* test, with the note that published re-identification research has recovered individuals from datasets released as anonymous.
+- **GDPR Article 25** — the seven principles were described as "embedded into" it. Separated: the principles are a design framework, Article 25 is the binding obligation, and satisfying one does not satisfy the other.
+- **FHE and SMPC** were adjacent rows but merged in the diagram; now stated as distinct primitives, consistent with 7.5. Each PET gained an assumption-or-cost column.
+- ISO/IEC 27701 citation given its real title and second-edition (October 2025) status; NIST SP 800-226 added as the source for the DP bounding language.
+- The diagram frame gained the `diagram-frame-openable` pattern, and the diagram's own overclaims were corrected to match.
+
+### A third finding, surfaced by the fix
+
+Reading 9.3 revealed four further literal LaTeX spans that the CD-0042 detector still missed, because it required subscript/superscript/brace notation: `$k$`, `$l$`, `$t$` and `$zk-SNARKs / zk-STARKs$` on 9.3, `$+$` on Topic 13.2, and `$S$` on Topic 8.3. All four fixed. The detector was widened a second time (CD-0047) to report any dollar-delimited span containing no digit with no whitespace against either delimiter — validated against 15 cases and the full 94-file corpus with no false positives.
+
+**This is the second escape of the same defect class from a detector written for it.** Both earlier patterns were drawn around the instances then in hand rather than around the rendering behavior, which affects every dollar-delimited span regardless of content. The current rule excludes non-math structurally rather than by enumerating math.
+
+### Follow-up checks
+
+| Check | Result |
+| --- | --- |
+| `verify_rendering_hazards.py` (widened again) | 94/94 pass after fixing 4 instances in 3 files |
+| Widened-pattern self-test | 15/15 correct (8 positive shapes, 7 negative) |
+| `verify_writing_style.py` | 94/94 pass |
+| `verify_links.py` on the 4 touched files | 17/17 verifiable links resolve; 2 hosts (`iso.org`, `ipc.on.ca`) return 403 to automated requests and were confirmed by hand |
+| `verify_content_decisions.py` | 47 records validated |
+| Rendered assertions | No LaTeX leak, no `2025-11-25`, no DP-guarantee wording, no anonymization absolute |
+| SVG geometry | `mcp-oauth-discovery.svg` footer clean; three sub-pixel overhangs on pre-existing decorative label chips confirmed visually invisible |
+
+### Follow-up decisions
+
+CD-0045 (4.8 currency), CD-0046 (9.3 PET framing), CD-0047 (detector widening). CD-0022 is **reaffirmed** — its invalidation condition was met and triggered this refresh, but the dedicated-page structure it approved is unchanged.
+
+### Still open
+
+- The `Comprehensive technical guide to …` front-matter formula on 22 pages outside Section 7.
+- The OWASP 2026 enumeration, pending an ungated primary source (CD-0039).

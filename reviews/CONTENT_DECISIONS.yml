@@ -2461,6 +2461,164 @@
       "originating_review_state_id": "5a85c5d5e16672e720a0a2f2560a5b472c178e22c52227a306f5b557a4afa438",
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0045",
+      "title": "Refresh Topic 4.8 to MCP 2026-07-28 and record the registration, issuer-validation, and scope changes",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/mcp-authorization.md",
+          "assets/img/mcp-oauth-discovery.svg"
+        ],
+        "concepts": [
+          "MCP specification revision",
+          "protected resource metadata discovery",
+          "client registration priority",
+          "dynamic client registration deprecation",
+          "authorization server binding",
+          "RFC 9207 issuer validation",
+          "scope step-up"
+        ]
+      },
+      "originating_feedback": "The Section 7 fresh review found Topic 4.8 citing MCP 2025-11-25 while the current revision is 2026-07-28, and flagged it as an out-of-scope item. The user then asked for the out-of-scope findings to be fixed as well.",
+      "decision": "Track revision 2026-07-28 on Topic 4.8. State that authorization is optional for an MCP implementation, give the protected-resource discovery mechanisms with their client-side priority instead of presenting them as symmetric, add the authorization-server metadata probing order and the issuer-match validation, mark Dynamic Client Registration deprecated and give the registration priority order, add authorization-server binding of client credentials, add RFC 9207 authorization-response issuer validation, and add scope selection and step-up. Extend the discovery diagram with the three validations the client owns and align its subtitle with the discovery priority.",
+      "rationale": "CD-0022's recorded invalidation condition — a new MCP specification materially changing the transport or authorization model — was met. The dedicated-page structure that CD-0022 approved is reaffirmed and unchanged; only the content currency moved. The additions are not cosmetic: the deprecation of dynamic client registration reverses the default choice a reader would otherwise make, and RFC 9207 issuer validation is a client-side MUST that mitigates a mix-up attack PKCE does not prevent, so omitting it left the page recommending an incomplete client.",
+      "authoritative_sources": [
+        {
+          "title": "MCP Authorization, specification 2026-07-28",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+          "supports": "Optional status, resource-parameter requirements, authorization-response issuer validation, scope selection and step-up, token passthrough prohibition."
+        },
+        {
+          "title": "MCP Client Registration, specification 2026-07-28",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration",
+          "supports": "The three mechanisms, their priority order, the deprecation of Dynamic Client Registration, and authorization-server binding."
+        },
+        {
+          "title": "MCP Authorization Server Discovery, specification 2026-07-28",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+          "supports": "The two protected-resource discovery mechanisms, client-side priority, metadata probing order, and issuer-match validation."
+        },
+        {
+          "title": "RFC 9207: OAuth 2.0 Authorization Server Issuer Identification",
+          "url": "https://www.rfc-editor.org/rfc/rfc9207.html",
+          "supports": "The iss parameter and the mix-up attack it mitigates."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topics 4.8 and 7.3 cite the same MCP revision and agree on the transport model.",
+        "Confirm every normative word matches the strength used by the cited specification section.",
+        "Re-check the current revision identifier at modelcontextprotocol.io/specification/versioning."
+      ],
+      "approved_outcome": "Topic 4.8 tracks 2026-07-28, agrees with Topic 7.3, marks dynamic client registration deprecated, and covers issuer validation and scope step-up.",
+      "invalidation_conditions": [
+        "A new MCP revision changes the discovery, registration, or issuer-validation requirements.",
+        "OAuth 2.1 is published as an RFC, which would change how the draft status is described."
+      ],
+      "related_decisions": [
+        "CD-0022",
+        "CD-0041"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0046",
+      "title": "State what each PET bounds rather than guarantees, and judge anonymization by the reasonable-means test",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/privacy-by-design-pets.md",
+          "assets/img/privacy-by-design-pets.svg"
+        ],
+        "concepts": [
+          "differential privacy guarantee",
+          "anonymization reversibility",
+          "GDPR Article 25",
+          "FHE SMPC distinction",
+          "privacy by design principles"
+        ]
+      },
+      "originating_feedback": "The Section 7 fresh review found Topic 9.3 claiming that differential privacy 'guarantees that query outputs reveal no information about any single individual', which contradicts the corrected bounding language on Topic 7.5, and flagged it as an out-of-scope item. Reading the page for that fix surfaced three neighbouring overclaims in the same content units.",
+      "decision": "State that differential privacy provides a bound set by epsilon rather than eliminating inference. Describe anonymization as judged by GDPR Recital 26's means-reasonably-likely test rather than as irreversible by any party under any circumstances, and note that published re-identification research has recovered individuals from datasets released as anonymous. Separate the Privacy by Design principles from GDPR Article 25's binding obligation instead of describing the principles as embedded in it. Give each PET an assumption-or-cost column, and state that FHE and SMPC are distinct primitives.",
+      "rationale": "The differential privacy wording was the specific inconsistency reported, and leaving the neighbouring absolutes would have left the page overclaiming in the same direction under the same rule — the review standard requires the whole affected content unit to be corrected, not the quoted sentence alone. 'Irreversible by any party under any circumstances' is the more consequential error of the two, because it invites treating an anonymization claim as permanent when the regulation frames it as a risk judgment that moves as linkage data and compute get cheaper. Attributing the seven principles to Article 25 also blurs a design framework into a legal obligation.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-226: Guidelines for Evaluating Differential Privacy Guarantees",
+          "url": "https://doi.org/10.6028/NIST.SP.800-226",
+          "supports": "That differential privacy states a bound rather than eliminating inference, and that no universal epsilon threshold is specified."
+        },
+        {
+          "title": "ISO/IEC 27701:2025",
+          "url": "https://www.iso.org/standard/27701",
+          "supports": "The standard's current second edition, October 2025, and its stand-alone scope."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topics 9.3 and 7.5 use the same bounding language for differential privacy.",
+        "Confirm Topics 9.3 and 7.5 both treat FHE and SMPC as distinct primitives.",
+        "Confirm no absolute claim about anonymization survives in prose, table, diagram, or callout."
+      ],
+      "approved_outcome": "Topic 9.3 states what each PET bounds and at what cost, separates the design framework from the legal obligation, and frames anonymization as a dated risk judgment.",
+      "invalidation_conditions": [
+        "A regulator or standards body replaces the reasonable-means test with a different criterion.",
+        "A later ISO/IEC 27701 edition supersedes the 2025 second edition."
+      ],
+      "related_decisions": [
+        "CD-0029",
+        "CD-0043"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0047",
+      "title": "Extend the rendering-hazard check to italic-variable and operator math spans",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_rendering_hazards.py",
+          "topics/privacy-by-design-pets.md",
+          "topics/grc-framework-strategy.md",
+          "topics/slsa-provenance-attestation.md"
+        ],
+        "concepts": [
+          "LaTeX rendering",
+          "math renderer",
+          "rendering hazard check",
+          "check coverage gap"
+        ]
+      },
+      "originating_feedback": "While fixing Topic 9.3 for CD-0046, four further dollar-delimited spans were found reaching the reader as source — $k$-Anonymity, $l$-Diversity, $t$-Closeness and $zk-SNARKs / zk-STARKs$ on Topic 9.3, $+$ on Topic 13.2, and $S$ on Topic 8.3. None was reported by the check as widened by CD-0042, because that pattern required subscript, superscript, or brace notation and these carry none.",
+      "decision": "Add a third pattern reporting any '$ ... $' span that contains no digit and has no whitespace against either delimiter, and fix the four instances it found.",
+      "rationale": "This is the second time the same defect class escaped a detector written specifically for it, which is itself the finding: each previous pattern was drawn around the instances then in hand rather than around the rendering behavior, which affects every dollar-delimited span regardless of what it contains. Excluding spans structurally — a money span carries a digit, and a sentence containing two separate amounts leaves whitespace against one delimiter — matches the behavior rather than a sample of it. The rule was validated against fifteen cases and the whole ninety-four-file corpus with no false positives.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Run the check against every previously observed defect shape plus italic variables, bare operators, and hyphenated term lists.",
+        "Confirm currency amounts, ranges, environment variables, and code spans are not reported.",
+        "Build the site and confirm no dollar-delimited span survives in the rendered text."
+      ],
+      "approved_outcome": "verify_rendering_hazards.py reports every dollar-delimited math span shape observed to date, the corpus is clean under it, and it remains in the blocking deploy gate.",
+      "invalidation_conditions": [
+        "A math renderer is added to the site layout.",
+        "The rule produces a false positive on legitimate prose that cannot be resolved without weakening detection."
+      ],
+      "related_decisions": [
+        "CD-0034",
+        "CD-0042"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
     }
   ]
 }

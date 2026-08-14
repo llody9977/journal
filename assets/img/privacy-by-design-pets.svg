@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Privacy by Design (PbD) &amp; Privacy-Enhancing Technologies Architecture</title>
-  <desc id="description">Privacy by Design diagram showing Ann Cavoukian's 7 principles, Differential Privacy, ZKP, FHE, SMPC, and Pseudonymization.</desc>
+  <desc id="description">Three panels. Ann Cavoukian's seven Privacy by Design principles as organizational design rules. Privacy-enhancing technologies — differential privacy, zero-knowledge proofs, homomorphic encryption, and secure multi-party computation — with the property each one bounds. A de-identification panel separating pseudonymization, which stays in GDPR scope, from anonymization, which is judged against a reasonable-means test rather than absolute impossibility.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
   <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Privacy by Design (PbD) &amp; PETs</text>
   <text x="50" y="75" font-size="14" fill="#475569">Ann Cavoukian's 7 Foundational Principles &amp; Privacy-Enhancing Technologies (PETs).</text>
@@ -19,9 +19,9 @@
   <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">PRIVACY-ENHANCING TECHNOLOGIES (PETS)</text>
   <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Mathematical Cryptographic Safeguards</text>
   <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Differential Privacy (ε, δ): Bounded noise injection preventing re-identification</text>
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Differential Privacy (ε, δ): Calibrated noise bounding what any single record contributes</text>
   <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Zero-Knowledge Proofs (ZKP): Prove statement truth without revealing underlying data</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Homomorphic Encryption (FHE) &amp; SMPC: Computation over encrypted data</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• FHE and SMPC: Compute over data no single party can read — at real performance cost</text>
 
   <!-- Data Lifecycle & Pseudonymization (x=40, w=1120, y=285, h=145) -->
   <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
@@ -29,7 +29,7 @@
   <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">De-identification vs Anonymization</text>
   <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
   <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Pseudonymization (GDPR Art. 4(5)): Replaces PII with tokens; reversible only with separate secret key</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Anonymization: Irreversible data transformation removing all re-identification capability</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Anonymization: Judged by whether re-identification is reasonably likely, not by absolute impossibility</text>
   <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Data Minimisation: Collect strictly essential PII; enforce automatic retention expiry &amp; secure deletion</text>
 
   <!-- Bottom Bar: Alignment (y=445, h=40) -->

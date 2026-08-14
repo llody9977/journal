@@ -88,7 +88,7 @@ A critical security distinction must be maintained when evaluating SLSA guarante
 
 <p class="formula"><strong>SLSA provenance does NOT prove that source S or its dependencies are benign.</strong></p>
 
-As demonstrated by the xz-utils backdoor (CVE-2024-3094), if a trusted maintainer commits malicious code into source $S$, SLSA Build L3 will faithfully compile the malicious code and generate valid, signed provenance. SLSA guarantees build integrity, not source code intent.
+As demonstrated by the xz-utils backdoor (CVE-2024-3094), if a trusted maintainer commits malicious code into the source, SLSA Build L3 will faithfully compile the malicious code and generate valid, signed provenance. SLSA guarantees build integrity, not source code intent.
 
 ## Essential SLSA Diagnostic Checklist
 
