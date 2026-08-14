@@ -26,8 +26,10 @@ A key can exist without being authorized for normal use. [NIST SP 800-57 Part 1 
 
 The transition should be enforced by the system, not recorded only in a spreadsheet. A stale application credential, copied private key, cached plaintext DEK, or offline public key can bypass a state change unless the dependency is also controlled.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/key-lifecycle-state-model.svg' | relative_url }}" alt="Journal working model for key lifecycle transitions: generated or imported material becomes pre-active, then active; it can move through a reversible disabled state, become deactivated or compromised, remain recoverable only under policy, and finally become destroyed after dependencies are cleared.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/key-lifecycle-state-model.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the key lifecycle state model diagram at full size">
+    <img src="{{ '/assets/img/key-lifecycle-state-model.svg' | relative_url }}" alt="Journal working model for key lifecycle transitions: generated or imported material becomes pre-active, then active; it can move through a reversible disabled state, become deactivated or compromised, remain recoverable only under policy, and finally become destroyed after dependencies are cleared.">
+  </a>
   <p class="diagram-caption">This journal working model separates reversible suspension, normal deactivation, compromise, controlled recovery, and irreversible destruction. Exact state names and permitted transitions vary by KMS, HSM, and protocol.</p>
 </div>
 

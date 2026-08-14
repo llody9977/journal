@@ -1,0 +1,59 @@
+<svg viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="triad-title triad-desc">
+  <title id="triad-title">CSPM, CIEM, and CWPP compared by what each one inspects</title>
+  <desc id="triad-desc">Three columns, one per tool category. CSPM inspects resource configuration through the provider control plane and answers whether a resource is configured safely; it does not see identity reachability or process behavior. CIEM inspects identity policies, roles, and trust relationships and answers who could reach what; it does not see workload behavior. CWPP inspects the running workload from inside and answers what the workload is actually doing; it does not see estate-wide misconfiguration. A footer notes that the three answer different questions on different planes and that no one of them substitutes for another.</desc>
+  <rect width="1200" height="480" fill="#ffffff"/>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Three tools, three different questions</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The categories overlap in vendor marketing and not in what they can observe. Each one is blind to what the other two see.</text>
+
+  <rect x="40" y="98" width="360" height="304" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">CSPM</text>
+  <text x="62" y="146" font-size="13" font-weight="800" fill="#0f172a">Cloud Security Posture Management</text>
+  <line x1="62" y1="158" x2="378" y2="158" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="182" font-size="12" font-weight="700" fill="#0f172a">Inspects</text>
+  <text x="62" y="202" font-size="12" fill="#475569">Resource configuration, read from the</text>
+  <text x="62" y="221" font-size="12" fill="#475569">provider control plane.</text>
+  <text x="62" y="248" font-size="12" font-weight="700" fill="#0f172a">Answers</text>
+  <text x="62" y="268" font-size="12" fill="#475569">Is this resource configured safely?</text>
+  <text x="62" y="288" font-size="12" fill="#475569">Public bucket, unencrypted volume,</text>
+  <text x="62" y="307" font-size="12" fill="#475569">security group open to 0.0.0.0/0.</text>
+  <text x="62" y="334" font-size="12" font-weight="700" fill="#9f1239">Cannot see</text>
+  <text x="62" y="354" font-size="12" fill="#475569">Whether an identity can actually reach</text>
+  <text x="62" y="373" font-size="12" fill="#475569">the resource, or what any process on it</text>
+  <text x="62" y="392" font-size="12" fill="#475569">is doing right now.</text>
+
+  <rect x="420" y="98" width="360" height="304" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="442" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">CIEM</text>
+  <text x="442" y="146" font-size="13" font-weight="800" fill="#0f172a">Cloud Infrastructure Entitlement Mgmt</text>
+  <line x1="442" y1="158" x2="758" y2="158" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="442" y="182" font-size="12" font-weight="700" fill="#0f172a">Inspects</text>
+  <text x="442" y="202" font-size="12" fill="#475569">Identity policies, role graphs, trust</text>
+  <text x="442" y="221" font-size="12" fill="#475569">relationships, and permission usage.</text>
+  <text x="442" y="248" font-size="12" font-weight="700" fill="#0f172a">Answers</text>
+  <text x="442" y="268" font-size="12" fill="#475569">Who could reach what, by which path?</text>
+  <text x="442" y="288" font-size="12" fill="#475569">Over-privileged service accounts,</text>
+  <text x="442" y="307" font-size="12" fill="#475569">unused grants, risky cross-account trust.</text>
+  <text x="442" y="334" font-size="12" font-weight="700" fill="#9f1239">Cannot see</text>
+  <text x="442" y="354" font-size="12" fill="#475569">What a workload does with a permission</text>
+  <text x="442" y="373" font-size="12" fill="#475569">once it has it, or a misconfiguration that</text>
+  <text x="442" y="392" font-size="12" fill="#475569">is not expressed as an entitlement.</text>
+
+  <rect x="800" y="98" width="360" height="304" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="822" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">CWPP</text>
+  <text x="822" y="146" font-size="13" font-weight="800" fill="#0f172a">Cloud Workload Protection Platform</text>
+  <line x1="822" y1="158" x2="1138" y2="158" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="822" y="182" font-size="12" font-weight="700" fill="#0f172a">Inspects</text>
+  <text x="822" y="202" font-size="12" fill="#475569">The running workload from inside —</text>
+  <text x="822" y="221" font-size="12" fill="#475569">VM, container, or function.</text>
+  <text x="822" y="248" font-size="12" font-weight="700" fill="#0f172a">Answers</text>
+  <text x="822" y="268" font-size="12" fill="#475569">What is this workload actually doing?</text>
+  <text x="822" y="288" font-size="12" fill="#475569">Process and syscall behavior, in-image</text>
+  <text x="822" y="307" font-size="12" fill="#475569">vulnerabilities, runtime drift.</text>
+  <text x="822" y="334" font-size="12" font-weight="700" fill="#9f1239">Cannot see</text>
+  <text x="822" y="354" font-size="12" fill="#475569">Estate-wide misconfiguration or the</text>
+  <text x="822" y="373" font-size="12" fill="#475569">identity graph — it is scoped to the</text>
+  <text x="822" y="392" font-size="12" fill="#475569">workloads that run an agent.</text>
+
+  <rect x="40" y="418" width="1120" height="46" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="446" font-size="12.5" fill="#475569">Two operate on the <tspan font-weight="700" fill="#0f172a">control plane</tspan> (configuration and identity) and one inside the <tspan font-weight="700" fill="#0f172a">workload</tspan>. None of the three substitutes for another.</text>
+</svg>

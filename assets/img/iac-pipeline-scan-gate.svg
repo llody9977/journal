@@ -1,0 +1,71 @@
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="iacp-title iacp-desc">
+  <title id="iacp-title">Where the security gate sits in a Terraform pipeline</title>
+  <desc id="iacp-desc">A left-to-right pipeline. A Terraform commit opens a pull request; static analyzers such as Checkov and tfsec read the template source; terraform plan produces a machine-readable plan which a policy engine evaluates against Rego rules; the gate then either fails the build or allows terraform apply to reach the cloud provider. Two callouts distinguish the template scan, which reads the code as written, from the plan evaluation, which reads the resolved resource set after variables and modules are expanded. A footer notes that a pipeline gate is bypassed by anyone applying locally, so drift detection is what catches changes that never passed the gate.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="iacArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="iacRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Two different scans, one gate</text>
+  <text x="50" y="72" font-size="14" fill="#475569">A template scan reads the code as written. A plan evaluation reads what will actually be created after variables and modules resolve.</text>
+
+  <rect x="40" y="98" width="200" height="112" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="122" font-size="12.5" font-weight="800" fill="#0f172a">1 — Commit</text>
+  <text x="60" y="145" font-size="12" fill="#475569">Terraform, CloudFormation,</text>
+  <text x="60" y="164" font-size="12" fill="#475569">Bicep, or Helm change</text>
+  <text x="60" y="183" font-size="12" fill="#475569">opens a pull request.</text>
+
+  <rect x="280" y="98" width="220" height="112" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="300" y="122" font-size="12.5" font-weight="800" fill="#0f172a">2 — Static template scan</text>
+  <text x="300" y="145" font-size="12" fill="#475569">Checkov, tfsec, Trivy read</text>
+  <text x="300" y="164" font-size="12" fill="#475569">the source. Fast, runs on</text>
+  <text x="300" y="183" font-size="12" fill="#475569">the diff, no cloud access.</text>
+
+  <rect x="540" y="98" width="220" height="112" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="560" y="122" font-size="12.5" font-weight="800" fill="#0f172a">3 — Plan evaluation</text>
+  <text x="560" y="145" font-size="12" fill="#475569">terraform plan -out, then</text>
+  <text x="560" y="164" font-size="12" fill="#475569">OPA and Rego evaluate the</text>
+  <text x="560" y="183" font-size="12" fill="#475569">resolved resource set.</text>
+
+  <rect x="800" y="98" width="160" height="112" rx="12" fill="#0f766e"/>
+  <text x="820" y="122" font-size="12.5" font-weight="800" fill="#ffffff">4 — Gate</text>
+  <text x="820" y="145" font-size="12" fill="#cdeae6">Fail the build, or</text>
+  <text x="820" y="164" font-size="12" fill="#cdeae6">record an approved</text>
+  <text x="820" y="183" font-size="12" fill="#cdeae6">exception and pass.</text>
+
+  <rect x="1000" y="98" width="160" height="112" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+  <text x="1020" y="122" font-size="12.5" font-weight="800" fill="#0f172a">5 — Apply</text>
+  <text x="1020" y="145" font-size="12" fill="#475569">terraform apply</text>
+  <text x="1020" y="164" font-size="12" fill="#475569">reaches the cloud</text>
+  <text x="1020" y="183" font-size="12" fill="#475569">provider API.</text>
+
+  <path d="M244 154 L276 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iacArrow)"/>
+  <path d="M504 154 L536 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iacArrow)"/>
+  <path d="M764 154 L796 154" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#iacArrow)"/>
+  <path d="M964 154 L996 154" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#iacArrow)"/>
+
+  <rect x="40" y="236" width="550" height="150" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="260" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">WHAT THE TEMPLATE SCAN CATCHES</text>
+  <line x1="62" y1="272" x2="568" y2="272" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="294" font-size="12" fill="#475569">Ingress open to 0.0.0.0/0 on SSH, RDP, or a database port.</text>
+  <text x="62" y="315" font-size="12" fill="#475569">Storage created without encryption or a public-access block.</text>
+  <text x="62" y="336" font-size="12" fill="#475569">Missing access logging or VPC flow logs.</text>
+  <text x="62" y="366" font-size="12" font-weight="700" fill="#9f1239">Blind to anything a variable or module decides at plan time.</text>
+
+  <rect x="610" y="236" width="550" height="150" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="632" y="260" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">WHAT ONLY THE PLAN EVALUATION CATCHES</text>
+  <line x1="632" y1="272" x2="1138" y2="272" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="632" y="294" font-size="12" fill="#475569">The value a variable actually resolves to in this workspace.</text>
+  <text x="632" y="315" font-size="12" fill="#475569">Resources a module generates that appear in no template.</text>
+  <text x="632" y="336" font-size="12" fill="#475569">Destructive changes — a replace or delete on live state.</text>
+  <text x="632" y="366" font-size="12" font-weight="700" fill="#9f1239">Costs a plan against real state, so it is slower than a scan.</text>
+
+  <rect x="40" y="402" width="1120" height="52" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="432" font-size="12.5" fill="#475569">A pipeline gate is only binding on changes that <tspan font-weight="700" fill="#0f172a">go through the pipeline</tspan>. Anyone applying locally or editing in the console bypasses it — which is what drift detection is for.</text>
+</svg>

@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 RSA-PSS and ECDSA operate over a fixed-size digest rather than the raw payload: their signing operation is a bounded modular/algebraic transform, and feeding in variable-length or attacker-chosen data directly (without a hash-and-pad step) invites malleability and existential-forgery attacks, not just a performance hit. That hashing step is part of the algorithm's own definition, not necessarily something the caller must do externally first — RFC 8017's RSASSA-PSS-Sign interface, for example, takes the full message `M` and performs the EMSA-PSS encoding, including hashing, internally. Some lower-level or hardware APIs (HSM/PKCS#11 "sign this digest" primitives) do expose a precomputed-digest interface instead; whichever convention a given library uses, hashing the message yourself and then feeding the result into an API that also hashes internally causes accidental double hashing, a real and recurring implementation bug, not just a performance concern. Ed25519 and Ed448 (pure EdDSA per [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)) take the raw message and hash it internally as part of the algorithm itself (Ed25519 using SHA-512; Ed448 using SHAKE256) — with separate prehash variants (`Ed25519ph` / `Ed448ph`) for cases that need to hash large messages before signing. The pipeline below is a conceptual simplification of the RSA-PSS/ECDSA case; signatures generally execute across a three-stage pipeline:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/signature-pipeline.svg' | relative_url }}" alt="Digital signature pipeline: message hashing, private key signing of digest, public key verification of signature.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/signature-pipeline.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the signature pipeline diagram at full size">
+    <img src="{{ '/assets/img/signature-pipeline.svg' | relative_url }}" alt="Digital signature pipeline: message hashing, private key signing of digest, public key verification of signature.">
+  </a>
   <p class="diagram-caption">Digital signature pipeline: payload hashing, private key signature computation, and public key verification</p>
 </div>
 

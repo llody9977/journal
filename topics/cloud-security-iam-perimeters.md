@@ -11,8 +11,10 @@ last_verified: 2026-08-13
 
 <p class="lede">Cloud security architecture replaces static physical datacenter perimeters with dynamic identity and API perimeters. Operating in public cloud environments requires navigating the Shared Responsibility Model across IaaS, PaaS, and SaaS delivery tiers. Establishing robust cloud security posture requires orchestrating the CSPM, CIEM, and CWPP security tooling triad, enforcing cloud service control policies (SCPs), and establishing strict IAM entitlement boundaries.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/cloud-security-iam-perimeters.svg' | relative_url }}" alt="Cloud Security Architecture diagram showing Shared Responsibility Model across IaaS/PaaS/SaaS, CSPM, CIEM, and CWPP.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/cloud-security-iam-perimeters.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the cloud security architecture diagram at full size">
+    <img src="{{ '/assets/img/cloud-security-iam-perimeters.svg' | relative_url }}" alt="Cloud Security Architecture diagram showing Shared Responsibility Model across IaaS/PaaS/SaaS, CSPM, CIEM, and CWPP.">
+  </a>
   <p class="diagram-caption">Cloud Security Architecture: Shared Responsibility Model Boundaries &leftrightarrow; CSPM / CIEM / CWPP Tooling Triad &leftrightarrow; IAM Perimeter Control</p>
 </div>
 
@@ -30,9 +32,11 @@ In public cloud environments, security responsibilities are divided between the 
 
 Managing cloud security posture requires three complementary security technology categories:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/cloud-security-iam-perimeters.svg' | relative_url }}" alt="Cloud Security Tooling Triad diagram showing CSPM, CIEM, and CWPP.">
-  <p class="diagram-caption">Cloud Security Tooling Triad: CSPM Config Auditing &leftrightarrow; CIEM Entitlement Analysis &leftrightarrow; CWPP Runtime Protection</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/cloud-security-tooling-triad.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the CSPM, CIEM and CWPP comparison diagram at full size">
+    <img src="{{ '/assets/img/cloud-security-tooling-triad.svg' | relative_url }}" alt="Three columns, one per tool category. CSPM inspects resource configuration through the provider control plane and answers whether a resource is configured safely; it does not see identity reachability or process behavior. CIEM inspects identity policies, roles, and trust relationships and answers who could reach what; it does not see workload behavior. CWPP inspects the running workload from inside and answers what the workload is actually doing; it does not see estate-wide misconfiguration. A footer notes that the three answer different questions on different planes and that no one of them substitutes for another.">
+  </a>
+  <p class="diagram-caption">What each of the three can observe — and what each one is blind to</p>
 </div>
 
 1. **Cloud Security Posture Management (CSPM)**:

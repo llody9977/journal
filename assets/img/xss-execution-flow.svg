@@ -1,0 +1,72 @@
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="xss-title xss-desc">
+  <title id="xss-title">Three cross-site scripting delivery paths converging on one browser sink</title>
+  <desc id="xss-desc">Three delivery paths converge on one browser. Reflected XSS travels in a crafted link and returns in the immediate response; stored XSS is written to the database once and served to every later viewer; DOM-based XSS never reaches the server, moving from a client-side source such as location.search into an unsafe sink such as innerHTML. All three end at the same point — the browser parses attacker text as script inside the origin — and a footer contrasts the server-side fix, context-aware encoding on output, with the client-side fix, assigning to textContent instead of innerHTML.</desc>
+  <rect width="1200" height="560" fill="#ffffff"/>
+
+  <defs>
+    <marker id="xssArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="xssArrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Three delivery paths, one sink</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The payload arrives differently in each case. It executes the same way: the browser parses attacker text as script inside the origin.</text>
+
+  <rect x="40" y="98" width="330" height="106" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="60" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">1 — REFLECTED</text>
+  <text x="60" y="145" font-size="12" fill="#475569">Payload rides in the request, typically a</text>
+  <text x="60" y="164" font-size="12" fill="#475569">query parameter, and is echoed straight</text>
+  <text x="60" y="183" font-size="12" fill="#475569">back in that response. Needs a crafted link.</text>
+
+  <rect x="40" y="216" width="330" height="106" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="60" y="240" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">2 — STORED</text>
+  <text x="60" y="263" font-size="12" fill="#475569">Payload is persisted server-side once and</text>
+  <text x="60" y="282" font-size="12" fill="#475569">served to every later viewer. No per-victim</text>
+  <text x="60" y="301" font-size="12" fill="#475569">delivery step, so the reach is larger.</text>
+
+  <rect x="40" y="334" width="330" height="126" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+  <text x="60" y="358" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">3 — DOM-BASED</text>
+  <text x="60" y="381" font-size="12" fill="#475569">Never reaches the server. Client script reads</text>
+  <text x="60" y="400" font-size="12" fill="#475569">a source it does not control — location.search,</text>
+  <text x="60" y="419" font-size="12" fill="#475569">location.hash, postMessage data — and writes</text>
+  <text x="60" y="438" font-size="12" fill="#475569">it to a parsing sink.</text>
+
+  <rect x="440" y="150" width="290" height="118" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="460" y="174" font-size="13" font-weight="800" fill="#0f172a">Server response</text>
+  <text x="460" y="197" font-size="12" fill="#475569">Emits the value into an HTML</text>
+  <text x="460" y="216" font-size="12" fill="#475569">document. Paths 1 and 2 pass</text>
+  <text x="460" y="235" font-size="12" fill="#475569">through here; path 3 does not.</text>
+  <text x="460" y="256" font-size="12" font-weight="700" fill="#0f766e">Fix: encode on output</text>
+
+  <rect x="440" y="334" width="290" height="126" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="460" y="358" font-size="13" font-weight="800" fill="#0f172a">Unsafe DOM sink</text>
+  <text x="460" y="381" font-size="12" fill="#475569">innerHTML, outerHTML,</text>
+  <text x="460" y="400" font-size="12" fill="#475569">document.write, eval,</text>
+  <text x="460" y="419" font-size="12" fill="#475569">setTimeout with a string.</text>
+  <text x="460" y="440" font-size="12" font-weight="700" fill="#0f766e">Fix: assign to textContent</text>
+
+  <rect x="800" y="196" width="360" height="216" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="822" y="220" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">BROWSER, INSIDE THE ORIGIN</text>
+  <text x="822" y="246" font-size="13" font-weight="800" fill="#0f172a">Attacker script now runs as the page</text>
+  <line x1="822" y1="258" x2="1138" y2="258" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="822" y="280" font-size="12" fill="#475569">Reads the DOM and any data in it</text>
+  <text x="822" y="300" font-size="12" fill="#475569">Reads localStorage and sessionStorage</text>
+  <text x="822" y="320" font-size="12" fill="#475569">Issues same-origin requests with cookies</text>
+  <text x="822" y="340" font-size="12" fill="#475569">attached, so it can act as the user</text>
+  <text x="822" y="366" font-size="12" font-weight="700" fill="#9f1239">HttpOnly stops the script reading the</text>
+  <text x="822" y="386" font-size="12" font-weight="700" fill="#9f1239">cookie — not from using it.</text>
+
+  <path d="M374 151 L436 178" stroke="#b91c1c" stroke-width="2.5" fill="none" marker-end="url(#xssArrowRed)"/>
+  <path d="M374 269 L436 240" stroke="#b91c1c" stroke-width="2.5" fill="none" marker-end="url(#xssArrowRed)"/>
+  <path d="M374 397 L436 397" stroke="#b45309" stroke-width="2.5" fill="none" marker-end="url(#xssArrow)"/>
+
+  <path d="M734 209 L796 268" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#xssArrow)"/>
+  <path d="M734 397 L796 348" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#xssArrow)"/>
+
+  <rect x="40" y="478" width="1120" height="66" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="502" font-size="12.5" fill="#475569">Server-side output encoding closes paths 1 and 2 and <tspan font-weight="700" fill="#0f172a">does nothing for path 3</tspan>, which never leaves the browser — that one needs safe sinks or Trusted Types.</text>
+  <text x="62" y="528" font-size="12.5" fill="#475569">Content Security Policy is a second line for all three. The CSP Level 3 draft states it is not intended as a first line of defense against content injection.</text>
+</svg>

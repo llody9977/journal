@@ -1,0 +1,55 @@
+<svg viewBox="0 0 1200 540" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="msk-title msk-desc">
+  <title id="msk-title">Android and iOS app isolation and key storage compared</title>
+  <desc id="msk-desc">Two device columns compared. Android: each app has its own Linux UID with kernel-enforced separation and a per-app SELinux domain since Android 9, and the Keystore holds key material in a TEE or in StrongBox, which requires its own CPU, secure storage and true random number generator. iOS: all third-party apps run as the user mobile, isolated by a mandatory sandbox profile and a randomly assigned home directory, and the Keychain is an encrypted SQLite database on the file system whose per-item keys are protected by the Secure Enclave rather than stored inside it. A footer states that key material staying inside secure hardware means the app can request an operation but cannot export the key.</desc>
+  <rect width="1200" height="540" fill="#ffffff"/>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Two paths to the same guarantee</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Both platforms stop app A reading app B's files, and both keep key material out of the app process. The mechanisms are not the same.</text>
+
+  <rect x="40" y="96" width="550" height="196" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">ANDROID — ISOLATION BY IDENTITY</text>
+
+  <rect x="62" y="134" width="506" height="66" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="82" y="157" font-size="12.5" font-weight="800" fill="#0f172a">Per-app Linux UID</text>
+  <text x="82" y="178" font-size="12" fill="#475569">Each installed app gets a distinct UID and its own process. The kernel</text>
+  <text x="82" y="192" font-size="12" fill="#475569">separates them using standard user and group ID mechanisms.</text>
+
+  <rect x="62" y="210" width="506" height="66" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="82" y="233" font-size="12.5" font-weight="800" fill="#0f172a">Per-app SELinux domain</text>
+  <text x="82" y="254" font-size="12" fill="#475569">Since Android 9, non-privileged apps targeting API 28 or higher run in</text>
+  <text x="82" y="268" font-size="12" fill="#475569">individual SELinux sandboxes — mandatory control above the UID layer.</text>
+
+  <rect x="610" y="96" width="550" height="196" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="632" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">iOS — ISOLATION BY SANDBOX PROFILE</text>
+
+  <rect x="632" y="134" width="506" height="66" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="652" y="157" font-size="12.5" font-weight="800" fill="#0f172a">One shared non-privileged user</text>
+  <text x="652" y="178" font-size="12" fill="#475569">All third-party apps run as the user mobile. There is no per-app UID,</text>
+  <text x="652" y="192" font-size="12" fill="#475569">so user separation is not what keeps them apart.</text>
+
+  <rect x="632" y="210" width="506" height="66" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="652" y="233" font-size="12.5" font-weight="800" fill="#0f172a">Mandatory sandbox and random home directory</text>
+  <text x="652" y="254" font-size="12" fill="#475569">Every third-party app is sandboxed and receives a randomly assigned</text>
+  <text x="652" y="268" font-size="12" fill="#475569">home directory. The system partition is mounted read-only.</text>
+
+  <rect x="40" y="308" width="550" height="148" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="62" y="332" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">ANDROID KEYSTORE</text>
+  <text x="62" y="356" font-size="13" font-weight="800" fill="#0f172a">Key material lives in secure hardware</text>
+  <line x1="62" y1="368" x2="568" y2="368" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="390" font-size="12" fill="#475569">TEE — typically TrustZone on the main SoC.</text>
+  <text x="62" y="411" font-size="12" fill="#475569">StrongBox — a discrete or integrated secure element with its own</text>
+  <text x="62" y="430" font-size="12" fill="#475569">CPU, secure storage, true RNG, secure timer, and tamper resistance.</text>
+  <text x="62" y="449" font-size="12" fill="#475569">Slower and fewer algorithms, so use it where tampering is in scope.</text>
+
+  <rect x="610" y="308" width="550" height="148" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="632" y="332" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">iOS KEYCHAIN</text>
+  <text x="632" y="356" font-size="13" font-weight="800" fill="#0f172a">A database on disk, with keys held elsewhere</text>
+  <line x1="632" y1="368" x2="1138" y2="368" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="632" y="390" font-size="12" fill="#475569">The keychain is an encrypted SQLite database on the file system —</text>
+  <text x="632" y="409" font-size="12" fill="#475569">it is not storage inside the Secure Enclave.</text>
+  <text x="632" y="430" font-size="12" fill="#475569">Items use a metadata key and a per-item secret key; the secret key</text>
+  <text x="632" y="449" font-size="12" fill="#475569">always requires a round trip through the Secure Enclave.</text>
+
+  <rect x="40" y="472" width="1120" height="48" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="501" font-size="12.5" fill="#475569">The property both deliver: the app can <tspan font-weight="700" fill="#0f172a">request an operation</tspan> but cannot <tspan font-weight="700" fill="#0f172a">export the key</tspan> — so full app-process compromise still does not yield key material.</text>
+</svg>

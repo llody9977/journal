@@ -1,38 +1,41 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">Web Application Vulnerability Engineering Architecture</title>
-  <desc id="description">Web Application Vulnerability Engineering diagram showing OWASP Top 10 web risks, Injection, XSS, SSRF, Deserialization, and Memory Safety.</desc>
-  <rect width="1200" height="500" fill="#ffffff"/>
-  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Web Application Vulnerability Engineering</text>
-  <text x="50" y="75" font-size="14" fill="#475569">OWASP Top 10 web vulnerabilities, Injection, XSS, SSRF, Deserialization, and Memory Safety.</text>
-  
-  <!-- Injection & XSS (x=40, w=540, y=105, h=160) -->
-  <rect x="40" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
-  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">INJECTION &amp; CROSS-SITE SCRIPTING (XSS)</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Input Processing Vulnerabilities</text>
-  <line x1="60" y1="166" x2="560" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• SQL / Command Injection: Dynamic string concatenation into parser engines</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Reflected / Stored / DOM XSS: Executable JavaScript injected into browser DOM</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Remediation: Parameterized queries &amp; Context-aware HTML/JS output encoding</text>
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="wav-title wav-desc">
+  <title id="wav-title">Four web vulnerability families and the interpreter each one abuses</title>
+  <desc id="wav-desc">Three panels. Injection and cross-site scripting: string concatenation into a parser, and script injected into the browser DOM, remediated by parameterized queries and context-aware encoding. SSRF and insecure deserialization: the server coerced into fetching an internal metadata endpoint, and untrusted object streams running gadget chains, remediated by destination allowlisting with IMDSv2 and by safe data formats. Memory safety: the four corruption classes, what Rust and Go change, and the C and C plus plus hardening flags, with a footer noting that the guarantee covers safe-subset code only.</desc>
+  <rect width="1200" height="560" fill="#ffffff"/>
 
-  <!-- SSRF & Deserialization (x=620, w=540, y=105, h=160) -->
-  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">SSRF &amp; INSECURE DESERIALIZATION</text>
-  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Internal Boundary &amp; Object Attacks</text>
-  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• SSRF: Server forced to send requests to internal metadata endpoints (169.254.169.254)</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Insecure Deserialization: Untrusted object streams executing gadget chains</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Remediation: Strict URL destination whitelisting &amp; Safe JSON/Protobuf formats</text>
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Untrusted data reaching an interpreter</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Each family below is the same failure against a different parser. The control is structural separation, not filtering.</text>
 
-  <!-- Memory Safety (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">MEMORY SAFETY ENGINEERING (RUST / GO VS C / C++)</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Eliminating Spatial &amp; Temporal Memory Corruption</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Memory Vulnerabilities: Buffer Overflows, Use-After-Free, Double-Free, Pointer Null Dereference</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Memory-Safe Languages: Rust (Compile-time borrow checker) &amp; Go (Garbage collection &amp; bounds checking)</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• C/C++ Hardening: ASLR, DEP/NX, Stack Canaries, AddressSanitizer (ASan), Control Flow Integrity (CFI)</text>
+  <rect x="40" y="96" width="550" height="196" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="62" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">INJECTION AND CROSS-SITE SCRIPTING</text>
+  <text x="62" y="144" font-size="13" font-weight="800" fill="#0f172a">Interpreter: SQL parser, OS shell, browser HTML parser</text>
+  <line x1="62" y1="156" x2="568" y2="156" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="178" font-size="12" fill="#475569">SQL / command injection: input concatenated into text that is later parsed.</text>
+  <text x="62" y="199" font-size="12" fill="#475569">XSS: reflected, stored, or DOM-based script executing inside the origin.</text>
+  <text x="62" y="226" font-size="12" font-weight="700" fill="#0f172a">Control</text>
+  <text x="62" y="247" font-size="12" fill="#475569">Bind query values; pass an argument vector with no shell; encode</text>
+  <text x="62" y="266" font-size="12" fill="#475569">for the exact insertion context and use safe DOM sinks.</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">APPSEC FLOW: INPUT VALIDATION → PARAMETERIZED QUERIES → OUTPUT ENCODING → MEMORY-SAFE COMPILATION</text>
+  <rect x="610" y="96" width="550" height="196" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="632" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">SSRF AND INSECURE DESERIALIZATION</text>
+  <text x="632" y="144" font-size="13" font-weight="800" fill="#0f172a">Interpreter: URL fetcher, object deserializer</text>
+  <line x1="632" y1="156" x2="1138" y2="156" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="632" y="178" font-size="12" fill="#475569">SSRF: the server coerced into fetching 169.254.169.254 or an</text>
+  <text x="632" y="197" font-size="12" fill="#475569">internal service. In the 2025 list this sits under A01 access control.</text>
+  <text x="632" y="218" font-size="12" fill="#475569">Deserialization: untrusted object streams running gadget chains.</text>
+  <text x="632" y="245" font-size="12" font-weight="700" fill="#0f172a">Control</text>
+  <text x="632" y="266" font-size="12" fill="#475569">Allowlist the destination, re-check the resolved IP, block redirects,</text>
+  <text x="632" y="285" font-size="12" fill="#475569">enforce IMDSv2; parse data-only formats into a declared schema.</text>
+
+  <rect x="40" y="312" width="1120" height="148" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="336" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">MEMORY SAFETY UNDER THE WEB STACK</text>
+  <text x="62" y="360" font-size="13" font-weight="800" fill="#0f172a">Interpreter: the machine itself — TLS terminators, image and font parsers, XML libraries</text>
+  <line x1="62" y1="372" x2="1138" y2="372" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="394" font-size="12" fill="#475569">Four classes: buffer overflow (spatial), use-after-free (temporal), double free, null pointer dereference.</text>
+  <text x="62" y="415" font-size="12" fill="#475569">Rust removes them at compile time through ownership and borrowing; Go through garbage collection and bounds checks.</text>
+  <text x="62" y="436" font-size="12" fill="#475569">Legacy C / C++ hardening: PIE and ASLR, NX, stack protector, RELRO, _FORTIFY_SOURCE, control-flow integrity.</text>
+
+  <rect x="40" y="478" width="1120" height="66" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="502" font-size="12.5" fill="#475569">The memory-safety guarantee covers <tspan font-weight="700" fill="#0f172a">safe-subset code only</tspan>. Rust <tspan font-weight="700" fill="#0f172a">unsafe</tspan> blocks, FFI and cgo boundaries, and Go data races all reintroduce it.</text>
+  <text x="62" y="528" font-size="12.5" font-weight="700" fill="#9f1239">AddressSanitizer is a testing instrumentation with roughly 2x slowdown — it belongs in CI, not in a shipped binary.</text>
 </svg>

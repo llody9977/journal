@@ -35,8 +35,10 @@ The stub normally trusts its selected recursive resolver unless it validates ind
 
 Classic DNS over UDP does not cryptographically authenticate a response. An off-path forger must make a response arrive before the authentic answer and match the resolver's acceptance checks, including the question, query identifier, expected source address, and destination address and port described by [RFC 5452](https://www.rfc-editor.org/rfc/rfc5452.html). The Kaminsky technique repeatedly asks for unpredictable names so the resolver generates new upstream queries and the attacker gets repeated races against a delegation-related answer.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/dns-cache-poisoning.svg' | relative_url }}" alt="Conceptual DNS cache-poisoning race: a client triggers a cache miss, forged and authentic responses race toward the recursive resolver, and only a response that arrives first and passes all acceptance checks can affect the cache.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/dns-cache-poisoning.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the dns cache poisoning diagram at full size">
+    <img src="{{ '/assets/img/dns-cache-poisoning.svg' | relative_url }}" alt="Conceptual DNS cache-poisoning race: a client triggers a cache miss, forged and authentic responses race toward the recursive resolver, and only a response that arrives first and passes all acceptance checks can affect the cache.">
+  </a>
   <p class="diagram-caption">Conceptual attack path: a forged response must win the race and satisfy every resolver acceptance check</p>
 </div>
 
@@ -46,8 +48,10 @@ Source-port and query-ID randomization increase the off-path guessing space; bai
 
 DNSSEC signs **resource-record sets (RRsets)** and builds a chain across zone cuts:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/dnssec-chain.svg' | relative_url }}" alt="Conceptual DNSSEC validation chain: the resolver begins with the root trust anchor, validates the parent DNSKEY and DS relationship for dot gov, validates the DS and DNSKEY relationship for nist.gov, then verifies the RRSIG covering the requested RRset.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/dnssec-chain.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the dnssec chain diagram at full size">
+    <img src="{{ '/assets/img/dnssec-chain.svg' | relative_url }}" alt="Conceptual DNSSEC validation chain: the resolver begins with the root trust anchor, validates the parent DNSKEY and DS relationship for dot gov, validates the DS and DNSKEY relationship for nist.gov, then verifies the RRSIG covering the requested RRset.">
+  </a>
   <p class="diagram-caption">Conceptual validation chain: each DS authenticates selected child DNSKEY data; an RRSIG then authenticates the answer RRset</p>
 </div>
 

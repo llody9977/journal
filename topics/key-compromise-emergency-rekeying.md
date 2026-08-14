@@ -47,8 +47,10 @@ The second time defines the potential blast-radius window. If it cannot be estab
 
 Scope from inventory, KMS/HSM operations, data-key generation, application logs, certificate records, deployments, caches, backups, and external consumers. Absence of KMS use does not prove absence of compromise if a key or DEK was copied outside the service.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/emergency-rekeying-decision-tree.svg' | relative_url }}" alt="Journal decision tree for emergency rekeying: contain and preserve evidence, identify the compromised key purpose, replace it with independent material, then choose rewrapping, bulk re-encryption, certificate or trust replacement, or session and peer remediation before retirement.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/emergency-rekeying-decision-tree.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the emergency rekeying decision tree diagram at full size">
+    <img src="{{ '/assets/img/emergency-rekeying-decision-tree.svg' | relative_url }}" alt="Journal decision tree for emergency rekeying: contain and preserve evidence, identify the compromised key purpose, replace it with independent material, then choose rewrapping, bulk re-encryption, certificate or trust replacement, or session and peer remediation before retirement.">
+  </a>
   <p class="diagram-caption">The key purpose determines remediation. Every branch begins with containment, evidence preservation, independent replacement material, and a conservative compromise window; no branch ends with rotation alone.</p>
 </div>
 

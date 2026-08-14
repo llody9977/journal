@@ -1383,7 +1383,7 @@
         },
         {
           "title": "PEAK Threat Hunting Framework",
-          "url": "https://www.sqrrl.com/peak-threat-hunting-framework/",
+          "url": "https://www.splunk.com/en_us/blog/security/peak-threat-hunting-framework.html",
           "supports": "Hypothesis-driven, baseline outlier, and model-assisted threat hunting."
         },
         {
@@ -1565,7 +1565,7 @@
         },
         {
           "title": "OWASP Top 10 Web / API",
-          "url": "https://owasp.org/www-project-top-10/",
+          "url": "https://owasp.org/www-project-top-ten/",
           "supports": "Web and API application security vulnerability taxonomies."
         },
         {
@@ -3158,6 +3158,367 @@
         "CD-0034",
         "CD-0047",
         "CD-0052"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0058",
+      "title": "Extend the one-image-per-diagram-frame rule to Section 10 and complete it across every remaining section",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/web-application-vulnerabilities.md",
+          "topics/api-microservice-security.md",
+          "topics/ssdlc-security-testing.md",
+          "topics/client-side-mobile-security.md",
+          "topics/cloud-security-iam-perimeters.md",
+          "topics/container-kubernetes-security.md",
+          "topics/iac-immutable-security.md",
+          "topics/incident-response-playbooks-soar.md",
+          "assets/img/web-application-vulnerabilities.svg",
+          "assets/img/xss-execution-flow.svg",
+          "assets/img/api-microservice-security.svg",
+          "assets/img/bola-request-flow.svg",
+          "assets/img/ssdlc-security-testing.svg",
+          "assets/img/ssdlc-phase-tooling.svg",
+          "assets/img/client-side-mobile-security.svg",
+          "assets/img/mobile-sandbox-key-storage.svg",
+          "assets/img/cloud-security-tooling-triad.svg",
+          "assets/img/pod-security-admission.svg",
+          "assets/img/iac-pipeline-scan-gate.svg",
+          "assets/img/incident-response-csf-functions.svg",
+          "assets/img/ransomware-containment-sequence.svg"
+        ],
+        "concepts": [
+          "diagram caption agreement",
+          "duplicate diagram reuse",
+          "alt text accuracy",
+          "full-size diagram affordance",
+          "mobile diagram legibility"
+        ]
+      },
+      "originating_feedback": "A fresh Section 10 review rendered every page and found eight diagram frames drawing on four images: each of the four pages embedded its one image twice, under captions and alt text promising an XSS execution lifecycle, a BOLA request flow, an SSDLC phase-tooling map, and a mobile sandbox and enclave diagram, none of which existed. No Section 10 frame offered the full-size affordance used elsewhere, and browser measurement at a 375px viewport put the 1200-wide diagrams at 285px, rendering 11.5px body text at an effective 2.73 CSS px. The same run found five remaining reused frames in Sections 11 and 12.",
+      "decision": "Apply the rule recorded in CD-0033 and extended by CD-0038, CD-0049, and CD-0052 to Section 10, then finish it everywhere: build four purpose-built Section 10 diagrams and rebuild the four existing ones, build five more for the remaining frames in Topics 11.1, 11.2, 11.3, and 12.2, and wrap every diagram frame in the repository in the diagram-frame-openable pattern.",
+      "rationale": "A caption and alt string that describe a diagram the reader is not being shown is a cross-format accuracy defect, and for a screen-reader user it is the only description available. Section 10 was the fifth consecutive section carrying it. Completing the rule everywhere also satisfies the condition CD-0057 recorded for turning its warning into a blocking failure, which is what stops the defect returning.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Render every affected page and confirm each image matches its caption and alt text.",
+        "Measure every text node in all thirteen new or rebuilt SVGs against its panel and the viewBox.",
+        "Confirm scripts/verify_rendering_hazards.py reports zero reused images across all topic files.",
+        "Confirm every diagram frame in the repository carries a diagram-open-link."
+      ],
+      "approved_outcome": "Every diagram frame in the journal contains one purpose-built image whose visible labels match its caption and alt text, no image is reused within a page, zero measured text overflow across the new and rebuilt SVGs, and a full-size link on every frame.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated.",
+        "Rendered evidence shows a replacement diagram clipping or misrepresenting its subject."
+      ],
+      "related_decisions": [
+        "CD-0033",
+        "CD-0038",
+        "CD-0049",
+        "CD-0052",
+        "CD-0057",
+        "CD-0060"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0059",
+      "title": "Label Section 10 author-created checklists as journal working models and scope its page descriptions",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/web-application-vulnerabilities.md",
+          "topics/api-microservice-security.md",
+          "topics/ssdlc-security-testing.md",
+          "topics/client-side-mobile-security.md",
+          "topics/incident-response-playbooks-soar.md"
+        ],
+        "concepts": [
+          "journal working model labelling",
+          "diagnostic checklist provenance",
+          "comprehensive scope claim",
+          "page description accuracy",
+          "illustrative timings"
+        ]
+      },
+      "originating_feedback": "A fresh Section 10 review found that all four pages presented six-row author-created diagnostic checklists with audit-evidence columns as though drawn from a published standard, and that all four descriptions opened 'Comprehensive technical guide to' while required foundational gaps remained. The same pattern was found on Topic 12.2, which additionally presented manual-versus-automated response durations as measured values with no source.",
+      "decision": "Apply the rule recorded in CD-0035 and extended by CD-0050 and CD-0053 to Section 10: prefix every author-created diagnostic checklist with an explicit journal-working-model statement, and change each page description from 'Comprehensive technical guide to' to 'Technical reference for'. Apply the same treatment to Topic 12.2 and relabel its SOAR timing table as illustrative orders of magnitude rather than measured benchmarks. Also label the five-phase SSDLC view on Topic 10.3 as a journal working model, since NIST SP 800-218 defines four practice groups rather than lifecycle phases.",
+      "rationale": "WRITING_STYLE requires an author-created synthesis to be labelled so a reader cannot mistake it for an official model, requires numerical values to be sourced or marked illustrative, and requires a comprehensiveness claim to define and justify its scope. Sections 1, 6, 8, and 9 had already moved to the scoped formulation, so Section 10 was the inconsistent case.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-218, Secure Software Development Framework (SSDF) Version 1.1",
+          "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+          "supports": "That the SSDF organizes practices into four groups (PO, PS, PW, RV) rather than a lifecycle phase sequence, so any phase mapping is a local model."
+        }
+      ],
+      "verification_methods": [
+        "Confirm every Section 10 checklist carries the journal-working-model prefix.",
+        "Confirm no Section 10 description opens with a comprehensiveness claim.",
+        "Confirm the SSDF practice groups are stated on Topic 10.3 alongside the phase model."
+      ],
+      "approved_outcome": "Every Section 10 checklist and phase model states its provenance, no Section 10 description claims comprehensive coverage, and Topic 12.2's response durations are marked illustrative.",
+      "invalidation_conditions": [
+        "A checklist is replaced by one derived from a published audit standard, which should then be cited instead of labelled.",
+        "A page's scope is defined and justified such that a comprehensiveness claim becomes supportable.",
+        "Measured timing data is collected, at which point the illustrative label should be replaced by the measurement and its method."
+      ],
+      "related_decisions": [
+        "CD-0035",
+        "CD-0050",
+        "CD-0053"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0060",
+      "title": "Promote reused diagram images from a warning to a blocking failure now that the one-image-per-frame rule is complete",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_rendering_hazards.py"
+        ],
+        "concepts": [
+          "rendering hazard check",
+          "duplicate diagram reuse",
+          "blocking gate",
+          "check coverage gap"
+        ]
+      },
+      "originating_feedback": "CD-0057 made reused diagram images a non-blocking warning and recorded the condition for promoting it: completion of the one-image-per-frame rule across every section. Section 10 remediation closed the last eight frames in Sections 10 through 12, leaving the check reporting zero reused images repository-wide.",
+      "decision": "Fold scan_duplicate_images findings into the blocking failure list in scripts/verify_rendering_hazards.py, and split the remediation hint so a reused-image failure explains the one-image-per-frame rule rather than the unrelated formula guidance.",
+      "rationale": "The recorded invalidation condition in CD-0057 has been met exactly as written. This defect had recurred in five consecutive sections and is invisible to every other automated check, so a warning that a reviewer must remember to read is weaker than a gate. There is now no legitimate reused frame to grandfather.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm the check exits zero across all topic files with no reused images present.",
+        "Introduce a duplicate frame on a page and confirm the check exits non-zero and prints the one-image-per-frame hint.",
+        "Confirm the formula hint is not printed when the only findings are reused images."
+      ],
+      "approved_outcome": "A reused diagram image fails the quality gate, with a hint naming the one-image-per-frame rule; the formula hint prints only for formula findings.",
+      "invalidation_conditions": [
+        "A page has a defensible reason to show the same image in two frames, at which point the check needs an explicit opt-out rather than a downgrade."
+      ],
+      "related_decisions": [
+        "CD-0057",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0061",
+      "title": "Merge the orphaned OWASP web security page into Topics 10.1 and 10.2 and remove it",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/web-application-vulnerabilities.md",
+          "topics/api-microservice-security.md"
+        ],
+        "concepts": [
+          "duplicate page coverage",
+          "orphan page",
+          "navigation reachability",
+          "terminology consistency",
+          "allowlist versus whitelist"
+        ]
+      },
+      "originating_feedback": "A fresh Section 10 review found topics/owasp-web-security.md was the only one of 94 topic pages absent from both _data/nav.yml and _includes/topic-nav.html, while still building and returning HTTP 200 at its permalink. It duplicated Topic 10.1 on SQLi, XSS, and SSRF and Topic 10.2 on IDOR and BOLA, used 'allowlist' where those pages used 'whitelist', and was in places more accurate than the pages readers could actually navigate to — it covered IMDSv2, loopback and link-local ranges, and CSP as defense in depth, which they omitted.",
+      "decision": "Merge the page's stronger material into Topics 10.1 and 10.2 — the vulnerable-and-secure code pairs, the IMDSv2 and resolved-address SSRF controls, the CSP defense-in-depth framing, and the ASVS and cheat-sheet references — then delete topics/owasp-web-security.md. Standardize on 'allowlist' across Section 10 to match the fourteen existing uses elsewhere in the journal.",
+      "rationale": "One canonical page per subject is the structure CD-0028 established for Section 10, and a second unnavigable page covering the same ground guarantees the two drift apart, which had already happened on terminology and on SSRF accuracy. The alternative — giving it a navigation position — would leave two pages competing for the same section slot. Nothing in the repository linked to the permalink, so removal breaks no internal reference.",
+      "authoritative_sources": [
+        {
+          "title": "OWASP Server Side Request Forgery Prevention Cheat Sheet",
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+          "supports": "The destination allowlisting, resolved-address validation, and redirect and DNS rebinding controls carried over into Topic 10.1."
+        }
+      ],
+      "verification_methods": [
+        "Confirm no file in the repository references the owasp-web-security permalink.",
+        "Confirm the merged material is present in Topics 10.1 and 10.2.",
+        "Confirm 'whitelist' no longer appears in Section 10.",
+        "Run the internal cross-reference resolver and confirm it passes."
+      ],
+      "approved_outcome": "One canonical page per Section 10 subject, with the orphan's stronger SSRF, code-example, and reference material absorbed into Topics 10.1 and 10.2, and consistent allowlist terminology.",
+      "invalidation_conditions": [
+        "The section is restructured such that a dedicated attack-mechanics page has its own navigation slot and a distinct scope from Topic 10.1."
+      ],
+      "related_decisions": [
+        "CD-0028"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0062",
+      "title": "Track the OWASP Top 10:2025 as the current released edition and enumerate its categories on Topic 10.1",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/web-application-vulnerabilities.md"
+        ],
+        "concepts": [
+          "OWASP top 10",
+          "standard edition currency",
+          "SSRF category placement",
+          "awareness document versus standard"
+        ]
+      },
+      "originating_feedback": "A fresh Section 10 review found that Topic 10.1's title, navigation label, description, lede, and a table heading all promised the OWASP Top 10 while the page never enumerated it, citing '(2021/2025)' without stating either list. Both of the page's primary reference URLs returned HTTP 404, including the OWASP project link.",
+      "decision": "Enumerate the ten OWASP Top 10:2025 categories from the source document, state that the project page identifies the 2025 edition as the current released version, record what changed from 2021 — the two new categories, the A07 and A09 renames, and SSRF being rolled into A01 — and frame the list as an awareness document rather than a standard, pointing to ASVS as the artifact intended for verification. Replace the dead project URL with owasp.org/www-project-top-ten/ and the dead CISA memory-safety URL with the live path.",
+      "rationale": "This follows the precedent set by CD-0039, CD-0048, and CD-0051: when a page names a published list, the repository states that list from the primary document rather than gesturing at it. The SSRF move matters beyond bookkeeping, because it reframes SSRF as an access-control problem — bounding where the server may go — rather than a string-sanitization problem.",
+      "authoritative_sources": [
+        {
+          "title": "OWASP Top 10 project page",
+          "url": "https://owasp.org/www-project-top-ten/",
+          "supports": "That the most current released version is the OWASP Top Ten 2025."
+        },
+        {
+          "title": "Introduction - OWASP Top 10:2025",
+          "url": "https://owasp.org/Top10/2025/0x00_2025-Introduction/",
+          "supports": "The ten category identifiers and titles, the two new categories, the A07 and A09 renames, and SSRF being rolled into A01."
+        }
+      ],
+      "verification_methods": [
+        "Compare each enumerated category against the OWASP Top 10:2025 introduction page.",
+        "Confirm both replacement reference URLs return HTTP 200 in the link check."
+      ],
+      "approved_outcome": "Topic 10.1 enumerates the ten 2025 categories with the 2021 deltas, states the awareness-document scope, and carries only reachable primary references.",
+      "invalidation_conditions": [
+        "OWASP publishes a later edition of the Top 10.",
+        "OWASP restates the relationship between the Top 10 and ASVS."
+      ],
+      "related_decisions": [
+        "CD-0039",
+        "CD-0048",
+        "CD-0051",
+        "CD-0061"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0063",
+      "title": "State the iOS and Android isolation and key-storage models from the platform vendors rather than merging them",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/client-side-mobile-security.md",
+          "assets/img/client-side-mobile-security.svg",
+          "assets/img/mobile-sandbox-key-storage.svg"
+        ],
+        "concepts": [
+          "mobile app sandbox",
+          "per-app UID",
+          "iOS Keychain",
+          "Secure Enclave",
+          "Android Keystore",
+          "StrongBox",
+          "TPM misattribution",
+          "MASVS control groups"
+        ]
+      },
+      "originating_feedback": "A fresh Section 10 review found Topic 10.4 stating that 'iOS and Android assign a unique User ID (UID) and isolated filesystem directory to every installed app', describing storage as 'iOS Keychain (Secure Enclave)', listing four of the eight MASVS control groups without saying it was a subset, and carrying an SVG line asserting that both platforms' key stores are 'backed by hardware TPM'.",
+      "decision": "State each platform's model separately from its vendor documentation: Android assigns a distinct Linux UID per app with kernel enforcement plus per-app SELinux domains from Android 9 for API 28 and above, while iOS runs all third-party apps as the non-privileged user 'mobile' and isolates them with a mandatory sandbox profile and a randomly assigned home directory. Describe the iOS Keychain as an encrypted SQLite database on the file system whose per-item secret keys require a round trip through the Secure Enclave, rather than as storage inside the Enclave. State that neither platform uses a TPM and name the actual hardware — Secure Enclave, TEE, StrongBox. Enumerate all eight MASVS control groups.",
+      "rationale": "The merged statement is not a simplification but a factual error on the iOS side, and it matters when reasoning about what a platform-specific sandbox bypass reaches. The Keychain conflation misplaces the trust boundary: the database is on disk and readable as ciphertext, which is a different threat model from key material inside secure hardware. TPM is a Trusted Computing Group specification for PC-class platforms and appears on neither mobile platform.",
+      "authoritative_sources": [
+        {
+          "title": "Apple Platform Security: Security of runtime process",
+          "url": "https://support.apple.com/guide/security/security-of-runtime-process-sec15bfe098e/web",
+          "supports": "That all third-party iOS apps run as the non-privileged user mobile, are sandboxed, and receive a randomly assigned home directory."
+        },
+        {
+          "title": "Apple Platform Security: Keychain data protection",
+          "url": "https://support.apple.com/guide/security/keychain-data-protection-secb0694df1a/web",
+          "supports": "That the keychain is a SQLite database on the file system and that the per-item secret key always requires a round trip through the Secure Enclave."
+        },
+        {
+          "title": "Android: Application sandbox",
+          "url": "https://source.android.com/docs/security/app-sandbox",
+          "supports": "Per-app UID assignment, kernel-level enforcement, and per-app SELinux domains from Android 9 for apps targeting API 28 or higher."
+        },
+        {
+          "title": "OWASP MASVS",
+          "url": "https://mas.owasp.org/MASVS/",
+          "supports": "The eight control groups: STORAGE, CRYPTO, AUTH, NETWORK, PLATFORM, CODE, RESILIENCE, and PRIVACY."
+        }
+      ],
+      "verification_methods": [
+        "Compare each platform statement against the cited vendor page.",
+        "Confirm no diagram or prose on the page names a TPM.",
+        "Confirm all eight MASVS groups are listed."
+      ],
+      "approved_outcome": "Topic 10.4 states each platform's isolation and key-storage mechanism separately and accurately, names the correct secure hardware, and enumerates the eight MASVS control groups.",
+      "invalidation_conditions": [
+        "Apple or Google changes the documented isolation or key-storage architecture.",
+        "OWASP revises the MASVS control group set."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0064",
+      "title": "Align Topic 12.2 with SP 800-61 Rev. 3 so the two incident response pages state the same lifecycle structure",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/incident-response-playbooks-soar.md",
+          "assets/img/incident-response-csf-functions.svg"
+        ],
+        "concepts": [
+          "incident response lifecycle",
+          "NIST SP 800-61",
+          "CSF 2.0 functions",
+          "superseded standard",
+          "cross-page consistency"
+        ]
+      },
+      "originating_feedback": "Building a purpose-built diagram for Topic 12.2's lifecycle frame surfaced that the page's description, lede, section heading, two captions, and callout all presented the NIST SP 800-61 Rev. 2 four-phase lifecycle as current, while Topic 1.8 in the same repository already documented that NIST withdrew Rev. 2 and published Rev. 3 in April 2025 mapping response activity onto the CSF 2.0 Functions.",
+      "decision": "Restate Topic 12.2's lifecycle section against SP 800-61 Rev. 3 and the six CSF 2.0 Functions, retain the Rev. 2 phase names explicitly as superseded shorthand in a mapping table, build the diagram to the Rev. 3 structure, link to Topic 1.8 for the full treatment, and replace the Rev. 2 primary reference with Rev. 3 and CSF 2.0.",
+      "rationale": "Two pages in the same journal asserting different current structures for the same standard is the cross-page contradiction WRITING_STYLE forbids, and a newly built diagram would have encoded the withdrawn structure into a second format. The phase vocabulary is retained because it is still what practitioners say, but it is attributed as historical rather than current.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-61 Rev. 3",
+          "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+          "supports": "That Rev. 3 was published in April 2025, supersedes Rev. 2 (2012), and is a CSF 2.0 Community Profile."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topic 12.2 and Topic 1.8 state the same current structure.",
+        "Confirm the new diagram shows six CSF 2.0 Functions with Improvement under Identify.",
+        "Confirm no remaining text on Topic 12.2 presents Rev. 2 as current."
+      ],
+      "approved_outcome": "Topic 12.2 states Rev. 3 as current, maps the historical phase names to it, and its diagram encodes the CSF 2.0 Function structure.",
+      "invalidation_conditions": [
+        "NIST publishes a further revision of SP 800-61.",
+        "A full Section 12 review establishes a different scope split between Topics 1.8 and 12.2."
+      ],
+      "related_decisions": [
+        "CD-0058"
       ],
       "supersedes": [],
       "superseded_by": null,

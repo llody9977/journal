@@ -1,0 +1,76 @@
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ircsf-title ircsf-desc">
+  <title id="ircsf-title">Incident response mapped onto the CSF 2.0 Functions used by SP 800-61 Rev. 3</title>
+  <desc id="ircsf-desc">Govern is shown as a continuous band above five Functions running left to right — Identify, Protect, Detect, Respond, and Recover — with the incident response activity that sits in each. In-incident work concentrates in Detect, Respond, and Recover, while continuous improvement is captured under Identify's Improvement category. A footer states that NIST withdrew SP 800-61 Revision 2 and published Revision 3 in April 2025, replacing the four-phase lifecycle with this mapping, and that CSF 2.0 has exactly six Functions so Improve is not a seventh one.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="irArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Incident response under SP 800-61 Rev. 3</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Revision 3 replaced the four-phase lifecycle with incident response activity mapped onto the six CSF 2.0 Functions.</text>
+
+  <rect x="40" y="98" width="1120" height="62" rx="12" fill="#193e9f"/>
+  <text x="62" y="124" font-size="12.5" font-weight="800" fill="#ffffff">GOVERN — continuous, not a phase</text>
+  <text x="62" y="146" font-size="12" fill="#c9d7fb">Risk appetite, roles and authority, policy, supplier and legal obligations. Sets the conditions every other Function operates under.</text>
+
+  <rect x="40" y="180" width="216" height="184" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="58" y="204" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">IDENTIFY</text>
+  <text x="58" y="228" font-size="12" fill="#475569">Asset and risk context</text>
+  <text x="58" y="247" font-size="12" fill="#475569">that response depends on.</text>
+  <text x="58" y="274" font-size="12" font-weight="700" fill="#0f172a">Improvement (ID.IM)</text>
+  <text x="58" y="293" font-size="12" fill="#475569">carries post-incident</text>
+  <text x="58" y="312" font-size="12" fill="#475569">learning — new in CSF 2.0,</text>
+  <text x="58" y="331" font-size="12" fill="#475569">consolidating what used to</text>
+  <text x="58" y="350" font-size="12" fill="#475569">sit in four places.</text>
+
+  <rect x="272" y="180" width="216" height="184" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="290" y="204" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">PROTECT</text>
+  <text x="290" y="228" font-size="12" fill="#475569">Safeguards that reduce</text>
+  <text x="290" y="247" font-size="12" fill="#475569">how often response is</text>
+  <text x="290" y="266" font-size="12" fill="#475569">needed, and readiness</text>
+  <text x="290" y="285" font-size="12" fill="#475569">work done in advance:</text>
+  <text x="290" y="312" font-size="12" fill="#475569">playbooks, out-of-band</text>
+  <text x="290" y="331" font-size="12" fill="#475569">comms, immutable</text>
+  <text x="290" y="350" font-size="12" fill="#475569">backups, tabletops.</text>
+
+  <rect x="504" y="180" width="216" height="184" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="522" y="204" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">DETECT</text>
+  <text x="522" y="228" font-size="12" fill="#475569">Analyze adverse events</text>
+  <text x="522" y="247" font-size="12" fill="#475569">and declare an incident</text>
+  <text x="522" y="266" font-size="12" fill="#475569">when defined criteria</text>
+  <text x="522" y="285" font-size="12" fill="#475569">are met.</text>
+  <text x="522" y="312" font-size="12" font-weight="700" fill="#0f766e">Declaration is the</text>
+  <text x="522" y="331" font-size="12" font-weight="700" fill="#0f766e">handover point into</text>
+  <text x="522" y="350" font-size="12" font-weight="700" fill="#0f766e">Respond.</text>
+
+  <rect x="736" y="180" width="216" height="184" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="754" y="204" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">RESPOND</text>
+  <text x="754" y="228" font-size="12" fill="#475569">Triage and validate the</text>
+  <text x="754" y="247" font-size="12" fill="#475569">report, categorize and</text>
+  <text x="754" y="266" font-size="12" fill="#475569">prioritize, then contain</text>
+  <text x="754" y="285" font-size="12" fill="#475569">and eradicate.</text>
+  <text x="754" y="312" font-size="12" fill="#475569">Notification obligations</text>
+  <text x="754" y="331" font-size="12" fill="#475569">start running here, not</text>
+  <text x="754" y="350" font-size="12" fill="#475569">at recovery.</text>
+
+  <rect x="968" y="180" width="192" height="184" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="986" y="204" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">RECOVER</text>
+  <text x="986" y="228" font-size="12" fill="#475569">Restore from verified</text>
+  <text x="986" y="247" font-size="12" fill="#475569">clean state, validate</text>
+  <text x="986" y="266" font-size="12" fill="#475569">normal operation, and</text>
+  <text x="986" y="285" font-size="12" fill="#475569">communicate status.</text>
+  <text x="986" y="312" font-size="12" font-weight="700" fill="#9f1239">Restoring before</text>
+  <text x="986" y="331" font-size="12" font-weight="700" fill="#9f1239">eradication completes</text>
+  <text x="986" y="350" font-size="12" font-weight="700" fill="#9f1239">reinfects.</text>
+
+  <path d="M492 272 L500 272" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#irArrow)"/>
+  <path d="M724 272 L732 272" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#irArrow)"/>
+  <path d="M956 272 L964 272" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#irArrow)"/>
+
+  <rect x="40" y="382" width="1120" height="72" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="406" font-size="12.5" font-weight="700" fill="#9f1239">NIST withdrew SP 800-61 Rev. 2 (2012) and published Rev. 3 in April 2025. The four-phase lifecycle is the superseded structure, not the current one.</text>
+  <text x="62" y="430" font-size="12.5" fill="#475569">CSF 2.0 has exactly <tspan font-weight="700" fill="#0f172a">six Functions</tspan> — Improve is not a seventh. Post-incident learning lands in Identify's Improvement Category, then flows back through Govern.</text>
+</svg>

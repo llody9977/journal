@@ -11,8 +11,10 @@ last_verified: 2026-08-13
 
 <p class="lede">Infrastructure as Code (IaC) shifts infrastructure provisioning into software code repositories (Terraform, CloudFormation, Bicep, Helm). While IaC enables rapid automation, misconfigurations written into IaC code templates propagate misconfigurations to hundreds of cloud environments simultaneously. Securing cloud infrastructure requires scanning IaC templates in CI/CD pipelines using static security analyzers (Checkov, tfsec), enforcing Policy-as-Code (OPA/Rego), detecting runtime configuration drift, and deploying immutable infrastructure.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/iac-immutable-security.svg' | relative_url }}" alt="IaC Security diagram showing Checkov/tfsec static scanning, Drift Detection, Immutable Infrastructure, and Ephemeral Workloads.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/iac-immutable-security.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the Infrastructure as Code security architecture diagram at full size">
+    <img src="{{ '/assets/img/iac-immutable-security.svg' | relative_url }}" alt="IaC Security diagram showing Checkov/tfsec static scanning, Drift Detection, Immutable Infrastructure, and Ephemeral Workloads.">
+  </a>
   <p class="diagram-caption">Infrastructure as Code Security Architecture: Static IaC Template Scans &leftrightarrow; GitOps Auto-Reconciliation &leftrightarrow; Immutable Workload Replacement</p>
 </div>
 
@@ -20,9 +22,11 @@ last_verified: 2026-08-13
 
 Static IaC security tools analyze infrastructure code manifests before deployment, catching security defects early in the SDLC:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/iac-immutable-security.svg' | relative_url }}" alt="Static Infrastructure as Code security scanning pipeline diagram.">
-  <p class="diagram-caption">IaC CI/CD Security Pipeline: Terraform Commit &leftrightarrow; Static Scan Gate &leftrightarrow; Terraform Apply</p>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/iac-pipeline-scan-gate.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the Infrastructure as Code pipeline scan gate diagram at full size">
+    <img src="{{ '/assets/img/iac-pipeline-scan-gate.svg' | relative_url }}" alt="A left-to-right pipeline. A Terraform commit opens a pull request; static analyzers such as Checkov and tfsec read the template source; terraform plan produces a machine-readable plan which a policy engine evaluates against Rego rules; the gate then either fails the build or allows terraform apply to reach the cloud provider. Two callouts distinguish the template scan, which reads the code as written, from the plan evaluation, which reads the resolved resource set after variables and modules are expanded. A footer notes that a pipeline gate is bypassed by anyone applying locally, so drift detection is what catches changes that never passed the gate.">
+  </a>
+  <p class="diagram-caption">Template scan and plan evaluation catch different things, and the gate binds only what passes through it</p>
 </div>
 
 ### Common IaC Misconfiguration Patterns

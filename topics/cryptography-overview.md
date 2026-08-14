@@ -15,8 +15,10 @@ last_verified: 2026-08-12
 
 In an untrusted network environment (such as the public internet), raw data packets passing across transit routers are vulnerable to several attack classes. The three below are network-observable attacks with a direct cryptographic countermeasure; this is a simplified, journal-created grouping for orienting the properties below, not an exhaustive or standards-defined taxonomy of network threats:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/cryptography-threats.svg' | relative_url }}" alt="Network threats mapped to cryptographic objectives: eavesdropping to confidentiality, tampering to integrity, and impersonation to authenticity.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/cryptography-threats.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the cryptography threats diagram at full size">
+    <img src="{{ '/assets/img/cryptography-threats.svg' | relative_url }}" alt="Network threats mapped to cryptographic objectives: eavesdropping to confidentiality, tampering to integrity, and impersonation to authenticity.">
+  </a>
   <p class="diagram-caption">A simplified, journal-created grouping of three network-observable attacks and their primary cryptographic countermeasure — not an exhaustive threat taxonomy. The three properties are independent, not sequential; the connecting arrows are a layout device, not a causal or ordering claim.</p>
 </div>
 
@@ -56,8 +58,10 @@ Production security protocols rarely rely on a single cryptographic primitive. I
 
 For example, **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846.html), which obsoletes the original [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) coordinates primitives across three phases in its most common configuration — a full handshake authenticated by an X.509 certificate. TLS 1.3 also supports PSK-only and PSK-plus-ephemeral-DH resumption modes, which omit the `Certificate`/`CertificateVerify` messages entirely, and separately supports raw public keys in place of certificates ([RFC 7250](https://www.rfc-editor.org/rfc/rfc7250)); the flow below is the certificate-authenticated case, not every valid TLS 1.3 handshake:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/tls-cryptography-layers.svg' | relative_url }}" alt="TLS cryptographic layers for server authentication, shared-secret establishment, and authenticated encryption of application data.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/tls-cryptography-layers.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the tls cryptography layers diagram at full size">
+    <img src="{{ '/assets/img/tls-cryptography-layers.svg' | relative_url }}" alt="TLS cryptographic layers for server authentication, shared-secret establishment, and authenticated encryption of application data.">
+  </a>
   <p class="diagram-caption">The common certificate-authenticated TLS 1.3 handshake — PSK-only and PSK-plus-ephemeral-DH resumption modes skip certificate authentication, and raw public keys are also a valid alternative to certificates</p>
 </div>
 

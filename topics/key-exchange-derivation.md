@@ -17,8 +17,10 @@ Standardized by Whitfield Diffie and Martin Hellman, Diffie-Hellman leverages th
 
 **S = g^(ab) mod p**
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/diffie-hellman.svg' | relative_url }}" alt="Diffie-Hellman public key exchange diagram between Alice and Bob deriving a shared secret S.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/diffie-hellman.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the diffie hellman diagram at full size">
+    <img src="{{ '/assets/img/diffie-hellman.svg' | relative_url }}" alt="Diffie-Hellman public key exchange diagram between Alice and Bob deriving a shared secret S.">
+  </a>
   <p class="diagram-caption">Diffie-Hellman public exchange: private keys (a, b) remain secret while shared secret S is derived</p>
 </div>
 
@@ -616,8 +618,10 @@ A raw Diffie-Hellman shared secret **S** often contains non-uniform entropy and 
 
 Standardized in **[RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)**, **HKDF** follows a two-stage **Extract-then-Expand** pipeline:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/hkdf-extract-expand.svg' | relative_url }}" alt="HKDF Extract-and-Expand pipeline diagram converting raw IKM into PRK, then expanding into sub-keys.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/hkdf-extract-expand.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the hkdf extract expand diagram at full size">
+    <img src="{{ '/assets/img/hkdf-extract-expand.svg' | relative_url }}" alt="HKDF Extract-and-Expand pipeline diagram converting raw IKM into PRK, then expanding into sub-keys.">
+  </a>
   <p class="diagram-caption">HKDF Extract-then-Expand pipeline: HMAC-based entropy extraction and key expansion</p>
 </div>
 

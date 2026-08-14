@@ -1,0 +1,67 @@
+<svg viewBox="0 0 1200 530" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="psa-title psa-desc">
+  <title id="psa-title">How Pod Security Admission evaluates a pod manifest</title>
+  <desc id="psa-desc">A left-to-right sequence. A pod manifest is submitted to the API server, which calls the built-in Pod Security Admission controller. The controller reads the pod-security.kubernetes.io labels on the destination namespace, which pair one of three modes — enforce, audit, and warn — with one of three levels — privileged, baseline, and restricted. The manifest is checked against the level, and the mode decides the consequence: enforce rejects the pod, audit records an annotation in the audit log, and warn returns a message to the client while still admitting. A footer notes that the three modes can be set simultaneously with different levels, that the labels are namespace-scoped so an unlabelled namespace is unrestricted, and that admission is a create-time check rather than a runtime control.</desc>
+  <rect width="1200" height="530" fill="#ffffff"/>
+
+  <defs>
+    <marker id="psaArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Pod Security Admission, from manifest to verdict</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The level says what is checked. The mode says what happens when the check fails. They are set independently on the namespace.</text>
+
+  <rect x="40" y="98" width="230" height="106" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="122" font-size="12.5" font-weight="800" fill="#0f172a">1 — Pod manifest</text>
+  <text x="60" y="145" font-size="12" fill="#475569">Submitted to the API server</text>
+  <text x="60" y="164" font-size="12" fill="#475569">with securityContext,</text>
+  <text x="60" y="183" font-size="12" fill="#475569">volumes, and capabilities.</text>
+
+  <rect x="310" y="98" width="250" height="106" rx="12" fill="#193e9f"/>
+  <text x="330" y="122" font-size="12.5" font-weight="800" fill="#ffffff">2 — Admission controller</text>
+  <text x="330" y="145" font-size="12" fill="#c9d7fb">Pod Security Admission is</text>
+  <text x="330" y="164" font-size="12" fill="#c9d7fb">built in — no webhook to</text>
+  <text x="330" y="183" font-size="12" fill="#c9d7fb">install or keep available.</text>
+
+  <rect x="600" y="98" width="270" height="106" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <text x="620" y="122" font-size="12.5" font-weight="800" fill="#0f172a">3 — Namespace labels</text>
+  <text x="620" y="145" font-size="12" fill="#475569">pod-security.kubernetes.io/</text>
+  <text x="620" y="164" font-size="12" fill="#475569">&lt;mode&gt;: &lt;level&gt;</text>
+  <text x="620" y="183" font-size="12" font-weight="700" fill="#9f1239">Unlabelled = unrestricted</text>
+
+  <rect x="910" y="98" width="250" height="106" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="930" y="122" font-size="12.5" font-weight="800" fill="#0f172a">4 — Verdict</text>
+  <text x="930" y="145" font-size="12" fill="#475569">Determined by the mode,</text>
+  <text x="930" y="164" font-size="12" fill="#475569">not by the level — see the</text>
+  <text x="930" y="183" font-size="12" fill="#475569">two bands below.</text>
+
+  <path d="M274 151 L306 151" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#psaArrow)"/>
+  <path d="M564 151 L596 151" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#psaArrow)"/>
+  <path d="M874 151 L906 151" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#psaArrow)"/>
+
+  <rect x="40" y="226" width="550" height="184" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="250" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">LEVEL — WHAT IS CHECKED</text>
+  <text x="62" y="278" font-size="12.5" font-weight="800" fill="#0f172a">privileged</text>
+  <text x="62" y="297" font-size="12" fill="#475569">Unrestricted. Intended for system components such as</text>
+  <text x="62" y="315" font-size="12" fill="#475569">CNI plugins and storage drivers.</text>
+  <text x="62" y="340" font-size="12.5" font-weight="800" fill="#0f172a">baseline</text>
+  <text x="62" y="359" font-size="12" fill="#475569">Blocks known privilege escalations — host namespaces,</text>
+  <text x="62" y="377" font-size="12" fill="#475569">host ports, and dangerous capabilities.</text>
+  <text x="62" y="399" font-size="12.5" font-weight="800" fill="#0f172a">restricted</text>
+
+  <rect x="610" y="226" width="550" height="184" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="632" y="250" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">MODE — WHAT HAPPENS ON FAILURE</text>
+  <text x="632" y="278" font-size="12.5" font-weight="800" fill="#0f172a">enforce</text>
+  <text x="632" y="297" font-size="12" fill="#475569">The pod is rejected. Applies to pods only, so a Deployment</text>
+  <text x="632" y="315" font-size="12" fill="#475569">is accepted while its pods silently fail to be created.</text>
+  <text x="632" y="340" font-size="12.5" font-weight="800" fill="#0f172a">audit</text>
+  <text x="632" y="359" font-size="12" fill="#475569">The pod is admitted and an annotation is written to the</text>
+  <text x="632" y="377" font-size="12" fill="#475569">audit log — the safe way to measure impact first.</text>
+  <text x="632" y="399" font-size="12.5" font-weight="800" fill="#0f172a">warn</text>
+
+  <rect x="40" y="426" width="1120" height="80" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="450" font-size="12.5" fill="#475569"><tspan font-weight="700" fill="#0f172a">restricted</tspan> additionally requires runAsNonRoot, all capabilities dropped, a restricted seccomp profile, and a limited set of volume types.</text>
+  <text x="62" y="472" font-size="12.5" fill="#475569"><tspan font-weight="700" fill="#0f172a">warn</tspan> returns a message to the client and still admits. All three modes can be set at once with different levels.</text>
+  <text x="62" y="494" font-size="12.5" font-weight="700" fill="#9f1239">Admission is a create-time check — it does not constrain a container after it is running.</text>
+</svg>

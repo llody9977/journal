@@ -19,8 +19,10 @@ Historically, any trusted Root CA in an operating system trust store could issue
 
 CT logs organize certificates into append-only Merkle hash trees. Specified in **[RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)** and **[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162)** — both published as Experimental RFCs, not IETF Standards Track — a **Merkle Tree** hashes leaf data pairwise up to a single cryptographic **Root Hash**:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/certificate-transparency-merkle-tree.svg' | relative_url }}" alt="Certificate Transparency Merkle tree diagram showing leaf certificates hashed up to a Merkle Root Hash.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/certificate-transparency-merkle-tree.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the certificate transparency merkle tree diagram at full size">
+    <img src="{{ '/assets/img/certificate-transparency-merkle-tree.svg' | relative_url }}" alt="Certificate Transparency Merkle tree diagram showing leaf certificates hashed up to a Merkle Root Hash.">
+  </a>
   <p class="diagram-caption">CT Merkle Tree: append-only binary tree allowing O(log N) inclusion and consistency verification</p>
 </div>
 
@@ -39,8 +41,10 @@ Detecting a split-view requires an independent mechanism: **gossip protocols** a
 
 When a domain owner or automated ACME agent requests a certificate, the CA submits the pre-certificate to multiple independent CT log servers. Each log returns a **Signed Certificate Timestamp (SCT)** promising inclusion within a Maximum Merge Delay (MMD, typically 24 hours):
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/sct-flow.svg' | relative_url }}?v=2" alt="Signed Certificate Timestamp (SCT) workflow showing CA log submission, SCT generation, and TLS embedding.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/sct-flow.svg' | relative_url }}?v=2" target="_blank" rel="noopener" aria-label="Open the sct flow diagram at full size">
+    <img src="{{ '/assets/img/sct-flow.svg' | relative_url }}?v=2" alt="Signed Certificate Timestamp (SCT) workflow showing CA log submission, SCT generation, and TLS embedding.">
+  </a>
   <p class="diagram-caption">SCT Delivery Workflow (embedded-SCT path — the most common of the three delivery mechanisms below): CA submits pre-certificate to CT logs, receives SCTs, and embeds them into the TLS certificate</p>
 </div>
 

@@ -15,8 +15,10 @@ last_verified: 2026-08-12
 
 Production GRC programs avoid running parallel compliance audits by layering standards according to operational function:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/grc-framework-stack.svg' | relative_url }}" alt="Layered relationship between governance frameworks, control catalogs, domain standards, and assurance or attestation.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/grc-framework-stack.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the grc framework stack diagram at full size">
+    <img src="{{ '/assets/img/grc-framework-stack.svg' | relative_url }}" alt="Layered relationship between governance frameworks, control catalogs, domain standards, and assurance or attestation.">
+  </a>
   <p class="diagram-caption">Frameworks serve different layers of the security program</p>
 </div>
 
@@ -50,8 +52,10 @@ Quantifying risk in financial figures enables security leadership to justify con
 
 For an emerging enterprise or startup establishing a security program from scratch, a common and reasonable implementation sequence progresses through five stages. The exact ordering and pace should still be adjusted for the organization's actual risk profile, industry, regulatory exposure, and resourcing — this is one illustrative starting sequence, not a universally optimal path:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/security-program-roadmap.svg' | relative_url }}" alt="Security program roadmap from essential technical hygiene through governance, product security, customer assurance, and an information security management system.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/security-program-roadmap.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the security program roadmap diagram at full size">
+    <img src="{{ '/assets/img/security-program-roadmap.svg' | relative_url }}" alt="Security program roadmap from essential technical hygiene through governance, product security, customer assurance, and an information security management system.">
+  </a>
   <p class="diagram-caption">Build repeatable security capability before pursuing external assurance</p>
 </div>
 

@@ -1,38 +1,42 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">API &amp; Microservice Security Architecture</title>
-  <desc id="description">API &amp; Microservice Security diagram showing OWASP API Top 10, BOLA, JWT security, and GraphQL query depth limits.</desc>
-  <rect width="1200" height="500" fill="#ffffff"/>
-  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">API &amp; Microservice Security</text>
-  <text x="50" y="75" font-size="14" fill="#475569">OWASP API Security Top 10, BOLA mitigation, JWT signature verification, and GraphQL batching protections.</text>
-  
-  <!-- OWASP API BOLA (x=40, w=540, y=105, h=160) -->
-  <rect x="40" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
-  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">BROKEN OBJECT LEVEL AUTHORIZATION (BOLA / IDOR)</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">#1 API Threat: Direct Object Access</text>
-  <line x1="60" y1="166" x2="560" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Vulnerability: Replacing GET /api/user/101 with /api/user/102 returns target user data</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Root Cause: Missing object-level authorization checks at API handler endpoints</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Mitigation: Enforce strict user session to object ID ownership checks on every request</text>
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="api-title api-desc">
+  <title id="api-title">API authorization, token verification, and consumption limits</title>
+  <desc id="api-desc">Three panels. Broken object level authorization: swapping a resource identifier returns another user's object because the handler checked authentication but not ownership, remediated by an ownership check on every handler. JWT verification: rejecting the none algorithm, pinning the expected algorithm against RS256 to HS256 confusion, treating kid as untrusted, and validating issuer, audience and expiry. GraphQL and resource limits: introspection disabled in production, depth and cost ceilings, and rate limits applied per client identity rather than per IP alone.</desc>
+  <rect width="1200" height="560" fill="#ffffff"/>
 
-  <!-- JWT Security (x=620, w=540, y=105, h=160) -->
-  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">JWT SECURITY &amp; TOKEN HARDENING</text>
-  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Algorithm Confusion &amp; Signature Validation</text>
-  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Algorithm Confusion: Blocking 'alg: none' and RS256 -> HS256 public key attacks</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Key ID (kid) Injection: Sanitizing kid header parameters against SQLi/directory traversal</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Revocation: Short-lived access tokens (15-min) + token introspection / revocation lists</text>
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">What an API has to check on every request</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Four of the ten OWASP API Security Top 10 (2023) entries are authorization failures. That concentration is the point of the list.</text>
 
-  <!-- GraphQL & Rate Limiting (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">GRAPHQL SECURITY &amp; RATE LIMITING GATEWAYS</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Query Complexity Controls &amp; API Rate Limiting</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• GraphQL Hardening: Disable Introspection in production; enforce maximum query depth &amp; cost analysis</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Rate Limiting: Token bucket &amp; leaky bucket algorithms enforced at API Gateway by IP / Client ID</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Mass Assignment Protection: Strict DTO schema binding restricting client-writable parameters</text>
+  <rect x="40" y="96" width="550" height="200" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="62" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">API1:2023 — BROKEN OBJECT LEVEL AUTHORIZATION</text>
+  <text x="62" y="144" font-size="13" font-weight="800" fill="#0f172a">Authenticated is not authorized</text>
+  <line x1="62" y1="156" x2="568" y2="156" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="178" font-size="12" fill="#475569">A valid token for account 101 requests account 102, and the handler</text>
+  <text x="62" y="197" font-size="12" fill="#475569">returns it because it never compared the object owner to the subject.</text>
+  <text x="62" y="224" font-size="12" font-weight="700" fill="#0f172a">Control</text>
+  <text x="62" y="245" font-size="12" fill="#475569">Load the object, compare its owner against the authenticated subject</text>
+  <text x="62" y="264" font-size="12" fill="#475569">through one shared authorization function, and return 404 rather than</text>
+  <text x="62" y="283" font-size="12" fill="#475569">403 wherever the existence of the object is itself sensitive.</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">API SECURITY: API GATEWAY RATE LIMITING → JWT SIGNATURE VALIDATION → OBJECT AUTHORIZATION (BOLA) → SCHEMA BINDING</text>
+  <rect x="610" y="96" width="550" height="200" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="632" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">JWT VERIFICATION — RFC 8725 / BCP 225</text>
+  <text x="632" y="144" font-size="13" font-weight="800" fill="#0f172a">Never let the token decide how it is checked</text>
+  <line x1="632" y1="156" x2="1138" y2="156" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="632" y="178" font-size="12" fill="#475569">Reject alg none. Pin the expected algorithm at the verifier, so a</text>
+  <text x="632" y="197" font-size="12" fill="#475569">rewrite from RS256 to HS256 cannot be signed with the public key.</text>
+  <text x="632" y="216" font-size="12" fill="#475569">Match kid against a known set; ignore or allowlist jku and x5u.</text>
+  <text x="632" y="243" font-size="12" font-weight="700" fill="#0f172a">The more common production failure</text>
+  <text x="632" y="264" font-size="12" fill="#475569">Missing claim validation. Check iss, aud, and exp on every request —</text>
+  <text x="632" y="283" font-size="12" fill="#475569">without aud, a token minted for another service is accepted here.</text>
+
+  <rect x="40" y="316" width="1120" height="148" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="340" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">QUERY COST AND RESOURCE CONSUMPTION — API4:2023</text>
+  <text x="62" y="364" font-size="13" font-weight="800" fill="#0f172a">GraphQL hands query composition to the caller, so the server no longer controls the work per request</text>
+  <line x1="62" y1="376" x2="1138" y2="376" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="398" font-size="12" fill="#475569">Disable introspection in production; cap query depth, per-field cost, alias repetition, and array batching.</text>
+  <text x="62" y="419" font-size="12" fill="#475569">Authorize inside resolvers — every resolver returning an object is its own object-level decision.</text>
+  <text x="62" y="440" font-size="12" fill="#475569">Rate-limit per client identity as well as per IP, and cap payload size, page size, timeouts, and metered downstream spend.</text>
+
+  <rect x="40" y="482" width="1120" height="62" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="506" font-size="12.5" fill="#475569">Between services, mutual TLS proves <tspan font-weight="700" fill="#0f172a">which workload is calling</tspan> and nothing about whether it may act for this user — carry end-user context in a validated token.</text>
+  <text x="62" y="530" font-size="12.5" font-weight="700" fill="#9f1239">Unguessable identifiers are hardening, never the authorization check: identifiers leak through logs, referrers, exports, and share links.</text>
 </svg>

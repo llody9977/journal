@@ -26,8 +26,10 @@ last_verified: 2026-08-12
 
 The 5-level maturity scale derived from the **Capability Maturity Model Integration (CMMI)** forms the foundational architecture for domain-specific security maturity models:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/cmmi-maturity-levels.svg' | relative_url }}" alt="Five maturity levels from Initial through Managed, Defined, Quantitatively Managed, and Optimizing.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/cmmi-maturity-levels.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the cmmi maturity levels diagram at full size">
+    <img src="{{ '/assets/img/cmmi-maturity-levels.svg' | relative_url }}" alt="Five maturity levels from Initial through Managed, Defined, Quantitatively Managed, and Optimizing.">
+  </a>
   <p class="diagram-caption">Maturity moves from ad hoc practice to measured continuous improvement</p>
 </div>
 
@@ -51,8 +53,10 @@ An organization can operate at MIL3 in Incident Response while remaining at MIL1
 
 **[OWASP SAMM](https://owaspsamm.org/about/)** evaluates an engineering organization's software security practices across 5 business functions comprising 15 security practices:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/owasp-samm-functions.svg' | relative_url }}" alt="OWASP SAMM business functions: Governance, Design, Implementation, Verification, and Operations.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/owasp-samm-functions.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the owasp samm functions diagram at full size">
+    <img src="{{ '/assets/img/owasp-samm-functions.svg' | relative_url }}" alt="OWASP SAMM business functions: Governance, Design, Implementation, Verification, and Operations.">
+  </a>
   <p class="diagram-caption">SAMM covers software assurance practices across the product lifecycle</p>
 </div>
 
@@ -64,8 +68,10 @@ Building Security In Maturity Model (**[BSIMM](https://www.bsimm.com/)**) covers
 
 Unlike C2M2 or SAMM, **[CIS Implementation Groups](https://www.cisecurity.org/controls/implementation-groups)** index safeguards according to organizational resources and threat exposure:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/cis-implementation-groups.svg' | relative_url }}" alt="CIS Controls implementation groups IG1, IG2, and IG3 as cumulative safeguard baselines.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/cis-implementation-groups.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the cis implementation groups diagram at full size">
+    <img src="{{ '/assets/img/cis-implementation-groups.svg' | relative_url }}" alt="CIS Controls implementation groups IG1, IG2, and IG3 as cumulative safeguard baselines.">
+  </a>
   <p class="diagram-caption">Each implementation group builds on the safeguards below it</p>
 </div>
 

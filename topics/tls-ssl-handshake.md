@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 Unlike a **full** TLS 1.2 handshake, which required 2 round-trips (2-RTT) before transmitting encrypted application data — TLS 1.2's *abbreviated* (session-resumption) handshake could complete in 1-RTT, so "2-RTT" describes the full handshake specifically, not TLS 1.2 as a whole — **TLS 1.3** establishes an encrypted channel in just **1-RTT** for its full handshake:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/tls-handshake.svg' | relative_url }}" alt="TLS 1.3 certificate-authenticated 1-RTT sequence between a client and server, showing the ClientHello key-establishment share, ServerHello response, encrypted certificate flight, client Finished flight, and application data.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/tls-handshake.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the tls handshake diagram at full size">
+    <img src="{{ '/assets/img/tls-handshake.svg' | relative_url }}" alt="TLS 1.3 certificate-authenticated 1-RTT sequence between a client and server, showing the ClientHello key-establishment share, ServerHello response, encrypted certificate flight, client Finished flight, and application data.">
+  </a>
   <p class="diagram-caption">TLS 1.3 certificate-authenticated 1-RTT handshake: ordinary X25519 uses two Diffie-Hellman shares, while X25519MLKEM768 uses an ML-KEM encapsulation key plus X25519 share from the client and an ML-KEM ciphertext plus X25519 share from the server; optional ECH is a separate ClientHello extension</p>
 </div>
 

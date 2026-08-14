@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 PKI commonly uses a hierarchy where trusted Root CAs issue certificates to Intermediate CAs, which in turn issue leaf or end-entity certificates. Publicly trusted TLS subscriber certificates are increasingly short-lived under CA/Browser Forum policy; S/MIME, code-signing, private-PKI, and other end-entity certificate profiles can use different validity periods.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/ca-hierarchy.svg' | relative_url }}" alt="PKI Certificate Authority hierarchy showing Root CA signing Intermediate CA, which signs leaf server certificates.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/ca-hierarchy.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the ca hierarchy diagram at full size">
+    <img src="{{ '/assets/img/ca-hierarchy.svg' | relative_url }}" alt="PKI Certificate Authority hierarchy showing Root CA signing Intermediate CA, which signs leaf server certificates.">
+  </a>
   <p class="diagram-caption">PKI trust hierarchy: Root CA delegates signing authority to Intermediate CAs</p>
 </div>
 
@@ -159,15 +161,19 @@ Specified in **[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280)**, an X.509 v3
 
 Managing short-lived certificates at scale requires automated enrollment via the **Automated Certificate Management Environment (ACME / [RFC 8555](https://www.rfc-editor.org/rfc/rfc8555))** protocol:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/certificate-lifecycle.svg' | relative_url }}?v=3" alt="Automated ACME certificate lifecycle showing CSR submission, domain-control validation, CA issuance, ARI-guided renewal, and a separate best-effort emergency revocation path whose client behavior varies.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/certificate-lifecycle.svg' | relative_url }}?v=3" target="_blank" rel="noopener" aria-label="Open the certificate lifecycle diagram at full size">
+    <img src="{{ '/assets/img/certificate-lifecycle.svg' | relative_url }}?v=3" alt="Automated ACME certificate lifecycle showing CSR submission, domain-control validation, CA issuance, ARI-guided renewal, and a separate best-effort emergency revocation path whose client behavior varies.">
+  </a>
   <p class="diagram-caption">Automated ACME lifecycle: domain validation, issuance, renewal, and a layered revocation path whose coverage, freshness, and failure behavior depend on the relying party</p>
 </div>
 
 ### Certificate Lifetime Shrinkage Timeline
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/certificate-lifetime-timeline.svg' | relative_url }}" alt="Timeline showing X.509 certificate maximum lifetimes shrinking from 825 days down to 47 days.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/certificate-lifetime-timeline.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the certificate lifetime timeline diagram at full size">
+    <img src="{{ '/assets/img/certificate-lifetime-timeline.svg' | relative_url }}" alt="Timeline showing X.509 certificate maximum lifetimes shrinking from 825 days down to 47 days.">
+  </a>
   <p class="diagram-caption">Publicly-trusted TLS subscriber certificate lifetime evolution: transition from multi-year (825-day) static certificates to automated short-lived certificates, tightening from 200 days today to a 47-day maximum by March 2029</p>
 </div>
 

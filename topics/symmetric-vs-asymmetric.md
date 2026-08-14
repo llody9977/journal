@@ -28,8 +28,10 @@ last_verified: 2026-08-13
 
 Production systems rarely use asymmetric cryptography to encrypt large files or database fields directly. Instead, protocols combine asymmetric key exchange with symmetric bulk encryption in a **Hybrid Encryption** pattern:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/hybrid-public-key-encryption.svg' | relative_url }}" alt="Hybrid encryption sequence using a random symmetric DEK for data and the recipient's public key to protect that DEK.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/hybrid-public-key-encryption.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the hybrid public key encryption diagram at full size">
+    <img src="{{ '/assets/img/hybrid-public-key-encryption.svg' | relative_url }}" alt="Hybrid encryption sequence using a random symmetric DEK for data and the recipient's public key to protect that DEK.">
+  </a>
   <p class="diagram-caption">Asymmetric cryptography protects the DEK; symmetric cryptography protects the bulk payload</p>
 </div>
 

@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 **[FIPS 180-4](https://csrc.nist.gov/pubs/fips/180-4/final)** (SHA-2) and **[FIPS 202](https://csrc.nist.gov/pubs/fips/202/final)** (SHA-3) specify the algorithms themselves, not a formal taxonomy of security properties — the three properties below are the established cryptographic security properties the broader literature expects of any secure hash function, and SHA-2/SHA-3 are designed and analyzed against them. A secure cryptographic hash function **H(x)** is expected to satisfy all three:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/hash-security-properties.svg' | relative_url }}" alt="Comparison of preimage, second-preimage, and collision resistance in cryptographic hash functions.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/hash-security-properties.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the hash security properties diagram at full size">
+    <img src="{{ '/assets/img/hash-security-properties.svg' | relative_url }}" alt="Comparison of preimage, second-preimage, and collision resistance in cryptographic hash functions.">
+  </a>
   <p class="diagram-caption">The three hash properties describe different attacker search problems</p>
 </div>
 
@@ -30,8 +32,10 @@ last_verified: 2026-08-13
 
 A secure cryptographic hash exhibits strong **avalanche diffusion**: modifying a single bit in the input alters approximately 50% of the output bits in an unpredictable pattern.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/hash-avalanche.svg' | relative_url }}" alt="SHA-256 avalanche effect showing how changing a single character flips half the digest bits.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/hash-avalanche.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the hash avalanche diagram at full size">
+    <img src="{{ '/assets/img/hash-avalanche.svg' | relative_url }}" alt="SHA-256 avalanche effect showing how changing a single character flips half the digest bits.">
+  </a>
   <p class="diagram-caption">SHA-256 avalanche effect: altering one character produces an unrelated digest</p>
 </div>
 
@@ -54,8 +58,10 @@ Standardized in **[FIPS 198-1](https://csrc.nist.gov/pubs/fips/198-1/final)**, *
 
 <p><strong>HMAC(K, M)</strong> = H((K₀ ⊕ opad) &#124;&#124; H((K₀ ⊕ ipad) &#124;&#124; M))</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/hmac-flow.svg' | relative_url }}" alt="HMAC nested hash flow showing inner and outer key padding and a final tag that provides integrity and authentication by some holder of the shared key.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/hmac-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the hmac flow diagram at full size">
+    <img src="{{ '/assets/img/hmac-flow.svg' | relative_url }}" alt="HMAC nested hash flow showing inner and outer key padding and a final tag that provides integrity and authentication by some holder of the shared key.">
+  </a>
   <p class="diagram-caption">HMAC-SHA256 nested construction: inner and outer key padding produce a tag attributable to some holder of the shared key, not one unique party</p>
 </div>
 

@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 Quantum computing impacts symmetric and asymmetric primitives in fundamentally different ways:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/quantum-algorithm-impact.svg' | relative_url }}" alt="Comparison of Shor's polynomial-time break of RSA and elliptic-curve cryptography with Grover's ideal quadratic query speedup against symmetric key search and hash preimages.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/quantum-algorithm-impact.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the quantum algorithm impact diagram at full size">
+    <img src="{{ '/assets/img/quantum-algorithm-impact.svg' | relative_url }}" alt="Comparison of Shor's polynomial-time break of RSA and elliptic-curve cryptography with Grover's ideal quadratic query speedup against symmetric key search and hash preimages.">
+  </a>
   <p class="diagram-caption">Shor's algorithm changes the asymptotic security of RSA and ECC; Grover's algorithm changes ideal query exponents, while concrete symmetric-attack cost still depends on the quantum implementation and resources</p>
 </div>
 

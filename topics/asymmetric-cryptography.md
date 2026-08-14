@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 Unlike symmetric ciphers which rely on a single shared key, asymmetric cryptography generates a key pair (<b>K<sub>pub</sub></b>, <b>K<sub>priv</sub></b>) with complementary, non-interchangeable roles. For encryption/decryption and sign/verify schemes specifically, an operation performed with one key is inverted or verified by the corresponding key in the pair. Key Encapsulation Mechanisms (KEMs, e.g. ML-KEM) and key-agreement protocols (ECDH/X25519) use the pair differently: encapsulation/decapsulation and Diffie-Hellman-style agreement each compute a shared value from both parties' key material rather than one key simply inverting an operation the other key performed — the "one key locks, the other unlocks" framing describes encryption and signing, not every asymmetric operation.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Diagram showing asymmetric cryptography: encryption using public key, decryption using private key, signing using private key, verification using public key.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the asymmetric flow diagram at full size">
+    <img src="{{ '/assets/img/asymmetric-flow.svg' | relative_url }}" alt="Diagram showing asymmetric cryptography: encryption using public key, decryption using private key, signing using private key, verification using public key.">
+  </a>
   <p class="diagram-caption">Public and private keys have complementary, non-interchangeable roles</p>
 </div>
 
@@ -407,8 +409,10 @@ To achieve a given **Symmetric Security Strength** (measured in bits of brute-fo
 | **192-bit Security** (High Security) | **7,680 bits** (Sub-Exponential Spike!) | **384 bits** (P-384) | ECC key is **20x smaller** than RSA. RSA-7680 causes severe CPU overhead. |
 | **256-bit Security** (Maximum Strength) | **15,360 bits** | **521 bits** (P-521) | ECC key is **~29x smaller** than RSA. RSA-15360 is generally impractical for production TLS. |
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Comparison chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, 192-bit, and 256-bit security strengths. RSA key sizes grow sub-exponentially while ECC key sizes scale compactly.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" target="_blank" rel="noopener" aria-label="Open the key size comparison diagram at full size">
+    <img src="{{ '/assets/img/key-size-comparison.svg' | relative_url }}?v=2" alt="Comparison chart comparing RSA and ECC key sizes in bits across 112-bit, 128-bit, 192-bit, and 256-bit security strengths. RSA key sizes grow sub-exponentially while ECC key sizes scale compactly.">
+  </a>
   <p class="diagram-caption">Comparison of required RSA vs. ECC key lengths in bits across NIST security strength levels (112-bit to 256-bit security)</p>
 </div>
 

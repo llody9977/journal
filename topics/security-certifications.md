@@ -40,8 +40,10 @@ Treat these as the typical overall-level profile, not a guarantee that every one
 
 ### Evaluation Assurance Levels (EAL1 - EAL7)
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/common-criteria-eal.svg' | relative_url }}" alt="Common Criteria evaluation assurance levels EAL1 through EAL7 with progressively stronger evidence and evaluation rigor.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/common-criteria-eal.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the common criteria eal diagram at full size">
+    <img src="{{ '/assets/img/common-criteria-eal.svg' | relative_url }}" alt="Common Criteria evaluation assurance levels EAL1 through EAL7 with progressively stronger evidence and evaluation rigor.">
+  </a>
   <p class="diagram-caption">A higher EAL means more evaluation rigor, not automatic protection against every threat</p>
 </div>
 

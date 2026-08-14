@@ -20,8 +20,10 @@ last_verified: 2026-08-13
 
 A demilitarized zone (DMZ), application tier, and data tier are useful only if the allowed flows are explicit. If a public web workload may call an application service on one port, and only that service may call a database, compromise of the web workload does not directly create a permitted web-to-database path. The attacker can still abuse the allowed application path, steal a more privileged identity, exploit the enforcement plane, or find an alternate route.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/segmentation-enforcement-layers.svg' | relative_url }}" alt="Conceptual segmentation model with an internet entry zone, application zone, data zone, and management zone. Firewalls enforce the narrow flows between zones, while workload policy applies inside the application zone; telemetry observes every enforcement point.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/segmentation-enforcement-layers.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the segmentation enforcement layers diagram at full size">
+    <img src="{{ '/assets/img/segmentation-enforcement-layers.svg' | relative_url }}" alt="Conceptual segmentation model with an internet entry zone, application zone, data zone, and management zone. Firewalls enforce the narrow flows between zones, while workload policy applies inside the application zone; telemetry observes every enforcement point.">
+  </a>
   <p class="diagram-caption">Conceptual model: topology groups assets; boundary and workload policy create isolation; telemetry validates the effective paths</p>
 </div>
 

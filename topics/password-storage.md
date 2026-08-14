@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 Fast general-purpose hash functions such as SHA-256 and MD5 can be evaluated massively in parallel, making weak passwords vulnerable to rapid offline guessing. Password-hashing functions deliberately impose computational cost, while memory-hard functions such as Argon2id additionally impose substantial memory requirements.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/password-hash-comparison.svg' | relative_url }}" alt="Execution throughput comparison across SHA-256, bcrypt, scrypt, and Argon2id.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/password-hash-comparison.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the password hash comparison diagram at full size">
+    <img src="{{ '/assets/img/password-hash-comparison.svg' | relative_url }}" alt="Execution throughput comparison across SHA-256, bcrypt, scrypt, and Argon2id.">
+  </a>
   <p class="diagram-caption">Password hash comparison: Argon2id's memory hardness raises the cost of GPU/ASIC parallel cracking</p>
 </div>
 

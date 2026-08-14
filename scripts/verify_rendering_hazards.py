@@ -225,30 +225,18 @@ def main() -> int:
     print(f"Scanning {len(files)} topic files for rendering hazards...\n")
 
     failures: list[tuple[str, list[tuple[int, str, str]]]] = []
-    warnings: list[tuple[str, list[tuple[int, str, str]]]] = []
     for path in files:
         text = path.read_text(encoding="utf-8")
         findings = scan(text)
+        # Duplicate-image reuse now blocks. It was a warning while the one-image-
+        # per-frame rule was being applied one section at a time (CD-0033 →
+        # CD-0038 → CD-0049 → CD-0052 → CD-0058), because replacing a reused
+        # frame needs a purpose-built diagram whose content has been checked
+        # against the page. That rollout is complete across every section, so the
+        # condition CD-0057 recorded for promoting it has been met.
+        findings += scan_duplicate_images(text)
         if findings:
-            failures.append((path.name, findings))
-        reused = scan_duplicate_images(text)
-        if reused:
-            warnings.append((path.name, reused))
-
-    # Duplicate-image reuse is reported but does not block publishing. Replacing
-    # a reused frame needs a purpose-built diagram whose content has been checked
-    # against the page, which the register has done one section at a time
-    # (CD-0033 → CD-0038 → CD-0049 → CD-0052). Listing what remains keeps the
-    # backlog visible instead of letting each review rediscover it.
-    if warnings:
-        total = sum(len(f) for _, f in warnings)
-        print(f"⚠️  {total} reused diagram image(s) in {len(warnings)} file(s):\n")
-        for name, findings in warnings:
-            print(f"  File: topics/{name}")
-            for number, kind, excerpt in findings:
-                print(f"    - line {number}: {kind}")
-                print(f"      {excerpt}")
-        print()
+            failures.append((path.name, sorted(findings)))
 
     if failures:
         total = sum(len(f) for _, f in failures)
@@ -258,10 +246,18 @@ def main() -> int:
             for number, kind, excerpt in findings:
                 print(f"    - line {number}: {kind}")
                 print(f"      {excerpt}")
-        print(
-            "\nWrite formulas as literal text instead: Unicode operators "
-            "(×, ÷, →, ≤, ε), a code span, or a <p class=\"formula\"> block."
-        )
+        kinds = {kind for _, findings in failures for _, kind, _ in findings}
+        if any("image reused" in kind for kind in kinds):
+            print(
+                "\nGive each diagram frame its own purpose-built image, then "
+                "rewrite its caption and alt text to describe only what that "
+                "image shows."
+            )
+        if any("image reused" not in kind for kind in kinds):
+            print(
+                "\nWrite formulas as literal text instead: Unicode operators "
+                "(×, ÷, →, ≤, ε), a code span, or a <p class=\"formula\"> block."
+            )
         return 1
 
     print(f"✅ All {len(files)} topic files are free of blocking rendering hazards.")

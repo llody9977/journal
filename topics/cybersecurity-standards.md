@@ -32,8 +32,10 @@ last_verified: 2026-08-12
 
 Restructured in 2024, **[NIST CSF 2.0](https://www.nist.gov/cyberframework)** organizes cybersecurity outcomes across six core Functions:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/nist-csf-functions.svg' | relative_url }}" alt="NIST Cybersecurity Framework 2.0 functions with Govern informing Identify, Protect, Detect, Respond, and Recover.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/nist-csf-functions.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the nist csf functions diagram at full size">
+    <img src="{{ '/assets/img/nist-csf-functions.svg' | relative_url }}" alt="NIST Cybersecurity Framework 2.0 functions with Govern informing Identify, Protect, Detect, Respond, and Recover.">
+  </a>
   <p class="diagram-caption">Govern is cross-cutting; the other functions continuously exchange feedback</p>
 </div>
 
@@ -53,8 +55,10 @@ ISO 27001 and ISO 27002 operate as a certifiable pair:
 - **ISO/IEC 27001:2022**: Defines requirements for establishing, operating, and continually improving an **Information Security Management System (ISMS)**. Organizations undergo a two-stage audit by an accredited Registrar to obtain a formal 3-year certificate. ISO 27001 requires publishing a **Statement of Applicability (SoA)** selecting or excluding Annex A controls.
 - **ISO/IEC 27002:2022**: Provides implementation guidance for the 93 controls listed in Annex A across four themes: **Organizational**, **People**, **Physical**, and **Technological**.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/iso-27001-27002-relationship.svg' | relative_url }}" alt="Comparison of ISO IEC 27001 management-system requirements and ISO IEC 27002 control guidance.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/iso-27001-27002-relationship.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the iso 27001 27002 relationship diagram at full size">
+    <img src="{{ '/assets/img/iso-27001-27002-relationship.svg' | relative_url }}" alt="Comparison of ISO IEC 27001 management-system requirements and ISO IEC 27002 control guidance.">
+  </a>
   <p class="diagram-caption">ISO 27001 defines certifiable requirements; ISO 27002 explains the controls</p>
 </div>
 
@@ -62,8 +66,10 @@ ISO 27001 and ISO 27002 operate as a certifiable pair:
 
 Application security engineering relies on three distinct OWASP frameworks:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/owasp-guides-compared.svg' | relative_url }}" alt="Comparison of OWASP Top 10 for awareness, ASVS for verifiable requirements, and SAMM for software assurance maturity.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/owasp-guides-compared.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the owasp guides compared diagram at full size">
+    <img src="{{ '/assets/img/owasp-guides-compared.svg' | relative_url }}" alt="Comparison of OWASP Top 10 for awareness, ASVS for verifiable requirements, and SAMM for software assurance maturity.">
+  </a>
   <p class="diagram-caption">Choose the OWASP resource that matches the question</p>
 </div>
 

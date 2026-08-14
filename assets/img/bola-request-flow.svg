@@ -1,0 +1,82 @@
+<svg viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="bola-title bola-desc">
+  <title id="bola-title">One request through a vulnerable handler and through a fixed handler</title>
+  <desc id="bola-desc">Two request lanes compared. In the vulnerable lane a caller holding a valid token for account 101 requests account 102; the gateway validates the token, the handler loads the object by identifier, and the response returns another user's data. In the fixed lane the same request reaches a handler that loads the object, compares its owner against the authenticated subject, and returns 404 rather than 403 so the response does not disclose that the object exists. A footer notes that authentication answers who is calling while object-level authorization answers whether this caller may have this object, and that unguessable identifiers are not an authorization control.</desc>
+  <rect width="1200" height="520" fill="#ffffff"/>
+
+  <defs>
+    <marker id="bolaRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#b91c1c"/>
+    </marker>
+    <marker id="bolaTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Same token, same route, one missing comparison</text>
+  <text x="50" y="72" font-size="14" fill="#475569">User 101 holds a completely valid session and asks for account 102. Everything before the handler behaves identically in both lanes.</text>
+
+  <rect x="40" y="98" width="1120" height="164" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="62" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">VULNERABLE — AUTHENTICATION TREATED AS SUFFICIENT</text>
+
+  <rect x="62" y="138" width="228" height="104" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="82" y="162" font-size="12.5" font-weight="800" fill="#0f172a">Caller</text>
+  <text x="82" y="184" font-size="12" fill="#475569">Valid token, sub = 101</text>
+  <text x="82" y="204" font-size="12" fill="#475569">GET /api/v1/account/102</text>
+  <text x="82" y="228" font-size="12" fill="#9f1239">One character changed</text>
+
+  <rect x="342" y="138" width="228" height="104" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="362" y="162" font-size="12.5" font-weight="800" fill="#0f172a">Gateway</text>
+  <text x="362" y="184" font-size="12" fill="#475569">Signature valid</text>
+  <text x="362" y="204" font-size="12" fill="#475569">Not expired, scope present</text>
+  <text x="362" y="228" font-size="12" font-weight="700" fill="#0f766e">Passes — correctly</text>
+
+  <rect x="622" y="138" width="248" height="104" rx="11" fill="#b91c1c"/>
+  <text x="642" y="162" font-size="12.5" font-weight="800" fill="#ffffff">Handler</text>
+  <text x="642" y="184" font-size="12" fill="#fbdada">db.find_account("102")</text>
+  <text x="642" y="204" font-size="12" fill="#fbdada">returned straight to the caller</text>
+  <text x="642" y="228" font-size="12" font-weight="700" fill="#ffffff">No owner comparison</text>
+
+  <rect x="922" y="138" width="216" height="104" rx="11" fill="#ffffff" stroke="#b91c1c" stroke-width="2"/>
+  <text x="942" y="162" font-size="12.5" font-weight="800" fill="#0f172a">Response</text>
+  <text x="942" y="184" font-size="12" fill="#475569">200 OK</text>
+  <text x="942" y="204" font-size="12" font-weight="700" fill="#9f1239">Another user's account</text>
+  <text x="942" y="228" font-size="12" fill="#475569">Iterate to enumerate all</text>
+
+  <path d="M294 190 L338 190" stroke="#b91c1c" stroke-width="2.5" fill="none" marker-end="url(#bolaRed)"/>
+  <path d="M574 190 L618 190" stroke="#b91c1c" stroke-width="2.5" fill="none" marker-end="url(#bolaRed)"/>
+  <path d="M874 190 L918 190" stroke="#b91c1c" stroke-width="2.5" fill="none" marker-end="url(#bolaRed)"/>
+
+  <rect x="40" y="278" width="1120" height="164" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="302" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">FIXED — OBJECT-LEVEL AUTHORIZATION IN THE HANDLER</text>
+
+  <rect x="62" y="318" width="228" height="104" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="82" y="342" font-size="12.5" font-weight="800" fill="#0f172a">Caller</text>
+  <text x="82" y="364" font-size="12" fill="#475569">Identical request</text>
+  <text x="82" y="384" font-size="12" fill="#475569">Valid token, sub = 101</text>
+  <text x="82" y="408" font-size="12" fill="#475569">GET /api/v1/account/102</text>
+
+  <rect x="342" y="318" width="228" height="104" rx="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="362" y="342" font-size="12.5" font-weight="800" fill="#0f172a">Gateway</text>
+  <text x="362" y="364" font-size="12" fill="#475569">Same checks, same result</text>
+  <text x="362" y="384" font-size="12" fill="#475569">Authentication only</text>
+  <text x="362" y="408" font-size="12" fill="#475569">Passes through</text>
+
+  <rect x="622" y="318" width="248" height="104" rx="11" fill="#0f766e"/>
+  <text x="642" y="342" font-size="12.5" font-weight="800" fill="#ffffff">Handler</text>
+  <text x="642" y="364" font-size="12" fill="#cdeae6">Load object, then ask:</text>
+  <text x="642" y="384" font-size="12" fill="#cdeae6">may subject 101 read it?</text>
+  <text x="642" y="408" font-size="12" font-weight="700" fill="#ffffff">Missing and denied agree</text>
+
+  <rect x="922" y="318" width="216" height="104" rx="11" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+  <text x="942" y="342" font-size="12.5" font-weight="800" fill="#0f172a">Response</text>
+  <text x="942" y="364" font-size="12" font-weight="700" fill="#0f766e">404 Not Found</text>
+  <text x="942" y="384" font-size="12" fill="#475569">Not 403 — a 403 confirms</text>
+  <text x="942" y="408" font-size="12" fill="#475569">the identifier is real</text>
+
+  <path d="M294 370 L338 370" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#bolaTeal)"/>
+  <path d="M574 370 L618 370" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#bolaTeal)"/>
+  <path d="M874 370 L918 370" stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#bolaTeal)"/>
+
+  <rect x="40" y="458" width="1120" height="46" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="486" font-size="12.5" fill="#475569">Authentication answers <tspan font-weight="700" fill="#0f172a">who is calling</tspan>; object-level authorization answers <tspan font-weight="700" fill="#0f172a">whether this caller may have this object</tspan>. Unguessable IDs raise cost, they are not the check.</text>
+</svg>

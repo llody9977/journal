@@ -15,8 +15,10 @@ last_verified: 2026-08-11
 
 Full-disk encryption protects data **only while its key is evicted from memory — in practice, chiefly when the device is fully powered off**:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/full-disk-encryption-scope.svg' | relative_url }}" alt="Full-disk encryption threat scope diagram showing physical theft protection when powered off vs transparent access when unlocked.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/full-disk-encryption-scope.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the full disk encryption scope diagram at full size">
+    <img src="{{ '/assets/img/full-disk-encryption-scope.svg' | relative_url }}" alt="Full-disk encryption threat scope diagram showing physical theft protection when powered off vs transparent access when unlocked.">
+  </a>
   <p class="diagram-caption">FDE Threat Scope: protects against physical disk theft when powered off; OS transparently decrypts blocks while running</p>
 </div>
 
@@ -51,8 +53,10 @@ Everything above operates at the block-device layer: AES-XTS encrypts fixed-size
 
 To encrypt millions of database fields or S3 objects efficiently, systems implement **Envelope Encryption**:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/dek-kek.svg' | relative_url }}" alt="Envelope encryption architecture showing KMS KEK wrapping data encryption key DEK.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/dek-kek.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the dek kek diagram at full size">
+    <img src="{{ '/assets/img/dek-kek.svg' | relative_url }}" alt="Envelope encryption architecture showing KMS KEK wrapping data encryption key DEK.">
+  </a>
   <p class="diagram-caption">Envelope encryption: Key Encryption Key (KEK) in KMS wraps per-object Data Encryption Keys (DEKs)</p>
 </div>
 

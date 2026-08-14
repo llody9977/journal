@@ -11,8 +11,10 @@ last_verified: 2026-08-13
 
 <p class="lede">Digital forensics is the scientific identification, acquisition, preservation, and analysis of digital evidence following a security incident. In modern threat environments, adversaries operate in memory and leverage native OS binaries (Living off the Land). Forensic investigators must capture volatile RAM, create bit-stream disk images using physical write-blockers, construct forensic event timelines across OS and cloud artifacts, and maintain strict NIST SP 800-86 Chain of Custody standards to ensure evidence admissibility.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/digital-forensics-evidence-handling.svg' | relative_url }}" alt="Digital Forensics diagram showing Memory Forensics (Volatility), Disk Forensics (Autopsy), Artifact Analysis (Windows Registry/Prefetch, Linux journald, CloudTrail), and Chain of Custody (NIST SP 800-86).">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/digital-forensics-evidence-handling.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the digital forensics evidence handling diagram at full size">
+    <img src="{{ '/assets/img/digital-forensics-evidence-handling.svg' | relative_url }}" alt="Digital Forensics diagram showing Memory Forensics (Volatility), Disk Forensics (Autopsy), Artifact Analysis (Windows Registry/Prefetch, Linux journald, CloudTrail), and Chain of Custody (NIST SP 800-86).">
+  </a>
   <p class="diagram-caption">Digital Forensics Architecture: Order of Volatility Memory Acquisition &leftrightarrow; OS/Cloud Artifact Timeline Analysis &leftrightarrow; Cryptographic Chain of Custody</p>
 </div>
 

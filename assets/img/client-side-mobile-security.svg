@@ -1,38 +1,42 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">Client-Side &amp; Mobile Security Architecture</title>
-  <desc id="description">Client-Side and Mobile Security diagram showing SOP, CORS, CSP, Subresource Integrity (SRI), and iOS/Android sandboxing (MASVS).</desc>
-  <rect width="1200" height="500" fill="#ffffff"/>
-  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Client-Side &amp; Mobile Security</text>
-  <text x="50" y="75" font-size="14" fill="#475569">Browser isolation (SOP, CORS, CSP, SRI) and Mobile Application Security (iOS/Android sandboxing &amp; MASVS).</text>
-  
-  <!-- Browser Security (x=40, w=540, y=105, h=160) -->
-  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">BROWSER ISOLATION &amp; CONTENT CONTROLS</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">SOP, CORS, CSP, &amp; Subresource Integrity</text>
-  <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Same-Origin Policy (SOP): Restricts script access across different scheme/host/port origins</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• CORS: Explicit HTTP headers (`Access-Control-Allow-Origin`) relaxing SOP safely</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• CSP &amp; SRI: Restricts inline script execution &amp; verifies CDN script SHA-384 hashes</text>
+<svg viewBox="0 0 1200 570" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="csm-title csm-desc">
+  <title id="csm-title">Browser and mobile boundaries, and where each one stops</title>
+  <desc id="csm-desc">Three panels. Browser isolation: the same-origin policy as the default boundary, CORS as the server-controlled relaxation of it, and CSP with SRI as added constraints on what may execute. Mobile platform isolation: Android per-app UIDs with SELinux, the iOS sandbox where all third-party apps run as the user mobile, and key storage in the Android Keystore backed by a TEE or StrongBox and in the iOS Keychain with keys protected by the Secure Enclave rather than stored inside it. Client-side hardening: response headers, never storing session tokens in localStorage, and reverse-engineering defenses that raise cost without being a boundary.</desc>
+  <rect width="1200" height="570" fill="#ffffff"/>
 
-  <!-- Mobile Security (x=620, w=540, y=105, h=160) -->
-  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">MOBILE SECURITY ARCHITECTURE (MASVS)</text>
-  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">iOS Keychain &amp; Android Keystore Isolation</text>
-  <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Application Sandboxing: Isolated UID &amp; file system permissions per installed app</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Secure Hardware Enclave: iOS Keychain / Android Keystore backed by hardware TPM</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Certificate Pinning: Enforcing hardcoded TLS cert public key hashes inside mobile apps</text>
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">The client enforces boundaries it does not own</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The browser and the mobile OS provide the boundaries. The application configures them — and nothing the client checks is a security decision.</text>
 
-  <!-- Defensive Controls (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">CLIENT-SIDE HARDENING &amp; ANTI-REVERSE ENGINEERING</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Security Headers &amp; Binary Protection</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Security Headers: Strict-Transport-Security (HSTS), X-Frame-Options (DENY), X-Content-Type-Options</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Mobile Binary Protection: Root/Jailbreak detection, code obfuscation (DexGuard/ProGuard), &amp; anti-debugging</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Local Data Protection: Never store sensitive session tokens in browser LocalStorage; use HttpOnly Secure cookies</text>
+  <rect x="40" y="96" width="550" height="204" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#2563eb">BROWSER — THE ORIGIN MODEL</text>
+  <text x="62" y="144" font-size="13" font-weight="800" fill="#0f172a">Scheme, host, and port define the boundary</text>
+  <line x1="62" y1="156" x2="568" y2="156" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="178" font-size="12" fill="#475569">SOP restricts <tspan font-weight="700" fill="#0f172a">reading</tspan> across origins, not sending — which is</text>
+  <text x="62" y="197" font-size="12" fill="#475569">exactly why CSRF exists as a separate class.</text>
+  <text x="62" y="218" font-size="12" fill="#475569">CORS is the server opting in to being readable by a named origin.</text>
+  <text x="62" y="239" font-size="12" fill="#475569">CSP constrains what may execute; SRI pins third-party files.</text>
+  <text x="62" y="260" font-size="12" fill="#475569">COOP, COEP, and CORP isolate the browsing context.</text>
+  <text x="62" y="286" font-size="12" font-weight="700" fill="#9f1239">Reflecting the Origin header with credentials allowed trusts everyone.</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">CLIENT SECURITY: HTTPONLY SECURE COOKIES → CSP HEADER ENFORCEMENT → SRI SCRIPT INTEGRITY → HARDWARE KEYCHAIN STORAGE</text>
+  <rect x="610" y="96" width="550" height="204" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="632" y="120" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">MOBILE — TWO DIFFERENT ISOLATION MODELS</text>
+  <text x="632" y="144" font-size="13" font-weight="800" fill="#0f172a">Same guarantee, different mechanism</text>
+  <line x1="632" y1="156" x2="1138" y2="156" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="632" y="178" font-size="12" fill="#475569"><tspan font-weight="700" fill="#0f172a">Android</tspan> — a distinct Linux UID per app, enforced by the kernel, plus</text>
+  <text x="632" y="197" font-size="12" fill="#475569">a per-app SELinux domain since Android 9 for API 28 and above.</text>
+  <text x="632" y="218" font-size="12" fill="#475569"><tspan font-weight="700" fill="#0f172a">iOS</tspan> — no per-app UID. All third-party apps run as the user</text>
+  <text x="632" y="237" font-size="12" fill="#475569">mobile, isolated by a mandatory sandbox profile and a randomly</text>
+  <text x="632" y="256" font-size="12" fill="#475569">assigned home directory, on a read-only system partition.</text>
+  <text x="632" y="286" font-size="12" font-weight="700" fill="#9f1239">Neither platform uses a TPM — that is a PC-platform specification.</text>
+
+  <rect x="40" y="320" width="1120" height="146" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="62" y="344" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">KEY STORAGE — THE PROPERTY WORTH WANTING IS A NON-EXPORTABLE KEY</text>
+  <line x1="62" y1="356" x2="1138" y2="356" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="380" font-size="12" fill="#475569"><tspan font-weight="700" fill="#0f172a">Android Keystore</tspan> — keys generated and used inside a TEE, or inside StrongBox, which requires its own CPU, secure storage,</text>
+  <text x="62" y="399" font-size="12" fill="#475569">a true random number generator, a secure timer, and tamper resistance. StrongBox is slower and supports fewer algorithms.</text>
+  <text x="62" y="424" font-size="12" fill="#475569"><tspan font-weight="700" fill="#0f172a">iOS Keychain</tspan> — an encrypted SQLite database on the file system. Per-item secret keys require a round trip through the Secure</text>
+  <text x="62" y="443" font-size="12" fill="#475569">Enclave; the keychain is protected by the Secure Enclave rather than stored inside it. Keys can also be generated in the Enclave.</text>
+
+  <rect x="40" y="484" width="1120" height="66" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="508" font-size="12.5" fill="#475569">Never store a session token in <tspan font-weight="700" fill="#0f172a">localStorage</tspan> — any script in the origin reads it, so one XSS is total theft. An HttpOnly cookie is unreadable by script.</text>
+  <text x="62" y="534" font-size="12.5" font-weight="700" fill="#9f1239">Root and jailbreak detection, anti-debugging, and obfuscation raise cost. They are not a boundary — re-decide everything on the server.</text>
 </svg>

@@ -53,11 +53,13 @@ PKCS #11 exposes key-object attributes that a conforming token uses to control A
 
 Envelope encryption uses a short-lived or narrowly scoped **data-encryption key (DEK)** for the payload and a **key-encryption key (KEK)** to wrap the DEK. This pattern keeps bulk cryptography local to the workload and limits the KMS or HSM operation to a small key object.
 
-<div class="diagram-frame">
-  <picture>
-    <source media="(max-width: 600px)" srcset="{{ '/assets/img/envelope-encryption-mobile.svg' | relative_url }}">
-    <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Conceptual envelope-encryption flow: a KEK in a cryptographic protection boundary wraps a DEK used in workload memory, while persistent storage retains the payload ciphertext and wrapped-DEK metadata.">
-  </picture>
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the envelope encryption diagram at full size">
+    <picture>
+      <source media="(max-width: 600px)" srcset="{{ '/assets/img/envelope-encryption-mobile.svg' | relative_url }}">
+      <img src="{{ '/assets/img/envelope-encryption.svg' | relative_url }}" alt="Conceptual envelope-encryption flow: a KEK in a cryptographic protection boundary wraps a DEK used in workload memory, while persistent storage retains the payload ciphertext and wrapped-DEK metadata.">
+    </picture>
+  </a>
   <p class="diagram-caption">A KMS coordinates the KEK's use, but the KEK itself lives in a separate cryptographic protection boundary — an HSM, a software module, or an external key service, as described above — not the KMS as a whole.</p>
 </div>
 

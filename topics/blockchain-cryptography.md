@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 Distributed ledgers compose cryptographic primitives across three core layers, with more advanced zero-knowledge techniques building on top of them (covered separately in section 4 below):
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/blockchain-cryptography-layers.svg' | relative_url }}" alt="Blockchain cryptography layers: Hash chains, Merkle trees, and digital signatures.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/blockchain-cryptography-layers.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the blockchain cryptography layers diagram at full size">
+    <img src="{{ '/assets/img/blockchain-cryptography-layers.svg' | relative_url }}" alt="Blockchain cryptography layers: Hash chains, Merkle trees, and digital signatures.">
+  </a>
   <p class="diagram-caption">Blockchain Cryptography Layering: hash chains make tampering evident; Merkle trees enable light client proofs; signatures authorize state transitions</p>
 </div>
 

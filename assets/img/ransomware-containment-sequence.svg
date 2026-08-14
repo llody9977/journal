@@ -1,0 +1,68 @@
+<svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="rcs-title rcs-desc">
+  <title id="rcs-title">Automated ransomware containment sequence and the order it depends on</title>
+  <desc id="rcs-desc">Four ordered steps run left to right: capture volatile memory before anything changes host state, isolate the host at the endpoint agent to stop lateral movement while keeping the agent reachable, revoke the identity by disabling the account and invalidating its active tokens and Kerberos tickets, then contain the subnet with microsegmentation rules cutting the affected segment off from storage tiers. Each step carries the trade-off it makes. A footer states that ordering matters because pulling power destroys memory evidence and encryption keys, that network isolation is not the same as powering off, and that a token stays valid until it is revoked or expires so disabling the account alone is not containment.</desc>
+  <rect width="1200" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="rcsArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Containment sequence, and why the order is the control</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Each step trades evidence, availability, or attacker warning against speed. Running them in the wrong order destroys the option you needed.</text>
+
+  <rect x="40" y="98" width="268" height="216" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="60" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b45309">1 — CAPTURE VOLATILE STATE</text>
+  <text x="60" y="148" font-size="12.5" font-weight="800" fill="#0f172a">Memory first, if at all</text>
+  <line x1="60" y1="160" x2="288" y2="160" stroke="#b45309" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="60" y="182" font-size="12" fill="#475569">Live RAM capture and a volume</text>
+  <text x="60" y="201" font-size="12" fill="#475569">snapshot before host state changes.</text>
+  <text x="60" y="228" font-size="12" font-weight="700" fill="#0f172a">Trade-off</text>
+  <text x="60" y="247" font-size="12" fill="#475569">Every second spent here is a second</text>
+  <text x="60" y="266" font-size="12" fill="#475569">of continued encryption. Sometimes</text>
+  <text x="60" y="285" font-size="12" fill="#475569">the right call is to skip it.</text>
+
+  <rect x="330" y="98" width="268" height="216" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="350" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">2 — ISOLATE THE HOST</text>
+  <text x="350" y="148" font-size="12.5" font-weight="800" fill="#0f172a">Endpoint agent, not power off</text>
+  <line x1="350" y1="160" x2="578" y2="160" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="350" y="182" font-size="12" fill="#475569">EDR network isolation cuts SMB and</text>
+  <text x="350" y="201" font-size="12" fill="#475569">RDP while keeping the agent channel</text>
+  <text x="350" y="220" font-size="12" fill="#475569">reachable for investigation.</text>
+  <text x="350" y="247" font-size="12" font-weight="700" fill="#0f172a">Trade-off</text>
+  <text x="350" y="266" font-size="12" fill="#475569">Tells the operator they are detected.</text>
+  <text x="350" y="285" font-size="12" fill="#475569">Powering off destroys memory.</text>
+
+  <rect x="620" y="98" width="268" height="216" rx="12" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="640" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#b91c1c">3 — REVOKE THE IDENTITY</text>
+  <text x="640" y="148" font-size="12.5" font-weight="800" fill="#0f172a">Disable is not enough</text>
+  <line x1="640" y1="160" x2="868" y2="160" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="640" y="182" font-size="12" fill="#475569">Disable the account, then explicitly</text>
+  <text x="640" y="201" font-size="12" fill="#475569">invalidate refresh and access tokens</text>
+  <text x="640" y="220" font-size="12" fill="#475569">and existing Kerberos tickets.</text>
+  <text x="640" y="247" font-size="12" font-weight="700" fill="#9f1239">Trade-off</text>
+  <text x="640" y="266" font-size="12" font-weight="700" fill="#9f1239">An issued token stays valid until it is</text>
+  <text x="640" y="285" font-size="12" font-weight="700" fill="#9f1239">revoked or expires.</text>
+
+  <rect x="910" y="98" width="250" height="216" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="930" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">4 — CONTAIN THE SEGMENT</text>
+  <text x="930" y="148" font-size="12.5" font-weight="800" fill="#0f172a">Cut the path to storage</text>
+  <line x1="930" y1="160" x2="1140" y2="160" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="930" y="182" font-size="12" fill="#475569">Microsegmentation rules isolate the</text>
+  <text x="930" y="201" font-size="12" fill="#475569">affected VLAN or subnet from</text>
+  <text x="930" y="220" font-size="12" fill="#475569">production storage and backups.</text>
+  <text x="930" y="247" font-size="12" font-weight="700" fill="#0f172a">Trade-off</text>
+  <text x="930" y="266" font-size="12" fill="#475569">Takes healthy workloads on that</text>
+  <text x="930" y="285" font-size="12" fill="#475569">segment offline with it.</text>
+
+  <path d="M312 206 L326 206" stroke="#b45309" stroke-width="2.5" fill="none" marker-end="url(#rcsArrow)"/>
+  <path d="M602 206 L616 206" stroke="#b45309" stroke-width="2.5" fill="none" marker-end="url(#rcsArrow)"/>
+  <path d="M892 206 L906 206" stroke="#b45309" stroke-width="2.5" fill="none" marker-end="url(#rcsArrow)"/>
+
+  <rect x="40" y="336" width="1120" height="118" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="360" font-size="12.5" font-weight="700" fill="#0f172a">What automation is actually for here</text>
+  <text x="62" y="384" font-size="12.5" fill="#475569">Steps 2, 3, and 4 are API calls that a human executes through a ticket queue. Automating them removes the queue, not the decision — which is why</text>
+  <text x="62" y="404" font-size="12.5" fill="#475569">a containment playbook needs an explicit trigger condition and an approval boundary above it.</text>
+  <text x="62" y="432" font-size="12.5" font-weight="700" fill="#9f1239">Automated isolation acting on a false positive is an outage the playbook caused. Scope the auto-execute path to high-confidence detections.</text>
+</svg>

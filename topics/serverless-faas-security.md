@@ -11,8 +11,10 @@ last_verified: 2026-08-13
 
 <p class="lede">Serverless computing and Function-as-a-Service (FaaS)—such as AWS Lambda, Google Cloud Functions, and Azure Functions—abstract away underlying server management. However, serverless architectures shift security challenges to application event triggers, ephemeral container reuse, granular IAM role scoping, and financial Denial of Wallet (DoW) risks. Securing serverless applications requires enforcing single-purpose IAM execution roles, validating all event source inputs, and protecting temporary `/tmp` storage.</p>
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/serverless-faas-security.svg' | relative_url }}" alt="Serverless Security diagram showing AWS Lambda cold start execution containers, IAM role scoping, event source mapping validation, and Secrets Manager integration.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/serverless-faas-security.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the serverless faas security diagram at full size">
+    <img src="{{ '/assets/img/serverless-faas-security.svg' | relative_url }}" alt="Serverless Security diagram showing AWS Lambda cold start execution containers, IAM role scoping, event source mapping validation, and Secrets Manager integration.">
+  </a>
   <p class="diagram-caption">Serverless Architecture: Ephemeral MicroVM Container Execution &leftrightarrow; Per-Function IAM Role Scoping &leftrightarrow; Concurrency &amp; Timeout Caps</p>
 </div>
 

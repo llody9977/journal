@@ -15,8 +15,10 @@ last_verified: 2026-08-13
 
 Symmetric encryption transforms readable plaintext into unreadable ciphertext using a secret key **K**. The identical key **K** is required to decrypt the ciphertext back into plaintext.
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" alt="Diagram showing symmetric encryption: sender encrypts plaintext into ciphertext using secret key K, receiver decrypts back into plaintext using secret key K.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the symmetric flow diagram at full size">
+    <img src="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" alt="Diagram showing symmetric encryption: sender encrypts plaintext into ciphertext using secret key K, receiver decrypts back into plaintext using secret key K.">
+  </a>
   <p class="diagram-caption">AES-256-GCM authenticated encryption workflow: CSPRNG key generation, AEAD tag generation, and tamper rejection</p>
 </div>
 
@@ -45,8 +47,10 @@ Symmetric ciphers operate under two distinct mathematical paradigms:
 
 Standardized by NIST in **[FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)**, the **Advanced Encryption Standard (AES)** encrypts 128-bit (16-byte) plaintext blocks by loading data into a 4×4 byte state matrix **S** and processing it through repeated transformation rounds:
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/aes-round-operations.svg' | relative_url }}" alt="AES encryption sequence showing an initial AddRoundKey, repeated main rounds containing SubBytes, ShiftRows, MixColumns, and AddRoundKey, and a final round that omits MixColumns.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/aes-round-operations.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the aes round operations diagram at full size">
+    <img src="{{ '/assets/img/aes-round-operations.svg' | relative_url }}" alt="AES encryption sequence showing an initial AddRoundKey, repeated main rounds containing SubBytes, ShiftRows, MixColumns, and AddRoundKey, and a final round that omits MixColumns.">
+  </a>
   <p class="diagram-caption">AES encryption sequence: initial key addition, N−1 complete transformation rounds, then a final round without MixColumns</p>
 </div>
 
@@ -94,8 +98,10 @@ AES alone only encrypts a single 128-bit block. Modes of operation chain multipl
 | **ECB (Electronic Codebook)** | Encrypts each block independently | **CRITICAL FAILURE FOR GENERAL DATA**: Identical plaintext blocks produce identical ciphertext blocks, leaking structural patterns whenever a payload spans more than one block with repeating or predictable content — the overwhelmingly common case. | **AVOID FOR GENERAL-PURPOSE ENCRYPTION**: Do not use ECB to encrypt structured, multi-block, or patterned data; prefer AES-GCM or AES-GCM-SIV. Narrow exceptions exist in specialist constructions (e.g., single-block encryption of already-random/high-entropy values, certain key-wrapping schemes), but these are not general-purpose use and should not be treated as license to use ECB elsewhere. |
 | **GCM (Galois/Counter Mode)** | CTR encryption + GHASH Galois authentication tag | **RECOMMENDED AEAD**: Provides confidentiality, integrity, and authenticity in one pass. | AES-128-GCM is TLS 1.3's mandatory-to-implement cipher suite ([RFC 9846 §9.1](https://www.rfc-editor.org/rfc/rfc9846.html#section-9.1)) and AES-256-GCM is commonly negotiated alongside it — but TLS 1.3 also defines ChaCha20-Poly1305 and AES-CCM suites, so "GCM" isn't the protocol's single fixed default. Standard choice for cloud database encryption. Widely supported and commonly negotiated in SSH ([RFC 5647](https://www.rfc-editor.org/rfc/rfc5647)), but not universally SSH's default — e.g., OpenSSH's own default cipher preference list places `chacha20-poly1305@openssh.com` ahead of the AES-GCM variants, and the effective default varies by implementation, version, and negotiated order. |
 
-<div class="diagram-frame">
-  <img src="{{ '/assets/img/ecb-pattern-leak.svg' | relative_url }}" alt="ECB pattern leak comparison showing how ECB mode leaks image structure while CTR/GCM output appears completely random.">
+<div class="diagram-frame diagram-frame-openable">
+  <a class="diagram-open-link" href="{{ '/assets/img/ecb-pattern-leak.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the ecb pattern leak diagram at full size">
+    <img src="{{ '/assets/img/ecb-pattern-leak.svg' | relative_url }}" alt="ECB pattern leak comparison showing how ECB mode leaks image structure while CTR/GCM output appears completely random.">
+  </a>
   <p class="diagram-caption">ECB mode pattern leak vs CTR/GCM randomized output</p>
 </div>
 
