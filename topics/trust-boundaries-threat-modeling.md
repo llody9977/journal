@@ -2,7 +2,7 @@
 title: Trust Boundaries & Threat Modeling
 description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question), and a practical 4-stage execution workflow.
 permalink: /topics/trust-boundaries-threat-modeling/
-last_verified: 2026-08-13
+last_verified: 2026-08-14
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -49,11 +49,11 @@ Engineering teams select threat modeling frameworks based on system complexity, 
 
 | Threat Modeling Framework | Focus Area &amp; Philosophy | Core Execution Mechanism | Primary Engineering Applicability |
 |---|---|---|---|
-| **[OCTAVE (Carnegie Mellon SEI)](https://resources.sei.cmu.edu/library/asset-view.cfm?assetid=13473)** | Primarily an organizational risk-assessment approach—evaluating operational risk across assets, people, and processes—rather than a system-level threat-modeling method like STRIDE; it operates at a different altitude than the DFD/component-level methods in this table. | Self-directed workshops identifying operational assets, organizational threats, and defense posture. | Enterprise-wide risk audits and organizational asset governance, typically paired with a system-level method (e.g., STRIDE) for individual architectures. |
+| **[OCTAVE (Carnegie Mellon SEI)](https://www.sei.cmu.edu/library/operationally-critical-threat-asset-and-vulnerability-evaluation-octave-framework-version-10/)** | Primarily an organizational risk-assessment approach—evaluating operational risk across assets, people, and processes—rather than a system-level threat-modeling method like STRIDE; it operates at a different altitude than the DFD/component-level methods in this table. | Self-directed workshops identifying operational assets, organizational threats, and defense posture. | Enterprise-wide risk audits and organizational asset governance, typically paired with a system-level method (e.g., STRIDE) for individual architectures. |
 | **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** | Broadly applicable meta-process for driving continuous threat modeling iterations across any architecture. | Iterates: 1. *What are we working on?* 2. *What can go wrong?* 3. *What are we doing about it?* 4. *Did we do a good job?* | Agile software engineering, sprint-level threat modeling, and team design reviews. |
-| **[PASTA (Risk-Centric)](https://versprite.com/security-offerings/appsec/pasta-threat-modeling/)** | **Process for Attack Simulation and Threat Analysis**; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and a risk scoring stage (commonly a simplified `Likelihood × Impact` model). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
+| **[PASTA (Risk-Centric)](https://versprite.com/cybersecurity-listings/devsecops/pasta-threat-modeling/)** | **Process for Attack Simulation and Threat Analysis**; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and a risk scoring stage (commonly a simplified `Likelihood × Impact` model). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
 | **STRIDE (Microsoft)** | Developer-centric threat taxonomy categorizing 6 threat types (*Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation*). | Maps specific STRIDE categories to each component in a Data Flow Diagram (DFD). | Application security, microservices, API route design, and code-level threat modeling. |
-| **[VAST (Agile / Scalable)](https://threatmodeler.com/innovation-lab/vast/)** | **Visual, Agile, and Simple Threat modeling**; divides into Application Threat Models and Operational Threat Models. | Uses automated storyboarding and integration directly into DevOps / CI/CD pipelines. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
+| **[VAST (Agile / Scalable)](https://www.threatmodeler.ai/innovation-lab/vast)** | **Visual, Agile, and Simple Threat modeling**; a vendor-originated methodology (ThreatModeler) with no open published specification, so its scope is defined by vendor documentation rather than a standard. | Automates repetitive evaluation steps and integrates with Agile DevOps tooling in the development pipeline. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
 
 ## A Practical 4-Stage Threat Modeling Workflow
 
