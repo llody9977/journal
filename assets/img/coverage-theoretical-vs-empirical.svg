@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 350" width="100%" height="100%" role="img" aria-labelledby="cte-title cte-desc">
+  <title id="cte-title">Theoretical ATT&amp;CK mapping versus empirical measured coverage</title>
+  <desc id="cte-desc">Two panels compared. Theoretical mapping is sourced from vendor documentation and static rule tags and is blind to pipeline outages, broken parsers, EDR exclusions, and un-tuned filters. Empirical coverage is sourced from executed atomic tests and verified alerts; it closes those gaps but remains blind to agent-only execution paths, benign-payload telemetry divergence, and test-versus-production drift.</desc>
+  <rect width="1140" height="350" fill="#ffffff"/>
+  <style>
+    .hd { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 900; letter-spacing: 1px; }
+    .ttl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 14px; font-weight: 800; fill: #0f172a; }
+    .li { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 12px; fill: #475569; }
+    .note { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 12px; fill: #0f172a; font-weight: 700; text-anchor: middle; }
+  </style>
+
+  <text x="40" y="34" class="ttl" font-size="17">Theoretical mapping vs. empirical measured coverage</text>
+
+  <!-- Theoretical -->
+  <rect x="40" y="56" width="500" height="200" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="62" y="83" class="hd" fill="#b91c1c">THEORETICAL MAPPING</text>
+  <text x="62" y="106" class="ttl">Asserted from documentation</text>
+  <line x1="62" y1="118" x2="518" y2="118" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="62" y="140" class="li">&#8226; Source: vendor documentation &amp; static rule tags</text>
+  <text x="62" y="162" class="li">&#8226; Establishes only that a rule is claimed to exist</text>
+  <text x="62" y="184" class="li">&#8226; Blind to: ingestion outages, broken parsers,</text>
+  <text x="72" y="204" class="li">EDR exclusions, un-tuned suppression filters</text>
+  <text x="62" y="232" class="li">&#8226; Refreshed by: static documentation review</text>
+
+  <!-- Empirical -->
+  <rect x="600" y="56" width="500" height="200" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="622" y="83" class="hd" fill="#0f766e">EMPIRICAL MEASURED COVERAGE</text>
+  <text x="622" y="106" class="ttl">Demonstrated by execution</text>
+  <line x1="622" y1="118" x2="1078" y2="118" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="622" y="140" class="li">&#8226; Source: executed atomic tests &amp; verified alerts</text>
+  <text x="622" y="162" class="li">&#8226; Establishes that the alert actually fired, when</text>
+  <text x="622" y="184" class="li">&#8226; Still blind to: agent-only execution paths,</text>
+  <text x="632" y="204" class="li">benign-payload divergence, test-vs-prod drift</text>
+  <text x="622" y="232" class="li">&#8226; Refreshed by: scheduled CI/CD execution runs</text>
+
+  <!-- Gap arrow -->
+  <line x1="546" y1="156" x2="588" y2="156" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="588,150 600,156 588,162" fill="#334155"/>
+  <text x="573" y="186" class="note" font-size="11">testing</text>
+  <text x="573" y="200" class="note" font-size="11">closes</text>
+  <text x="573" y="214" class="note" font-size="11">the gap</text>
+
+  <rect x="40" y="278" width="1060" height="44" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="570" y="298" class="note">Execution reduces unverified assumptions &#8212; it does not eliminate them.</text>
+  <text x="570" y="314" class="li" text-anchor="middle">A passing atomic proves that one payload, on one host build, produced one alert on the day it ran.</text>
+</svg>

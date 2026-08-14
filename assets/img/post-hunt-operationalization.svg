@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 180" width="100%" height="100%" role="img" aria-labelledby="pho-title pho-desc">
+  <title id="pho-title">Post-hunt operationalization feedback loop</title>
+  <desc id="pho-desc">A completed hunt feeds host remediation, then a durable Sigma detection rule, then a published hunt playbook. The playbook feeds back into the next hunt, closing the loop.</desc>
+  <rect width="1020" height="180" fill="#ffffff"/>
+  <style>
+    .stage { fill: #dbeafe; stroke: #1d4ed8; stroke-width: 2; }
+    .st { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; fill: #0f172a; text-anchor: middle; font-weight: 600; }
+    .sub { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; fill: #64748b; text-anchor: middle; }
+    .arrow { stroke: #1d4ed8; stroke-width: 2; }
+    .arrowhead { fill: #1d4ed8; }
+    .loop { stroke: #1d4ed8; stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+    .looptext { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; fill: #1d4ed8; text-anchor: middle; font-weight: 600; }
+  </style>
+
+  <rect x="50" y="26" width="200" height="50" rx="6" class="stage"/>
+  <text x="150" y="49" class="st">Conduct Hunt</text>
+  <text x="150" y="65" class="sub">(query &amp; validate)</text>
+
+  <rect x="290" y="26" width="200" height="50" rx="6" class="stage"/>
+  <text x="390" y="49" class="st">Remediate Host</text>
+  <text x="390" y="65" class="sub">(contain &amp; evict)</text>
+
+  <rect x="530" y="26" width="200" height="50" rx="6" class="stage"/>
+  <text x="630" y="49" class="st">Write Sigma Rule</text>
+  <text x="630" y="65" class="sub">(automate the catch)</text>
+
+  <rect x="770" y="26" width="200" height="50" rx="6" class="stage"/>
+  <text x="870" y="49" class="st">Update Playbook</text>
+  <text x="870" y="65" class="sub">(publish &amp; log gaps)</text>
+
+  <line x1="254" y1="51" x2="282" y2="51" class="arrow"/><polygon points="282,47 290,51 282,55" class="arrowhead"/>
+  <line x1="494" y1="51" x2="522" y2="51" class="arrow"/><polygon points="522,47 530,51 522,55" class="arrowhead"/>
+  <line x1="734" y1="51" x2="762" y2="51" class="arrow"/><polygon points="762,47 770,51 762,55" class="arrowhead"/>
+
+  <path d="M870 80 L870 128 L150 128 L150 84" class="loop"/>
+  <polygon points="146,84 154,84 150,76" class="arrowhead"/>
+  <text x="510" y="148" class="looptext">the published playbook and logged telemetry gaps scope the next hunt</text>
+</svg>

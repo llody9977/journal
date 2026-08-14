@@ -15,8 +15,8 @@ last_verified: 2026-08-12
 
 | Certification Standard | Governing Body | Evaluated Subject | Assurance Levels | Target Domain |
 |---|---|---|---|---|
-| **FIPS 140-3** | NIST / CCCS (CMVP) | Cryptographic module design, key storage, & physical security | Level 1 (Lowest) $\rightarrow$ Level 4 (Highest) | US/Canadian Federal procurement & global baseline |
-| **Common Criteria (ISO/IEC 15408)** | International Mutual Recognition (CCRA) / NIAP | IT product against a Security Target (ST) & Protection Profile (PP) | EAL1 (Tested) $\rightarrow$ EAL7 (Formally Verified) | International government, defense & national security systems |
+| **FIPS 140-3** | NIST / CCCS (CMVP) | Cryptographic module design, key storage, & physical security | Level 1 (Lowest) &rarr; Level 4 (Highest) | US/Canadian Federal procurement & global baseline |
+| **Common Criteria (ISO/IEC 15408)** | International Mutual Recognition (CCRA) / NIAP | IT product against a Security Target (ST) & Protection Profile (PP) | EAL1 (Tested) &rarr; EAL7 (Formally Verified) | International government, defense & national security systems |
 | **PCI PTS HSM** | PCI Security Standards Council (PCI SSC) | Full hardware lifecycle & payment PIN cryptography | Pass/Fail against Payment Hardware Requirements | Payment card networks, acquirers & financial switches |
 | **EN 419 221-5** | CEN / ENISA (eIDAS) | Trust Service Provider (TSP) cryptographic module | Qualified Signature Creation Device (QSCD) | European Union eIDAS Trust Services & Digital ID |
 

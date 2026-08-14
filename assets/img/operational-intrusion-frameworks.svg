@@ -30,7 +30,7 @@
   <text x="825" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">MITRE ATT&amp;CK ENTERPRISE MATRIX</text>
   <text x="825" y="155" font-size="14" font-weight="800" fill="#0f172a">Adversary TTP Knowledge Base</text>
   <line x1="825" y1="166" x2="1140" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="825" y="186" font-size="11.5" font-weight="500" fill="#475569">• 14 Tactics (Reconnaissance → Impact)</text>
+  <text x="825" y="186" font-size="11.5" font-weight="500" fill="#475569">• 15 Tactics, Reconnaissance → Impact (ATT&amp;CK v19)</text>
   <text x="825" y="204" font-size="11.5" font-weight="500" fill="#475569">• Techniques &amp; Sub-techniques (Methods)</text>
   <text x="825" y="222" font-size="11.5" font-weight="500" fill="#475569">• Procedures (Actor Execution / Payloads)</text>
   <text x="825" y="240" font-size="11.5" font-weight="500" fill="#475569">• Platforms: Enterprise, Mobile, ICS</text>

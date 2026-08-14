@@ -22,7 +22,7 @@ Traditional software security relies on strict boundary isolation between code i
 
 | Security Dimension | Traditional Software Systems | AI &amp; LLM Systems |
 |---|---|---|
-| **Execution Model** | Deterministic compiled logic ($f(x) \rightarrow y$). | Probabilistic token inference ($\mathbb{P}(w_t \mid w_{<t})$). |
+| **Execution Model** | Deterministic compiled logic (`f(x) -> y`). | Probabilistic token inference (`P(next token | preceding tokens)`). |
 | **Instruction/Data Boundary** | Strict separation (e.g. Parameterized SQL queries). | Undifferentiated context window (System prompt, RAG data, and user text share token space). |
 | **Vulnerability Class** | Code injection, buffer overflows, broken access control. | Prompt injection, model poisoning, excessive agency, hallucination exploitation. |
 | **Threat Actor Goal** | Remote Code Execution (RCE), SQL exfiltration. | Guardrail bypass, model weight theft, agent hijacking, data exfiltration via RAG. |

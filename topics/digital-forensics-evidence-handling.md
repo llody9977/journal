@@ -20,7 +20,7 @@ last_verified: 2026-08-13
 
 When responding to an active breach, evidence acquisition must follow the RFC 3227 **Order of Volatility**—capturing the most transient data before it is lost or overwritten:
 
-$$\text{Order of Volatility}: \text{RAM / Cache} \longrightarrow \text{Network Connections} \longrightarrow \text{Disk Storage} \longrightarrow \text{Archival Backups}$$
+<p class="formula"><strong>Order of volatility:</strong> RAM / cache &rarr; network connections &rarr; disk storage &rarr; archival backups</p>
 
 1. **Volatile Memory (RAM) Acquisition**: Capture live memory (*using WinPmem, LiME, or FTK Imager*) prior to powering down or rebooting the host machine. Memory dumps preserve unencrypted symmetric keys, running process structures, injected DLLs, and active network connections.
 2. **Disk Imaging**: Create bit-stream raw (`.dd`) or Expert Witness Format (`.E01`) forensic images using hardware write-blockers to prevent modifying source evidence.
@@ -43,7 +43,7 @@ Forensic investigators reconstruct adversary activity by analyzing key operating
 To ensure forensic evidence remains legally admissible in court or regulatory investigations, investigators must adhere to **NIST SP 800-86** Chain of Custody protocols:
 
 1. **Immediate Cryptographic Hashing**: Calculate SHA-256 and SHA-512 cryptographic hashes immediately upon acquiring a forensic memory or disk image.
-2. **Working Copy Isolation**: Never perform forensic analysis directly on master original evidence images. Always create and verify working copies ($H(\text{Master}) == H(\text{Working Copy})$).
+2. **Working Copy Isolation**: Never perform forensic analysis directly on master original evidence images. Always create and verify working copies (`hash(master) == hash(working copy)`).
 3. **Custody Log Documentation**: Maintain a written Chain of Custody log detailing:
    - Unique evidence ID and description.
    - Date, time, and UTC offset of acquisition.

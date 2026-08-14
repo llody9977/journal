@@ -8,11 +8,11 @@
   <!-- PEAK Hunting Framework (x=40, w=540, y=105, h=160) -->
   <rect x="40" y="105" width="540" height="160" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5" />
   <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#7c3aed">PEAK THREAT HUNTING FRAMEWORK</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">3 Primary Threat Hunting Core Types</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Prepare &#183; Execute &#183; Act with Knowledge &#8212; 3 Hunt Types</text>
   <line x1="60" y1="166" x2="560" y2="166" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
   <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">1. Hypothesis-Driven Hunting: Formulates testable adversary behavior</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">2. Baseline / EDR-Driven Hunting: Queries telemetry for rare outliers</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">3. Model-Assisted Threat Hunting (MASH): ML clustering &amp; analytics</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">2. Baseline Hunting (EDA): Queries telemetry for rare outliers</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">3. Model-Assisted Threat Hunts (M-ATH): ML clustering &amp; analytics</text>
 
   <!-- UEBA & Behavioral Baselining (x=620, w=540, y=105, h=160) -->
   <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />

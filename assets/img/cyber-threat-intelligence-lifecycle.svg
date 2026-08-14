@@ -28,9 +28,10 @@
   <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">STIX 2.1 &amp; TAXII 2.1 STANDARDS &amp; TIP ARCHITECTURE</text>
   <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Structured Graph Objects &amp; Automated Transport</text>
   <line x1="60" y1="346" x2="1140" y2="346" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• STIX Domain Objects (SDOs): Threat-Actor, Campaign, Indicator, Malware, Attack-Pattern, Observed-Data</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• STIX Relationship Objects (SROs): Connects Indicator → indicates → Threat-Actor / Attack-Pattern</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• TAXII 2.1: RESTful HTTPS API serving STIX 2.1 bundles to OpenCTI, MISP, and SIEM ingested pipelines</text>
+  <text x="60" y="362" font-size="11.5" font-weight="500" fill="#475569">• STIX Domain Objects (SDOs): Threat-Actor, Campaign, Indicator, Malware, Attack-Pattern, Observed-Data</text>
+  <text x="60" y="379" font-size="11.5" font-weight="500" fill="#475569">• STIX Relationship Objects (SROs): Connects Indicator → indicates → Threat-Actor / Attack-Pattern</text>
+  <text x="60" y="396" font-size="11.5" font-weight="500" fill="#475569">• TAXII 2.1: Collections polled over an HTTPS REST API (Channels are reserved, not specified in 2.1)</text>
+  <text x="60" y="413" font-size="11.5" font-weight="500" fill="#475569">• Handling: FIRST TLP 2.0 markings travel with every shared object as STIX marking-definition references</text>
 
   <!-- Bottom Bar: Alignment (y=445, h=40) -->
   <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />

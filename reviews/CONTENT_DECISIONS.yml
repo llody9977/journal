@@ -44,7 +44,9 @@
         "A governing primary source introduces a normative containment model that the page explicitly adopts.",
         "Rendered evidence shows that the directional model is unreadable or implies a different incorrect relationship."
       ],
-      "related_decisions": ["CD-0006"],
+      "related_decisions": [
+        "CD-0006"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -57,7 +59,9 @@
       "status": "accepted",
       "implementation_state": "implemented",
       "scope": {
-        "files": ["topics/security-objectives-properties.md"],
+        "files": [
+          "topics/security-objectives-properties.md"
+        ],
         "concepts": [
           "FIPS 199 high-water mark",
           "FIPS 200 impact level",
@@ -89,7 +93,9 @@
         "The page changes scope away from the U.S. federal model.",
         "New primary evidence shows that the retained sequencing is inaccurate."
       ],
-      "related_decisions": ["CD-0003"],
+      "related_decisions": [
+        "CD-0003"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -139,7 +145,10 @@
         "The governing accountability or digital-identity definitions materially change.",
         "The phrase is replaced by terminology that preserves the same proofing boundary more clearly."
       ],
-      "related_decisions": ["CD-0002", "CD-0007"],
+      "related_decisions": [
+        "CD-0002",
+        "CD-0007"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -177,7 +186,9 @@
         "A different label preserves the same system-boundary meaning and passes rendered containment checks.",
         "Font or renderer changes cause renewed clipping or overlap."
       ],
-      "related_decisions": ["CD-0001"],
+      "related_decisions": [
+        "CD-0001"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -227,7 +238,9 @@
         "The referenced platform provides and verifies transparent failover as an inseparable property of the named replication mechanism.",
         "Current primary guidance materially changes the recovery mechanics."
       ],
-      "related_decisions": ["CD-0006"],
+      "related_decisions": [
+        "CD-0006"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -277,7 +290,10 @@
         "The page adopts a sourced normative definition of adequacy with explicit evaluation criteria.",
         "New evidence demonstrates that the qualification is materially incomplete."
       ],
-      "related_decisions": ["CD-0001", "CD-0005"],
+      "related_decisions": [
+        "CD-0001",
+        "CD-0005"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -321,7 +337,10 @@
         "NIST or the adopted federation specification materially changes the issuer and relying-party roles.",
         "A clearer replacement preserves the same actor and validation boundaries."
       ],
-      "related_decisions": ["CD-0003", "CD-0008"],
+      "related_decisions": [
+        "CD-0003",
+        "CD-0008"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -365,7 +384,9 @@
         "Rendered arrows overlap or materially reduce readability.",
         "The page's lifecycle scope changes so setup, enforcement, and revocation are no longer the intended relationship."
       ],
-      "related_decisions": ["CD-0007"],
+      "related_decisions": [
+        "CD-0007"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4f1d088344b3cd2b146412aefd2352b2f658f6919252b215c54e2d0c0f69a685",
@@ -413,7 +434,9 @@
         "A page adopts a specific quantum architecture and resource model that supports a narrower concrete estimate.",
         "New primary cryptanalytic evidence materially changes the best-known attack model."
       ],
-      "related_decisions": ["CD-0014"],
+      "related_decisions": [
+        "CD-0014"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
@@ -476,7 +499,10 @@
         "TLS or ML-KEM is superseded by a specification with materially different message flow or key-schedule semantics.",
         "A clearer taxonomy preserves the same actors, transmitted values, and compromise boundaries."
       ],
-      "related_decisions": ["CD-0009", "CD-0014"],
+      "related_decisions": [
+        "CD-0009",
+        "CD-0014"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
@@ -519,7 +545,9 @@
         "The mechanism changes from a shared-key MAC to a digital-signature construction.",
         "A clearer phrase preserves the same shared-key attribution boundary."
       ],
-      "related_decisions": ["CD-0003"],
+      "related_decisions": [
+        "CD-0003"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
@@ -608,7 +636,10 @@
         "The page narrows to CNSA 1.0 and removes the CNSA 2.0 comparison promise.",
         "Current primary evidence changes the relationship between the transition and end-state suites."
       ],
-      "related_decisions": ["CD-0009", "CD-0010"],
+      "related_decisions": [
+        "CD-0009",
+        "CD-0010"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
@@ -658,7 +689,10 @@
         "NIST signature standards or the chain's active signature assumptions materially change.",
         "The page scope changes to exclude protocol migration and links clearly to equivalent coverage elsewhere."
       ],
-      "related_decisions": ["CD-0009", "CD-0010"],
+      "related_decisions": [
+        "CD-0009",
+        "CD-0010"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
@@ -699,7 +733,10 @@
         "The legacy files are removed under an approved repository-retention policy.",
         "A replacement generator passes full byte, accessibility, and rendered-output validation."
       ],
-      "related_decisions": ["CD-0004", "CD-0008"],
+      "related_decisions": [
+        "CD-0004",
+        "CD-0008"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
@@ -752,7 +789,9 @@
         "The page removes rewrap-only behavior and explicitly requires payload tag recomputation when wrapping metadata changes.",
         "The authenticated-encryption construction or protocol defines different authenticated-metadata semantics."
       ],
-      "related_decisions": ["CD-0010"],
+      "related_decisions": [
+        "CD-0010"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
@@ -804,7 +843,9 @@
         "The page narrows itself to one named provider and rotation mechanism.",
         "A standardized cross-provider version-control model replaces the documented distinction."
       ],
-      "related_decisions": ["CD-0016"],
+      "related_decisions": [
+        "CD-0016"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
@@ -851,7 +892,10 @@
         "NIST revises or withdraws the relevant SP 800-208 state-management requirements.",
         "A selected application profile prohibits LMS and XMSS entirely."
       ],
-      "related_decisions": ["CD-0009", "CD-0010"],
+      "related_decisions": [
+        "CD-0009",
+        "CD-0010"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "4fb61e92be3cb9a128cac27dee7c28f2f44d9ddd9aa86e40a5da5f88d2ab8711",
@@ -962,7 +1006,9 @@
         "A page narrows to a named certified deployment whose complete configuration is independently established.",
         "A protocol profile standardizes a currently absent FAL3 binding."
       ],
-      "related_decisions": ["CD-0019"],
+      "related_decisions": [
+        "CD-0019"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
@@ -1029,7 +1075,9 @@
         "A page explicitly narrows to one profile that composes these boundaries differently and documents that scope.",
         "A later Standards Track specification replaces the cited mechanism or validation model."
       ],
-      "related_decisions": ["CD-0019"],
+      "related_decisions": [
+        "CD-0019"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
@@ -1092,7 +1140,9 @@
         "A subject is removed from the journal scope together with all metadata, navigation, and cross-links.",
         "A new MCP specification materially changes the transport or authorization model."
       ],
-      "related_decisions": ["CD-0019"],
+      "related_decisions": [
+        "CD-0019"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
@@ -1202,7 +1252,10 @@
         "Rendered or executable evidence shows that the adopted structure creates broken navigation, inaccessible content, or incorrect visual meaning.",
         "A later completeness review identifies a required network-security subject that cannot be covered coherently within the eight-page structure."
       ],
-      "related_decisions": ["CD-0022", "CD-0023"],
+      "related_decisions": [
+        "CD-0022",
+        "CD-0023"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "846ff9e3232c1533d8a3f5106eb6074ce57bc14eaf30be7ace083c953b63d3f0",
@@ -1263,7 +1316,10 @@
         "A governing standard replaces STRIDE DFD element mapping or PASTA 7-stage alignment definitions.",
         "Rendered evidence shows visual text truncation or alignment errors in the updated SVG diagram."
       ],
-      "related_decisions": ["CD-0001", "CD-0024"],
+      "related_decisions": [
+        "CD-0001",
+        "CD-0024"
+      ],
       "supersedes": [],
       "superseded_by": "CD-0026",
       "originating_review_state_id": "4b2b97403ef028815631a65d595e771720744fae6dc42e8df8f345c9c71c47c9",
@@ -1348,8 +1404,14 @@
         "A governing primary source fundamentally merges or changes a core threat intelligence or detection methodology.",
         "Rendered evidence demonstrates broken navigation or visual rendering defects across Section 6."
       ],
-      "related_decisions": ["CD-0001", "CD-0024", "CD-0025"],
-      "supersedes": ["CD-0025"],
+      "related_decisions": [
+        "CD-0001",
+        "CD-0024",
+        "CD-0025"
+      ],
+      "supersedes": [
+        "CD-0025"
+      ],
       "superseded_by": null,
       "originating_review_state_id": "022c70cf8fbd154542a8618c69dd6cbdfbdfaf6be71bf83e39e8462b3ea794ee",
       "originated_on": "2026-08-13",
@@ -1441,7 +1503,10 @@
         "The journal section architecture changes and a different grouping is explicitly adopted.",
         "Governing primary standards (NIST AI RMF, SLSA, Sigstore) fundamentally merge or replace core frameworks."
       ],
-      "related_decisions": ["CD-0001", "CD-0026"],
+      "related_decisions": [
+        "CD-0001",
+        "CD-0026"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "846f399757913a993ffccae05344daf6c0d15ce8aa50daa44b13de3f50188696",
@@ -1518,7 +1583,10 @@
       "invalidation_conditions": [
         "The journal section taxonomy is restructured by explicit user instruction."
       ],
-      "related_decisions": ["CD-0001", "CD-0027"],
+      "related_decisions": [
+        "CD-0001",
+        "CD-0027"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "fe3c5e5a5228b0404379085ce1e63442c29a3af8f7c666c6fd7081214a19d113",
@@ -1575,12 +1643,442 @@
       "invalidation_conditions": [
         "The journal section taxonomy is restructured by explicit user instruction."
       ],
-      "related_decisions": ["CD-0001", "CD-0028"],
+      "related_decisions": [
+        "CD-0001",
+        "CD-0028"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "originating_review_state_id": "959ee00a9eddaa8aff967653bfa3f6387de4b49544a1ea74b0ba00b32ffc435e",
       "originated_on": "2026-08-13",
       "last_reviewed_on": "2026-08-13"
+    },
+    {
+      "id": "CD-0030",
+      "title": "Track the current Enterprise ATT&CK tactic set (15 tactics, Stealth, Defense Impairment) and stop hardcoding tactic counts",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/operational-intrusion-frameworks.md",
+          "assets/img/operational-intrusion-frameworks.svg"
+        ],
+        "concepts": [
+          "ATT&CK tactics count",
+          "Enterprise ATT&CK matrix",
+          "Defense Evasion rename",
+          "Stealth tactic",
+          "Defense Impairment tactic",
+          "MITRE ATT&CK acronym expansion",
+          "framework version drift"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review checked the page's tactic list against the live Enterprise matrix and found that the page claimed 14 tactics and listed 'Defense Evasion', while MITRE had restructured the mid-chain earlier in 2026. The same review found the acronym expanded incorrectly as 'Adversary Tactics, Techniques, and Knowledge Base'.",
+      "decision": "State 15 Enterprise tactics as of ATT&CK v19, replace 'Defense Evasion' with 'Stealth' (TA0005) and add 'Defense Impairment' (TA0112), correct the acronym to 'Adversarial Tactics, Techniques, and Common Knowledge', and add an explicit caveat that tactic sets change between releases so any fixed count is a snapshot to re-verify. This revisits the tactic-count element of the superseded CD-0025, whose approved outcome was '14 Tactics'.",
+      "rationale": "CD-0025 recorded an invalidation condition of 'MITRE changes the core structure of the Enterprise ATT&CK matrix or taxonomy hierarchy'. That condition is now met by current primary evidence, so the earlier outcome is superseded on this point rather than reversed by preference. Because the count itself is what drifted, the page must additionally teach the reader not to rely on a hardcoded number - detection content tagged to a retired tactic name will not map cleanly after an ATT&CK upgrade.",
+      "authoritative_sources": [
+        {
+          "title": "MITRE ATT&CK Enterprise Matrix",
+          "url": "https://attack.mitre.org/matrices/enterprise/",
+          "supports": "The Enterprise matrix lists 15 tactics under ATT&CK v19."
+        },
+        {
+          "title": "MITRE ATT&CK TA0005 Stealth",
+          "url": "https://attack.mitre.org/tactics/TA0005/",
+          "supports": "TA0005 is named Stealth: the adversary is trying to hide and conceal their actions, appearing as normal behavior."
+        },
+        {
+          "title": "MITRE ATT&CK TA0112 Defense Impairment",
+          "url": "https://attack.mitre.org/tactics/TA0112/",
+          "supports": "Defense Impairment was created on 14 April 2026 as a separate Enterprise tactic."
+        }
+      ],
+      "verification_methods": [
+        "Compare the page's tactic list, table cell, callout, and SVG text against the live Enterprise matrix.",
+        "Confirm the version caveat is present wherever a fixed count appears."
+      ],
+      "approved_outcome": "Section 6.2 prose, framework table, callout, and SVG state 15 Enterprise tactics with Stealth and Defense Impairment, expand the acronym correctly, carry a release-drift caveat, and add a 'Framework Version Currency' checklist row.",
+      "invalidation_conditions": [
+        "MITRE changes the Enterprise tactic set again, which the page's own caveat anticipates.",
+        "MITRE publishes a different official expansion of the ATT&CK acronym.",
+        "The page's scope narrows so that a specific tactic enumeration is no longer required."
+      ],
+      "related_decisions": [
+        "CD-0025",
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0031",
+      "title": "State that TAXII 2.1 reserves but does not specify Channels, and cover TLP handling markings in CTI dissemination",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cyber-threat-intelligence.md",
+          "assets/img/cyber-threat-intelligence-lifecycle.svg"
+        ],
+        "concepts": [
+          "TAXII 2.1 Channels",
+          "TAXII Collections",
+          "STIX 2.1 bundle example",
+          "Traffic Light Protocol",
+          "TLP handling markings",
+          "intelligence confidence grading",
+          "indicator placeholder values"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review found the page describing TAXII 2.1 Channels as publish/subscribe streaming, found the STIX example's prose describing objects the bundle did not contain, found the example IOC to be the SHA-256 of an empty input, and found no coverage of TLP handling markings on a page whose lifecycle ends in dissemination to SOC, executives, ISACs, and CERTs.",
+      "decision": "State that TAXII 2.1 reserves Channel keywords without specifying Channel services and that Collections are the only defined exchange mechanism; complete the STIX bundle so it contains the attack-pattern and relationships the prose describes; replace the empty-input hash with an explicitly labelled placeholder; and add a TLP 2.0 subsection plus Admiralty source-reliability and information-credibility grading.",
+      "rationale": "A reader designing a TAXII 2.1 integration around a streaming push channel would build against a capability no conformant 2.1 server implements. Dissemination without handling markings is the most common CTI governance failure, so its absence was a required foundational gap rather than optional enrichment. Grading confidence on a stated two-axis scale prevents source reliability and claim credibility from collapsing into one unreproducible field.",
+      "authoritative_sources": [
+        {
+          "title": "OASIS TAXII 2.1 (OS)",
+          "url": "https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html",
+          "supports": "This version of the TAXII specification reserves the keywords required for Channels but does not specify Channel services."
+        },
+        {
+          "title": "FIRST Traffic Light Protocol 2.0",
+          "url": "https://www.first.org/tlp/",
+          "supports": "TLP 2.0 defines CLEAR, GREEN, AMBER, AMBER+STRICT, and RED and their redistribution boundaries."
+        },
+        {
+          "title": "OASIS STIX 2.1 (OS)",
+          "url": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
+          "supports": "STIX represents intelligence as SDOs, SROs, and SCOs, with handling markings carried as marking-definition references."
+        }
+      ],
+      "verification_methods": [
+        "Parse the embedded STIX bundle and confirm its object types and relationships match the surrounding prose.",
+        "Confirm the placeholder hash is labelled as illustrative and is not a real-world constant.",
+        "Confirm the TAXII subsection distinguishes Collections from reserved Channels."
+      ],
+      "approved_outcome": "Section 6.3 describes TAXII 2.1 Collections as the only defined exchange mechanism, carries a TLP 2.0 table and re-share rules, grades confidence on the Admiralty two-axis scale, and its STIX bundle parses with an attack-pattern object and two indicates relationships matching the prose.",
+      "invalidation_conditions": [
+        "A later TAXII version specifies Channel services, at which point the version boundary must be restated rather than removed.",
+        "FIRST revises the TLP marking set.",
+        "OASIS changes the STIX relationship vocabulary used in the example."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0032",
+      "title": "Use the published PEAK definitions: Prepare, Execute, and Act with Knowledge, with M-ATH and Baseline (EDA) hunt types",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/threat-hunting.md",
+          "assets/img/peak-hunting-framework.svg",
+          "assets/img/threat-hunting-methodology.svg"
+        ],
+        "concepts": [
+          "PEAK acronym expansion",
+          "Model-Assisted Threat Hunts",
+          "M-ATH",
+          "Baseline exploratory data analysis",
+          "Hunting Maturity Model",
+          "Z-score distributional assumption",
+          "hunt to incident handoff"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review found PEAK expanded as 'Preparedness, Execution, Analysis, Knowledge Sharing', the model-assisted hunt type abbreviated 'MASH', and the framework attributed to 'SANS / PEAK Official' behind a dead sqrrl.com link. The review also found the Z-score cutoff presented without its normality assumption and no defined hunt-to-incident handoff.",
+      "decision": "Expand PEAK as 'Prepare, Execute, and Act with Knowledge', attribute it to David Bianco and SURGe by Splunk with the live Splunk URL, use M-ATH for Model-Assisted Threat Hunts and 'Baseline (EDA)' for the second hunt type, state the Z-score normality assumption with a robust-statistics alternative, add the Hunting Maturity Model as the prerequisite self-assessment, and define the handoff when a hunt confirms compromise.",
+      "rationale": "The acronym, the abbreviation, and the attribution were each verifiable against the framework's own publication and each was wrong; a reader searching for 'MASH' finds nothing. The Z-score cutoff is a convention that silently assumes a distribution security telemetry rarely has, so stating it prevents the threshold from being read as a law. A hunt that keeps pivoting on a confirmed compromise tips the adversary and contaminates volatile evidence, so the stand-down rule is operational safety, not process decoration.",
+      "authoritative_sources": [
+        {
+          "title": "The PEAK Threat Hunting Framework",
+          "url": "https://www.splunk.com/en_us/blog/security/peak-threat-hunting-framework.html",
+          "supports": "PEAK stands for Prepare, Execute, and Act with Knowledge; the three hunt types are Hypothesis-Driven, Baseline (Exploratory Data Analysis), and Model-Assisted Threat Hunts (M-ATH)."
+        },
+        {
+          "title": "A Simple Hunting Maturity Model",
+          "url": "https://detect-respond.blogspot.com/2015/10/a-simple-hunting-maturity-model.html",
+          "supports": "HMM0 Initial through HMM4 Leading describe hunting capability prerequisites."
+        }
+      ],
+      "verification_methods": [
+        "Compare the acronym, hunt-type names, and attribution against the Splunk publication.",
+        "Confirm both SVGs and the prose use the same hunt-type names.",
+        "Confirm every cited reference URL resolves."
+      ],
+      "approved_outcome": "Section 6.5 prose, both SVGs, the page description, and the callout use the published PEAK terminology; the Z-score section states its assumption; the page covers hunt maturity, the incident handoff, and the value of a negative result.",
+      "invalidation_conditions": [
+        "Splunk or the framework authors publish a revised PEAK definition or hunt-type naming.",
+        "The page narrows to a different hunting framework."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0033",
+      "title": "Give every diagram frame its own purpose-built image; never reuse one diagram under a second caption",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/threat-modeling-design.md",
+          "topics/operational-intrusion-frameworks.md",
+          "topics/cyber-threat-intelligence.md",
+          "topics/detection-engineering.md",
+          "topics/threat-hunting.md",
+          "topics/adversary-emulation.md",
+          "assets/img/cyber-kill-chain.svg",
+          "assets/img/telemetry-normalization.svg",
+          "assets/img/post-hunt-operationalization.svg",
+          "assets/img/coverage-theoretical-vs-empirical.svg",
+          "assets/img/threat-modeling-questions.svg",
+          "assets/img/diamond-model.svg",
+          "assets/img/pyramid-of-pain.svg",
+          "assets/img/precision-vs-recall.svg"
+        ],
+        "concepts": [
+          "diagram caption agreement",
+          "duplicate diagram reuse",
+          "alt text accuracy",
+          "diagram clipping",
+          "Diamond Model axis labels",
+          "full-size diagram affordance",
+          "mobile diagram legibility"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review rendered every page and found five frames whose image contradicted its own caption and alt text: four pages embedded the same SVG twice under two different captions, and the OWASP frame pointed at a generic five-step flow while a correct four-question diagram sat unused in the repository. The same pass found text clipped outside the viewBox in two diagrams, the Diamond Model's technology axis labelling the wrong line, and no full-size affordance on wide diagrams that are illegible at mobile width.",
+      "decision": "Build a dedicated SVG for every diagram frame, point the OWASP frame at the existing threat-modeling-questions.svg, redraw the Diamond Model so each axis label sits on the line it names, widen the Pyramid of Pain and precision/recall canvases so no text is clipped, and apply the repository's diagram-frame-openable pattern to every Section 6 frame.",
+      "rationale": "A caption that describes something the image does not show is a cross-format accuracy defect, not a cosmetic one - it teaches the reader the wrong content and is invisible to syntax and link checks. Clipped text and a mislabelled axis fail the same way. The openable pattern already existed and was used by 19 other pages, so the fix is a consistency correction rather than a new mechanism.",
+      "authoritative_sources": [
+        {
+          "title": "OWASP Threat Modeling Project",
+          "url": "https://owasp.org/www-project-threat-modeling/",
+          "supports": "The four questions are: what are we working on, what can go wrong, what are we going to do about it, did we do a good job."
+        }
+      ],
+      "verification_methods": [
+        "Render every Section 6 page and confirm each image matches its caption and alt text.",
+        "Confirm no page embeds the same image twice.",
+        "Inspect each SVG at full size and at 375px mobile width for clipping and label placement."
+      ],
+      "approved_outcome": "Each Section 6 diagram frame contains one purpose-built image whose visible labels match its caption and alt text, no image is reused within a page, no diagram text is clipped, and every frame offers a full-size link.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated.",
+        "Rendered evidence shows a replacement diagram clipping or misrepresenting its subject."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0034",
+      "title": "Write formulas as literal text because the site loads no math renderer, and enforce it with an automated check",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/threat-modeling-design.md",
+          "topics/operational-intrusion-frameworks.md",
+          "topics/cyber-threat-intelligence.md",
+          "topics/detection-engineering.md",
+          "topics/threat-hunting.md",
+          "topics/adversary-emulation.md",
+          "scripts/verify_rendering_hazards.py",
+          ".github/workflows/deploy.yml",
+          "assets/css/style.css",
+          "topics/security-maturity-models.md",
+          "topics/slsa-provenance-attestation.md",
+          "topics/grc-framework-strategy.md",
+          "topics/federated-learning-privacy.md",
+          "topics/privacy-by-design-pets.md"
+        ],
+        "concepts": [
+          "LaTeX rendering",
+          "math renderer",
+          "kramdown table corruption",
+          "formula presentation",
+          "rendering hazard check"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review rendered the pages and found LaTeX reaching the reader as literal source on five of six pages, including an entire detection-metrics formula column. On the threat hunting page the pipes in an inline math span caused kramdown to reparse the sentence as a GFM table. A repository-wide scan found the same defect class on twelve further pages.",
+      "decision": "Write every formula as literal text - Unicode operators, a code span, or a <p class=\"formula\"> block - across the whole journal, and add scripts/verify_rendering_hazards.py to the blocking deploy quality gate so the defect class cannot reappear.",
+      "rationale": "The layout loads neither MathJax nor KaTeX, and kramdown does not process single-dollar inline math or bracket display math, so LaTeX was always going to reach the reader as source. The pipe case is worse than unrendered text because it silently restructures the paragraph. None of this is visible to the page-structure check, the link check, or SVG syntax validation, which is why it survived several reviews - so the durable fix is a mechanical check, not a wording convention.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Build the site and grep the rendered HTML for LaTeX commands and math/tex script blocks.",
+        "Run scripts/verify_rendering_hazards.py, which self-tests against all four observed defect shapes.",
+        "Confirm the check runs in the deploy workflow quality gate."
+      ],
+      "approved_outcome": "No topic page contains raw LaTeX; formulas render as readable text; a .formula CSS class provides display presentation; and the deploy gate fails on reintroduction.",
+      "invalidation_conditions": [
+        "A math renderer such as MathJax or KaTeX is deliberately added to the layout, at which point the check and the convention should both be revisited.",
+        "The site migrates to a Markdown engine with different math handling."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0035",
+      "title": "Label author-created checklists and metrics as journal working models, and scope Section 6 page descriptions",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/threat-modeling-design.md",
+          "topics/operational-intrusion-frameworks.md",
+          "topics/cyber-threat-intelligence.md",
+          "topics/detection-engineering.md",
+          "topics/threat-hunting.md",
+          "topics/adversary-emulation.md"
+        ],
+        "concepts": [
+          "journal working model labelling",
+          "diagnostic checklist provenance",
+          "illustrative thresholds",
+          "Rule Fatigue Index",
+          "comprehensive scope claim",
+          "page description accuracy"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review found that all six pages presented author-created diagnostic checklists, tier taxonomies, hunt taxonomies, and detection thresholds as established models, with exactly one qualifying label across the section, while ten other journal pages label such content explicitly. All six descriptions opened 'Comprehensive technical guide' while required foundational gaps remained.",
+      "decision": "Prefix every author-created checklist with an explicit journal-working-model statement, label locally defined thresholds and the Rule Fatigue Index as such, scope the intelligence-tier and hunt-type taxonomies as journal formulations that differ from other published models, and change each page description from 'Comprehensive technical guide to' to 'Technical reference for'.",
+      "rationale": "WRITING_STYLE requires an author-created synthesis to be labelled so a reader cannot mistake it for an official model, and requires a comprehensiveness claim to define and justify its scope. Section 1 had already moved to the scoped 'Technical framework for' formulation, so Section 6 was the inconsistent case rather than the precedent.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm each diagnostic checklist carries a working-model statement.",
+        "Confirm every threshold is either sourced or labelled locally defined.",
+        "Compare description wording against the pattern already used in Section 1."
+      ],
+      "approved_outcome": "Every Section 6 checklist, taxonomy, and threshold states its provenance, and no Section 6 description claims comprehensive coverage.",
+      "invalidation_conditions": [
+        "A checklist is replaced by one derived from a published audit standard, which should then be cited instead of labelled.",
+        "A page's scope is defined and justified such that a comprehensiveness claim becomes supportable."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0036",
+      "title": "Require authorization and rules-of-engagement coverage on the adversary emulation page and remove absolute coverage claims",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/adversary-emulation.md",
+          "assets/img/adversary-emulation-validation.svg",
+          "assets/img/coverage-theoretical-vs-empirical.svg"
+        ],
+        "concepts": [
+          "rules of engagement",
+          "red team authorization",
+          "Atomic Red Team schema",
+          "PowerShell EncodedCommand encoding",
+          "empirical coverage limitations",
+          "Prelude Operator status"
+        ],
+        "notes": "Also corrects a fabricated atomic GUID and a UTF-8 base64 payload that cannot decode as UTF-16LE."
+      },
+      "originating_feedback": "A fresh Section 6 review found the page publishing a working LSASS credential-dumping command and advocating automated execution across enterprise endpoints with no authorization, scope, deconfliction, or artifact-handling coverage. The same pass found a fabricated Atomic Red Team GUID, a T1059.001 test nested inside a T1003.001 file, a UTF-8 base64 payload that -EncodedCommand cannot decode, an outdated Prelude Operator description, and a coverage table asserting that empirical testing misses 'None' and yields 'Audit-proof' evidence.",
+      "decision": "Add an Authorization and Rules of Engagement section before any payload, correct the atomic GUID against the upstream repository, split the PowerShell test into its own technique file with a correctly encoded UTF-16LE payload, replace the Prelude Operator entry with the CTID Adversary Emulation Library, and restate the coverage table so empirical testing is described as reducing rather than eliminating unverified assumptions.",
+      "rationale": "The page's payloads are real, not simulated, so omitting authorization was a required foundational gap under the assumptions and threat-model completeness categories. Fabricated identifiers and a payload that cannot execute both violate the rule against inventing technical detail. Claiming empirical coverage misses nothing contradicts the page's own argument against false confidence, since agent-only paths, benign-payload divergence, environment drift, and over-fitted detections all survive testing.",
+      "authoritative_sources": [
+        {
+          "title": "Atomic Red Team T1003.001 atomics",
+          "url": "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1003.001/T1003.001.yaml",
+          "supports": "The comsvcs.dll LSASS test has auto_generated_guid 2536dee2-12fb-459a-8c37-971844fa73be, and the file contains no T1059.001 test."
+        },
+        {
+          "title": "CTID Adversary Emulation Library",
+          "url": "https://github.com/center-for-threat-informed-defense/adversary_emulation_library",
+          "supports": "Open, intelligence-derived emulation plans chain techniques in the order a named actor used them."
+        },
+        {
+          "title": "MITRE ATT&CK Evaluations",
+          "url": "https://evals.mitre.org/",
+          "supports": "Current home of ATT&CK Evaluations, replacing the unreachable attackevals.mitre.org reference."
+        }
+      ],
+      "verification_methods": [
+        "Decode the base64 payload as UTF-16LE and confirm it round-trips to the documented command.",
+        "Compare the atomic test name and GUID against the upstream repository file.",
+        "Confirm the authorization section precedes the first executable payload on the page."
+      ],
+      "approved_outcome": "Section 6.6 opens with authorization and rules-of-engagement requirements, its YAML examples are schema-correct and executable, its coverage table states what empirical testing still misses, and every reference resolves.",
+      "invalidation_conditions": [
+        "Atomic Red Team changes its per-technique file schema or the referenced test's GUID.",
+        "The page's scope changes so that executable payloads are no longer published.",
+        "A future review establishes a different accountable owner for emulation authorization."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0037",
+      "title": "Keep the two CTI diagram filenames as they are rather than swapping them to match their content",
+      "status": "rejected",
+      "implementation_state": "not_applicable",
+      "scope": {
+        "files": [
+          "topics/cyber-threat-intelligence.md",
+          "assets/img/cyber-threat-intelligence-lifecycle.svg",
+          "assets/img/cyber-threat-intelligence.svg"
+        ],
+        "concepts": [
+          "diagram file naming",
+          "asset rename",
+          "decision register file references"
+        ]
+      },
+      "originating_feedback": "A fresh Section 6 review noted as an optional improvement that the file named cyber-threat-intelligence-lifecycle.svg is the architecture overview while cyber-threat-intelligence.svg is the actual lifecycle strip, and suggested renaming them.",
+      "decision": "Do not rename. Keep both filenames and rely on the alt text and captions, which were corrected, to describe each diagram accurately.",
+      "rationale": "Neither filename is surfaced to a reader, so the change carries no reader-facing benefit. Renaming would break the recorded scope.files of the accepted CD-0026, whose validation requires those paths to exist, and editing a historical record's scope to accommodate a cosmetic rename is worse than the inconsistency it fixes. Swapping two filenames also produces a confusing git history for no functional gain.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm the alt text and caption of each CTI diagram accurately describe the image it points to."
+      ],
+      "approved_outcome": "Filenames unchanged; accuracy is carried by the corrected alt text and captions instead.",
+      "invalidation_conditions": [
+        "The diagrams are rebuilt or replaced for another reason, at which point naming can be corrected in the same change at no extra cost.",
+        "A build or tooling step begins deriving reader-visible text from asset filenames."
+      ],
+      "related_decisions": [
+        "CD-0026",
+        "CD-0033"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
     }
   ]
 }

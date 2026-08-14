@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 120" width="100%" height="100%" role="img" aria-labelledby="ckc-title ckc-desc">
+  <title id="ckc-title">Lockheed Martin Cyber Kill Chain, seven sequential stages</title>
+  <desc id="ckc-desc">Seven stages in order: reconnaissance, weaponization, delivery, exploitation, installation, command and control, and actions on objectives.</desc>
+  <rect width="1480" height="120" fill="#ffffff"/>
+  <style>
+    .stage { fill: #ede9fe; stroke: #6d28d9; stroke-width: 2; }
+    .st { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; fill: #0f172a; text-anchor: middle; font-weight: 600; }
+    .arrow { stroke: #6d28d9; stroke-width: 2; }
+    .arrowhead { fill: #6d28d9; }
+  </style>
+
+  <rect x="20" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="110" y="61" class="st">1. Reconnaissance</text>
+
+  <rect x="230" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="320" y="61" class="st">2. Weaponization</text>
+
+  <rect x="440" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="530" y="61" class="st">3. Delivery</text>
+
+  <rect x="650" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="740" y="61" class="st">4. Exploitation</text>
+
+  <rect x="860" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="950" y="61" class="st">5. Installation</text>
+
+  <rect x="1070" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="1160" y="61" class="st">6. Command &amp; Control</text>
+
+  <rect x="1280" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="1370" y="53" class="st">7. Actions on</text>
+  <text x="1370" y="69" class="st">Objectives</text>
+
+  <line x1="204" y1="56" x2="222" y2="56" class="arrow"/><polygon points="222,52 230,56 222,60" class="arrowhead"/>
+  <line x1="414" y1="56" x2="432" y2="56" class="arrow"/><polygon points="432,52 440,56 432,60" class="arrowhead"/>
+  <line x1="624" y1="56" x2="642" y2="56" class="arrow"/><polygon points="642,52 650,56 642,60" class="arrowhead"/>
+  <line x1="834" y1="56" x2="852" y2="56" class="arrow"/><polygon points="852,52 860,56 852,60" class="arrowhead"/>
+  <line x1="1044" y1="56" x2="1062" y2="56" class="arrow"/><polygon points="1062,52 1070,56 1062,60" class="arrowhead"/>
+  <line x1="1254" y1="56" x2="1272" y2="56" class="arrow"/><polygon points="1272,52 1280,56 1272,60" class="arrowhead"/>
+</svg>

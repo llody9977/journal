@@ -45,9 +45,9 @@ Two open standards dominate industry adoption, originating from distinct enginee
 
 To eliminate ambiguity across ecosystem package managers (*e.g. distinguishing a Python `requests` package from an npm `requests` package*), SBOMs rely on **Package URLs (purl)**:
 
-$$\text{pkg:type/namespace/name@version?qualifiers\#subpath}$$
+<p class="formula"><code>pkg:type/namespace/name@version?qualifiers#subpath</code></p>
 
-$$\text{Example}: \text{pkg:npm/\%40angular/core@16.2.0}$$
+<p class="formula">Example: <code>pkg:npm/%40angular/core@16.2.0</code></p>
 
 Package URLs provide a standardized string scheme for identifying software packages across heterogeneous ecosystems (npm, PyPI, Maven, Cargo, Go, Debian, RPM).
 

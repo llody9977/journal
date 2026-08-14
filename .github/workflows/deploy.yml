@@ -35,6 +35,11 @@ jobs:
           fi
       - name: Run Automated Page-Structure Checks
         run: python3 scripts/verify_writing_style.py
+      - name: Check For Rendering Hazards
+        # The site loads no math renderer, so LaTeX reaches the reader as
+        # source text and a pipe inside a math span silently reparses the
+        # paragraph as a table. Neither is visible to the structure check.
+        run: python3 scripts/verify_rendering_hazards.py
       - name: Validate Durable Content Decisions
         run: python3 scripts/verify_content_decisions.py
 

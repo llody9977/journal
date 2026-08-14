@@ -78,15 +78,15 @@ SLSA provenance is formatted as an **in-toto attestation predicate**. It links a
 Achieving SLSA Build L3 requires enforcing build environment isolation:
 
 - **Hermetic Builds**: Build steps run in a network-isolated environment where all dependencies (*compilers, libraries, header files*) are explicitly declared, pinned, and fetched into local build caches before execution begins. No undeclared external network calls are permitted during compilation.
-- **Reproducible Builds**: Two independent builds executed from the exact same source commit and build environment produce byte-for-byte identical binary outputs ($H(\text{Build}_1) == H(\text{Build}_2)$).
+- **Reproducible Builds**: Two independent builds executed from the exact same source commit and build environment produce byte-for-byte identical binary outputs (`hash(build 1) == hash(build 2)`).
 
 ## The Boundary of SLSA: Provenance vs. Source Integrity
 
 A critical security distinction must be maintained when evaluating SLSA guarantees:
 
-$$\text{SLSA Provenance} \implies \text{Proves } \mathbf{HOW} \text{ an artifact was built by a specific builder from source } S.$$
+<p class="formula"><strong>SLSA provenance proves HOW an artifact was built</strong> &mdash; by which builder, from which source S.</p>
 
-$$\text{SLSA Provenance} \;\cancel{\implies}\; \text{Proves that source } S \text{ or its dependencies are } \mathbf{BENIGN}.$$
+<p class="formula"><strong>SLSA provenance does NOT prove that source S or its dependencies are benign.</strong></p>
 
 As demonstrated by the xz-utils backdoor (CVE-2024-3094), if a trusted maintainer commits malicious code into source $S$, SLSA Build L3 will faithfully compile the malicious code and generate valid, signed provenance. SLSA guarantees build integrity, not source code intent.
 

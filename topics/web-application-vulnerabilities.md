@@ -41,7 +41,7 @@ XSS occurs when an application includes untrusted data in a web page without pro
 
 ### Defense: Context-Aware Output Encoding
 Escaping must match the specific HTML context where user data is inserted:
-- **HTML Body Context**: Convert `&` $\rightarrow$ `&amp;`, `<` $\rightarrow$ `&lt;`, `>` $\rightarrow$ `&gt;`, `"` $\rightarrow$ `&quot;`.
+- **HTML Body Context**: Convert `&` &rarr; `&amp;`, `<` &rarr; `&lt;`, `>` &rarr; `&gt;`, `"` &rarr; `&quot;`.
 - **JavaScript Variable Context**: Use Unicode escaping (`\uXXXX`) or JSON serialization (`JSON.stringify()`).
 - **Attribute Context**: Enforce strict alphanumeric whitelist validation.
 

@@ -808,6 +808,21 @@ hr {
   text-align: center;
 }
 
+/* Displayed formula. Plain text, not a math renderer: the site loads no
+   MathJax or KaTeX, so formulas are written as literal Unicode. */
+.formula {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin: 1rem auto;
+  overflow-x: auto;
+}
+
 /* ---------------- Security discipline layers ---------------- */
 
 .security-layer-map {

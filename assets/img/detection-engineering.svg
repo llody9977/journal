@@ -1,24 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 100" width="100%" height="100%">
-<rect x="20" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
-<text x="100.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Authoring</text>
-<rect x="220" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
-<text x="300.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Git PR</text>
-<rect x="420" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
-<text x="500.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Unit Testing</text>
-<rect x="620" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
-<text x="700.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Event Replay</text>
-<rect x="820" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
-<text x="900.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Transpilation</text>
-<rect x="1020" y="30" width="160" height="40" rx="5" fill="#e3f2fd" stroke="#333" stroke-width="2" />
-<text x="1100.0" y="55" font-family="monospace" font-size="12" fill="#333" text-anchor="middle">Auto Deploy</text>
-<line x1="180" y1="50.0" x2="212" y2="50.0" stroke="#333" stroke-width="2" />
-<polygon points="212,46.0 220,50.0 212,54.0" fill="#333" />
-<line x1="380" y1="50.0" x2="412" y2="50.0" stroke="#333" stroke-width="2" />
-<polygon points="412,46.0 420,50.0 412,54.0" fill="#333" />
-<line x1="580" y1="50.0" x2="612" y2="50.0" stroke="#333" stroke-width="2" />
-<polygon points="612,46.0 620,50.0 612,54.0" fill="#333" />
-<line x1="780" y1="50.0" x2="812" y2="50.0" stroke="#333" stroke-width="2" />
-<polygon points="812,46.0 820,50.0 812,54.0" fill="#333" />
-<line x1="980" y1="50.0" x2="1012" y2="50.0" stroke="#333" stroke-width="2" />
-<polygon points="1012,46.0 1020,50.0 1012,54.0" fill="#333" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 120" width="100%" height="100%" role="img" aria-labelledby="de-title de-desc">
+  <title id="de-title">Detection-as-Code pipeline</title>
+  <desc id="de-desc">Six stages in order: rule authoring in Sigma or YARA, Git pull request review, CI unit and syntax testing, test event replay, transpilation to the target query language, and automated deployment to the SIEM or EDR.</desc>
+  <rect width="1260" height="120" fill="#ffffff"/>
+  <style>
+    .stage { fill: #dbeafe; stroke: #1d4ed8; stroke-width: 2; }
+    .st { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; fill: #0f172a; text-anchor: middle; font-weight: 600; }
+    .arrow { stroke: #1d4ed8; stroke-width: 2; }
+    .arrowhead { fill: #1d4ed8; }
+  </style>
+
+  <rect x="20" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="110" y="53" class="st">1. Authoring</text>
+  <text x="110" y="69" class="st">(Sigma / YARA)</text>
+
+  <rect x="230" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="320" y="53" class="st">2. Git Pull</text>
+  <text x="320" y="69" class="st">Request Review</text>
+
+  <rect x="440" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="530" y="53" class="st">3. CI Unit</text>
+  <text x="530" y="69" class="st">&amp; Syntax Tests</text>
+
+  <rect x="650" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="740" y="61" class="st">4. Event Replay</text>
+
+  <rect x="860" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="950" y="53" class="st">5. Transpile</text>
+  <text x="950" y="69" class="st">(sigma-cli)</text>
+
+  <rect x="1070" y="34" width="180" height="44" rx="6" class="stage"/>
+  <text x="1160" y="53" class="st">6. Auto Deploy</text>
+  <text x="1160" y="69" class="st">(SIEM / EDR API)</text>
+
+  <line x1="204" y1="56" x2="222" y2="56" class="arrow"/><polygon points="222,52 230,56 222,60" class="arrowhead"/>
+  <line x1="414" y1="56" x2="432" y2="56" class="arrow"/><polygon points="432,52 440,56 432,60" class="arrowhead"/>
+  <line x1="624" y1="56" x2="642" y2="56" class="arrow"/><polygon points="642,52 650,56 642,60" class="arrowhead"/>
+  <line x1="834" y1="56" x2="852" y2="56" class="arrow"/><polygon points="852,52 860,56 852,60" class="arrowhead"/>
+  <line x1="1044" y1="56" x2="1062" y2="56" class="arrow"/><polygon points="1062,52 1070,56 1062,60" class="arrowhead"/>
 </svg>

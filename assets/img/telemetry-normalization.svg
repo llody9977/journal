@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 120" width="100%" height="100%" role="img" aria-labelledby="tn-title tn-desc">
+  <title id="tn-title">Telemetry normalization pipeline</title>
+  <desc id="tn-desc">Raw vendor logs from EDR, cloud, and identity providers are parsed into fields, mapped onto a common schema such as ECS or OCSF, and only then queried by detection logic.</desc>
+  <rect width="1020" height="120" fill="#ffffff"/>
+  <style>
+    .stage { fill: #fef3c7; stroke: #b45309; stroke-width: 2; }
+    .st { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; fill: #0f172a; text-anchor: middle; font-weight: 600; }
+    .sub { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; fill: #64748b; text-anchor: middle; }
+    .arrow { stroke: #b45309; stroke-width: 2; }
+    .arrowhead { fill: #b45309; }
+  </style>
+
+  <rect x="50" y="32" width="200" height="50" rx="6" class="stage"/>
+  <text x="150" y="55" class="st">Raw Vendor Logs</text>
+  <text x="150" y="71" class="sub">(EDR, cloud, IdP)</text>
+
+  <rect x="290" y="32" width="200" height="50" rx="6" class="stage"/>
+  <text x="390" y="55" class="st">Parse &amp; Extract</text>
+  <text x="390" y="71" class="sub">(fields, types)</text>
+
+  <rect x="530" y="32" width="200" height="50" rx="6" class="stage"/>
+  <text x="630" y="55" class="st">ECS / OCSF</text>
+  <text x="630" y="71" class="sub">normalization</text>
+
+  <rect x="770" y="32" width="200" height="50" rx="6" class="stage"/>
+  <text x="870" y="55" class="st">Detection Query</text>
+  <text x="870" y="71" class="sub">execution</text>
+
+  <line x1="254" y1="57" x2="282" y2="57" class="arrow"/><polygon points="282,53 290,57 282,61" class="arrowhead"/>
+  <line x1="494" y1="57" x2="522" y2="57" class="arrow"/><polygon points="522,53 530,57 522,61" class="arrowhead"/>
+  <line x1="734" y1="57" x2="762" y2="57" class="arrow"/><polygon points="762,53 770,57 762,61" class="arrowhead"/>
+</svg>

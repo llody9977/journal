@@ -1,38 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 470" width="100%" height="100%" role="img" aria-labelledby="pop-title pop-desc">
+  <title id="pop-title">David Bianco's Pyramid of Pain</title>
+  <desc id="pop-desc">Six indicator types stacked from the widest and cheapest at the base to the narrowest and costliest at the apex: hash values (trivial), IP addresses (easy), domain names (simple), host and network artifacts (annoying), tools (challenging), and TTPs (tough). Each level names the work a defender forces on the adversary by detecting at that level.</desc>
+  <rect width="1240" height="470" fill="#ffffff"/>
   <style>
-    .level { stroke: #333; stroke-width: 2; }
-    .label { font-family: monospace; font-size: 14px; fill: #333; text-anchor: middle; alignment-baseline: middle; font-weight: bold; }
-    .desc { font-family: monospace; font-size: 12px; fill: #555; alignment-baseline: middle; }
-    .toughness { font-family: monospace; font-size: 13px; fill: #d32f2f; font-weight: bold; }
+    .level { stroke: #334155; stroke-width: 2; }
+    .label { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; fill: #0f172a; text-anchor: middle; font-weight: 700; }
+    .pain { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; fill: #b91c1c; font-weight: 700; }
+    .desc { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; fill: #475569; }
+    .lead { stroke: #cbd5e1; stroke-width: 1.5; }
+    .head { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 17px; font-weight: 800; fill: #0f172a; }
+    .sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 12.5px; fill: #64748b; }
   </style>
-  
-  <polygon points="400,20 370,60 430,60" fill="#ffcdd2" class="level" />
-  <text x="400" y="45" class="label">TTPs</text>
-  <text x="450" y="45" class="toughness">[ Tough ]</text>
-  <text x="530" y="45" class="desc">&lt;-- Forces adversary to re-engineer core behavior</text>
-  
-  <polygon points="370,60 340,110 460,110 430,60" fill="#f8bbd0" class="level" />
-  <text x="400" y="85" class="label">Tools</text>
-  <text x="480" y="85" class="toughness">[ Challenging ]</text>
-  <text x="590" y="85" class="desc">&lt;-- Forces tool payload rewrite</text>
-  
-  <polygon points="340,110 300,160 500,160 460,110" fill="#e1bee7" class="level" />
-  <text x="400" y="135" class="label">Host &amp; Net Artifacts</text>
-  <text x="520" y="135" class="toughness">[ Annoying ]</text>
-  <text x="610" y="135" class="desc">&lt;-- Forces C2 URI / registry key changes</text>
-  
-  <polygon points="300,160 250,220 550,220 500,160" fill="#d1c4e9" class="level" />
-  <text x="400" y="190" class="label">Domain Names</text>
-  <text x="570" y="190" class="toughness">[ Simple ]</text>
-  <text x="650" y="190" class="desc">&lt;-- Requires re-registering DNS domains</text>
-  
-  <polygon points="250,220 190,290 610,290 550,220" fill="#c5cae9" class="level" />
-  <text x="400" y="255" class="label">IP Addresses</text>
-  <text x="630" y="255" class="toughness">[ Easy ]</text>
-  <text x="700" y="255" class="desc">&lt;-- Fast BGP / Firewall IP block</text>
-  
-  <polygon points="190,290 120,370 680,370 610,290" fill="#bbdefb" class="level" />
-  <text x="400" y="330" class="label">Hash Values</text>
-  <text x="700" y="330" class="toughness">[ Trivial ]</text>
-  <text x="780" y="330" class="desc">&lt;-- Easily bypassed via 1-bit file mutation</text>
+
+  <text x="40" y="30" class="head">The Pyramid of Pain (David Bianco)</text>
+  <text x="40" y="52" class="sub">Detecting higher in the pyramid imposes more cost on the adversary and survives longer as a detection.</text>
+
+  <!-- Levels, apex y=70 to base y=430, half-width grows linearly to 300 -->
+  <polygon points="340,70 290,130 390,130" fill="#fecdd3" class="level"/>
+  <text x="340" y="105" class="label">TTPs</text>
+  <line x1="402" y1="100" x2="694" y2="100" class="lead"/>
+  <text x="706" y="105" class="pain">[ Tough ]</text>
+  <text x="846" y="105" class="desc">&#8592; Adversary must learn new behaviors</text>
+
+  <polygon points="290,130 240,190 440,190 390,130" fill="#fbcfe8" class="level"/>
+  <text x="340" y="165" class="label">Tools</text>
+  <line x1="452" y1="160" x2="694" y2="160" class="lead"/>
+  <text x="706" y="165" class="pain">[ Challenging ]</text>
+  <text x="846" y="165" class="desc">&#8592; Adversary must build or buy new tooling</text>
+
+  <polygon points="240,190 190,250 490,250 440,190" fill="#e9d5ff" class="level"/>
+  <text x="340" y="225" class="label">Host &amp; Network Artifacts</text>
+  <line x1="502" y1="220" x2="694" y2="220" class="lead"/>
+  <text x="706" y="225" class="pain">[ Annoying ]</text>
+  <text x="846" y="225" class="desc">&#8592; Adversary must change registry keys, URIs, paths</text>
+
+  <polygon points="190,250 140,310 540,310 490,250" fill="#ddd6fe" class="level"/>
+  <text x="340" y="285" class="label">Domain Names</text>
+  <line x1="552" y1="280" x2="694" y2="280" class="lead"/>
+  <text x="706" y="285" class="pain">[ Simple ]</text>
+  <text x="846" y="285" class="desc">&#8592; Adversary must register new domains</text>
+
+  <polygon points="140,310 90,370 590,370 540,310" fill="#c7d2fe" class="level"/>
+  <text x="340" y="345" class="label">IP Addresses</text>
+  <line x1="602" y1="340" x2="694" y2="340" class="lead"/>
+  <text x="706" y="345" class="pain">[ Easy ]</text>
+  <text x="846" y="345" class="desc">&#8592; Adversary must move to new IP space</text>
+
+  <polygon points="90,370 40,430 640,430 590,370" fill="#bfdbfe" class="level"/>
+  <text x="340" y="405" class="label">Hash Values</text>
+  <line x1="652" y1="400" x2="694" y2="400" class="lead"/>
+  <text x="706" y="405" class="pain">[ Trivial ]</text>
+  <text x="846" y="405" class="desc">&#8592; One changed byte defeats the indicator</text>
 </svg>

@@ -52,7 +52,7 @@ By passing `terraform plan -out=plan.json` into OPA during CI/CD execution, orga
 
 **Infrastructure Drift** occurs when cloud resources are modified manually out-of-band (*e.g. an engineer modifying a security group rule via the AWS Management Console*) without updating the underlying IaC code:
 
-$$\text{Drift} = \text{Actual Runtime Cloud State} \neq \text{Declared IaC Repository State}$$
+<p class="formula"><strong>Drift:</strong> actual runtime cloud state &ne; declared IaC repository state</p>
 
 ### Mitigating Drift via GitOps
 - **Continuous Drift Scanning**: Run scheduled daily `terraform plan` jobs or use drift detection tools (*Driftctl, AWS Config*) to alert when runtime drift occurs.

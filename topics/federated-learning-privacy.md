@@ -22,7 +22,7 @@ Federated Learning replaces centralized data collection with a 4-step iterative 
 
 1. **Global Model Broadcast**: The central server broadcasts current global model weights $W_t$ to selected participating edge clients (*mobile phones, IoT nodes, hospital servers*).
 2. **Local Edge Training**: Each client trains the model on its private local dataset $D_k$ for a fixed number of epochs, computing updated local weights $W_t^k$.
-3. **Secure Weight Aggregation**: Clients send encrypted local model updates back to the central server using **Secure Aggregation (SecAgg)** protocol based on Secure Multi-Party Computation (SMPC). The server computes the aggregate sum ($\sum W_t^k$) without inspecting individual client updates.
+3. **Secure Weight Aggregation**: Clients send encrypted local model updates back to the central server using **Secure Aggregation (SecAgg)** protocol based on Secure Multi-Party Computation (SMPC). The server computes the aggregate sum (the sum of the client weight updates) without inspecting individual client updates.
 4. **Global Model Update**: The central server updates the master model weights $W_{t+1}$ using Federated Averaging (**FedAvg**) and redistributes the updated model.
 
 ## Cryptographic & Differential Privacy Safeguards
@@ -32,7 +32,7 @@ To prevent gradient inversion attacks (*where an adversary reconstructs raw trai
 | Privacy Safeguard | Cryptographic / Mathematical Primitive | Security Guarantee Provided |
 |---|---|---|
 | **Secure Aggregation (SecAgg)** | Secret-Sharing &amp; Homomorphic Encryption (SMPC). | Central server learns only the combined sum of client gradients; zero visibility into individual client updates. |
-| **Local Differential Privacy (LDP)** | Injects bounded noise ($\varepsilon, \delta$) into client gradients before transmission. | Mathematically bounds the ability of an adversary to infer whether a specific record was present in a client's dataset. |
+| **Local Differential Privacy (LDP)** | Injects bounded noise (&epsilon;, &delta;) into client gradients before transmission. | Mathematically bounds the ability of an adversary to infer whether a specific record was present in a client's dataset. |
 | **Central Differential Privacy (CDP)** | Server adds noise to global aggregated weights before broadcasting. | Bounds membership inference attacks against the published global model weights. |
 
 ## Adversarial Attacks & Defense Countermeasures
@@ -42,11 +42,11 @@ Federated Learning introduces unique decentralized attack vectors:
 - **Model Poisoning & Sybil Attacks**: Compromised clients submit corrupted gradient updates designed to derail global model convergence or inject backdoor triggers.
   - *Defense*: Deploy robust aggregation algorithms (**Krum**, **Trimmed Mean**, **Bruma**) and enforce Bounded Norm Clipping to filter out outlier gradient submissions.
 - **Membership Inference Attacks**: Adversaries query the global model to determine whether a target individual's private data was used in training.
-  - *Defense*: Enforce strict Central Differential Privacy ($\varepsilon \le 1.0$) during model aggregation.
+  - *Defense*: Enforce strict Central Differential Privacy (&epsilon; &le; 1.0) during model aggregation.
 
 ### Performance Trade-Offs & Limitations
 Federated Learning imposes severe operational and theoretical constraints:
-- **Privacy-Utility Trade-Off**: The Differential Privacy noise parameter ($\varepsilon$) operates on an inverse curve with model utility. Stricter privacy bounds (lower $\varepsilon$) mathematically guarantee higher privacy but proportionally degrade model accuracy.
+- **Privacy-Utility Trade-Off**: The Differential Privacy noise parameter (&epsilon;) operates on an inverse curve with model utility. Stricter privacy bounds (lower &epsilon;) mathematically guarantee higher privacy but proportionally degrade model accuracy.
 - **Aggregation Overhead**: Secure Multi-Party Computation (SMPC) used in SecAgg requires extensive cryptographic overhead, dramatically increasing network bandwidth consumption and latency across participating edge clients.
 
 ## Essential Federated Learning Diagnostic Checklist
@@ -57,7 +57,7 @@ When auditing a privacy-preserving machine learning deployment, evaluate these 6
 |---|---|---|
 | **Zero Raw Data Transmission** | Is raw training data retained strictly on local client devices without transmission to central servers? | Edge client code &amp; network traffic packet captures. |
 | **Secure Aggregation Protocol** | Is Secure Aggregation (SecAgg) enforced using cryptographic SMPC secret-sharing? | Server aggregation codebase &amp; protocol specs. |
-| **Local Differential Privacy** | Are local gradient updates obfuscated using calibrated Differential Privacy noise ($\varepsilon, \delta$)? | Gradient clipping &amp; noise addition code configs. |
+| **Local Differential Privacy** | Are local gradient updates obfuscated using calibrated Differential Privacy noise (&epsilon;, &delta;)? | Gradient clipping &amp; noise addition code configs. |
 | **Outlier Gradient Clipping** | Are client gradient submissions clipped using bounded norm thresholds to prevent poisoning? | Server FedAvg implementation parameters. |
 | **Robust Aggregation Functions** | Does the server employ robust aggregation (Krum / Trimmed Mean) to withstand malicious clients? | Aggregation algorithm configuration files. |
 | **OIDC Client Authentication** | Are participating edge clients authenticated using short-lived OIDC identity tokens to prevent Sybil node creation? | Client authentication gateway logs. |

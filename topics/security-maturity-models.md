@@ -15,12 +15,12 @@ last_verified: 2026-08-12
 
 | Model | Target Scope | Metric Base | Maturity Levels | Domain Granularity |
 |---|---|---|---|---|
-| **CMMI v3.0** | General Process Engineering | Process repeatability & statistical control | 1 (Initial) $\rightarrow$ 5 (Optimizing) | Program-wide generic scale |
-| **C2M2 v2.1** | Enterprise Cybersecurity Program | Capability indicator levels across 10 domains | MIL1 (Initiated) $\rightarrow$ MIL3 (Managed) | Granular domain-by-domain evaluation |
-| **OWASP SAMM v2** | Software Security Program | Software assurance practice maturity | Level 0 (Unperformed) $\rightarrow$ Level 3 (Optimized) | Independent scoring across 15 practices |
-| **CIS Controls IGs** | Technical Control Safeguards | Resource capacity & risk exposure | IG1 (Hygiene) $\rightarrow$ IG3 (High Assurance) | Single tier assigned program-wide |
-| **NIST CSF Tiers** | Risk Governance Integration | Integration of cyber risk into corporate governance | Tier 1 (Partial) $\rightarrow$ Tier 4 (Adaptive) | Program-wide governance integration |
-| **SLSA v1.2** | Software Supply Chain Build Pipeline | Tamper-resistance & build provenance | Build Level L0 (None) $\rightarrow$ L3 (Hardened) | Specific to build & release pipelines |
+| **CMMI v3.0** | General Process Engineering | Process repeatability & statistical control | 1 (Initial) &rarr; 5 (Optimizing) | Program-wide generic scale |
+| **C2M2 v2.1** | Enterprise Cybersecurity Program | Capability indicator levels across 10 domains | MIL1 (Initiated) &rarr; MIL3 (Managed) | Granular domain-by-domain evaluation |
+| **OWASP SAMM v2** | Software Security Program | Software assurance practice maturity | Level 0 (Unperformed) &rarr; Level 3 (Optimized) | Independent scoring across 15 practices |
+| **CIS Controls IGs** | Technical Control Safeguards | Resource capacity & risk exposure | IG1 (Hygiene) &rarr; IG3 (High Assurance) | Single tier assigned program-wide |
+| **NIST CSF Tiers** | Risk Governance Integration | Integration of cyber risk into corporate governance | Tier 1 (Partial) &rarr; Tier 4 (Adaptive) | Program-wide governance integration |
+| **SLSA v1.2** | Software Supply Chain Build Pipeline | Tamper-resistance & build provenance | Build Level L0 (None) &rarr; L3 (Hardened) | Specific to build & release pipelines |
 
 ## CMMI: The Foundational 5-Level Maturity Archetype
 
