@@ -1,0 +1,59 @@
+<svg viewBox="0 0 1200 450" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="keyexp-title keyexp-desc">
+  <title id="keyexp-title">Why a long-lived code-signing key is the weak point in traditional signing</title>
+  <desc id="keyexp-desc">A long-lived RSA or ECDSA private signing key, held for years, sits on the left. Three exposure surfaces branch from it: a CI secret store readable by any job that runs, a developer workstation, and a build script or log pipeline that can print it. All three converge on one outcome: an attacker who obtains the key signs malicious binaries under the trusted vendor identity, and clients accept them because the key is the only thing checked. A footer panel describes the revocation problem: revoking a compromised key invalidates every legitimate release signed with it, unless a timestamping authority recorded when each signature was made, so teams delay revocation and extend the exposure window.</desc>
+  <rect width="1200" height="450" fill="#ffffff"/>
+
+  <defs>
+    <marker id="keyA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">The long-lived signing key concentrates all the risk</text>
+  <text x="50" y="72" font-size="14" fill="#475569">One key, valid for years, and every place it rests is a place it can leave from.</text>
+
+  <rect x="40" y="104" width="320" height="196" rx="12" fill="#193e9f"/>
+  <text x="200" y="136" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">Long-lived private key</text>
+  <text x="62" y="168" font-size="12.5" fill="#c9d7fb">&#183; RSA or ECDSA key pair</text>
+  <text x="62" y="192" font-size="12.5" fill="#c9d7fb">&#183; Valid for months or years</text>
+  <text x="62" y="216" font-size="12.5" fill="#c9d7fb">&#183; Stored in a PKCS#12 file,</text>
+  <text x="62" y="234" font-size="12.5" fill="#c9d7fb">&#160;&#160;a secret store, or an HSM</text>
+  <text x="62" y="264" font-size="12.5" font-weight="700" fill="#ffffff">Its value to an attacker never</text>
+  <text x="62" y="282" font-size="12.5" font-weight="700" fill="#ffffff">expires on its own.</text>
+
+  <rect x="414" y="104" width="330" height="58" rx="10" fill="#fde8ea" stroke="#9f1239" stroke-width="2"/>
+  <text x="434" y="128" font-size="12.5" font-weight="800" fill="#9f1239">CI secret store</text>
+  <text x="434" y="148" font-size="12" fill="#475569">reachable by any job that runs</text>
+
+  <rect x="414" y="174" width="330" height="58" rx="10" fill="#fde8ea" stroke="#9f1239" stroke-width="2"/>
+  <text x="434" y="198" font-size="12.5" font-weight="800" fill="#9f1239">Developer workstation</text>
+  <text x="434" y="218" font-size="12" fill="#475569">one endpoint compromise away</text>
+
+  <rect x="414" y="244" width="330" height="56" rx="10" fill="#fde8ea" stroke="#9f1239" stroke-width="2"/>
+  <text x="434" y="268" font-size="12.5" font-weight="800" fill="#9f1239">Build script or log pipeline</text>
+  <text x="434" y="288" font-size="12" fill="#475569">masking fails, the key is printed</text>
+
+  <path d="M364 190 L410 133" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#keyA)"/>
+  <path d="M364 202 L410 203" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#keyA)"/>
+  <path d="M364 214 L410 272" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#keyA)"/>
+
+  <rect x="798" y="104" width="362" height="196" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="820" y="136" font-size="14" font-weight="800" fill="#0f172a">One leak, full trust</text>
+  <text x="820" y="168" font-size="12.5" fill="#475569">The attacker signs malicious binaries</text>
+  <text x="820" y="186" font-size="12.5" fill="#475569">under the vendor's own identity.</text>
+  <text x="820" y="216" font-size="12.5" fill="#475569">Clients accept them because the key</text>
+  <text x="820" y="234" font-size="12.5" fill="#475569">is the only thing being checked &#8212; no</text>
+  <text x="820" y="252" font-size="12.5" fill="#475569">record exists of who signed, or when.</text>
+  <text x="820" y="274" font-size="12.5" font-weight="700" fill="#b45309">Nothing distinguishes this signature</text>
+  <text x="820" y="292" font-size="12.5" font-weight="700" fill="#b45309">from a legitimate one.</text>
+
+  <path d="M748 133 L794 194" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#keyA)"/>
+  <path d="M748 203 L794 202" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#keyA)"/>
+  <path d="M748 272 L794 210" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#keyA)"/>
+
+  <rect x="40" y="322" width="1120" height="106" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="346" font-size="12" font-weight="900" letter-spacing="0.8" fill="#64748b">AND REVOCATION IS NOT A CLEAN EXIT</text>
+  <text x="62" y="370" font-size="12.5" fill="#475569">Revoking a compromised key calls every signature it ever made into question, including every legitimate release, unless a timestamping</text>
+  <text x="62" y="390" font-size="12.5" fill="#475569">authority independently recorded when each signature was produced so verifiers can honor the ones made before the compromise.</text>
+  <text x="62" y="416" font-size="12.5" font-weight="700" fill="#9f1239">Teams that lack that timestamping evidence delay revoking, which extends the exposure window rather than closing it.</text>
+</svg>

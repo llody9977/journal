@@ -1,0 +1,65 @@
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="xzdiv-title xzdiv-desc">
+  <title id="xzdiv-title">The xz-utils backdoor: what was in Git versus what shipped in the release tarball</title>
+  <desc id="xzdiv-desc">Two panels compare the public Git tree with the release tarball for xz-utils 5.6.0 and 5.6.1. Both contained the payload-carrying test fixtures tests/files/bad-3-corrupt_lzma2.xz and tests/files/good-large_compressed.lzma, committed openly and disguised as corrupt-input test data. The Git tree contained a benign m4/build-to-host.m4. The release tarball contained a modified m4/build-to-host.m4 that existed nowhere in Git. That one file is the divergence. A four-step chain follows: configure runs the modified macro, a sed pipeline extracts the staged script from the test fixture, the script patches liblzma during compilation on glibc x86-64 RPM and DEB packaging builds only, and distribution-patched sshd reaches the backdoor because it links libsystemd which pulls in liblzma. A footer states that the account operating as Jia Tan was not a stolen account but one that earned commit and release-manager rights over roughly two years, and that comparing the tarball against the Git tree would have exposed the single divergent file.</desc>
+  <rect width="1200" height="500" fill="#ffffff"/>
+
+  <defs>
+    <marker id="xzA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">xz-utils 5.6.0 / 5.6.1: the divergence was one file</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The payload sat in Git in plain sight. What shipped only in the tarball was the code that switched it on.</text>
+
+  <rect x="40" y="104" width="548" height="176" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="130" font-size="12" font-weight="900" letter-spacing="0.8" fill="#2563eb">PUBLIC GIT TREE</text>
+  <text x="62" y="156" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f172a">tests/files/bad-3-corrupt_lzma2.xz</text>
+  <text x="62" y="174" font-size="12" fill="#475569">present &#8212; committed openly, disguised as corrupt-input test data</text>
+  <text x="62" y="200" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f172a">tests/files/good-large_compressed.lzma</text>
+  <text x="62" y="218" font-size="12" fill="#475569">present &#8212; the second stage of the same payload</text>
+  <text x="62" y="244" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">m4/build-to-host.m4</text>
+  <text x="62" y="262" font-size="12" font-weight="700" fill="#0f766e">benign. Nothing here reads or executes those test files.</text>
+
+  <rect x="612" y="104" width="548" height="176" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="634" y="130" font-size="12" font-weight="900" letter-spacing="0.8" fill="#9f1239">RELEASE TARBALL</text>
+  <text x="634" y="156" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f172a">tests/files/bad-3-corrupt_lzma2.xz</text>
+  <text x="634" y="174" font-size="12" fill="#475569">identical to the Git copy</text>
+  <text x="634" y="200" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f172a">tests/files/good-large_compressed.lzma</text>
+  <text x="634" y="218" font-size="12" fill="#475569">identical to the Git copy</text>
+  <text x="634" y="244" font-size="11.5" font-family="ui-monospace,monospace" fill="#9f1239">m4/build-to-host.m4</text>
+  <text x="634" y="262" font-size="12" font-weight="700" fill="#9f1239">MODIFIED &#8212; this version exists nowhere in Git.</text>
+
+  <path d="M592 192 L608 192" stroke="#9f1239" stroke-width="2.5" fill="none" marker-end="url(#xzA)"/>
+
+  <text x="50" y="306" font-size="13" font-weight="800" fill="#0f172a">What that one file set in motion at build time</text>
+
+  <rect x="40" y="320" width="266" height="76" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+  <text x="60" y="343" font-size="12.5" font-weight="800" fill="#0f172a">1. configure runs</text>
+  <text x="60" y="364" font-size="12" fill="#475569">Autotools expands the modified</text>
+  <text x="60" y="381" font-size="12" fill="#475569">macro during the build.</text>
+
+  <rect x="326" y="320" width="266" height="76" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+  <text x="346" y="343" font-size="12.5" font-weight="800" fill="#0f172a">2. Payload extracted</text>
+  <text x="346" y="364" font-size="12" fill="#475569">A sed pipeline pulls the staged</text>
+  <text x="346" y="381" font-size="12" fill="#475569">script out of the test fixture.</text>
+
+  <rect x="612" y="320" width="266" height="76" rx="10" fill="#fde8ea" stroke="#9f1239" stroke-width="2"/>
+  <text x="632" y="343" font-size="12.5" font-weight="800" fill="#0f172a">3. liblzma patched</text>
+  <text x="632" y="364" font-size="12" fill="#475569">Only on glibc x86-64, and only</text>
+  <text x="632" y="381" font-size="12" fill="#475569">on RPM or DEB packaging builds.</text>
+
+  <rect x="898" y="320" width="262" height="76" rx="10" fill="#fde8ea" stroke="#9f1239" stroke-width="2"/>
+  <text x="918" y="343" font-size="12.5" font-weight="800" fill="#0f172a">4. sshd reached</text>
+  <text x="918" y="364" font-size="12" fill="#475569">Distribution-patched sshd links</text>
+  <text x="918" y="381" font-size="12" fill="#475569">libsystemd, which pulls in liblzma.</text>
+
+  <path d="M310 358 L322 358" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#xzA)"/>
+  <path d="M596 358 L608 358" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#xzA)"/>
+  <path d="M882 358 L894 358" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#xzA)"/>
+
+  <rect x="40" y="414" width="1120" height="72" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="436" font-size="12.5" fill="#475569">The account operating as &#8220;Jia Tan&#8221; was not stolen. It contributed for roughly two years, earned commit access, then release-manager rights,</text>
+  <text x="62" y="454" font-size="12.5" fill="#475569">and used that standing to publish tarballs nobody diffed against the tree. Upstream OpenSSH does not link liblzma; the exposure came from distribution patches.</text>
+  <text x="62" y="476" font-size="12.5" font-weight="700" fill="#9f1239">A build that produced the tarball from the tagged commit, and published provenance saying so, would have made the single divergent file visible.</text>
+</svg>

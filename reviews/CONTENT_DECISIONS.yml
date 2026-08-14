@@ -2676,6 +2676,104 @@
       "superseded_by": null,
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0049",
+      "title": "Extend the one-image-per-diagram-frame rule to Section 8 and build six purpose-built diagrams",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/sbom-dependency-management.md",
+          "topics/cicd-pipeline-security.md",
+          "topics/slsa-provenance-attestation.md",
+          "topics/code-signing-sigstore.md",
+          "assets/img/sbom-vulnerability-management.svg",
+          "assets/img/cicd-pipeline-security.svg",
+          "assets/img/slsa-build-integrity.svg",
+          "assets/img/sigstore-code-signing.svg",
+          "assets/img/vex-triage-flow.svg",
+          "assets/img/ppe-vectors.svg",
+          "assets/img/oidc-workload-token-exchange.svg",
+          "assets/img/code-signing-key-exposure.svg",
+          "assets/img/sigstore-keyless-flow.svg",
+          "assets/img/xz-utils-tarball-divergence.svg"
+        ],
+        "concepts": [
+          "diagram caption agreement",
+          "duplicate diagram reuse",
+          "alt text accuracy",
+          "diagram clipping",
+          "full-size diagram affordance",
+          "mobile diagram legibility"
+        ]
+      },
+      "originating_feedback": "A fresh Section 8 review rendered every page and found ten diagram frames drawing on only four images: 8.1 embedded one image twice, 8.2 three times, and 8.4 four times, under captions and alt text promising a VEX suppression workflow, a PPE vector diagram, an OIDC exchange flow, a key-leakage vector, a keyless signing sequence, and an xz-utils attack chain, none of which existed. Browser measurement of assets/img/sbom-vulnerability-management.svg also found two text lines crossing their panel stroke by 41 and 42 pixels, one of them clipped 2 pixels past the 1200-wide viewBox. No Section 8 frame offered the full-size affordance already used by 31 other topic pages.",
+      "decision": "Apply the rule recorded in CD-0033 and extended by CD-0038 to Section 8: build a dedicated SVG for every diagram frame, rewrite each caption and alt string to describe only what its own image shows, widen the SBOM canvas and reflow its panel text so nothing is clipped, and wrap every frame in the repository's diagram-frame-openable pattern.",
+      "rationale": "CD-0033 established this rule from a Section 6 review and CD-0038 extended it to Section 7, but both recorded only their own section's files in scope, so the identical defect class survived untouched in Section 8. The rule is repository-wide in substance: a caption naming content the image lacks teaches the wrong thing, and an alt string describing a non-existent diagram is worse for a screen-reader user than no diagram at all. Neither is visible to syntax, link, or structure checks. Clipped text fails the same way.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Render every Section 8 page and confirm each image matches its caption and alt text.",
+        "Confirm no page embeds the same image twice.",
+        "Measure every Section 8 SVG with getComputedTextLength() in a browser and confirm no text crosses its panel stroke or the viewBox.",
+        "Inspect each SVG at full size and each page at 375px mobile width."
+      ],
+      "approved_outcome": "Ten Section 8 diagram frames, each with its own purpose-built image, matching caption and alt text, zero measured text overflow across all ten section SVGs, and a full-size link on every frame.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated.",
+        "Rendered evidence shows a replacement diagram clipping or misrepresenting its subject."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0033",
+        "CD-0038"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0050",
+      "title": "Label Section 8 author-created checklists as journal working models and scope its page descriptions",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/sbom-dependency-management.md",
+          "topics/cicd-pipeline-security.md",
+          "topics/slsa-provenance-attestation.md",
+          "topics/code-signing-sigstore.md"
+        ],
+        "concepts": [
+          "journal working model labelling",
+          "diagnostic checklist provenance",
+          "comprehensive scope claim",
+          "page description accuracy"
+        ]
+      },
+      "originating_feedback": "A fresh Section 8 review found that all four pages presented six-row author-created diagnostic checklists with audit-evidence columns as though drawn from a published standard, with no qualifying label anywhere in the section, while ten other journal pages label such content explicitly. All four descriptions opened 'Comprehensive technical guide to' while required foundational gaps remained, including the three-element structure of the NTIA baseline and an SBOM limitations section.",
+      "decision": "Apply the rule recorded in CD-0035 to Section 8: prefix every author-created diagnostic checklist with an explicit journal-working-model statement, and change each page description from 'Comprehensive technical guide to' to 'Technical reference for'.",
+      "rationale": "WRITING_STYLE requires an author-created synthesis to be labelled so a reader cannot mistake it for an official model, and requires a comprehensiveness claim to define and justify its scope. CD-0035 established this for Section 6 and Section 1 had already adopted a scoped formulation, so Section 8 was the inconsistent case rather than the precedent. Nineteen further journal pages still open with the same phrase; sweeping those is a separate scoping decision and is not settled here.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm each Section 8 diagnostic checklist carries a working-model statement.",
+        "Confirm no Section 8 description claims comprehensive coverage.",
+        "Compare description wording against the pattern already used in Sections 1 and 6."
+      ],
+      "approved_outcome": "Every Section 8 checklist states its provenance, and no Section 8 description claims comprehensive coverage.",
+      "invalidation_conditions": [
+        "A checklist is replaced by one derived from a published audit standard, which should then be cited instead of labelled.",
+        "A page's scope is defined and justified such that a comprehensiveness claim becomes supportable."
+      ],
+      "related_decisions": [
+        "CD-0027",
+        "CD-0035"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-14",
+      "last_reviewed_on": "2026-08-14"
     }
   ]
 }

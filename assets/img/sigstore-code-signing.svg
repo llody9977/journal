@@ -1,50 +1,48 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">Code Signing, Binary Integrity &amp; Sigstore Architecture</title>
-  <desc id="description">Sigstore diagram showing Fulcio OIDC short-lived certificates, Rekor immutable transparency log, Cosign binary signing, and xz-utils case study.</desc>
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="sigarch-title sigarch-desc">
+  <title id="sigarch-title">Sigstore keyless signing architecture and the xz-utils case study</title>
+  <desc id="sigarch-desc">Three component panels and a case study. Fulcio authenticates via OpenID Connect and issues an ephemeral X.509 certificate valid for about ten minutes, binding the public key to the verified workload identity and removing long-lived key management. Rekor is an append-only, tamper-evident Merkle transparency log that stores the signature, certificate and artifact digest and returns an inclusion proof against a co-signed checkpoint; Rekor v2 no longer issues Signed Entry Timestamps, so clients obtain an RFC 3161 timestamp from a timestamp authority. Cosign signs container images and blobs, stores signatures as OCI artifacts, and verifies the certificate identity, with Kubernetes admission controllers enforcing the policy. The case study panel records that in xz-utils the payload test fixtures were present in Git while only the modified build-to-host.m4 shipped in the release tarball, that the maintainer account was earned rather than stolen, and that signing proves who produced an artifact but not that its contents are safe.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
   <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Code Signing, Binary Integrity &amp; Sigstore</text>
-  <text x="50" y="75" font-size="14" fill="#475569">Keyless signing via Fulcio OIDC short-lived certificates, Rekor transparency log, Cosign, and the xz-utils backdoor (CVE-2024-3094).</text>
-  
-  <!-- Fulcio & Keyless Signing (x=40, w=355, y=105, h=160) -->
-  <rect x="40" y="105" width="355" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="50" y="75" font-size="14" fill="#475569">Keyless signing via Fulcio short-lived certificates, the Rekor transparency log, Cosign, and the xz-utils backdoor (CVE-2024-3094).</text>
+
+  <rect x="40" y="105" width="355" height="170" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
   <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">FULCIO (KEYLESS OIDC CERTIFICATE CA)</text>
   <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Short-Lived X.509 Signing Certificates</text>
   <line x1="60" y1="166" x2="375" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Authenticates via OpenID Connect (OIDC)</text>
-  <text x="60" y="204" font-size="11.5" font-weight="500" fill="#475569">• Issues ephemeral X.509 cert (10-min validity)</text>
-  <text x="60" y="222" font-size="11.5" font-weight="500" fill="#475569">• Binds public key to developer identity</text>
-  <text x="60" y="240" font-size="11.5" font-weight="500" fill="#475569">• Eliminates long-lived private key management</text>
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; Authenticates via OpenID Connect</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">&#8226; Issues an ephemeral cert (~10 min)</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">&#8226; Binds the key to a verified identity</text>
+  <text x="60" y="246" font-size="11.5" font-weight="500" fill="#475569">&#8226; No long-lived private key to manage</text>
+  <text x="60" y="266" font-size="11.5" font-weight="500" fill="#475569">&#8226; Expiry replaces revocation</text>
 
-  <!-- Rekor Transparency Log (x=422, w=355, y=105, h=160) -->
-  <rect x="422" y="105" width="355" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <rect x="422" y="105" width="355" height="170" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
   <text x="442" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">REKOR (TRANSPARENCY LOG)</text>
-  <text x="442" y="155" font-size="14" font-weight="800" fill="#0f172a">Immutable Merkle Log Audit Trail</text>
+  <text x="442" y="155" font-size="14" font-weight="800" fill="#0f172a">Append-Only Tamper-Evident Merkle Log</text>
   <line x1="442" y1="166" x2="757" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="442" y="186" font-size="11.5" font-weight="500" fill="#475569">• Append-only cryptographic Merkle tree</text>
-  <text x="442" y="204" font-size="11.5" font-weight="500" fill="#475569">• Stores signature, cert, &amp; artifact hash</text>
-  <text x="442" y="222" font-size="11.5" font-weight="500" fill="#475569">• Provides Signed Entry Timestamp (SET)</text>
-  <text x="442" y="240" font-size="11.5" font-weight="500" fill="#475569">• Enables public auditing &amp; non-repudiation</text>
+  <text x="442" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; Append-only Merkle tree</text>
+  <text x="442" y="206" font-size="11.5" font-weight="500" fill="#475569">&#8226; Stores signature, cert, artifact digest</text>
+  <text x="442" y="226" font-size="11.5" font-weight="500" fill="#475569">&#8226; Returns an inclusion proof against a</text>
+  <text x="442" y="244" font-size="11.5" font-weight="500" fill="#475569">&#160;&#160;co-signed checkpoint</text>
+  <text x="442" y="264" font-size="11.5" font-weight="700" fill="#0f766e">&#8226; v2: no SET &#8212; use an RFC 3161 TSA</text>
 
-  <!-- Cosign Verification (x=805, w=355, y=105, h=160) -->
-  <rect x="805" y="105" width="355" height="160" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+  <rect x="805" y="105" width="355" height="170" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
   <text x="825" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">COSIGN (BINARY &amp; IMAGE SIGNING)</text>
   <text x="825" y="155" font-size="14" font-weight="800" fill="#0f172a">OCI Container &amp; Blob Verification</text>
   <line x1="825" y1="166" x2="1140" y2="166" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-  <text x="825" y="186" font-size="11.5" font-weight="500" fill="#475569">• Signs container images &amp; blobs</text>
-  <text x="825" y="204" font-size="11.5" font-weight="500" fill="#475569">• Stores signatures as OCI artifacts</text>
-  <text x="825" y="222" font-size="11.5" font-weight="500" fill="#475569">• Verifies cert SAN identity against Rekor log</text>
-  <text x="825" y="240" font-size="11.5" font-weight="500" fill="#475569">• Kubernetes Kyverno / Gatekeeper admission</text>
+  <text x="825" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; Signs container images &amp; blobs</text>
+  <text x="825" y="206" font-size="11.5" font-weight="500" fill="#475569">&#8226; Stores signatures as OCI artifacts</text>
+  <text x="825" y="226" font-size="11.5" font-weight="500" fill="#475569">&#8226; Pins an exact identity, or an</text>
+  <text x="825" y="244" font-size="11.5" font-weight="500" fill="#475569">&#160;&#160;anchored identity regexp</text>
+  <text x="825" y="264" font-size="11.5" font-weight="500" fill="#475569">&#8226; Enforced by Kubernetes admission</text>
 
-  <!-- xz-utils Case Study (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">REAL-WORLD CASE STUDY: THE XZ-UTILS BACKDOOR (CVE-2024-3094)</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Release Tarball Tampering vs Source Code Audit</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Attack Mechanism: Compromised maintainer added hidden payload files into official release tarballs during autoconf build</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Impact: Target sshd binary authentication interception via systemd linkage</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Lesson: Signing proves *who* built an artifact; it does NOT prove source code or maintainers were benign. Hermetic reproducible builds required.</text>
+  <rect x="40" y="295" width="1120" height="145" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
+  <text x="60" y="322" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">REAL-WORLD CASE STUDY: THE XZ-UTILS BACKDOOR (CVE-2024-3094)</text>
+  <text x="60" y="345" font-size="14" font-weight="800" fill="#0f172a">Release Tarball Divergence vs Source Code Audit</text>
+  <line x1="60" y1="356" x2="1140" y2="356" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="376" font-size="11.5" font-weight="500" fill="#475569">&#8226; Mechanism: the payload test fixtures were committed openly in Git; only the modified m4/build-to-host.m4 shipped in the release tarball</text>
+  <text x="60" y="394" font-size="11.5" font-weight="500" fill="#475569">&#8226; Access: the maintainer account was earned over roughly two years, not stolen &#8212; no credential control would have prevented it</text>
+  <text x="60" y="412" font-size="11.5" font-weight="700" fill="#b91c1c">&#8226; Lesson: signing proves *who* produced an artifact; it does not prove the contents are safe. Build the tarball from the tagged commit.</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">SIGSTORE FLOW: OIDC AUTHENTICATION → FULCIO CERTIFICATE ISSUANCE → COSIGN BINARY SIGNING → REKOR MERKLE LOGGING</text>
+  <rect x="40" y="455" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="480" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">SIGSTORE FLOW: OIDC AUTHENTICATION &#8594; FULCIO CERTIFICATE &#8594; COSIGN SIGNING &#8594; REKOR LOGGING &#8594; RFC 3161 TIMESTAMP</text>
 </svg>

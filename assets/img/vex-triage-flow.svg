@@ -1,0 +1,62 @@
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="vexflow-title vexflow-desc">
+  <title id="vexflow-title">How a VEX status resolves one CVE match against one SBOM component</title>
+  <desc id="vexflow-desc">A pipeline runs left to right: an SBOM component identified by a Package URL is correlated against the OSV and NVD vulnerability databases, producing a CVE candidate, which is then looked up in the supplier's VEX statement for that product. Four outcome rows follow. NOT_AFFECTED suppresses the finding and must carry one of five justifications: component_not_present, vulnerable_code_not_present, vulnerable_code_not_in_execute_path, vulnerable_code_cannot_be_controlled_by_adversary, or inline_mitigations_already_exist. AFFECTED requires remediation and should carry an action statement. FIXED requires checking that the deployed version is at or above the fixed version. UNDER_INVESTIGATION is a temporary hold that must be re-queried. A footer notes that VEX is a class of assertion carried by CSAF VEX, OpenVEX, and CycloneDX VEX, and that a suppression is only as good as the supplier's analysis.</desc>
+  <rect width="1200" height="560" fill="#ffffff"/>
+
+  <defs>
+    <marker id="vexA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">From SBOM component to a triaged CVE finding</text>
+  <text x="50" y="72" font-size="14" fill="#475569">A VEX status answers whether this product is exploitable, not whether the vulnerable component is present.</text>
+
+  <rect x="40" y="100" width="250" height="80" rx="12" fill="#193e9f"/>
+  <text x="165" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#ffffff">SBOM component</text>
+  <text x="165" y="152" text-anchor="middle" font-size="11.5" font-family="ui-monospace,monospace" fill="#c9d7fb">pkg:npm/%40angular/</text>
+  <text x="165" y="169" text-anchor="middle" font-size="11.5" font-family="ui-monospace,monospace" fill="#c9d7fb">core@16.2.0</text>
+
+  <rect x="330" y="100" width="250" height="80" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="455" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0f172a">Correlate by purl</text>
+  <text x="455" y="152" text-anchor="middle" font-size="12.5" fill="#475569">against OSV and NVD</text>
+  <text x="455" y="170" text-anchor="middle" font-size="12.5" fill="#475569">vulnerability data</text>
+
+  <rect x="620" y="100" width="250" height="80" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="745" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0f172a">CVE candidate</text>
+  <text x="745" y="152" text-anchor="middle" font-size="12.5" fill="#475569">component matched, but</text>
+  <text x="745" y="170" text-anchor="middle" font-size="12.5" fill="#475569">exploitability still unknown</text>
+
+  <rect x="910" y="100" width="250" height="80" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="1035" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0f172a">VEX statement</text>
+  <text x="1035" y="152" text-anchor="middle" font-size="12.5" fill="#475569">published by the supplier</text>
+  <text x="1035" y="170" text-anchor="middle" font-size="12.5" fill="#475569">for this product and CVE</text>
+
+  <path d="M294 140 L326 140" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#vexA)"/>
+  <path d="M584 140 L616 140" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#vexA)"/>
+  <path d="M874 140 L906 140" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#vexA)"/>
+
+  <text x="50" y="212" font-size="13" font-weight="800" fill="#0f172a">The status value decides what happens next</text>
+
+  <rect x="40" y="228" width="1120" height="78" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="62" y="252" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">NOT_AFFECTED &#8212; suppress the finding</text>
+  <text x="62" y="274" font-size="12" fill="#475569">Must carry one of five justifications:</text>
+  <text x="290" y="274" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">component_not_present &#183; vulnerable_code_not_present</text>
+  <text x="62" y="294" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">vulnerable_code_not_in_execute_path &#183; vulnerable_code_cannot_be_controlled_by_adversary &#183; inline_mitigations_already_exist</text>
+
+  <rect x="40" y="314" width="1120" height="52" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="62" y="338" font-size="12" font-weight="900" letter-spacing="0.8" fill="#9f1239">AFFECTED &#8212; remediate</text>
+  <text x="62" y="358" font-size="12.5" fill="#475569">The product is exploitable. The statement should carry an action statement describing the required remediation.</text>
+
+  <rect x="40" y="374" width="1120" height="52" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="398" font-size="12" font-weight="900" letter-spacing="0.8" fill="#2563eb">FIXED &#8212; verify the deployed version</text>
+  <text x="62" y="418" font-size="12.5" fill="#475569">A patched release exists. Confirm the version actually deployed is at or above it before closing the finding.</text>
+
+  <rect x="40" y="434" width="1120" height="52" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="62" y="458" font-size="12" font-weight="900" letter-spacing="0.8" fill="#b45309">UNDER_INVESTIGATION &#8212; hold and re-query</text>
+  <text x="62" y="478" font-size="12.5" fill="#475569">A temporary state, not an outcome. Re-query on a schedule; treat a stale one as unresolved rather than benign.</text>
+
+  <rect x="40" y="498" width="1120" height="44" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="518" font-size="12" fill="#475569">VEX is a class of assertion, not one file format &#8212; CSAF VEX, OpenVEX, and CycloneDX VEX all carry these statuses and justifications.</text>
+  <text x="62" y="535" font-size="12" font-weight="700" fill="#9f1239">A suppression is only as good as the supplier's analysis: an incorrect NOT_AFFECTED hides a real exposure permanently.</text>
+</svg>

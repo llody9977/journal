@@ -1,0 +1,61 @@
+<svg viewBox="0 0 1200 530" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ppe-title ppe-desc">
+  <title id="ppe-title">The three Poisoned Pipeline Execution vectors, separated by the access the attacker already holds</title>
+  <desc id="ppe-desc">Three rows compare the OWASP CICD-SEC-4 sub-types. Direct PPE requires write access to the repository; the attacker edits the CI configuration file itself, by pushing to an unprotected branch or opening a pull request, and the platform runs the modified definition. Indirect PPE also requires write access but applies when the configuration is protected or stored elsewhere; the attacker instead edits a file the pipeline executes, such as a Makefile, build script, test file, or linter configuration. Public PPE requires no repository access at all; an anonymous contributor opens a fork pull request against a public repository whose pipeline runs unreviewed code. A footer states that branch protection and review contain the first two, that only a fork pull request approval gate contains the third, and that applying the fork gate alone leaves Direct and Indirect PPE fully open.</desc>
+  <rect width="1200" height="530" fill="#ffffff"/>
+
+  <defs>
+    <marker id="ppeA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">Poisoned Pipeline Execution: three vectors, three attacker positions</text>
+  <text x="50" y="72" font-size="14" fill="#475569">The control that stops one does not stop the others, because the attacker does not start from the same place.</text>
+
+  <text x="62" y="98" font-size="11" font-weight="900" letter-spacing="0.9" fill="#64748b">ACCESS ALREADY HELD</text>
+  <text x="360" y="98" font-size="11" font-weight="900" letter-spacing="0.9" fill="#64748b">WHAT THE ATTACKER MODIFIES</text>
+  <text x="770" y="98" font-size="11" font-weight="900" letter-spacing="0.9" fill="#64748b">WHY THE RUNNER EXECUTES IT</text>
+
+  <rect x="40" y="108" width="1120" height="100" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="62" y="134" font-size="13.5" font-weight="800" fill="#9f1239">Direct PPE (D-PPE)</text>
+  <text x="62" y="158" font-size="12.5" fill="#475569">Write access to the</text>
+  <text x="62" y="176" font-size="12.5" fill="#475569">repository.</text>
+  <text x="360" y="134" font-size="12.5" font-weight="700" fill="#0f172a">The CI configuration file itself</text>
+  <text x="360" y="158" font-size="11.5" font-family="ui-monospace,monospace" fill="#9f1239">.github/workflows/build.yml</text>
+  <text x="360" y="180" font-size="12.5" fill="#475569">pushed to an unprotected branch,</text>
+  <text x="360" y="196" font-size="12.5" fill="#475569">or carried in a pull request.</text>
+  <text x="770" y="134" font-size="12.5" fill="#475569">The platform reads the definition</text>
+  <text x="770" y="152" font-size="12.5" fill="#475569">from the branch being built, so the</text>
+  <text x="770" y="170" font-size="12.5" fill="#475569">edited file is the one that runs.</text>
+
+  <rect x="40" y="220" width="1120" height="100" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+  <text x="62" y="246" font-size="13.5" font-weight="800" fill="#b45309">Indirect PPE (I-PPE)</text>
+  <text x="62" y="270" font-size="12.5" fill="#475569">Write access, but the</text>
+  <text x="62" y="288" font-size="12.5" fill="#475569">CI file is out of reach.</text>
+  <text x="360" y="246" font-size="12.5" font-weight="700" fill="#0f172a">A file the pipeline executes</text>
+  <text x="360" y="270" font-size="11.5" font-family="ui-monospace,monospace" fill="#b45309">Makefile &#183; build.sh &#183; test files</text>
+  <text x="360" y="292" font-size="12.5" fill="#475569">The workflow file is untouched, so</text>
+  <text x="360" y="308" font-size="12.5" fill="#475569">a workflow-only diff review passes.</text>
+  <text x="770" y="246" font-size="12.5" fill="#475569">The workflow calls out to the file</text>
+  <text x="770" y="264" font-size="12.5" fill="#475569">by name. Whatever that file now</text>
+  <text x="770" y="282" font-size="12.5" fill="#475569">contains runs on the pipeline node.</text>
+
+  <rect x="40" y="332" width="1120" height="116" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="62" y="358" font-size="13.5" font-weight="800" fill="#2563eb">Public PPE (3PE)</text>
+  <text x="62" y="382" font-size="12.5" font-weight="700" fill="#9f1239">None. Any anonymous</text>
+  <text x="62" y="400" font-size="12.5" font-weight="700" fill="#9f1239">internet user qualifies.</text>
+  <text x="360" y="358" font-size="12.5" font-weight="700" fill="#0f172a">Code proposed from a fork</text>
+  <text x="360" y="382" font-size="12.5" fill="#475569">A pull request against a public</text>
+  <text x="360" y="400" font-size="12.5" fill="#475569">repository, carrying either a</text>
+  <text x="360" y="418" font-size="12.5" fill="#475569">workflow change or an executed file.</text>
+  <text x="770" y="358" font-size="12.5" fill="#475569">The public repository runs unreviewed</text>
+  <text x="770" y="376" font-size="12.5" fill="#475569">contributor code on pull-request</text>
+  <text x="770" y="394" font-size="12.5" fill="#475569">events. On GitHub, a</text>
+  <text x="897" y="394" font-size="11.5" font-family="ui-monospace,monospace" fill="#2563eb">pull_request_target</text>
+  <text x="770" y="412" font-size="12.5" fill="#475569">workflow runs the fork's code with</text>
+  <text x="770" y="430" font-size="12.5" fill="#475569">the base repository's secrets.</text>
+
+  <rect x="40" y="462" width="1120" height="48" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="483" font-size="12" fill="#475569">Branch protection, mandatory review, and restricting who holds write access contain D-PPE and I-PPE. Only a fork pull-request approval gate contains 3PE.</text>
+  <text x="62" y="501" font-size="12" font-weight="700" fill="#9f1239">Applying the fork gate alone leaves D-PPE and I-PPE untouched &#8212; those attackers never open a fork.</text>
+</svg>

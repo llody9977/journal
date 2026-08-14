@@ -1,0 +1,56 @@
+<svg viewBox="0 0 1200 510" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="oidcx-title oidcx-desc">
+  <title id="oidcx-title">OIDC workload identity exchange, and the claim the trust policy must actually pin</title>
+  <desc id="oidcx-desc">A build runner requests a short-lived JSON Web Token from the CI platform's OIDC provider, then presents it to the cloud provider's Security Token Service, which validates it and returns temporary credentials. Below, two panels compare the token the runner receives with the trust policy that consumes it. The token carries iss, aud, sub, repository, and ref claims. The trust policy must condition on aud and on sub, which encodes repository plus branch, tag, environment, or reusable workflow. A warning states that conditioning on the repository claim alone is satisfied by any branch or workflow in that repository, so any pipeline poisoning that achieves execution there mints production credentials. A footer notes that a short lifetime bounds how long a stolen token stays useful but does not prevent theft or guarantee revocation.</desc>
+  <rect width="1200" height="510" fill="#ffffff"/>
+
+  <defs>
+    <marker id="oidcA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="46" font-size="26" font-weight="850" fill="#0f172a">OIDC workload identity: the exchange, and the claim that matters</text>
+  <text x="50" y="72" font-size="14" fill="#475569">Removing the static key moves the entire security decision into the trust policy on the cloud side.</text>
+
+  <rect x="40" y="100" width="300" height="86" rx="12" fill="#193e9f"/>
+  <text x="190" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#ffffff">1. Build runner</text>
+  <text x="190" y="152" text-anchor="middle" font-size="12.5" fill="#c9d7fb">requests a short-lived JWT</text>
+  <text x="190" y="170" text-anchor="middle" font-size="12.5" fill="#c9d7fb">from its own CI platform</text>
+
+  <rect x="380" y="100" width="300" height="86" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="530" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0f172a">2. CI OIDC provider</text>
+  <text x="530" y="152" text-anchor="middle" font-size="12.5" fill="#475569">signs a token describing</text>
+  <text x="530" y="170" text-anchor="middle" font-size="12.5" fill="#475569">this exact workflow run</text>
+
+  <rect x="720" y="100" width="440" height="86" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="940" y="128" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0f172a">3. Cloud Security Token Service</text>
+  <text x="940" y="152" text-anchor="middle" font-size="12.5" fill="#475569">validates the signature against the issuer's JWKS,</text>
+  <text x="940" y="170" text-anchor="middle" font-size="12.5" fill="#475569">evaluates the trust policy, returns temporary credentials</text>
+
+  <path d="M344 143 L376 143" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#oidcA)"/>
+  <path d="M684 143 L716 143" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#oidcA)"/>
+
+  <rect x="40" y="212" width="560" height="180" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="62" y="236" font-size="12" font-weight="900" letter-spacing="0.8" fill="#64748b">WHAT THE RUNNER RECEIVES</text>
+  <text x="62" y="262" font-size="11.5" font-family="ui-monospace,monospace" fill="#475569">"iss": "https://token.actions.githubusercontent.com"</text>
+  <text x="62" y="284" font-size="11.5" font-family="ui-monospace,monospace" fill="#475569">"aud": "sts.amazonaws.com"</text>
+  <text x="62" y="306" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">"sub": "repo:example/app:ref:refs/heads/main"</text>
+  <text x="62" y="328" font-size="11.5" font-family="ui-monospace,monospace" fill="#b45309">"repository": "example/app"</text>
+  <text x="62" y="350" font-size="11.5" font-family="ui-monospace,monospace" fill="#475569">"ref": "refs/heads/main"</text>
+  <text x="62" y="376" font-size="12" fill="#475569">Only the signature and the claim set are presented. No secret is stored.</text>
+
+  <rect x="640" y="212" width="520" height="180" rx="12" fill="#e6f4f1" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="662" y="236" font-size="12" font-weight="900" letter-spacing="0.8" fill="#0f766e">WHAT THE TRUST POLICY MUST PIN</text>
+  <text x="662" y="262" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">"...githubusercontent.com:aud": "sts.amazonaws.com"</text>
+  <text x="662" y="284" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">"...githubusercontent.com:sub":</text>
+  <text x="662" y="304" font-size="11.5" font-family="ui-monospace,monospace" fill="#0f766e">  "repo:example/app:ref:refs/heads/main"</text>
+  <text x="662" y="332" font-size="12.5" fill="#475569">The sub claim encodes repository plus branch, tag,</text>
+  <text x="662" y="350" font-size="12.5" fill="#475569">environment, or reusable workflow. Pin that.</text>
+  <text x="662" y="376" font-size="12" font-weight="700" fill="#9f1239">Conditioning on repository alone matches any branch.</text>
+
+  <rect x="40" y="408" width="1120" height="94" rx="12" fill="#fde8ea" stroke="#9f1239" stroke-width="2.5"/>
+  <text x="62" y="432" font-size="12" font-weight="900" letter-spacing="0.8" fill="#9f1239">RESIDUAL RISK</text>
+  <text x="62" y="454" font-size="12.5" fill="#475569">A repository-only condition means any pipeline poisoning that achieves execution in that repository &#8212; on any branch &#8212; mints production credentials.</text>
+  <text x="62" y="474" font-size="12.5" fill="#475569">A short lifetime bounds how long a stolen token or credential stays useful. It does not prevent theft, and it does not guarantee revocation:</text>
+  <text x="62" y="490" font-size="12.5" fill="#475569">credentials already issued normally remain valid until they expire, even after the trust rule is removed.</text>
+</svg>

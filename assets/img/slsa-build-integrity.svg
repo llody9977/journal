@@ -1,40 +1,40 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">SLSA &amp; Build Provenance Attestations Architecture</title>
-  <desc id="description">SLSA diagram showing SLSA v1.2 Build track levels (L0 to L3), in-toto provenance JSON schema, and hermetic build isolation.</desc>
-  <rect width="1200" height="500" fill="#ffffff"/>
+<svg viewBox="0 0 1200 530" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="slsaarch-title slsaarch-desc">
+  <title id="slsaarch-title">SLSA v1.2 Build track levels and in-toto provenance architecture</title>
+  <desc id="slsaarch-desc">Three panels. The first lists the SLSA v1.2 Build track levels: L0 gives no guarantees, L1 requires provenance to exist and be distributed, L2 requires authentic verifiable provenance from a hosted build platform, and L3 requires a hardened platform where build runs cannot influence one another and platform secrets stay unreachable from user-defined build steps. It also notes that v1.2 approved a Source track alongside Build. The second describes the in-toto provenance predicate fields: builder ID, build type, external parameters and resolved dependencies, and the subject digest. The third panel covers verification and states explicitly that hermetic and reproducible builds are not Build L3 requirements, that SLSA treats network isolation as a future direction, and that SLSA attests how an artifact was built rather than whether its inputs were benign.</desc>
+  <rect width="1200" height="530" fill="#ffffff"/>
   <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">SLSA &amp; Build Provenance Attestations</text>
-  <text x="50" y="75" font-size="14" fill="#475569">SLSA v1.2 Build Levels (L0–L3), in-toto provenance statements, and verifiable build platform isolation.</text>
-  
-  <!-- SLSA Levels (x=40, w=540, y=105, h=160) -->
-  <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="50" y="75" font-size="14" fill="#475569">SLSA v1.2 Build track levels (L0&#8211;L3), in-toto provenance statements, and what build integrity does not cover.</text>
+
+  <rect x="40" y="105" width="540" height="193" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
   <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">SLSA V1.2 BUILD TRACK LEVELS</text>
   <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Graduated Build Integrity Guarantees</text>
   <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• L0: No integrity guarantees</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• L1: Provenance exists &amp; distributed (documents build process)</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• L2: Authentic verifiable provenance + hosted build platform</text>
-  <text x="60" y="246" font-size="11.5" font-weight="500" fill="#475569">• L3: Dedicated builder isolation (hardened ephemeral build steps)</text>
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; L0: no build integrity guarantees</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">&#8226; L1: provenance exists and is distributed to consumers</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">&#8226; L2: authentic, verifiable provenance from a hosted platform</text>
+  <text x="60" y="246" font-size="11.5" font-weight="500" fill="#475569">&#8226; L3: hardened &#8212; runs cannot influence one another and</text>
+  <text x="60" y="264" font-size="11.5" font-weight="500" fill="#475569">&#160;&#160;platform secrets stay out of user-defined build steps</text>
+  <text x="60" y="282" font-size="11.5" font-weight="700" fill="#2563eb">&#8226; v1.2 also approves a Source track alongside Build</text>
 
-  <!-- in-toto Provenance (x=620, w=540, y=105, h=160) -->
-  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <rect x="620" y="105" width="540" height="193" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
   <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">IN-TOTO PROVENANCE SCHEMA</text>
   <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Verifiable Build Attestation Predicate</text>
   <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Builder ID: Identifies the hosted build service URI</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• BuildType: Identifies workflow template &amp; entrypoint script</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• External Parameters &amp; Resolved Dependencies (git commit hash)</text>
-  <text x="640" y="246" font-size="11.5" font-weight="500" fill="#475569">• Subject: Cryptographic hash (SHA-256) of output binary artifact</text>
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; Builder ID: the hosted build service making the claim</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">&#8226; BuildType: names the schema the parameters follow</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">&#8226; External parameters and resolved dependencies</text>
+  <text x="640" y="244" font-size="11.5" font-weight="500" fill="#475569">&#160;&#160;(source repository and git commit digest)</text>
+  <text x="640" y="268" font-size="11.5" font-weight="500" fill="#475569">&#8226; Subject: SHA-256 digest of the output artifact</text>
+  <text x="640" y="286" font-size="11.5" font-weight="700" fill="#0f766e">&#8226; Builder ID and buildType are what a policy pins</text>
 
-  <!-- Verification & Hermetic Builds (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">PROVENANCE VERIFICATION &amp; REPRODUCIBLE BUILDS</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Cryptographic Verification vs Source Code Auditing</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Verification Policy: SLSA verifier matches artifact hash against signed provenance from trusted builder ID</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Hermetic Builds: Network-isolated build steps pulling only declared dependencies from verified local caches</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Security Limit: SLSA proves *how* an artifact was built; it does NOT prove that source code or dependencies were benign.</text>
+  <rect x="40" y="310" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
+  <text x="60" y="337" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">VERIFICATION, AND WHAT SITS BEYOND BUILD L3</text>
+  <text x="60" y="360" font-size="14" font-weight="800" fill="#0f172a">Cryptographic Verification vs Source Code Auditing</text>
+  <line x1="60" y1="371" x2="1140" y2="371" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="391" font-size="11.5" font-weight="500" fill="#475569">&#8226; Verification policy: the verifier matches the artifact digest and the builder ID against signed provenance from a trusted builder</text>
+  <text x="60" y="409" font-size="11.5" font-weight="700" fill="#b45309">&#8226; Hermetic and reproducible builds are NOT Build L3 requirements &#8212; SLSA treats network isolation as a future direction</text>
+  <text x="60" y="427" font-size="11.5" font-weight="500" fill="#475569">&#8226; Security limit: SLSA attests *how* an artifact was built; it does not attest that the source or its dependencies were benign</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">SLSA INTEGRITY FLOW: SOURCE COMMIT → HOSTED BUILDER → SIGNED IN-TOTO ATTESTATION → VERIFIER VALIDATION</text>
+  <rect x="40" y="470" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="495" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">SLSA INTEGRITY FLOW: SOURCE COMMIT &#8594; HOSTED BUILDER &#8594; SIGNED IN-TOTO ATTESTATION &#8594; VERIFIER VALIDATION</text>
 </svg>

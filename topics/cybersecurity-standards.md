@@ -116,7 +116,7 @@ Engineering teams often navigate multiple NIST 800-series publications and Feder
 
 | Standard / Framework | Focus Area | Primary Function | Best Used For |
 |---|---|---|---|
-| **[NIST SP 800-218 (SSDF)](https://csrc.nist.gov/pubs/sp/800/218/final)** &amp; **[SLSA v1.2](https://slsa.dev/spec/v1.2/)** | Software Supply Chain | Secure development &amp; build provenance | Hardening software supply chains, dependency integrity, and artifact provenance—see **[Software Supply Chain Security]({{ '/topics/software-supply-chain-security/' | relative_url }})** for the deep dive. |
+| **[NIST SP 800-218 (SSDF)](https://csrc.nist.gov/pubs/sp/800/218/final)** &amp; **[SLSA v1.2](https://slsa.dev/spec/v1.2/)** | Software Supply Chain | Secure development &amp; build provenance | Hardening software supply chains, dependency integrity, and artifact provenance—see **[SLSA &amp; Build Provenance Attestations]({{ '/topics/slsa-provenance-attestation/' | relative_url }})** for the deep dive. |
 | **OWASP ASVS 5.0.0** | Application Security | Testable application requirements | Designing, coding, and auditing secure web applications and API endpoints. |
 | **[OWASP CI/CD Top 10](https://owasp.org/www-project-top-10-ci-cd-security-risks/)** | Pipeline Security | CI/CD build hardening | Mitigating build pipeline manipulation, runner compromise, and un-gated deployments. |
 | **Threat Modeling** *(STRIDE / PASTA)* | Architecture | Structured threat identification | Evaluating misuse cases and trust transitions tailored to project trade-offs—see **[Trust Boundaries &amp; Threat Modeling]({{ '/topics/trust-boundaries-threat-modeling/' | relative_url }})**. |

@@ -1,38 +1,37 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">CI/CD Pipeline Security &amp; Workload Identity Architecture</title>
-  <desc id="description">CI/CD Security diagram showing OWASP Top 10 CI/CD Security Risks, Poisoned Pipeline Execution (PPE), and OIDC workload identity federation.</desc>
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="cicdarch-title cicdarch-desc">
+  <title id="cicdarch-title">CI/CD pipeline security and workload identity architecture</title>
+  <desc id="cicdarch-desc">Three panels. The first lists representative OWASP CI/CD risks: CICD-SEC-4 Poisoned Pipeline Execution with its three vectors D-PPE, I-PPE and 3PE; CICD-SEC-6 insufficient credential hygiene from static cloud keys held in secret stores; and CICD-SEC-3 dependency chain abuse. The second describes the OIDC workload identity exchange: the runner requests a short-lived JWT from its CI platform, exchanges it through AssumeRoleWithWebIdentity or the equivalent, has the trust policy pin both the audience and the subject claim rather than the repository alone, and receives temporary credentials lasting one hour by default. The third covers pipeline hardening: branch protection, ephemeral isolated runners, and scoping secrets to protected branches and approval-gated environments. A bottom bar summarizes the flow from code review through runner allocation and token exchange to deployment.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
   <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">CI/CD Pipeline Security &amp; Workload Identity</text>
   <text x="50" y="75" font-size="14" fill="#475569">OWASP CI/CD Top 10 risks, Poisoned Pipeline Execution (PPE), and passwordless OIDC workload identity federation.</text>
-  
-  <!-- OWASP CI/CD Risks (x=40, w=540, y=105, h=160) -->
-  <rect x="40" y="105" width="540" height="160" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
+
+  <rect x="40" y="105" width="540" height="170" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5" />
   <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#b91c1c">OWASP CI/CD SECURITY RISKS</text>
   <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Pipeline Attack Vectors &amp; Compromise</text>
   <line x1="60" y1="166" x2="560" y2="166" stroke="#b91c1c" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• CICD-SEC-4: Poisoned Pipeline Execution (PPE via pull request modification)</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• CICD-SEC-6: Insufficient Credential Hygiene (Static cloud keys in secrets store)</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• CICD-SEC-3: Dependency Chain Abuse &amp; Malicious Upstream Packages</text>
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; CICD-SEC-4: Poisoned Pipeline Execution &#8212; three vectors,</text>
+  <text x="60" y="204" font-size="11.5" font-weight="500" fill="#475569">&#160;&#160;D-PPE, I-PPE and 3PE, each from a different access level</text>
+  <text x="60" y="228" font-size="11.5" font-weight="500" fill="#475569">&#8226; CICD-SEC-6: Insufficient Credential Hygiene (static cloud</text>
+  <text x="60" y="246" font-size="11.5" font-weight="500" fill="#475569">&#160;&#160;keys held in pipeline secret stores)</text>
+  <text x="60" y="266" font-size="11.5" font-weight="500" fill="#475569">&#8226; CICD-SEC-3: Dependency Chain Abuse</text>
 
-  <!-- OIDC Workload Identity (x=620, w=540, y=105, h=160) -->
-  <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
+  <rect x="620" y="105" width="540" height="170" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
   <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">OIDC WORKLOAD IDENTITY FEDERATION</text>
   <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Passwordless Short-Lived Cloud Tokens</text>
   <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• 1. Build Runner requests OIDC JWT token from GitHub/GitLab IdP</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• 2. Exchange JWT via AssumeRoleWithWebIdentity (AWS STS / GCP WIF)</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• 3. Receive short-lived scoped cloud credentials (1-hour expiry)</text>
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">&#8226; 1. Runner requests a short-lived OIDC JWT from its platform</text>
+  <text x="640" y="210" font-size="11.5" font-weight="500" fill="#475569">&#8226; 2. Exchange via AssumeRoleWithWebIdentity (AWS STS / GCP)</text>
+  <text x="640" y="234" font-size="11.5" font-weight="700" fill="#0f766e">&#8226; 3. Trust policy pins aud and sub &#8212; not repository alone</text>
+  <text x="640" y="258" font-size="11.5" font-weight="500" fill="#475569">&#8226; 4. Temporary credentials, one hour by default</text>
 
-  <!-- Pipeline Controls (x=40, w=1120, y=285, h=145) -->
-  <rect x="40" y="285" width="1120" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">PIPELINE HARDENING &amp; GOVERNANCE CONTROLS</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Least-Privilege Execution &amp; Branch Protection</text>
-  <line x1="60" y1="346" x2="1140" y2="346" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Enforce Branch Protection: Mandatory code reviews and status checks prior to pipeline merge</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Isolated Build Runners: Ephemeral, dedicated container runners with zero persistent state</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Secrets Scoping: Restrict deployment secrets to protected branches and environment approval gates</text>
+  <rect x="40" y="295" width="1120" height="145" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+  <text x="60" y="322" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">PIPELINE HARDENING &amp; GOVERNANCE CONTROLS</text>
+  <text x="60" y="345" font-size="14" font-weight="800" fill="#0f172a">Least-Privilege Execution &amp; Branch Protection</text>
+  <line x1="60" y1="356" x2="1140" y2="356" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
+  <text x="60" y="376" font-size="11.5" font-weight="500" fill="#475569">&#8226; Branch protection and mandatory review: contains D-PPE and I-PPE, where the attacker already holds repository write access</text>
+  <text x="60" y="394" font-size="11.5" font-weight="500" fill="#475569">&#8226; Fork pull-request approval gate: contains 3PE, where the attacker holds no access at all &#8212; the other two controls do not reach it</text>
+  <text x="60" y="412" font-size="11.5" font-weight="500" fill="#475569">&#8226; Ephemeral isolated runners, third-party actions pinned to full commit SHAs, and secrets scoped to protected branches</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
-  <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">CI/CD SECURITY FLOW: GIT PR CODE REVIEW → EPHEMERAL RUNNER ALLOCATION → OIDC TOKEN EXCHANGE → SECURE DEPLOYMENT</text>
+  <rect x="40" y="455" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="600" y="480" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">CI/CD SECURITY FLOW: PR CODE REVIEW &#8594; EPHEMERAL RUNNER ALLOCATION &#8594; OIDC TOKEN EXCHANGE &#8594; SECURE DEPLOYMENT</text>
 </svg>
