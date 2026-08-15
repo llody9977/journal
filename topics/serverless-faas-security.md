@@ -1,35 +1,40 @@
 ---
 title: Serverless Security & FaaS Hardening
-description: Comprehensive technical guide to serverless security and Function-as-a-Service (FaaS) hardening, ephemeral MicroVM container isolation, granular IAM execution roles, event payload validation, Secrets Manager integration, and Denial of Wallet (DoW) mitigations.
+description: Technical reference for the FaaS execution environment lifecycle and why /tmp persists across invocations, per-function IAM execution roles, event payload validation, and why a reserved concurrency cap bounds spend by converting a Denial of Wallet into a denial of service.
 permalink: /topics/serverless-faas-security/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Cloud-Native Security / Serverless Architecture</span>
 
 # Serverless Security & FaaS Hardening
 
-<p class="lede">Serverless computing and Function-as-a-Service (FaaS)—such as AWS Lambda, Google Cloud Functions, and Azure Functions—abstract away underlying server management. However, serverless architectures shift security challenges to application event triggers, ephemeral container reuse, granular IAM role scoping, and financial Denial of Wallet (DoW) risks. Securing serverless applications requires enforcing single-purpose IAM execution roles, validating all event source inputs, and protecting temporary `/tmp` storage.</p>
+<p class="lede">Function-as-a-Service removes server management but not server state. A function runs inside an execution environment that the provider keeps alive and reuses between invocations, so anything written to local disk outlives the request that wrote it. Meanwhile the security boundary moves almost entirely into two places: the IAM execution role attached to each function, and the validation applied to event payloads arriving from queues, buckets and API gateways. Cost becomes an attack surface too, and the standard mitigation for that trades one form of availability for another.</p>
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/serverless-faas-security.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the serverless faas security diagram at full size">
-    <img src="{{ '/assets/img/serverless-faas-security.svg' | relative_url }}" alt="Serverless Security diagram showing AWS Lambda cold start execution containers, IAM role scoping, event source mapping validation, and Secrets Manager integration.">
+    <img src="{{ '/assets/img/serverless-faas-security.svg' | relative_url }}" alt="Serverless Security diagram showing execution environment reuse across invocations, per-function IAM role scoping, event source validation, and concurrency and timeout caps.">
   </a>
-  <p class="diagram-caption">Serverless Architecture: Ephemeral MicroVM Container Execution &leftrightarrow; Per-Function IAM Role Scoping &leftrightarrow; Concurrency &amp; Timeout Caps</p>
+  <p class="diagram-caption">Serverless Architecture: Reused Execution Environments &leftrightarrow; Per-Function IAM Role Scoping &leftrightarrow; Concurrency &amp; Timeout Caps</p>
 </div>
 
-## Ephemeral Execution Containers & Warm Re-use Risks
+## The execution environment is reused, and so is its disk
 
-Serverless functions execute inside ephemeral MicroVM container sandboxes (*e.g., AWS Firecracker*):
+AWS Lambda runs functions inside an isolated **execution environment**. On AWS this is a Firecracker microVM, though the isolation technology is provider-specific — Google Cloud Functions and Azure Functions use different mechanisms, so treat "microVM" as an AWS implementation detail rather than a property of serverless in general.
 
-- **Cold Start**: When a function is triggered for the first time, the cloud provider provisions a new container sandbox, downloads function code, and executes initialization logic.
-- **Warm Container Reuse**: Subsequent function invocations reuse the active warm container sandbox to eliminate cold start overhead.
-- **`/tmp` Storage Persistence Vector**: The local `/tmp` directory remains persistent across warm invocations within the same sandbox instance. If an attacker injects a malicious binary or steals database tokens into `/tmp`, subsequent function invocations sharing that warm container can be compromised.
-  - *Fix*: Explicitly purge temporary files and avoid caching sensitive authentication tokens in unencrypted `/tmp` files.
+What generalizes is the lifecycle:
 
-## Granular Single-Purpose IAM Execution Roles
+- **Cold start**: no environment is available, so the provider creates one, downloads the code, and runs initialization before the handler.
+- **Warm reuse**: after the invocation completes the environment is frozen and retained. A later invocation thaws the same environment, skipping initialization. AWS documents that environments are recycled every few hours regardless, so persistence is real but not indefinite.
+- **`/tmp` persists across that reuse.** Each execution environment provides between 512 MB and 10,240 MB of disk at `/tmp`, and the directory contents remain when the environment is frozen — it is explicitly a transient cache across invocations. Notably, even a crash or timeout that resets the environment does **not** clear `/tmp` before the next init.
 
-Assigning a single shared, broad IAM role (*e.g. wildcard `s3:*` or `dynamodb:*` permissions*) across dozens of serverless functions violates the Principle of Least Privilege:
+The security consequence: `/tmp` is shared mutable state between requests that may belong to different users. A handler that writes a decrypted document, a cached credential, or an uploaded file there leaves it readable by the next invocation in the same environment. If a function can be induced to write an executable into `/tmp`, that file is still present on subsequent invocations.
+
+*Fix*: write nothing sensitive to `/tmp`; where it is used as a cache, namespace entries per request and delete them in a `finally` block rather than at the end of the happy path. Do not rely on the environment being discarded.
+
+## Granular single-purpose IAM execution roles
+
+Assigning a single shared, broad IAM role (*e.g. wildcard `s3:*` or `dynamodb:*` permissions*) across dozens of serverless functions violates least privilege — every function inherits the union of what any function needs, so a flaw in the least important handler yields the most sensitive permission.
 
 ```
 [ Function: Process-Payment ]  ──> IAM Role: Scoped ONLY to Payment DynamoDB Table
@@ -39,34 +44,48 @@ Assigning a single shared, broad IAM role (*e.g. wildcard `s3:*` or `dynamodb:*`
 1. **Per-Function IAM Roles**: Define a dedicated IAM execution role for every individual serverless function.
 2. **Resource-Level Scoping**: Restrict IAM policy `Resource` ARNs to specific tables, buckets, or queues rather than using wildcard (`"Resource": "*"`) permissions.
 
-## Denial of Wallet (DoW) & Event Injection Mitigations
+The execution role is the blast radius. Because the function's credentials are delivered through the environment, any code execution inside the handler — including through a vulnerable dependency — runs with exactly that role.
 
-Serverless functions scale automatically in response to incoming event triggers, introducing financial and availability attack vectors:
+## Event injection and untrusted event sources
 
-- **Denial of Wallet (DoW)**: Adversaries flood public HTTP API Gateway endpoints with high-volume requests, forcing thousands of concurrent function invocations that exhaust cloud account billing budgets.
-  - *Mitigation*: Enforce **Reserved Concurrency Caps** on serverless functions and set rate-limiting quotas at the API Gateway level.
-- **Short Function Execution Timeouts**: Set aggressive function execution timeouts (*e.g., 5 to 10 seconds max*) to terminate hung database queries or exploited execution loops.
-- **Event Payload Validation**: Validate JSON event schemas (*from SQS, S3, API Gateway, SNS*) using strict DTO schema validators before passing inputs to function handler logic.
+A function's input is not only an HTTP body. It arrives from S3 notifications, SQS messages, SNS topics, DynamoDB streams and API Gateway, and each of those is attacker-influenced whenever an attacker can write to the upstream resource.
 
-## Essential Serverless Security Diagnostic Checklist
+- **Validate event payload schemas** (*from SQS, S3, API Gateway, SNS*) with a strict validator before the handler logic reads any field, and reject unknown fields rather than ignoring them.
+- **Treat event metadata as untrusted too** — object keys, message attributes and headers are attacker-controlled strings that frequently reach a shell, a SQL query, or a file path.
+- **Authenticate the caller at the edge.** A public function URL or an API Gateway route without an authorizer is an unauthenticated entry point into the execution role above.
 
-When auditing a serverless or FaaS deployment, evaluate these 6 criteria:
+## Denial of Wallet, and what a concurrency cap actually buys
+
+Serverless scales automatically, which turns billing into an availability-adjacent attack surface. In a **Denial of Wallet (DoW)** attack the adversary floods a public endpoint, forcing large numbers of concurrent invocations whose cost accrues to the account owner.
+
+The standard mitigation is a **reserved concurrency cap** on the function, plus rate-limiting quotas at the API Gateway.
+
+**The trade-off is explicit and worth stating.** A concurrency cap bounds spend; it does not distinguish attacker load from legitimate load. Once the cap is reached, genuine invocations are throttled alongside malicious ones — the attacker has converted a billing attack into a denial of service, and needs less volume to do it. The cap is a backstop that bounds the worst case, not a defense that preserves service. Keep authentication and rate limiting at the edge as the controls that actually distinguish callers, and set the cap high enough to absorb real peaks.
+
+**Short execution timeouts** limit the cost and impact of any single hung or exploited invocation. Set them from measured p99 duration with headroom. Note that on Lambda the default timeout is **3 seconds** and the maximum is 900 seconds (15 minutes) — the risk is a timeout raised carelessly toward that ceiling, not a permissive default.
+
+## Serverless security review checklist
+
+The checklist below is a journal working model, not a published audit standard. When auditing a serverless or FaaS deployment, evaluate these six criteria:
 
 | Diagnostic Area | Architectural Evaluation Question | Verification &amp; Audit Evidence |
 |---|---|---|
-| **Per-Function IAM Roles** | Does every serverless function use a dedicated, single-purpose IAM execution role? | Infrastructure as Code (Serverless.yml / SAM) manifests. |
-| **Reserved Concurrency Caps** | Are reserved concurrency limits configured on all functions to prevent Denial of Wallet (DoW)? | Cloud Provider Lambda function concurrency settings. |
-| **Short Execution Timeouts** | Are function timeouts set aggressively (<= 10 seconds) rather than defaulting to 15 minutes? | Function execution timeout configuration logs. |
-| **VPC Private Subnet Placement** | Are functions that connect to private databases deployed inside VPC private subnets? | Function VPC subnet &amp; security group configs. |
-| **Dynamic Secret Fetching** | Are database credentials fetched at runtime via Secrets Manager SDK rather than hardcoded environment variables? | Function code review &amp; environment variable audits. |
-| **`/tmp` Storage Purging** | Is sensitive data in `/tmp` explicitly purged before function invocation handlers return? | Codebase static analysis scan results. |
+| **Per-Function IAM Roles** | Does every serverless function use a dedicated, single-purpose IAM execution role with resource-scoped ARNs? | Infrastructure as Code (Serverless.yml / SAM) manifests. |
+| **Concurrency caps sized deliberately** | Are reserved concurrency limits set to bound DoW cost, and sized above real peak so the cap does not become the outage? | Function concurrency settings compared against observed peak concurrency. |
+| **Timeouts from measured duration** | Are function timeouts derived from p99 duration rather than raised toward the 900-second maximum? | Function timeout configuration and duration metrics. |
+| **Event source validation** | Is every event payload and its metadata schema-validated before the handler reads it, for all sources, not just HTTP? | Handler entry-point code review, schema definitions. |
+| **Dynamic Secret Fetching** | Are database credentials fetched at runtime via a secret manager rather than hardcoded environment variables? | Function code review &amp; environment variable audits. |
+| **`/tmp` hygiene** | Is sensitive data kept out of `/tmp`, and is anything written there deleted on every exit path including errors? | Codebase static analysis, handler cleanup paths. |
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>
-  <p>Serverless security requires isolating functions using dedicated single-purpose IAM execution roles. Purge temporary `/tmp` storage across warm invocations, enforce reserved concurrency caps to prevent Denial of Wallet (DoW), and set short execution timeouts.</p>
+  <p>The execution environment is reused and <code>/tmp</code> survives with it — even across a crash reset — so local disk is shared state between requests from different users. The per-function IAM execution role is the blast radius of any code execution in the handler, so scope one role per function to specific ARNs. Every event source is attacker-influenced, not just HTTP. And a reserved concurrency cap bounds the bill by throttling everyone: it converts Denial of Wallet into denial of service, so authentication and edge rate limiting remain the controls that tell callers apart.</p>
 </div>
 
 ## Primary references
 
-- **OWASP Serverless Top 10**: *Serverless Application Security Risks* — [OWASP Serverless](https://owasp.org/www-project-serverless-top-10/)
-- **AWS Serverless Security Overview**: *Security Best Practices for AWS Lambda* — [AWS Whitepaper](https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/welcome.html)
+- **[AWS Lambda: Understanding the execution environment lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html)** — verified environment reuse across invocations, the 512 MB to 10,240 MB `/tmp` range, that `/tmp` contents remain when the environment is frozen, and that a reset does not clear `/tmp` before the next init.
+- **[AWS Lambda: Configure function timeout](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)** — verified that the default timeout is 3 seconds and the maximum is 900 seconds (15 minutes).
+- **[AWS Lambda: Configure reserved concurrency](https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html)** — verified that reserved concurrency caps the concurrent executions of a function and that invocations beyond the limit are throttled.
+- **[AWS Lambda: Defining Lambda function permissions with an execution role](https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html)** — verified that the execution role grants the function its permissions and that credentials are supplied to the running function, which is what makes the role the blast radius. Replaces the retired *Security Overview of AWS Lambda* whitepaper, whose URL now redirects to the developer guide index.
+- **[OWASP Serverless Top 10](https://owasp.org/www-project-serverless-top-10/)** — an OWASP **Incubator** project whose only release is the 2018 *OWASP Top 10: Serverless Interpretation*; useful as a risk taxonomy, but it is not a current ranked Top 10 and should not be cited as one.

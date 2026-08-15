@@ -1,38 +1,38 @@
 <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">Serverless Security &amp; FaaS Hardening Architecture</title>
-  <desc id="description">Serverless Security diagram showing AWS Lambda cold start execution containers, IAM role scoping, event source mapping validation, and Secrets Manager integration.</desc>
+  <desc id="description">Serverless Security diagram showing execution environment reuse across invocations, per-function IAM role scoping, event source validation, and concurrency and timeout caps.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
   <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Serverless Security &amp; FaaS Hardening</text>
-  <text x="50" y="75" font-size="14" fill="#475569">Ephemeral MicroVM container isolation, granular IAM execution roles, and event validation.</text>
-  
-  <!-- Ephemeral Container Execution (x=40, w=540, y=105, h=160) -->
+  <text x="50" y="75" font-size="14" fill="#475569">Reused execution environments, granular IAM execution roles, and event validation.</text>
+
+  <!-- Execution Environment (x=40, w=540, y=105, h=160) -->
   <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">EPHEMERAL MICROVM CONTAINER ISOLATION</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Cold Starts &amp; Warm Execution Lifespans</text>
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">EXECUTION ENVIRONMENT LIFECYCLE</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Cold Start, Warm Reuse &amp; Retained Disk</text>
   <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• MicroVM Sandbox (Firecracker): Lightweight container hypervisor isolation per function invocation</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Warm Container Reuse: Retains `/tmp` storage across invocations; sensitive data must be purged</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Stateless Execution: Function handlers must not rely on local file persistence</text>
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Sandbox: Firecracker microVM on AWS; other providers differ</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Reuse: One environment serves many invocations, not one each</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• `/tmp` persists across reuse — 512 MB to 10,240 MB of shared disk</text>
 
   <!-- IAM & Event Hardening (x=620, w=540, y=105, h=160) -->
   <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">GRANULAR IAM EXECUTION ROLES &amp; EVENT VALIDATION</text>
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">IAM EXECUTION ROLES &amp; EVENT VALIDATION</text>
   <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Least-Privilege Function Scoping</text>
   <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Single-Purpose IAM Roles: One dedicated IAM role per function; avoid shared wildcard admin roles</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Event Source Injection Defense: Validate SQS, S3, API Gateway event payload schemas before parsing</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Secrets Manager Fetching: Fetch database credentials dynamically at runtime via SDK; zero hardcoded keys</text>
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• One role per function, scoped to specific resource ARNs</text>
+  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Validate SQS, S3, SNS and API Gateway payload schemas</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Fetch credentials at runtime; no hardcoded secrets</text>
 
-  <!-- Denial of Wallet & VPC Egress (x=40, w=1120, y=285, h=145) -->
+  <!-- Denial of Wallet & Timeouts (x=40, w=1120, y=285, h=145) -->
   <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">DENIAL OF WALLET (DOW) &amp; VPC EGRESS ISOLATION</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Concurrency Caps &amp; Private Network Placement</text>
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">DENIAL OF WALLET (DOW) CAPS &amp; THEIR TRADE-OFF</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Concurrency Limits, Timeouts &amp; Private Placement</text>
   <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Concurrency Limits: Enforce reserved concurrency limits to prevent malicious financial depletion (DoW)</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• VPC Integration: Place database-accessing functions inside private subnets with NAT Gateway egress filtering</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Execution Timeouts: Set aggressive timeout limits (e.g. 5–10 seconds max) to terminate hung or exploited tasks</text>
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Reserved Concurrency: Bounds spend, but throttles legitimate callers too — a DoW becomes a DoS</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Execution Timeouts: Set from measured p99 duration (Lambda default 3 s, maximum 900 s)</text>
+  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• VPC Placement: Put database-accessing functions in private subnets with egress filtering</text>
 
   <!-- Bottom Bar: Alignment (y=445, h=40) -->
   <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">SERVERLESS SECURITY: FIRECRACKER MICROVM → PER-FUNCTION IAM ROLE → CONCURRENCY CAPS → SHORT TIMEOUTS</text>
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">SERVERLESS SECURITY: REUSED ENVIRONMENT → PER-FUNCTION IAM ROLE → EVENT VALIDATION → CONCURRENCY CAPS</text>
 </svg>

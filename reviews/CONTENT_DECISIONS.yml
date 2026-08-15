@@ -1296,7 +1296,7 @@
         },
         {
           "title": "PASTA Framework (UcedaVelez & Morana 2015)",
-          "url": "https://vikingcloud.com/resources/blog/pasta-threat-modeling-framework",
+          "url": "https://www.wiley.com/en-us/Risk+Centric+Threat+Modeling%3A+Process+for+Attack+Simulation+and+Threat+Analysis-p-9780470500965",
           "supports": "PASTA defines 7 explicit risk-centric alignment stages."
         },
         {
@@ -3524,6 +3524,295 @@
       "superseded_by": null,
       "originated_on": "2026-08-14",
       "last_reviewed_on": "2026-08-14"
+    },
+    {
+      "id": "CD-0065",
+      "title": "Correct the Section 11 Kubernetes control claims: restricted PSS scope, NetworkPolicy CNI dependency, user-namespace default, and mTLS layer",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/container-kubernetes-security.md",
+          "assets/img/pod-security-admission.svg"
+        ],
+        "concepts": [
+          "pod security standards",
+          "restricted profile",
+          "readOnlyRootFilesystem",
+          "network policy enforcement",
+          "CNI plugin",
+          "user namespaces",
+          "hostUsers",
+          "service mesh mTLS",
+          "transport layer",
+          "PERMISSIVE mode"
+        ]
+      },
+      "originating_feedback": "A fresh Section 11 review found that Topic 11.2 attributed a read-only root filesystem requirement to the restricted Pod Security Standard, presented a default-deny NetworkPolicy as self-enforcing, listed the user namespace as active isolation, and described service mesh mTLS as application-layer (L7) encryption covering all pod-to-pod traffic.",
+      "decision": "State the restricted level's actual control set and say explicitly that it does not include readOnlyRootFilesystem; add the CNI-plugin dependency as a named silent-failure mode with a connectivity-test verification instead of `kubectl get netpol`; state that hostUsers defaults to true so container root is host root unless a pod opts in; and describe mTLS as transport-layer authentication scoped to meshed workloads, noting PERMISSIVE mode still accepts plaintext.",
+      "rationale": "Each of the four was a control a reader could rely on and not receive. The read-only root filesystem claim is the most severe because it describes protection that no Kubernetes level applies, and the NetworkPolicy no-op is the most operationally likely because the object is accepted and the obvious audit command reports success. The page's own diagram footer already omitted the read-only claim, so the page contradicted itself.",
+      "authoritative_sources": [
+        {
+          "title": "Kubernetes: Pod Security Standards",
+          "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+          "supports": "The restricted level comprises baseline plus volume types, allowPrivilegeEscalation false, runAsNonRoot, non-zero runAsUser, seccomp RuntimeDefault or Localhost, and drop ALL capabilities with NET_BIND_SERVICE addable. readOnlyRootFilesystem does not appear at any level."
+        },
+        {
+          "title": "Kubernetes: Network Policies",
+          "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+          "supports": "Network policies are implemented by the network plugin; creating a NetworkPolicy resource without a controller that implements it will have no effect."
+        },
+        {
+          "title": "Kubernetes: User namespaces",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/",
+          "supports": "hostUsers defaults to true; a pod must set hostUsers false to use a user namespace."
+        },
+        {
+          "title": "Istio: Security concepts",
+          "url": "https://istio.io/latest/docs/concepts/security/",
+          "supports": "mTLS is established by sidecar proxies as transport authentication and applies to workloads in the mesh; PERMISSIVE mode accepts both mutual TLS and plain text."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topic 11.2 states that restricted does not require a read-only root filesystem.",
+        "Confirm the Pod Security Admission diagram footer states the same exclusion.",
+        "Confirm the NetworkPolicy section names the CNI dependency and gives a connectivity-test verification.",
+        "Confirm the checklist no longer accepts `kubectl get netpol` alone as enforcement evidence."
+      ],
+      "approved_outcome": "Topic 11.2 and its admission diagram state the restricted control set accurately, name the NetworkPolicy CNI dependency as a silent no-op with a positive verification method, state the user-namespace default, and scope mTLS to transport layer and mesh membership.",
+      "invalidation_conditions": [
+        "Kubernetes adds readOnlyRootFilesystem to a Pod Security Standard level.",
+        "Kubernetes changes the hostUsers default or makes user namespaces the default.",
+        "Kubernetes makes NetworkPolicy enforcement a core API-server function rather than a plugin responsibility.",
+        "Istio changes the default mTLS mode or the scope of automatic encryption."
+      ],
+      "related_decisions": [
+        "CD-0028",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0066",
+      "title": "Correct the Section 11 IaC pipeline claims: plan output format, Rego input shape and OPA 1.0 syntax, gate bypassability, and state-file secrecy",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/iac-immutable-security.md",
+          "assets/img/iac-immutable-security.svg",
+          "assets/img/iac-pipeline-scan-gate.svg"
+        ],
+        "concepts": [
+          "terraform plan",
+          "terraform show -json",
+          "policy as code",
+          "Rego",
+          "OPA 1.0",
+          "conftest",
+          "terraform state",
+          "sensitive data",
+          "pipeline gate",
+          "drift detection",
+          "tfsec",
+          "Trivy",
+          "module pinning"
+        ]
+      },
+      "originating_feedback": "A fresh Section 11 review found that Topic 11.3 instructed readers to pass `terraform plan -out=plan.json` into OPA, supplied a Rego policy written against parsed template source while claiming it evaluated a plan, used pre-1.0 Rego syntax, called pipeline enforcement non-bypassable in direct contradiction of its own diagram footer, and omitted Terraform state-file secrecy entirely.",
+      "decision": "Split the Rego examples into an explicitly labelled template-level policy and a plan-level policy against resource_changes, both in OPA 1.0 syntax; replace the single-command claim with the two-step plan then show -json sequence; replace non-bypassable with a statement that a gate binds only what passes through the pipeline, which is why drift detection exists; add a section on state and saved plan files as secret-bearing artifacts; add module and provider pinning; and record that tfsec is folded into Trivy.",
+      "rationale": "The plan-format and Rego-shape errors made the page's central worked example non-functional, and the two errors compounded: a reader who fixed the command would still have a policy that could not match the input. The non-bypassable claim was the page asserting the opposite of its own illustration. State-file secrecy is the exposure Terraform itself creates and the page's hardcoded-secrets checklist row implicitly promised to cover.",
+      "authoritative_sources": [
+        {
+          "title": "Terraform: terraform plan command",
+          "url": "https://developer.hashicorp.com/terraform/cli/commands/plan",
+          "supports": "The -out file is not in any standard format intended for consumption by other software, and saved plans contain sensitive values in cleartext."
+        },
+        {
+          "title": "Terraform: terraform show command",
+          "url": "https://developer.hashicorp.com/terraform/cli/commands/show",
+          "supports": "-json on a saved plan is the supported way to produce machine-readable plan output."
+        },
+        {
+          "title": "Terraform: Sensitive data in state",
+          "url": "https://developer.hashicorp.com/terraform/language/state/sensitive-data",
+          "supports": "Local state is a plaintext file including any secret values defined in the configuration; remote backends with encryption and access control are recommended."
+        },
+        {
+          "title": "Open Policy Agent: Policy language",
+          "url": "https://www.openpolicyagent.org/docs/policy-language",
+          "supports": "OPA 1.0 requires the if keyword before rule bodies and contains for partial set rules, so deny[msg] no longer parses by default."
+        },
+        {
+          "title": "tfsec repository",
+          "url": "https://github.com/aquasecurity/tfsec",
+          "supports": "Aqua consolidated its scanning efforts into Trivy; tfsec is no longer the maintained path for new work."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topic 11.3 no longer instructs readers to pass a -out file directly to OPA.",
+        "Confirm both Rego examples use `deny contains msg if` and are labelled by the input they evaluate.",
+        "Confirm the page states that a pipeline gate binds only changes that pass through it.",
+        "Confirm a state and saved-plan handling section exists and is reflected in the checklist."
+      ],
+      "approved_outcome": "Topic 11.3 presents a working two-stage policy pipeline with correct commands and OPA 1.0 syntax, treats state and plan files as secret-bearing artifacts, pins module and provider versions, and agrees with its own diagrams on gate bypassability.",
+      "invalidation_conditions": [
+        "Terraform changes the -out format to a documented machine-readable one.",
+        "OPA changes the default Rego syntax again.",
+        "Terraform introduces encrypted-by-default state for local backends.",
+        "tfsec resumes independent development or is archived outright."
+      ],
+      "related_decisions": [
+        "CD-0028",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0067",
+      "title": "Correct Section 11 serverless claims: Lambda timeout default, execution-environment reuse, concurrency-cap trade-off, and citation integrity",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/serverless-faas-security.md",
+          "assets/img/serverless-faas-security.svg"
+        ],
+        "concepts": [
+          "AWS Lambda",
+          "function timeout",
+          "execution environment",
+          "warm reuse",
+          "/tmp",
+          "ephemeral storage",
+          "denial of wallet",
+          "reserved concurrency",
+          "OWASP Serverless Top 10",
+          "Firecracker"
+        ]
+      },
+      "originating_feedback": "A fresh Section 11 review found that Topic 11.4 said Lambda functions default to a 15-minute timeout, that its diagram claimed microVM isolation per function invocation while the adjacent bullet described /tmp persisting across invocations, that reserved concurrency was presented as a Denial of Wallet mitigation with no residual risk, that the cited AWS whitepaper URL redirected to a different document, and that the OWASP Serverless Top 10 was cited without its incubator status or 2018 date.",
+      "decision": "State that the Lambda default timeout is 3 seconds and 900 seconds is the maximum; describe isolation as per execution environment reused across invocations rather than per invocation; state that a reserved concurrency cap bounds spend by throttling legitimate callers too, converting Denial of Wallet into denial of service; replace the retired whitepaper citation with the current Lambda security documentation; and label the OWASP Serverless Top 10 as an incubator project whose only release is the 2018 interpretation document.",
+      "rationale": "The timeout error inverted the risk by inventing a permissive default that does not exist. The per-invocation isolation claim contradicted the page's own /tmp threat and would lead a reader to conclude that local disk is not shared. The concurrency cap is the page's headline mitigation and its trade-off is the residual risk the writing standard requires. The whitepaper URL returned HTTP 200 while serving a different page, so the link checker could not catch it.",
+      "authoritative_sources": [
+        {
+          "title": "AWS Lambda: Configure function timeout",
+          "url": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html",
+          "supports": "The default timeout is 3 seconds, adjustable up to a maximum of 900 seconds (15 minutes)."
+        },
+        {
+          "title": "AWS Lambda: Understanding the execution environment lifecycle",
+          "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+          "supports": "Execution environments are frozen and reused across invocations; /tmp provides 512 MB to 10,240 MB whose contents remain when the environment is frozen, and a reset does not clear /tmp before the next init."
+        },
+        {
+          "title": "AWS Lambda: Configure reserved concurrency",
+          "url": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html",
+          "supports": "Reserved concurrency caps a function's concurrent executions and invocations beyond the limit are throttled."
+        },
+        {
+          "title": "OWASP Serverless Top 10",
+          "url": "https://owasp.org/www-project-serverless-top-10/",
+          "supports": "The project is an OWASP Incubator project whose published artifact is the 2018 OWASP Top 10: Serverless Interpretation rather than a current ranked Top 10."
+        }
+      ],
+      "verification_methods": [
+        "Confirm Topic 11.4 states a 3-second default and 900-second maximum.",
+        "Confirm the diagram describes reuse across invocations rather than isolation per invocation.",
+        "Confirm the Denial of Wallet section states the throttling trade-off.",
+        "Confirm every primary reference URL resolves to the document named, following redirects."
+      ],
+      "approved_outcome": "Topic 11.4 states Lambda timeout and /tmp facts from AWS documentation, describes environment reuse consistently in prose and diagram, states the concurrency-cap availability trade-off, and cites only documents that its URLs actually serve.",
+      "invalidation_conditions": [
+        "AWS changes the default or maximum Lambda timeout, or the /tmp size range.",
+        "AWS changes execution environment reuse or /tmp persistence behavior.",
+        "OWASP publishes a current ranked Serverless Top 10 and moves the project out of incubator status."
+      ],
+      "related_decisions": [
+        "CD-0029",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0068",
+      "title": "Align Section 11 with the journal-wide conventions: scoped descriptions, labelled working-model checklists, provider-correct guardrail terminology, and zero diagram text overflow",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cloud-security-iam-perimeters.md",
+          "topics/container-kubernetes-security.md",
+          "topics/iac-immutable-security.md",
+          "topics/serverless-faas-security.md",
+          "assets/img/cloud-security-iam-perimeters.svg",
+          "assets/img/serverless-faas-security.svg",
+          "assets/img/iac-immutable-security.svg",
+          "assets/img/pod-security-admission.svg",
+          "assets/img/iac-pipeline-scan-gate.svg"
+        ],
+        "concepts": [
+          "front matter description",
+          "comprehensive claim",
+          "journal working model",
+          "checklist labelling",
+          "service control policy",
+          "organization policy service",
+          "CNAPP",
+          "diagram text overflow",
+          "US spelling"
+        ]
+      },
+      "originating_feedback": "A fresh Section 11 review found all four pages opening their description with 'Comprehensive technical guide to', all four checklists presented without the journal-working-model label every other reviewed section carries, Service Control Policies attributed to GCP Resource Manager, stale CIS benchmark version pins, and measured text overflow in two hero diagrams where two lines were clipped off the canvas entirely.",
+      "decision": "Rewrite each Section 11 description as a scoped 'Technical reference for ...' statement; prefix every Section 11 checklist with the journal-working-model sentence; present SCPs, RCPs and permissions boundaries as AWS constructs with Google Cloud's Organization Policy Service named as the distinct equivalent; cite CIS benchmark families without pinning a stale revision; and rebuild the two overflowing hero diagrams so every text run terminates inside its container.",
+      "rationale": "An unqualified comprehensive claim is regulated by the writing standard and was not met by pages a third the length of their neighbours. Unlabelled checklists read as published audit standards. The GCP SCP attribution contradicted Topic 9.4, which already drew the boundary correctly. Clipped diagram text is unrecoverable at any zoom, so the full-size affordance from CD-0058 does not mitigate it.",
+      "authoritative_sources": [
+        {
+          "title": "Google Cloud: Organization Policy Service overview",
+          "url": "https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview",
+          "supports": "Google Cloud's hierarchy-wide guardrail layer is the Organization Policy Service using constraints and organization policies; Service Control Policy is not Google Cloud terminology."
+        },
+        {
+          "title": "AWS Organizations: Service control policies",
+          "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+          "supports": "SCPs are an AWS Organizations feature that set the maximum available permissions for member accounts."
+        },
+        {
+          "title": "AWS Organizations: Resource control policies",
+          "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_rcps.html",
+          "supports": "RCPs apply a permissions ceiling to resources rather than principals."
+        }
+      ],
+      "verification_methods": [
+        "Confirm no Section 11 description begins with 'Comprehensive technical guide'.",
+        "Confirm all four checklists carry the journal-working-model sentence.",
+        "Confirm no Section 11 page attributes Service Control Policies to Google Cloud.",
+        "Measure every Section 11 SVG in a browser and confirm zero text runs exceed their containing box or the viewBox."
+      ],
+      "approved_outcome": "Section 11 matches the conventions used by Sections 8 to 10: scoped descriptions, labelled working-model checklists, provider-correct guardrail terminology, unpinned benchmark citations, and diagrams with zero measured text overflow.",
+      "invalidation_conditions": [
+        "The journal adopts a different front-matter description convention.",
+        "A page is expanded enough to justify an explicit comprehensive-scope claim under the writing standard.",
+        "AWS or Google Cloud renames or merges the guardrail mechanisms described."
+      ],
+      "related_decisions": [
+        "CD-0028",
+        "CD-0029",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
     }
   ]
 }
