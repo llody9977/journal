@@ -4129,6 +4129,436 @@
       "superseded_by": null,
       "originated_on": "2026-08-15",
       "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0075",
+      "title": "Re-key the ISO/IEC 27701 privacy mapping to the 2025 Annex A structure and stop citing withdrawn 2019 clause numbers",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/regulatory-compliance-mandates.md"
+        ],
+        "concepts": [
+          "ISO/IEC 27701:2025",
+          "PIMS",
+          "Annex A control identifiers",
+          "superseded edition",
+          "privacy control mapping",
+          "GDPR alignment",
+          "CCPA section numbers"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review found the table headed 'ISO/IEC 27701:2025 PIMS Control Mapping' citing clauses 7.2.1, 7.2.2, 7.2.5, 7.2.6, 7.3.1-7.3.9, 7.4.1-7.4.8, 7.5.1 and 8.5.8. Those are ISO/IEC 27701:2019 numbers. The 2025 edition adopted the Harmonized Structure, so clauses 4-10 are the generic management-system clauses (clause 7 is Support, clause 8 is Operation) and the privacy controls moved into a consolidated Annex A. Two rows were also wrong under the 2019 numbering they actually used: data minimisation was mapped to 7.2.5/7.2.6, which are Privacy impact assessment and Contracts with PII processors, while privacy by design was mapped to 7.4, which is where minimisation actually lives. The breach-notification row cited 7.5.1 (Identify basis for PII transfer between jurisdictions) and 8.5.8 (Change of subcontractor to process PII), neither of which concerns breach notification.",
+      "decision": "Re-key the table to ISO/IEC 27701:2025 Annex A control areas (A.1.2 conditions for collection and processing, A.1.3 obligations to PII principals, A.1.4 privacy by design and privacy by default), name only individually confirmed control identifiers (A.1.2.6, A.1.2.7, A.1.2.8, A.1.3.11, A.1.4.5), explain the 2019-to-2025 restructure in prose above the table, point readers at the standard's own Annex F correspondence table, and state that an exact control number for a Statement of Applicability must be taken from the standard rather than from this or any other secondary mapping. Correct the CCPA right-to-correct citation to Sec. 1798.106.",
+      "rationale": "A clause-to-statute crosswalk is the most operational artifact on the page, and pointing an implementer at the wrong controls of a withdrawn edition while labelling them current is worse than omitting the mapping. Group-level Annex A references are verifiable from public sources and remain correct; individual sub-numbers beyond the confirmed set are not verifiable without the paid standard, so the page states that limit instead of guessing.",
+      "authoritative_sources": [
+        {
+          "title": "ISO/IEC 27701:2025",
+          "url": "https://www.iso.org/standard/27701",
+          "supports": "The 2025 edition uses the Harmonized Structure with clauses 4-10 and consolidates privacy controls into Annex A (A.1 controllers, A.2 processors, A.3 information security)."
+        },
+        {
+          "title": "California Consumer Privacy Act",
+          "url": "https://oag.ca.gov/privacy/ccpa",
+          "supports": "The right to correct inaccurate personal information is Sec. 1798.106, distinct from Sec. 1798.105 (delete) and Sec. 1798.110 (know)."
+        }
+      ],
+      "verification_methods": [
+        "Confirm against published descriptions of ISO/IEC 27701:2025 that clause 7 is Support and clause 8 is Operation.",
+        "Confirm the Annex A group headings and the individually named control identifiers against public control references.",
+        "Confirm ISO/IEC 27701:2019 titles for 7.2.5, 7.4.x, 7.5.1 and 8.5.8 to establish that the previous mapping was wrong under either edition."
+      ],
+      "approved_outcome": "The mapping table cites 2025 Annex A control areas, names only verified control identifiers, discloses that exact sub-numbers must come from the standard, and no longer presents 2019 clause numbers as current.",
+      "invalidation_conditions": [
+        "A further edition of ISO/IEC 27701 renumbers Annex A.",
+        "The complete 2025 Annex A control list becomes available from an authoritative public source, at which point the table can name every control precisely."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0076",
+      "title": "Track the current edition when a standard renames or re-bases its levels: ASVS 5.0, CSF 2.0 Tiers, SLSA v1.2, BSIMM16",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cybersecurity-standards.md",
+          "topics/security-maturity-models.md"
+        ],
+        "concepts": [
+          "ASVS level names",
+          "CSF Tiers",
+          "External Participation",
+          "SLSA track versioning",
+          "BSIMM edition currency",
+          "OWASP SAMM level names",
+          "superseded edition",
+          "standard edition currency"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review found four version-currency defects of the same shape, where a page named a current version and then described a previous edition's content. Topic 13.1 named ASVS 5.0.0 and gave the ASVS 4.0 level names (Opportunistic, Standard, High Assurance) with a Level 1 description that ASVS 5.0 explicitly contradicts. Topic 13.5 attributed to NIST an explicit clarification that CSF Tiers are not maturity levels, which appears in CSF 1.1 but in neither CSF 2.0 nor the cited SP 1302; described the Tiers using CSF 1.1's removed External Participation element rather than CSF 2.0's two dimensions; attributed the track-based level scheme to SLSA v1.2 when v1.x introduced it and v1.2's actual headline change is the approved Source track; and cited BSIMM14 when BSIMM16 was published in February 2026. The same page also gave OWASP SAMM invented level names, Unperformed and Optimized, the latter contradicting the sourced Level 3 description eight lines below it.",
+      "decision": "State each level scheme in the words of its current edition, name the edition that a historical statement belongs to rather than attributing it to the current one, and never carry a level name that the standard does not use. Specifically: give ASVS 5.0 levels their priority-based definitions with the proportions the standard states; attribute the 'not maturity levels' sentence to CSF 1.1 and describe CSF 2.0 Tiers by their two dimensions, Cybersecurity Risk Governance and Cybersecurity Risk Management; attribute the track scheme to SLSA v1.x and record the Source track as v1.2's change; cite BSIMM16; and use SAMM's own Level 0-3 descriptions with no invented names.",
+      "rationale": "Naming a current version and describing a superseded one is more misleading than citing the old version openly, because the reader has no signal to check. The four defects share a cause: a level scheme is the part of a standard most likely to be re-based between editions and least likely to look stale when it is.",
+      "authoritative_sources": [
+        {
+          "title": "OWASP ASVS 5.0 - What is the ASVS?",
+          "url": "https://owasp.org/www-project-application-security-verification-standard/",
+          "supports": "ASVS 5.0 defines three priority-based levels holding roughly 20, 50 and 30 percent of requirements, and states that Level 1 is not necessarily verifiable by an external black-box tester."
+        },
+        {
+          "title": "NIST Cybersecurity Framework 2.0 (CSWP 29)",
+          "url": "https://doi.org/10.6028/NIST.CSWP.29",
+          "supports": "Section 3.2 says Tiers characterize the rigor of cybersecurity risk governance and management practices; it contains no statement that Tiers are not maturity levels."
+        },
+        {
+          "title": "NIST SP 1302 Quick-Start Guide for Using the CSF Tiers",
+          "url": "https://csrc.nist.gov/pubs/sp/1302/final",
+          "supports": "Each Tier has separate descriptions for Cybersecurity Risk Governance and Cybersecurity Risk Management; there is no external-participation dimension."
+        },
+        {
+          "title": "SLSA v1.2 What's new",
+          "url": "https://slsa.dev/spec/v1.2/whats-new",
+          "supports": "v1.2's change relative to v1.1 is the addition of the approved Source track; the track structure predates it."
+        },
+        {
+          "title": "OWASP SAMM benchmark report",
+          "url": "https://owaspsamm.org/benchmark/benchmark-report/",
+          "supports": "SAMM levels are numbered 0 to 3 with descriptive text and carry no names such as Unperformed or Optimized."
+        }
+      ],
+      "verification_methods": [
+        "Read the current edition's own level definitions before restating them.",
+        "When a page asserts that a standards body says something, locate the sentence in the cited document; if it is only in a previous edition, name that edition.",
+        "Check the publication date of every maturity-model reference against the current edition at review time."
+      ],
+      "approved_outcome": "Section 13 states ASVS 5.0, CSF 2.0 Tier, SLSA v1.2 and SAMM level content in the current editions' own terms, cites BSIMM16, and attributes historical statements to the edition that made them.",
+      "invalidation_conditions": [
+        "Any of these standards publishes a new edition that re-bases its levels again.",
+        "A future CSF edition restores an explicit maturity-level disclaimer or an external-participation Tier dimension."
+      ],
+      "related_decisions": [
+        "CD-0030",
+        "CD-0048",
+        "CD-0062"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0077",
+      "title": "Extend the journal-working-model and scoped-description rule to Section 13, completing it across every section",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cybersecurity-standards.md",
+          "topics/grc-framework-strategy.md",
+          "topics/regulatory-compliance-mandates.md",
+          "topics/security-certifications.md",
+          "topics/security-maturity-models.md"
+        ],
+        "concepts": [
+          "comprehensive scope claim",
+          "page description accuracy",
+          "journal working model labelling",
+          "front matter description"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review found Topic 13.1 opening its description with 'Comprehensive comparative guide to' and Topic 13.5 with 'Comprehensive analysis of', while Topic 13.4's description called all four of its subjects 'hardware certifications' even though its own lede says 'hardware and software' and its FIPS 140-3 Level 1 example is a software library. Sections 1, 6, 8, 9, 10, 11 and 12 already carried the scoped formulation under CD-0035 and its extensions; Section 13 was the only section the chain had never reached.",
+      "decision": "Apply the rule recorded in CD-0035 and extended by CD-0050, CD-0053, CD-0059, CD-0068 and CD-0073 to all five Section 13 pages: rewrite every description as a scoped 'Technical reference for ...' statement that names what the page actually contains, and remove the hardware-only framing from Topic 13.4.",
+      "rationale": "This is the last section carrying the unscoped formulation, so applying it here completes the rule rather than extending it further. A description that claims comprehensiveness without defining a scope is the specific case the writing standard names, and Topic 13.4's description additionally contradicted its own lede.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm no Section 13 description opens with a comprehensiveness claim.",
+        "Confirm each description names subjects the page actually covers.",
+        "Grep every topic description in the repository for the previous formulation."
+      ],
+      "approved_outcome": "All five Section 13 descriptions are scoped technical-reference statements, and the rule now holds across every section of the journal.",
+      "invalidation_conditions": [
+        "The journal adopts a different front-matter description convention.",
+        "A page's scope is defined and justified such that a comprehensiveness claim becomes supportable."
+      ],
+      "related_decisions": [
+        "CD-0035",
+        "CD-0050",
+        "CD-0053",
+        "CD-0059",
+        "CD-0068",
+        "CD-0073"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0078",
+      "title": "Keep connector labels clear of panel borders and text baselines rather than overlaying them",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "assets/img/grc-framework-stack.svg",
+          "assets/img/cis-implementation-groups.svg",
+          "assets/img/common-criteria-eal.svg",
+          "assets/img/security-program-roadmap.svg",
+          "assets/img/cmmi-maturity-levels.svg",
+          "assets/img/owasp-samm-functions.svg",
+          "assets/img/nist-csf-functions.svg"
+        ],
+        "concepts": [
+          "diagram text overflow",
+          "connector label pill",
+          "text occlusion",
+          "panel border",
+          "rendered output validation",
+          "diagram measurement"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review measured all nine of the section's diagrams under CD-0074 and found six carrying defects. Five stage titles in security-program-roadmap.svg overflowed their panels, one running off the 1200-unit canvas entirely. cmmi-maturity-levels.svg and owasp-samm-functions.svg each overflowed by up to 18.5 units. Separately, the white connector-label pills in grc-framework-stack.svg, cis-implementation-groups.svg and common-criteria-eal.svg were drawn straddling the panel bottom border, punching a gap in the outline; in the first two they also overlapped the body-text baseline and clipped descenders, so the Layer 1 line rendered as 'Protect, Detect. Respond, and Recover' with the comma reduced to a period. A separate defect in nist-csf-functions.svg had the subtitle words transposed across the line break.",
+      "decision": "Place a connector label beside its arrow in the inter-panel gap, never overlapping a panel border or a text baseline, and give it a light stroke so it reads as a label rather than a hole in the artwork. Rebuild the three overflowing diagrams so every text run terminates at least 20 units inside its panel, wrapping headings or widening panels rather than letting text cross a border. Remove sequence arrows from owasp-samm-functions.svg and owasp-guides-compared.svg, whose items are parallel choices rather than an ordered pipeline.",
+      "rationale": "CD-0074 established measurement for text against panels but not for decorative overlays drawn on top of text, and the clipped comma shows the gap: a white shape drawn after a text node silently edits the sentence a reader sees, while every syntax, link and structure check passes. Moving the label out of the collision zone removes the class rather than the instance.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Measure every text node against its panel and the viewBox with getBBox, requiring a positive interior margin.",
+        "Detect any later-painted rect whose box intersects an earlier text node's glyph box.",
+        "Detect any label rect crossing a panel edge.",
+        "Render each diagram at full size and confirm punctuation and borders are intact."
+      ],
+      "approved_outcome": "All ten Section 13 diagrams measure with zero panel overflow, zero canvas overflow, zero label-over-text occlusion and zero label-over-border crossings, and render with intact punctuation and unbroken panel outlines.",
+      "invalidation_conditions": [
+        "A diagram adopts wrapped text or a layout engine that makes static measurement inapplicable.",
+        "An automated geometry and occlusion check is added to the quality gate, at which point this becomes a gate rather than a review step."
+      ],
+      "related_decisions": [
+        "CD-0004",
+        "CD-0074",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0079",
+      "title": "Make Section 13's primary references support the page they sit on, and give every headline subject a source",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/cybersecurity-standards.md",
+          "topics/grc-framework-strategy.md",
+          "topics/security-certifications.md",
+          "topics/security-maturity-models.md",
+          "topics/regulatory-compliance-mandates.md"
+        ],
+        "concepts": [
+          "primary references",
+          "source-to-claim support",
+          "unsourced material claim",
+          "callout topic drift",
+          "FAIR model",
+          "PCI PTS HSM",
+          "EN 419 221-5",
+          "CCRA recognition"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review found reference sections describing content the pages did not contain. Topic 13.4's two primary references were AICPA SOC 2 and the FedRAMP Marketplace, neither discussed anywhere on a page about FIPS 140-3, Common Criteria, PCI PTS HSM and EN 419 221-5, and its callout closed on a FedRAMP scoping statement the body never set up. Topic 13.2 cited the IIA Three Lines Model and NIST SP 800-39 while discussing neither. Meanwhile material subjects went unsourced: Topic 13.1 had dedicated sections on the OWASP suite and SOC 2 with no link to either, plus unlinked CISA CPGs and FedRAMP; Topic 13.2 presented the FAIR formula with no citation at all; Topic 13.4 gave no source for PCI PTS HSM, EN 419 221-5 or ISO/IEC 15408.",
+      "decision": "Either restore the content a reference implies or replace the reference with one the page actually rests on. Add the governance-roles section that the IIA Three Lines citation implies to Topic 13.2 and cite Open FAIR for the risk formula; replace Topic 13.4's references with FIPS 140-3, the CMVP database, the CCRA, PCI PIN Security and the EN 419 221-5 protection profile, and rewrite its callout to summarize what the page teaches; add inline sources at first mention for the OWASP suite, SOC 2, CISA CPGs and FedRAMP on Topic 13.1.",
+      "rationale": "A reference section is a claim about what established the page's conclusions. When it names documents the page never uses, a reader following it finds nothing and the page's evidence base is unverifiable; when a headline subject has no source at all, the same is true in the other direction. Restoring the missing governance content was preferable to deleting the citation because the callout already asserted that governance roles guide the choices.",
+      "authoritative_sources": [
+        {
+          "title": "The Open Group Open FAIR",
+          "url": "https://www.opengroup.org/open-fair",
+          "supports": "The Risk Taxonomy (O-RT) and Risk Analysis (O-RA) standards define the Loss Event Frequency and Loss Magnitude decomposition and the named Vulnerability factor."
+        },
+        {
+          "title": "IIA Three Lines Model",
+          "url": "https://www.theiia.org/en/content/position-papers/2020/the-iias-three-lines-model-an-update-of-the-three-lines-of-defense/",
+          "supports": "The 2020 update describes roles and their relationships rather than sequential lines of defense."
+        }
+      ],
+      "verification_methods": [
+        "For each entry in a Primary references section, locate the claim on the page that it supports.",
+        "For each material standards-dependent claim, confirm a source exists inline or in the ending section.",
+        "Confirm the closing callout summarizes the page's own subject."
+      ],
+      "approved_outcome": "Every Section 13 reference supports content on its own page, every headline subject carries a source, and no callout introduces a topic the body does not cover.",
+      "invalidation_conditions": [
+        "A page is restructured so that a cited source no longer applies."
+      ],
+      "related_decisions": [
+        "CD-0023"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0080",
+      "title": "State the accepted alternative and the recognition scope when a certification is presented as required",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/security-certifications.md",
+          "topics/cybersecurity-standards.md"
+        ],
+        "concepts": [
+          "normative strength",
+          "PCI PTS HSM",
+          "PCI PIN Security Requirements",
+          "CCRA recognition",
+          "EAL2 cap",
+          "NIAP protection profiles",
+          "QSCD",
+          "EN 419 241-2",
+          "SOC 2 report reading",
+          "certificate lifecycle"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review found three overclaims of the same shape on pages whose purpose is evaluating certification claims. Topic 13.4 stated that a payment HSM must hold PCI PTS HSM approval before the networks permit PIN processing, when the PCI PIN Security Requirements accept PCI PTS HSM approval or FIPS 140-2 Level 3 or higher. It listed EAL1 to EAL7 under the heading of international mutual recognition without stating that CCRA-2014 recognition stops at EAL2 with ALC_FLR or collaborative Protection Profile conformance, and that NIAP no longer issues EAL ratings at all. It also gave QSCD as EN 419 221-5's assurance level, when a remote-signing QSCD additionally requires EN 419 241-2. Topic 13.1 stated that enterprise buyers require a SOC 2 Type II report.",
+      "decision": "Where a page presents a certification as required, name the accepted alternatives and the scope of recognition. State both PCI PIN routes and say why PCI PTS HSM is the stronger one; add a recognition-scope section to the Common Criteria coverage covering the CCRA EAL2 cap, SOG-IS, and NIAP's protection-profile-only model; present EN 419 221-5 as one component of a QSCD determination in its own body section; and replace the SOC 2 requirement claim with guidance on reading a report's scope, period, opinion and complementary user entity controls.",
+      "rationale": "On a page that teaches a reader to validate a vendor's claim, an overclaim about what is required is the same defect the page warns against. Recognition scope is the specific thing a reader cannot infer from an EAL number and most needs, and omitting it makes a vendor's EAL5 certificate look internationally accepted when it is not.",
+      "authoritative_sources": [
+        {
+          "title": "PCI SSC PIN Security Requirements",
+          "url": "https://www.pcisecuritystandards.org/standards/pin-security/",
+          "supports": "PIN-processing HSMs may be PCI PTS HSM approved or FIPS 140-2 Level 3 or higher validated."
+        },
+        {
+          "title": "Common Criteria Recognition Arrangement (2014)",
+          "url": "https://www.commoncriteriaportal.org/ccra/index.cfm",
+          "supports": "Mutual recognition covers assurance components up to EAL2 plus ALC_FLR, or conformance to a collaborative Protection Profile."
+        },
+        {
+          "title": "SOG-IS protection profiles",
+          "url": "https://www.sogis.eu/uk/pp_en.html",
+          "supports": "EN 419 221-5 is a CEN protection profile; a remote-signing QSCD pairs it with EN 419 241-2."
+        }
+      ],
+      "verification_methods": [
+        "For every must, required or only claim about a certification, locate the governing document's own wording and check for permitted alternatives.",
+        "For every assurance level presented, check which bodies recognize it and at what ceiling."
+      ],
+      "approved_outcome": "Topic 13.4 states both PCI PIN routes, the CCRA and SOG-IS recognition ceilings, NIAP's protection-profile model, the EN 419 241-2 pairing, and a certificate-lifecycle section; Topic 13.1 replaces the SOC 2 requirement claim with report-reading guidance.",
+      "invalidation_conditions": [
+        "PCI SSC removes the FIPS 140 route from the PIN Security Requirements.",
+        "The CCRA is revised to change the recognition ceiling.",
+        "NIAP resumes EAL-based evaluation."
+      ],
+      "related_decisions": [
+        "CD-0056"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0081",
+      "title": "Make the GRC evidence-collection script paginate and account for keys it cannot evidence",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/grc-framework-strategy.md"
+        ],
+        "concepts": [
+          "evidence collection script",
+          "boto3 pagination",
+          "AWS KMS",
+          "get_key_rotation_status",
+          "UnsupportedOperationException",
+          "silent truncation",
+          "audit population completeness"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review found three defects in the automated GRC evidence-collection script. Its docstring promised an AWS KMS key rotation and IAM MFA audit while only the KMS function existed. It called kms.list_keys() without pagination, which returns at most 100 keys and ignores Truncated and NextMarker, so an account with more keys would produce a complete-looking evidence payload from an arbitrary subset. And it called get_key_rotation_status on every customer-managed key, which raises UnsupportedOperationException for asymmetric keys, HMAC keys, imported key material and custom key stores, aborting the run before anything was printed.",
+      "decision": "Paginate with get_paginator('list_keys'); filter to symmetric keys with AWS-generated material before calling get_key_rotation_status and record everything else as not_applicable with the reason rather than skipping it; correct the docstring to what the script does; and follow the block with an explicit statement of what the evidence proves and what it leaves unevidenced.",
+      "rationale": "Silent truncation is the worst failure mode available to an evidence collector, because the output is indistinguishable from a complete run and an auditor is being handed a population that was never fully read. Recording non-rotatable keys as not_applicable keeps the population complete and makes the manual remainder visible instead of hiding it.",
+      "authoritative_sources": [
+        {
+          "title": "boto3 KMS list_keys",
+          "url": "https://docs.aws.amazon.com/boto3/latest/reference/services/kms/client/list_keys.html",
+          "supports": "Limit defaults to 100 and the response is paginated via Truncated and NextMarker."
+        },
+        {
+          "title": "boto3 KMS get_key_rotation_status",
+          "url": "https://docs.aws.amazon.com/boto3/latest/reference/services/kms/client/get_key_rotation_status.html",
+          "supports": "Automatic rotation is supported only for symmetric encryption KMS keys; the call raises UnsupportedOperationException otherwise."
+        }
+      ],
+      "verification_methods": [
+        "Check every cloud-API listing call in journal code for pagination.",
+        "Check every per-resource call against the documented exception list for resource types the enumeration can return.",
+        "Confirm the surrounding prose states what the demonstration does not prove."
+      ],
+      "approved_outcome": "The script paginates, classifies non-rotatable keys as not_applicable with a reason, carries an accurate docstring, and is followed by an explicit proves/does-not-prove statement.",
+      "invalidation_conditions": [
+        "AWS extends automatic rotation to further key types.",
+        "The example is replaced by one using a different provider or API."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0082",
+      "title": "Give Topic 13.3 a diagram for its central distinction and add the selection, lifecycle and report-reading coverage Section 13 lacked",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/regulatory-compliance-mandates.md",
+          "topics/cybersecurity-standards.md",
+          "topics/security-certifications.md",
+          "topics/grc-framework-strategy.md",
+          "topics/where-should-i-start.md",
+          "assets/img/regulatory-vs-private-assurance.svg"
+        ],
+        "concepts": [
+          "completeness matrix",
+          "selection criteria",
+          "certificate lifecycle",
+          "governance roles",
+          "diagram coverage",
+          "cross-page consistency"
+        ]
+      },
+      "originating_feedback": "A fresh Section 13 review's completeness matrix marked several optional extensions and one cross-page inconsistency. Topic 13.3 was the only page in the section with no diagram, despite its whole purpose being one distinction between two enforcement paths. Topic 13.1's lede posed a selection question the page answered only implicitly through a Target Audience column. Topic 13.4 covered certificate checking but not the lifecycle by which a valid certificate stops describing the deployed product. Topic 13.2 had no coverage of who owns which decision. And Topic 1.2 described Topic 13.2 as offering a maturity-based implementation roadmap, which Topic 13.2's own callout explicitly disclaims.",
+      "decision": "Build a purpose-built diagram for Topic 13.3 showing the two obligation paths from source through instrument to consequence, with the incorporation-by-reference case as a footer band; add an explicit selection table and two decision rules to Topic 13.1; add certificate-lifecycle coverage and two checklist items to Topic 13.4; add a governance-roles section to Topic 13.2; and correct Topic 1.2's description of Topic 13.2.",
+      "rationale": "These were classified as optional extensions rather than correctness defects, but the Topic 13.3 diagram and the Topic 13.1 selection rule both close gaps between what a lede promises and what the page delivers, and the Topic 1.2 wording actively contradicted the page it points at.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Measure the new diagram's text geometry under CD-0078 and render it at full size.",
+        "Confirm the diagram's caption and alt text describe what it draws.",
+        "Confirm each page's lede is answered by content that exists."
+      ],
+      "approved_outcome": "Topic 13.3 carries a purpose-built diagram; Topics 13.1, 13.2 and 13.4 carry the selection, governance and lifecycle coverage their scopes imply; and Topic 1.2 describes Topic 13.2 accurately.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated."
+      ],
+      "related_decisions": [
+        "CD-0033",
+        "CD-0058",
+        "CD-0078"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
     }
   ]
 }

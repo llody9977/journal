@@ -1,0 +1,73 @@
+<svg viewBox="0 0 1200 885" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
+  <title id="title">Where a compliance obligation comes from</title>
+  <desc id="description">Government law and private-sector assurance bind through different mechanisms and carry different consequences, and a law can incorporate a private standard by reference.</desc>
+  <rect width="1200" height="885" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
+  </defs>
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Where a compliance obligation comes from</text>
+  <text x="50" y="88" font-size="15" fill="#475569">The two paths bind differently, and only one of them carries a government penalty.</text>
+
+  <g>
+    <rect x="50" y="130" width="530" height="150" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+    <text x="75" y="161" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">SOURCE OF OBLIGATION</text>
+    <text x="75" y="196" font-size="20" font-weight="800" fill="#0f172a">Legislature or regulator</text>
+    <text x="75" y="231" font-size="14.5" font-weight="500" fill="#475569">A parliament, congress, or empowered regulator</text>
+    <text x="75" y="253" font-size="14.5" font-weight="500" fill="#475569">enacts a binding instrument.</text>
+  </g>
+  <g>
+    <rect x="620" y="130" width="530" height="150" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+    <text x="645" y="161" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">SOURCE OF OBLIGATION</text>
+    <text x="645" y="196" font-size="20" font-weight="800" fill="#0f172a">Industry body or network</text>
+    <text x="645" y="231" font-size="14.5" font-weight="500" fill="#475569">A standards organization, payment network, or the</text>
+    <text x="645" y="253" font-size="14.5" font-weight="500" fill="#475569">audit profession publishes a scheme.</text>
+  </g>
+
+  <path d="M315 285 L315 313" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-blue)"/>
+  <path d="M885 285 L885 313" fill="none" stroke="#b45309" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-amber)"/>
+
+  <g>
+    <rect x="50" y="320" width="530" height="175" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+    <text x="75" y="351" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">INSTRUMENT</text>
+    <text x="75" y="386" font-size="20" font-weight="800" fill="#0f172a">Law or regulation</text>
+    <text x="75" y="421" font-size="14.5" font-weight="500" fill="#475569">Applies automatically once its jurisdiction, entity,</text>
+    <text x="75" y="443" font-size="14.5" font-weight="500" fill="#475569">activity, data-type, and sector tests are met.</text>
+    <text x="75" y="465" font-size="14.5" font-weight="500" fill="#475569">Opting out is not available.</text>
+  </g>
+  <g>
+    <rect x="620" y="320" width="530" height="175" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+    <text x="645" y="351" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">INSTRUMENT</text>
+    <text x="645" y="386" font-size="20" font-weight="800" fill="#0f172a">Standard, scheme, or report</text>
+    <text x="645" y="421" font-size="14.5" font-weight="500" fill="#475569">Binds only through something else: a contract, a</text>
+    <text x="645" y="443" font-size="14.5" font-weight="500" fill="#475569">payment-network rule, a procurement requirement,</text>
+    <text x="645" y="465" font-size="14.5" font-weight="500" fill="#475569">or a certification a counterparty demands.</text>
+  </g>
+
+  <path d="M315 500 L315 528" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-blue)"/>
+  <path d="M885 500 L885 528" fill="none" stroke="#b45309" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-amber)"/>
+
+  <g>
+    <rect x="50" y="535" width="530" height="175" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+    <text x="75" y="566" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">IF BREACHED</text>
+    <text x="75" y="601" font-size="20" font-weight="800" fill="#0f172a">Government enforcement</text>
+    <text x="75" y="636" font-size="14.5" font-weight="500" fill="#475569">Regulator investigation and orders, statutory fines,</text>
+    <text x="75" y="658" font-size="14.5" font-weight="500" fill="#475569">and under some regimes criminal liability. Some</text>
+    <text x="75" y="680" font-size="14.5" font-weight="500" fill="#475569">laws also create a private right of action.</text>
+  </g>
+  <g>
+    <rect x="620" y="535" width="530" height="175" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+    <text x="645" y="566" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">IF BREACHED</text>
+    <text x="645" y="601" font-size="20" font-weight="800" fill="#0f172a">Business consequence</text>
+    <text x="645" y="636" font-size="14.5" font-weight="500" fill="#475569">Contract remedies, termination, loss of eligibility</text>
+    <text x="645" y="658" font-size="14.5" font-weight="500" fill="#475569">to process card payments, or a lost deal — but no</text>
+    <text x="645" y="680" font-size="14.5" font-weight="500" fill="#475569">government penalty from the standard itself.</text>
+  </g>
+
+  <g>
+    <rect x="50" y="750" width="1100" height="95" rx="22" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+    <text x="600" y="790" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">A law can incorporate a standard by reference and move it across: Nevada NRS 603A.215 requires qualifying</text>
+    <text x="600" y="815" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">card-accepting data collectors to comply with PCI DSS, making a private standard a state-law obligation.</text>
+  </g>
+</svg>

@@ -1,69 +1,54 @@
 <svg viewBox="0 0 1200 415" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
   <title id="title">OWASP SAMM business functions</title>
-  <desc id="description">The model organizes software assurance practices across the full product lifecycle.</desc>
+  <desc id="description">The model organizes software assurance practices across the full product lifecycle: five business functions, each holding three security practices.</desc>
   <rect width="1200" height="415" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-reverse" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10Z" fill="#94a3b8"/></marker>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker>
-    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0f766e"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b45309"/></marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7c3aed"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">OWASP SAMM business functions</text>
-  <text x="50" y="88" font-size="15" fill="#475569">The model organizes software assurance practices across the full product lifecycle.</text>
-  
+  <text x="50" y="88" font-size="15" fill="#475569">Five business functions, each holding three security practices scored independently.</text>
+
     <g>
-      <rect x="50" y="135" width="176" height="235" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
-      
-      <text x="75" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Governance</text>
-      <text x="75" y="225" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">strategy</text>
-<text x="75" y="248" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">policy</text>
-<text x="75" y="271" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">education</text>
+      <rect x="35" y="135" width="210" height="235" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <text x="60" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Governance</text>
+      <text x="60" y="228" text-anchor="start" font-size="13" font-weight="500" fill="#475569">strategy and metrics</text>
+<text x="60" y="252" text-anchor="start" font-size="13" font-weight="500" fill="#475569">policy and compliance</text>
+<text x="60" y="276" text-anchor="start" font-size="13" font-weight="500" fill="#475569">education and guidance</text>
     </g>
 
     <g>
-      <rect x="281" y="135" width="176" height="235" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
-      
-      <text x="306" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Design</text>
-      <text x="306" y="225" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">threat assessment</text>
-<text x="306" y="248" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">requirements</text>
-<text x="306" y="271" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">architecture</text>
+      <rect x="265" y="135" width="210" height="235" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+      <text x="290" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Design</text>
+      <text x="290" y="228" text-anchor="start" font-size="13" font-weight="500" fill="#475569">threat assessment</text>
+<text x="290" y="252" text-anchor="start" font-size="13" font-weight="500" fill="#475569">security requirements</text>
+<text x="290" y="276" text-anchor="start" font-size="13" font-weight="500" fill="#475569">security architecture</text>
     </g>
 
     <g>
-      <rect x="512" y="135" width="176" height="235" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
-      
-      <text x="537" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Implementation</text>
-      <text x="537" y="225" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">secure build</text>
-<text x="537" y="248" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">secure deploy</text>
-<text x="537" y="271" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">defect management</text>
+      <rect x="495" y="135" width="210" height="235" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+      <text x="520" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Implementation</text>
+      <text x="520" y="228" text-anchor="start" font-size="13" font-weight="500" fill="#475569">secure build</text>
+<text x="520" y="252" text-anchor="start" font-size="13" font-weight="500" fill="#475569">secure deployment</text>
+<text x="520" y="276" text-anchor="start" font-size="13" font-weight="500" fill="#475569">defect management</text>
     </g>
 
     <g>
-      <rect x="743" y="135" width="176" height="235" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
-      
-      <text x="768" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Verification</text>
-      <text x="768" y="225" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">architecture review</text>
-<text x="768" y="248" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">requirements testing</text>
-<text x="768" y="271" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">security testing</text>
+      <rect x="725" y="135" width="210" height="235" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
+      <text x="750" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Verification</text>
+      <text x="750" y="228" text-anchor="start" font-size="13" font-weight="500" fill="#475569">architecture assessment</text>
+<text x="750" y="252" text-anchor="start" font-size="13" font-weight="500" fill="#475569">requirements testing</text>
+<text x="750" y="276" text-anchor="start" font-size="13" font-weight="500" fill="#475569">security testing</text>
     </g>
 
     <g>
-      <rect x="974" y="135" width="176" height="235" rx="20" fill="#f0fdf4" stroke="#15803d" stroke-width="3"/>
-      
-      <text x="999" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Operations</text>
-      <text x="999" y="225" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">incident management</text>
-<text x="999" y="248" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">environment</text>
-<text x="999" y="271" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">operational management</text>
+      <rect x="955" y="135" width="210" height="235" rx="20" fill="#f0fdf4" stroke="#15803d" stroke-width="3"/>
+      <text x="980" y="185" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Operations</text>
+      <text x="980" y="228" text-anchor="start" font-size="13" font-weight="500" fill="#475569">incident management</text>
+<text x="980" y="252" text-anchor="start" font-size="13" font-weight="500" fill="#475569">environment management</text>
+<text x="980" y="276" text-anchor="start" font-size="13" font-weight="500" fill="#475569">operational management</text>
     </g>
-    <path d="M234 252.5 L273 252.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    
-    <path d="M465 252.5 L504 252.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    
-    <path d="M696 252.5 L735 252.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    
-    <path d="M927 252.5 L966 252.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    
+
+
+
+
 </svg>

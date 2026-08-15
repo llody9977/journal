@@ -40,8 +40,7 @@
 <text x="845" y="263" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">software assurance</text>
 <text x="845" y="286" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">practices over time?</text>
     </g>
-    <path d="M388 252.5 L427 252.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    
-    <path d="M773 252.5 L812 252.5" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
-    
+    <text x="407" y="258" text-anchor="middle" font-size="26" font-weight="700" fill="#94a3b8">/</text>
+    <text x="792" y="258" text-anchor="middle" font-size="26" font-weight="700" fill="#94a3b8">/</text>
+
 </svg>

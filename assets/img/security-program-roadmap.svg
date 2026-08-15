@@ -18,36 +18,41 @@
     <g>
       <rect x="50" y="135" width="176" height="190" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
       <text x="75" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">STAGE 1</text>
-      <text x="75" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Technical hygiene</text>
-      <text x="75" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">CIS IG1</text>
+      <text x="75" y="200" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">Technical</text>
+      <text x="75" y="222" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">hygiene</text>
+      <text x="75" y="258" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">CIS IG1</text>
     </g>
 
     <g>
       <rect x="281" y="135" width="176" height="190" rx="20" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
       <text x="306" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">STAGE 2</text>
-      <text x="306" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Strategic vocabulary</text>
-      <text x="306" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">NIST CSF</text>
+      <text x="306" y="200" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">Strategic</text>
+      <text x="306" y="222" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">vocabulary</text>
+      <text x="306" y="258" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">NIST CSF</text>
     </g>
 
     <g>
       <rect x="512" y="135" width="176" height="190" rx="20" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
       <text x="537" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">STAGE 3</text>
-      <text x="537" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Product security</text>
-      <text x="537" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">OWASP ASVS</text>
+      <text x="537" y="200" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">Product</text>
+      <text x="537" y="222" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">security</text>
+      <text x="537" y="258" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">OWASP ASVS</text>
     </g>
 
     <g>
       <rect x="743" y="135" width="176" height="190" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
       <text x="768" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">STAGE 4</text>
-      <text x="768" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Customer assurance</text>
-      <text x="768" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">SOC 2</text>
+      <text x="768" y="200" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">Customer</text>
+      <text x="768" y="222" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">assurance</text>
+      <text x="768" y="258" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">SOC 2</text>
     </g>
 
     <g>
       <rect x="974" y="135" width="176" height="190" rx="20" fill="#f0fdf4" stroke="#15803d" stroke-width="3"/>
       <text x="999" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#15803d">STAGE 5</text>
-      <text x="999" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Management system</text>
-      <text x="999" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">ISO 27001</text>
+      <text x="999" y="200" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">Management</text>
+      <text x="999" y="222" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">system</text>
+      <text x="999" y="258" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">ISO 27001</text>
     </g>
     <path d="M234 230 L273 230" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
     

@@ -39,16 +39,17 @@
     <g>
       <rect x="743" y="135" width="176" height="190" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
       <text x="768" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">LEVEL 4</text>
-      <text x="768" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Quantitatively</text>
-<text x="768" y="225" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">managed</text>
-      <text x="768" y="267" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">measured</text>
+      <text x="768" y="200" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">Quantitatively</text>
+<text x="768" y="222" text-anchor="start" font-size="18" font-weight="800" fill="#0f172a">managed</text>
+      <text x="768" y="258" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">measured</text>
     </g>
 
     <g>
       <rect x="974" y="135" width="176" height="190" rx="20" fill="#f0fdf4" stroke="#15803d" stroke-width="3"/>
       <text x="999" y="166" font-size="12" font-weight="900" letter-spacing="1" fill="#15803d">LEVEL 5</text>
       <text x="999" y="200" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">Optimizing</text>
-      <text x="999" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">continuous improvement</text>
+      <text x="999" y="240" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">continuous</text>
+<text x="999" y="262" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">improvement</text>
     </g>
     <path d="M234 230 L273 230" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
     

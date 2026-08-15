@@ -12,14 +12,14 @@
     <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#b91c1c"/></marker>
   </defs>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">NIST Cybersecurity Framework 2.0 functions</text>
-  <text x="50" y="82" font-size="14.5" fill="#475569">Govern informs all five operational functions, which continuously exchange and one</text>
-  <text x="50" y="102" font-size="14.5" fill="#475569">information improve another.</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Govern informs all five operational functions, which continuously exchange</text>
+  <text x="50" y="102" font-size="14.5" fill="#475569">information and improve one another.</text>
   
     <g>
       <rect x="70" y="125" width="1060" height="125" rx="20" fill="#faf5ff" stroke="#7c3aed" stroke-width="3"/>
       <text x="95" y="156" font-size="12" font-weight="900" letter-spacing="1" fill="#7c3aed">CROSS-CUTTING FUNCTION</text>
       <text x="95" y="190" text-anchor="start" font-size="20" font-weight="800" fill="#0f172a">GOVERN</text>
-      <text x="95" y="230" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Set strategy, policy, roles, oversight, and risk-management expectations across every other function.</text>
+      <text x="95" y="226" text-anchor="start" font-size="14.5" font-weight="500" fill="#475569">Set strategy, policy, roles, oversight, and risk-management expectations across every other function.</text>
     </g>
     <g>
       <rect x="70" y="335" width="196" height="185" rx="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
