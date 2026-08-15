@@ -2,7 +2,7 @@
 title: "Incident Response Playbooks & SOAR"
 description: Technical reference for incident response playbooks under NIST SP 800-61 Rev. 3 and the CSF 2.0 Functions, SOAR orchestration and its approval boundary, and the ordering constraints in a ransomware containment sequence.
 permalink: /topics/incident-response-playbooks-soar/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Digital Forensics & IR / Response Engineering</span>
@@ -12,10 +12,10 @@ last_verified: 2026-08-14
 <p class="lede">Containment speed decides how much of an incident becomes a breach, and the operations that contain — isolating a host, revoking an identity, blocking a destination — are all API calls that a human typically executes through a ticket queue. Orchestration removes the queue, not the decision, which is why a playbook is mostly a statement of what may run unattended and what must wait for a person. The ordering inside a playbook matters as much as its speed: several containment steps destroy evidence or capability that a later step needed.</p>
 
 <div class="diagram-frame diagram-frame-openable">
-  <a class="diagram-open-link" href="{{ '/assets/img/incident-response-playbooks-soar.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the incident response and SOAR architecture diagram at full size">
-    <img src="{{ '/assets/img/incident-response-playbooks-soar.svg' | relative_url }}" alt="Incident Response architecture diagram showing the response lifecycle, SOAR automation connecting EDR, identity, and network tooling, and ransomware containment playbooks.">
+  <a class="diagram-open-link" href="{{ '/assets/img/incident-response-playbooks-soar.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the incident response and SOAR overview diagram at full size">
+    <img src="{{ '/assets/img/incident-response-playbooks-soar.svg' | relative_url }}" alt="Two panels. The first maps incident response onto NIST SP 800-61 Revision 3: preparation work sits in Govern, Identify and Protect; in-incident activity sits in Detect, Respond and Recover; post-incident learning lands in Identify's Improvement Category; and Revision 2's four-phase lifecycle is marked withdrawn rather than current. The second covers orchestration and ordering: automation removes handoff latency rather than the decision, every playbook needs an explicit trigger condition and an approval boundary, and the ransomware containment order runs capture volatile memory, isolate at the endpoint agent, revoke tokens, then contain the segment.">
   </a>
-  <p class="diagram-caption">Incident Response Architecture: response lifecycle &leftrightarrow; SOAR automated containment &amp; ransomware playbooks</p>
+  <p class="diagram-caption">SP 800-61 Rev. 3 structure &leftrightarrow; what orchestration removes &leftrightarrow; the ransomware containment order</p>
 </div>
 
 ## The current lifecycle structure: SP 800-61 Rev. 3
@@ -29,13 +29,16 @@ last_verified: 2026-08-14
   <p class="diagram-caption">Where response activity sits under the CSF 2.0 Functions, with Govern running continuously above them</p>
 </div>
 
-| Historical Rev. 2 phase | Current Rev. 3 placement | Playbook content |
+Rev. 3's own Table 1 maps the four historical phases as follows — note that Preparation spans three Functions, and that Improvement appears against three of the four phases rather than only the last:
+
+| Historical Rev. 2 phase (withdrawn) | Current Rev. 3 placement | Playbook content |
 |---|---|---|
-| **Preparation** | Govern and Protect | IR policy and authority, playbooks, jump-bag tooling, out-of-band communications (*Signal, a secondary email domain*), immutable backups, tabletop exercises. |
-| **Detection & Analysis** | Detect | Triage SIEM and EDR signals, scope the activity, and declare an incident against defined criteria. Declaration is the handover into Respond. |
-| **Containment & Eradication** | Respond | Short-term isolation, then durable containment — block rules, credential and token revocation, patching the exploited path. Regulatory notification clocks generally start here, not at recovery. |
-| **Recovery** | Recover | Restore from verified clean state, validate normal operation, and communicate status. Restoring before eradication completes reinfects. |
+| **Preparation** | Govern, Identify (all Categories), Protect | IR policy and authority, playbooks, jump-bag tooling, out-of-band communications (*Signal, a secondary email domain*), immutable backups, tabletop exercises. |
+| **Detection & Analysis** | Detect, and Identify — Improvement (ID.IM) | Triage SIEM and EDR signals, scope the activity, and declare an incident against defined criteria (DE.AE-08). Declaration is the handover into Respond. |
+| **Containment, Eradication & Recovery** | Respond, Recover, and Identify — Improvement (ID.IM) | Short-term isolation, then durable containment — block rules, credential and token revocation, patching the exploited path — followed by restore from verified clean state and validation of normal operation. Restoring before eradication completes reinfects. |
 | **Post-Incident Activity** | Identify — Improvement (ID.IM) | Root cause analysis, detection rule updates, and control changes fed back through Govern. |
+
+Notification clocks do not run off any of these phases. Each regime keys off its own trigger — awareness of a qualifying personal-data breach under **[GDPR Art. 33](https://gdpr-info.eu/art-33-gdpr/)**, a materiality determination under **[SEC Item 1.05](https://www.sec.gov/resources-small-businesses/small-business-compliance-guides/cybersecurity-risk-management-strategy-governance-incident-disclosure)** — which generally fires at or shortly after declaration, well before recovery. Define those triggers alongside the internal declaration criteria during preparation, because they are not the same event.
 
 ## SOAR Automation & Orchestration
 
@@ -50,7 +53,7 @@ The durations below are **illustrative orders of magnitude to show where the lat
 | **EDR host isolation** | Ticket dispatch to the endpoint team | Seconds | API call to the EDR agent (*CrowdStrike, Defender*) cutting the host's network stack while keeping the agent channel reachable. |
 | **Session and token revocation** | Request queued to the identity team | Seconds | API call to the identity provider (*Okta, Entra ID*) revoking refresh and access tokens and forcing re-authentication. |
 | **Malicious destination block** | Firewall change queue, often a change window | Seconds | Pushing the indicator to a perimeter or WAF dynamic blocklist. |
-| **Phishing message triage** | Per-message manual analysis | Seconds | Detonating the attachment in a sandbox and purging matching messages across mailboxes. |
+| **Phishing message triage** | Per-message manual analysis | Minutes | Detonating the attachment in a sandbox — which takes its own time to run — then purging matching messages across mailboxes. |
 
 Two constraints belong in every playbook: an explicit **trigger condition** stating which detections may auto-execute, and an **approval boundary** above which a human decides. Automated isolation firing on a false positive is an outage the playbook caused, so the auto-execute path should be scoped to high-confidence detections and the rest left as one-click assisted actions.
 
@@ -65,7 +68,7 @@ When a high-severity ransomware detection fires, the containment sequence has or
   <p class="diagram-caption">Four steps, each with the trade-off it makes — and why the order is itself the control</p>
 </div>
 
-1. **Capture volatile state first, if at all.** Live memory capture and a volume snapshot must precede anything that changes host state, because memory can hold the encryption key, injected code, and network state that exist nowhere on disk. The trade-off is real: every second spent capturing is a second of continued encryption, so skipping it is sometimes the right call — make it a decision, not an oversight.
+1. **Capture volatile state first, if at all.** Live memory capture and a volume snapshot must precede anything that changes host state, because memory can hold the encryption key, injected code, and network state that exist nowhere on disk — see [Digital Forensics & Evidence Handling]({{ '/topics/digital-forensics-evidence-handling/' | relative_url }}) for the acquisition ordering and the integrity record it needs. The trade-off is real: every second spent capturing is a second of continued encryption, so skipping it is sometimes the right call — make it a decision, not an oversight.
 2. **Isolate the host at the agent, not by pulling power.** EDR network isolation cuts SMB and RDP lateral movement while keeping the agent channel reachable for investigation. Powering off destroys memory; disconnecting the cable also removes your own access.
 3. **Revoke the identity, not just the account.** Disabling the account stops new authentication. Already-issued OAuth access tokens and Kerberos tickets remain valid until they are explicitly revoked or expire, so token invalidation is a separate action — see [OAuth & OpenID Connect]({{ '/topics/oauth-oidc/' | relative_url }}).
 4. **Contain the segment.** Microsegmentation rules isolate the affected VLAN or subnet from production storage and backup tiers. This takes healthy workloads on that segment offline with it, which is why the blast radius of the containment action needs to be known before the playbook runs it unattended.

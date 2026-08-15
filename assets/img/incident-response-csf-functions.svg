@@ -52,9 +52,9 @@
   <text x="754" y="247" font-size="12" fill="#475569">report, categorize and</text>
   <text x="754" y="266" font-size="12" fill="#475569">prioritize, then contain</text>
   <text x="754" y="285" font-size="12" fill="#475569">and eradicate.</text>
-  <text x="754" y="312" font-size="12" fill="#475569">Notification obligations</text>
-  <text x="754" y="331" font-size="12" fill="#475569">start running here, not</text>
-  <text x="754" y="350" font-size="12" fill="#475569">at recovery.</text>
+  <text x="754" y="312" font-size="12" fill="#475569">Notification clocks run</text>
+  <text x="754" y="331" font-size="12" fill="#475569">on their own regulator-</text>
+  <text x="754" y="350" font-size="12" fill="#475569">defined triggers.</text>
 
   <rect x="968" y="180" width="192" height="184" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
   <text x="986" y="204" font-size="11.5" font-weight="900" letter-spacing="1" fill="#0f766e">RECOVER</text>

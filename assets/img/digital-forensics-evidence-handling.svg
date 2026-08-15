@@ -1,38 +1,40 @@
-<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title description">
-  <title id="title">Digital Forensics &amp; Evidence Handling (DFIR) Architecture</title>
-  <desc id="description">Digital Forensics diagram showing Memory Forensics (Volatility), Disk Forensics (Autopsy), Artifact Analysis (Windows Registry/Prefetch, Linux journald, CloudTrail), and Chain of Custody (NIST SP 800-86).</desc>
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="dfeh-title dfeh-desc">
+  <title id="dfeh-title">Digital forensic acquisition ordering, artifact timeline analysis, and chain of custody</title>
+  <desc id="dfeh-desc">Three panels. The first covers acquisition: live RAM capture with WinPmem or LiME, bit-stream raw or E01 disk imaging behind a write-blocker, and the rule that volatile data is captured before the host is shut down. The second lists artifact sources by platform — Windows registry hives, event logs, Prefetch, Shimcache, Amcache and the USN journal; Linux journald, auth.log, shell history, auditd and cron; cloud CloudTrail, VPC flow logs, GCP audit logs and Azure activity logs — and separates evidence of execution from evidence of existence. The third covers chain of custody: hash the image on acquisition, log the acquirer, time and location, and analyze only working copies.</desc>
   <rect width="1200" height="500" fill="#ffffff"/>
-  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Digital Forensics &amp; Evidence Handling (DFIR)</text>
-  <text x="50" y="75" font-size="14" fill="#475569">Memory forensics, disk acquisition, OS artifact analysis, and NIST SP 800-86 Chain of Custody.</text>
-  
-  <!-- Forensics Modalities (x=40, w=540, y=105, h=160) -->
+  <text x="50" y="50" font-size="28" font-weight="850" fill="#0f172a">Digital Forensics &amp; Evidence Handling</text>
+  <text x="50" y="75" font-size="14" fill="#475569">Acquisition ordering, artifact timeline analysis, and the integrity record that makes both defensible.</text>
+
+  <!-- Acquisition (x=40, w=540, y=105, h=160) -->
   <rect x="40" y="105" width="540" height="160" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
-  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">MEMORY &amp; DISK FORENSIC ACQUISITION</text>
-  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Live Volatile RAM &amp; Static Storage Analysis</text>
+  <text x="60" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#2563eb">ACQUISITION ORDER (RFC 3227, BCP 55)</text>
+  <text x="60" y="155" font-size="14" font-weight="800" fill="#0f172a">Most volatile first</text>
   <line x1="60" y1="166" x2="560" y2="166" stroke="#2563eb" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Memory Forensics (Volatility / LiME): In-memory injection, process hollowing, network sockets</text>
-  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Disk Acquisition (FTK Imager / dd): Bit-stream raw/E01 image creation with write-blockers</text>
-  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Volatility Order: Capture volatile RAM prior to host shutdown or network isolation</text>
+  <text x="60" y="186" font-size="11.5" font-weight="500" fill="#475569">• Memory: WinPmem / LiME before shutdown — keys, injected code</text>
+  <text x="60" y="206" font-size="11.5" font-weight="500" fill="#475569">• Disk: bit-stream .dd or .E01 image taken behind a write-blocker</text>
+  <text x="60" y="226" font-size="11.5" font-weight="500" fill="#475569">• Cloud: volume snapshot plus audit log export, isolated account</text>
+  <text x="60" y="248" font-size="11.5" font-weight="700" fill="#9f1239">• Live capture is not read-only — the tool runs on the host it reads</text>
 
-  <!-- Artifact Analysis (x=620, w=540, y=105, h=160) -->
+  <!-- Artifact analysis (x=620, w=540, y=105, h=160) -->
   <rect x="620" y="105" width="540" height="160" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5" />
-  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">OS &amp; CLOUD ARTIFACT TIMELINE ANALYSIS</text>
-  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Windows, Linux, &amp; Cloud Incident Artifacts</text>
+  <text x="640" y="132" font-size="11" font-weight="900" letter-spacing="1" fill="#0f766e">ARTIFACT TIMELINE ANALYSIS</text>
+  <text x="640" y="155" font-size="14" font-weight="800" fill="#0f172a">Execution evidence vs existence evidence</text>
   <line x1="640" y1="166" x2="1140" y2="166" stroke="#0f766e" stroke-opacity="0.3" stroke-width="1" />
-  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Windows Artifacts: Registry hives, Event Logs (Evtx), Prefetch, Shimcache, Amcache, USN Journal</text>
-  <text x="640" y="206" font-size="11.5" font-weight="500" fill="#475569">• Linux Artifacts: Systemd journald, auth.log, bash history, auditd logs, cron jobs</text>
-  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Cloud Artifacts: AWS CloudTrail, VPC Flow Logs, GCP Audit Logs, Azure Activity Logs</text>
+  <text x="640" y="186" font-size="11.5" font-weight="500" fill="#475569">• Ran: Prefetch, Sysmon Event ID 1, Security Event ID 4688</text>
+  <text x="640" y="206" font-size="11.5" font-weight="700" fill="#9f1239">• Existed only: Shimcache, Amcache — not proof of execution</text>
+  <text x="640" y="226" font-size="11.5" font-weight="500" fill="#475569">• Windows: registry hives, .evtx logs, USN journal</text>
+  <text x="640" y="248" font-size="11.5" font-weight="500" fill="#475569">• Linux / cloud: journald, auditd; CloudTrail, VPC flow logs</text>
 
-  <!-- Chain of Custody (x=40, w=1120, y=285, h=145) -->
+  <!-- Chain of custody (x=40, w=1120, y=285, h=145) -->
   <rect x="40" y="285" width="1120" height="145" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5" />
-  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">CHAIN OF CUSTODY &amp; EVIDENTIARY INTEGRITY (NIST SP 800-86)</text>
-  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Legal Evidence Integrity &amp; Cryptographic Hash Verification</text>
+  <text x="60" y="312" font-size="11" font-weight="900" letter-spacing="1" fill="#b45309">CHAIN OF CUSTODY &amp; EVIDENTIARY INTEGRITY</text>
+  <text x="60" y="335" font-size="14" font-weight="800" fill="#0f172a">Integrity from acquisition onward, plus provenance</text>
   <line x1="60" y1="346" x2="1140" y2="346" stroke="#b45309" stroke-opacity="0.3" stroke-width="1" />
-  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Cryptographic Hashing: Calculate SHA-256 / SHA-512 hashes immediately upon evidence acquisition</text>
-  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Custody Logging: Record acquiring investigator, date/time, physical/cloud location, &amp; hash validation</text>
-  <text x="60" y="402" font-size="11.5" font-weight="500" fill="#475569">• Read-Only Analysis: Always perform forensic timeline analysis on working copies; preserve master original</text>
+  <text x="60" y="366" font-size="11.5" font-weight="500" fill="#475569">• Hash on acquisition with SHA-256 or stronger. NIST SP 800-86 (2006) predates the SHA-2 transition and names MD5 / SHA-1.</text>
+  <text x="60" y="384" font-size="11.5" font-weight="500" fill="#475569">• Log custody continuously: evidence ID, acquiring investigator, date and time with UTC offset, every transfer, storage location.</text>
+  <text x="60" y="402" font-size="11.5" font-weight="700" fill="#9f1239">• Analyze working copies only. Custody and hashing support admissibility; they do not guarantee it — the rules of evidence decide.</text>
 
-  <!-- Bottom Bar: Alignment (y=445, h=40) -->
+  <!-- Bottom bar -->
   <rect x="40" y="445" width="1120" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
-  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">DFIR LIFECYCLE: LIVE RAM ACQUISITION → DISK BIT-STREAM IMAGE → ARTIFACT TIMELINE → CHAIN OF CUSTODY VERIFICATION</text>
+  <text x="600" y="470" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a">CAPTURE VOLATILE FIRST → IMAGE DISK BEHIND A WRITE-BLOCKER → BUILD THE TIMELINE → PROVE INTEGRITY AND PROVENANCE</text>
 </svg>

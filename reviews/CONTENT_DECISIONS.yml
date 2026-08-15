@@ -3861,6 +3861,274 @@
       "superseded_by": null,
       "originated_on": "2026-08-15",
       "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0070",
+      "title": "Rebuild Topic 12.2's hero diagram to SP 800-61 Rev. 3 and correct its phase mapping and notification-trigger claims",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/incident-response-playbooks-soar.md",
+          "assets/img/incident-response-playbooks-soar.svg",
+          "assets/img/incident-response-csf-functions.svg"
+        ],
+        "concepts": [
+          "incident response lifecycle",
+          "NIST SP 800-61",
+          "CSF 2.0 functions",
+          "superseded standard",
+          "breach notification trigger",
+          "cross-format consistency"
+        ]
+      },
+      "originating_feedback": "A fresh Section 12 review found that CD-0064's approved outcome was not reached: the page's hero diagram, which was outside that decision's recorded file list, still headlined 'NIST SP 800-61 REV 2 INCIDENT RESPONSE LIFECYCLE / 4-Phase Incident Response Process' directly above prose stating that NIST withdrew Rev. 2, listed only three of the four phases it named, and stated the ransomware order as isolate, revoke, then preserve memory, which is the reverse of the page's central ordering rule. The same review found the Rev. 2 mapping table split into five rows against a four-phase model, mapped Preparation to Govern and Protect while SP 800-61r3 Table 1 maps it to Govern, Identify (all Categories), and Protect, and asserted that regulatory notification clocks start at containment.",
+      "decision": "Rebuild assets/img/incident-response-playbooks-soar.svg entirely to the Rev. 3 structure with the correct ransomware ordering, collapse the mapping table to the four Rev. 2 phases with SP 800-61r3 Table 1's Function assignments including Identify's Improvement Category, and replace the notification claim on both the page and the CSF Functions diagram with the regime-specific triggers already used on Topic 1.8.",
+      "rationale": "CD-0064's reasoning was correct; only its scope was incomplete, so this record extends rather than reverses it. A hero diagram asserting a withdrawn structure is the same cross-format defect the earlier decision existed to remove, and the notification claim contradicted Topic 1.8, which correctly states that notification obligations run on their own regulator-defined triggers rather than on an internal lifecycle position.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-61 Rev. 3, Table 1",
+          "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+          "supports": "That Preparation maps to Govern, Identify (all Categories) and Protect; that Detection & Analysis and Containment/Eradication/Recovery each also map to Identify's Improvement Category; and that Rev. 3 supersedes Rev. 2."
+        },
+        {
+          "title": "GDPR Article 33",
+          "url": "https://gdpr-info.eu/art-33-gdpr/",
+          "supports": "That the 72-hour clock starts from the controller becoming aware of a personal data breach, not from a containment action."
+        },
+        {
+          "title": "SEC cybersecurity incident disclosure compliance guide",
+          "url": "https://www.sec.gov/resources-small-businesses/small-business-compliance-guides/cybersecurity-risk-management-strategy-governance-incident-disclosure",
+          "supports": "That the Item 1.05 Form 8-K deadline runs from the registrant's materiality determination rather than from discovery or containment."
+        }
+      ],
+      "verification_methods": [
+        "Render Topic 12.2 and confirm no text in any format presents Rev. 2 as the current structure.",
+        "Confirm the hero diagram states the ransomware order as memory, isolate, revoke, contain.",
+        "Confirm the mapping table has four rows matching SP 800-61r3 Table 1.",
+        "Confirm Topics 1.8 and 12.2 state the same notification-trigger rule."
+      ],
+      "approved_outcome": "Topic 12.2 and all three of its diagrams state the Rev. 3 structure, the correct containment ordering, and regime-specific notification triggers.",
+      "invalidation_conditions": [
+        "NIST publishes a further revision of SP 800-61.",
+        "A named regime changes its notification trigger."
+      ],
+      "related_decisions": [
+        "CD-0058",
+        "CD-0064"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0071",
+      "title": "Correct Topic 12.1's forensic claims: admissibility scope, hash attribution, RFC 3227 ordering and status, and execution versus existence evidence",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/digital-forensics-evidence-handling.md",
+          "assets/img/digital-forensics-evidence-handling.svg"
+        ],
+        "concepts": [
+          "chain of custody",
+          "evidence admissibility",
+          "NIST SP 800-86",
+          "RFC 3227 order of volatility",
+          "Shimcache",
+          "Amcache",
+          "Prefetch",
+          "forensic hash algorithm",
+          "anti-forensics"
+        ]
+      },
+      "originating_feedback": "A fresh Section 12 review found that Topic 12.1 stated investigators 'must adhere to NIST SP 800-86 Chain of Custody protocols' to 'ensure' admissibility, attributed SHA-256 and SHA-512 to SP 800-86, presented a four-step condensation as 'the RFC 3227 Order of Volatility' with 'must' rather than the RFC's 'should', labelled Shimcache and Amcache as proof of execution, described 'cryptographic snapshots' of cloud volumes, and named Volatility as an acquisition tool and Autopsy in alt text that appears nowhere in the diagram.",
+      "decision": "Restate chain of custody as supporting rather than guaranteeing admissibility, matching Topic 1.8; attribute the SHA-256 recommendation to current practice while recording that SP 800-86 predates SHA-2 and names MD5 and SHA-1; quote RFC 3227's actual tiers with its BCP 55 status and 'should'; split the artifact table so execution evidence and existence evidence are separate rows with reliability caveats; and rebuild the diagram, alt text and description so all three agree.",
+      "rationale": "SP 800-86 explicitly disclaims use as legal advice and states that guidelines 'should support' admissibility, so 'must' and 'ensure' were both unsupported by the cited source and contradicted Topic 1.8. Treating Shimcache as execution evidence is a well-documented forensic error that produces timelines attributing activity to binaries that never ran.",
+      "authoritative_sources": [
+        {
+          "title": "NIST SP 800-86",
+          "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+          "supports": "That the publication recommends rather than mandates, disclaims use as legal advice, states guidelines should support admissibility, and names MD5 and SHA-1 as the message digest algorithms in use."
+        },
+        {
+          "title": "RFC 3227 (BCP 55)",
+          "url": "https://www.rfc-editor.org/rfc/rfc3227.txt",
+          "supports": "Best Current Practice status, the RFC 2119 keyword usage, and the order of volatility tiers in section 2.1 which group live network and process state with memory."
+        }
+      ],
+      "verification_methods": [
+        "Confirm no text on Topic 12.1 states that any practice ensures or guarantees admissibility.",
+        "Confirm the RFC 3227 tiers on the page match section 2.1 and that BCP 55 status is stated.",
+        "Confirm Shimcache and Amcache are described as existence evidence in prose, table, diagram and callout.",
+        "Confirm the diagram description, page alt text and drawn diagram name the same tools."
+      ],
+      "approved_outcome": "Topic 12.1 states the admissibility boundary, the correct RFC 3227 ordering and status, current hash guidance with honest attribution, and a clean execution-versus-existence split across every format.",
+      "invalidation_conditions": [
+        "NIST publishes a revision of SP 800-86.",
+        "The IETF revises or obsoletes RFC 3227.",
+        "Windows changes Shimcache or Amcache semantics such that they record execution."
+      ],
+      "related_decisions": [
+        "CD-0028",
+        "CD-0072"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0072",
+      "title": "Correct Topic 12.3: remove the fabricated YARA author and wrong ATT&CK citation, scope hosted sandboxes, and add the analysis boundaries",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/malware-analysis-reverse-engineering.md",
+          "assets/img/malware-analysis-reverse-engineering.svg"
+        ],
+        "concepts": [
+          "YARA rule provenance",
+          "illustrative example labelling",
+          "MITRE ATT&CK software ID",
+          "sandbox air gap",
+          "hosted sandbox disclosure",
+          "Cuckoo Sandbox status",
+          "STIX TAXII terminology",
+          "Sigma coverage",
+          "malware handling authorization"
+        ]
+      },
+      "originating_feedback": "A fresh Section 12 review found that the YARA example carried author = 'Antigravity Threat Research', a fictitious organization, and reference = ATT&CK S0445, which is ShimRatReporter rather than LockBit; that ANY.RUN was listed as tooling for an 'isolated, air-gapped sandbox'; that the archived and unmaintained Cuckoo Sandbox was presented as current tooling; that the checklist asked for indicators 'formatted into STIX/TAXII objects', treating a transport protocol as an object format and contradicting Topic 6.3; and that the description, lede, caption, alt text and diagram all promised Sigma coverage the page did not contain. The review also recorded missing boundaries: no authorization prerequisite before detonation, no statement that a clean sandbox run may be evasion, and no statement of what a signature does and does not prove.",
+      "decision": "Relabel the YARA example as an illustrative journal example with an honest author field and the correct ATT&CK identifier S1202; split Stage 2 into self-hosted and hosted detonation with the public-submission consequence stated; remove Cuckoo; restate the sharing requirement as STIX 2.1 objects over a TAXII 2.1 Collection; add a short Sigma companion rule so the promised coverage exists rather than deleting the promise; and add three new sections covering authorization and handling, sandbox evasion, and the limits of a byte signature, cross-linking Topics 6.3 and 6.4.",
+      "rationale": "WRITING_STYLE forbids inventing citations or attributions, and a citation inside a fenced code block is invisible to verify_links.py, so nothing else would have caught the wrong ATT&CK identifier. Recommending a public cloud sandbox for incident samples under an air-gap heading is both a definitional contradiction and an evidence-disclosure risk. Adding the Sigma rule resolves the stale promise by making the page match its own stated arc rather than narrowing it.",
+      "authoritative_sources": [
+        {
+          "title": "MITRE ATT&CK: LockBit 3.0 (S1202)",
+          "url": "https://attack.mitre.org/software/S1202/",
+          "supports": "The correct ATT&CK software entry for LockBit 3.0."
+        },
+        {
+          "title": "MITRE ATT&CK: ShimRatReporter (S0445)",
+          "url": "https://attack.mitre.org/software/S0445/",
+          "supports": "That S0445 is an unrelated reconnaissance tool, not LockBit."
+        },
+        {
+          "title": "ANY.RUN plans",
+          "url": "https://any.run/plans/",
+          "supports": "That the Community tier provides unlimited public analyses and that private analyses are reserved for paid tiers."
+        },
+        {
+          "title": "Sigma specification",
+          "url": "https://github.com/SigmaHQ/sigma-specification",
+          "supports": "The rule fields and logsource/detection structure used by the behavioral example."
+        }
+      ],
+      "verification_methods": [
+        "Confirm no invented organization appears as an author anywhere on the page.",
+        "Confirm every ATT&CK reference resolves to the entry it names.",
+        "Confirm no text describes a hosted sandbox as air-gapped.",
+        "Confirm the page contains the Sigma coverage its description, lede and caption promise."
+      ],
+      "approved_outcome": "Topic 12.3 carries honestly labelled illustrative rules with correct citations, distinguishes self-hosted from hosted detonation, contains the Sigma coverage it advertises, and states its authorization, evasion and signature-limit boundaries.",
+      "invalidation_conditions": [
+        "MITRE reassigns or retires the cited ATT&CK identifiers.",
+        "ANY.RUN changes the visibility model of its free tier.",
+        "A validated rather than illustrative rule replaces the example, which should then be sourced instead of labelled."
+      ],
+      "related_decisions": [
+        "CD-0029",
+        "CD-0071"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0073",
+      "title": "Extend the journal-working-model and scoped-description rule to Topics 12.1 and 12.3",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/digital-forensics-evidence-handling.md",
+          "topics/malware-analysis-reverse-engineering.md"
+        ],
+        "concepts": [
+          "journal working model labelling",
+          "diagnostic checklist provenance",
+          "comprehensive scope claim",
+          "page description accuracy"
+        ]
+      },
+      "originating_feedback": "A fresh Section 12 review found that Topics 12.1 and 12.3 were the remaining pages carrying an unlabelled six-row diagnostic checklist with an audit-evidence column and a description opening 'Comprehensive technical guide to', while Topic 12.2 in the same section and every page in Sections 1, 6, 8, 9 and 10 already carried the scoped formulation.",
+      "decision": "Apply the rule recorded in CD-0035 and extended by CD-0050, CD-0053 and CD-0059 to Topics 12.1 and 12.3: prefix each checklist with an explicit journal-working-model statement, spell out the criteria count, and change each description to 'Technical reference for'.",
+      "rationale": "An unlabelled checklist formatted like an audit standard invites a reader to treat an author-created synthesis as published requirements, and a comprehensiveness claim on a page with open foundational gaps is unsupportable. Both pages were simply outside the file lists of the earlier decisions.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Confirm both checklists carry the journal-working-model prefix.",
+        "Confirm neither description opens with a comprehensiveness claim.",
+        "Confirm no topic page outside identity-access-fundamentals.md still carries an unlabelled diagnostic checklist."
+      ],
+      "approved_outcome": "Every diagnostic checklist in Section 12 states its provenance and no Section 12 description claims comprehensive coverage.",
+      "invalidation_conditions": [
+        "A checklist is replaced by one derived from a published audit standard, which should then be cited instead of labelled.",
+        "A page's scope is defined and justified such that a comprehensiveness claim becomes supportable."
+      ],
+      "related_decisions": [
+        "CD-0059",
+        "CD-0071",
+        "CD-0072"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0074",
+      "title": "Measure diagram text geometry on pre-existing diagrams, not only on newly built ones",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "assets/img/digital-forensics-evidence-handling.svg",
+          "assets/img/malware-analysis-reverse-engineering.svg",
+          "assets/img/incident-response-playbooks-soar.svg"
+        ],
+        "concepts": [
+          "diagram text overflow",
+          "SVG viewBox clipping",
+          "rendered output validation",
+          "diagram measurement"
+        ]
+      },
+      "originating_feedback": "A fresh Section 12 review measured every text node in the section's five diagrams against its panel rectangle and the viewBox. The two diagrams built under CD-0058 were clean, but the three pre-existing hero diagrams carried seven overflows: in the malware diagram two lines ran past the 1200-unit viewBox entirely, truncating 'after UPX/packer execution' and 'for SIEM/EDR deployment' mid-word in the published image, and one line bled across the gutter into the neighbouring panel. CD-0058's measurement step had been scoped to the thirteen new or rebuilt diagrams, and verify_rendering_hazards.py checks only stray characters and reused images, so nothing detected them.",
+      "decision": "Rebuild all three Section 12 hero diagrams with every text run terminating at least 20 units inside its panel, and treat geometry measurement as applying to any diagram a review touches rather than only to diagrams a decision created.",
+      "rationale": "Truncated words in a published image are a rendered-output defect that no repository gate can see and that syntax validity does not exclude, which is exactly the case REVIEW_STANDARD singles out when it says XML validity does not prove that text and positioning render correctly. Scoping the measurement to newly built assets left older diagrams permanently unchecked.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Measure every text node in all five Section 12 diagrams with getBBox against its panel rect and the viewBox.",
+        "Confirm every run terminates at least 20 units inside its panel.",
+        "Render each diagram at full size and confirm no word is clipped."
+      ],
+      "approved_outcome": "All five Section 12 diagrams pass a 20-unit interior-margin measurement and render with no clipped or colliding text.",
+      "invalidation_conditions": [
+        "A diagram adopts wrapped text or a layout engine that makes static measurement inapplicable.",
+        "An automated geometry check is added to the quality gate, at which point this becomes a gate rather than a review step."
+      ],
+      "related_decisions": [
+        "CD-0058",
+        "CD-0070"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
     }
   ]
 }
