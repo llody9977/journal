@@ -82,7 +82,7 @@ Two things about this edition change how it should be read.
 
 **The ranking is no longer vote-only.** Community voting carries three-quarters of the weight; the remaining quarter comes from an incident corpus of 7,714 real reports, of which 6,639 carried enough detail to classify. The two disagreed in useful places. Prompt injection falls out of the top ten on raw incident count alone yet holds first place, which the project attributes to a defense effect — teams already spend heavily holding it off, so fewer clean exploits reach public databases. Misinformation runs the other way: voters placed it near the bottom and the incident record near the top, and it lands in the middle.
 
-**This list stops where the model stops being a component.** The project draws the boundary explicitly: these ten own the risk when a model is a component inside an application. Once it becomes an actor — calling tools, carrying memory between sessions, setting downstream consequences in motion — the risk moves to the OWASP Agentic Top 10 and its `ASI` identifiers. Neither list covers that ground alone, so an agentic system needs both. [MCP & Agentic Security](../mcp-security-agentics/) is where that boundary matters in practice.
+**This list stops where the model stops being a component.** The project draws the boundary explicitly: these ten own the risk when a model is a component inside an application. Once it becomes an actor — calling tools, carrying memory between sessions, setting downstream consequences in motion — the risk moves to the OWASP Agentic Top 10 and its `ASI` identifiers. Neither list covers that ground alone, so an agentic system needs both. [MCP & Agentic Security]({{ '/topics/mcp-security-agentics/' | relative_url }}) is where that boundary matters in practice.
 
 Two habits worth keeping:
 
@@ -112,7 +112,7 @@ ATLAS is not a control framework and carries no compliance weight. Use it to pop
 
 Stacking all three still leaves gaps that have to be closed elsewhere:
 
-- **No framework here supplies a mitigation that eliminates prompt injection.** They classify and rank it; OWASP's own 2026 entry states that no reliable prevention mechanism exists today. See [Prompt Injection & Context Safety](../prompt-injection-defense/).
+- **No framework here supplies a mitigation that eliminates prompt injection.** They classify and rank it; OWASP's own 2026 entry states that no reliable prevention mechanism exists today. See [Prompt Injection & Context Safety]({{ '/topics/prompt-injection-defense/' | relative_url }}).
 - **None of them is a legal or regulatory obligation by itself.** Jurisdictional AI regulation is separate, and adopting a voluntary framework does not discharge it.
 - **The OWASP list is a ranking, not a coverage guarantee.** A risk that did not make the top ten is not thereby acceptable in a given system, and the list explicitly hands agentic risk to a separate Agentic Top 10.
 - **ATLAS lags novel technique classes**, because it records what has been observed and reported.

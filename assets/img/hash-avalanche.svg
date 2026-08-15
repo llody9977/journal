@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="hav-title hav-desc">
+  <title id="hav-title">Cryptographic hash avalanche effect</title>
+  <desc id="hav-desc">Two SHA-256 digests compared. The input string password produces a digest beginning 5e884898. Changing only the first character to q produces a completely unrelated digest beginning 500753de. Flipping a single input bit changes roughly half the output digest bits in an unpredictable pattern.</desc>
   <rect width="1200" height="315" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

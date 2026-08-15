@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="dhk-title dhk-desc">
+  <title id="dhk-title">Diffie-Hellman key agreement</title>
+  <desc id="dhk-desc">Alice and Bob share public domain parameters, a prime modulus p and generator g, both known to eavesdroppers. Each generates an ephemeral private key in memory and computes a public share, g raised to that private key modulo p. They exchange only the public shares. Each then raises the peer's share to their own private key, and both arrive at the identical shared secret g to the power ab modulo p. The result is passed through a protocol KDF to derive traffic keys and IVs. An eavesdropper who sees both public shares cannot compute the secret without solving the discrete logarithm.</desc>
   <rect width="1200" height="480" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

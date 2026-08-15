@@ -119,5 +119,5 @@ When auditing an identity perimeter, microservice API, or SSO federation flow, e
 - **NIST SP 800-63-4**: *Digital Identity Guidelines* — [NIST CSRC SP 800-63-4](https://pages.nist.gov/800-63-4/)
 - **RFC 9449**: *OAuth 2.0 Demonstrating Proof of Possession (DPoP)* — [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449)
 - **RFC 7009**: *OAuth 2.0 Token Revocation* — [RFC 7009](https://datatracker.ietf.org/doc/html/rfc7009)
-- **RFC 10025**: *Cookies: HTTP State Management Mechanism* — [RFC Editor publication-transition copy](https://auth48-transition.rfc-editor.org/authors/rfc10025.html) (the assigned RFC's canonical RFC Editor URL was not yet serving the document when this page was verified).
+- **RFC 6265**: *HTTP State Management Mechanism* — [RFC 6265](https://www.rfc-editor.org/rfc/rfc6265.html) — the currently published cookie specification. Its replacement, **draft-ietf-httpbis-rfc6265bis**, has been allocated RFC number 10025 but is still in the RFC Editor queue and is **not yet a published RFC**; track it at [IETF Datatracker](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/).
 - **OWASP Cross-Site Request Forgery Prevention Cheat Sheet** — [OWASP CSRF guidance](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)

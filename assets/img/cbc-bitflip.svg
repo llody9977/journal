@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 330" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 330" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="cbf-title cbf-desc">
+  <title id="cbf-title">CBC mode bit-flipping attack mechanics</title>
+  <desc id="cbf-desc">Legitimate CBC decryption recovers plaintext block two by XORing the decryption of ciphertext block two with the previous ciphertext block one, yielding the expected string admin=0;user=alice. An attacker who flips one byte in ciphertext block one changes the corresponding byte of plaintext block two predictably, forging admin=1;user=alice and escalating privilege, while plaintext block one decrypts to unusable random garbage. The stated mitigation is an AEAD mode such as AES-GCM, whose authentication tag rejects the modified ciphertext.</desc>
   <rect width="1200" height="330" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">CBC Mode Bit-Flipping Attack Mechanics</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">Flipping a ciphertext bit C1[i] alters plaintext P2[i] predictably while scrambling P1 into random garbage</text>

@@ -28,8 +28,8 @@ In **ECB (Electronic Codebook)** mode, every 16-byte plaintext block **P<sub>i</
 When identical plaintext blocks occur in input data, identical ciphertext blocks are emitted.
 
 <div class="diagram-frame diagram-frame-openable">
-  <a class="diagram-open-link" href="{{ '/assets/img/ecb-openssl-block-leak.svg' | relative_url }}?v=3" target="_blank" rel="noopener" aria-label="Open the ecb openssl block leak diagram at full size">
-    <img src="{{ '/assets/img/ecb-openssl-block-leak.svg' | relative_url }}?v=3" alt="AES-128-ECB block pattern leakage breakdown showing identical 16-byte plaintext blocks producing identical 16-byte hex ciphertext outputs.">
+  <a class="diagram-open-link" href="{{ '/assets/img/ecb-openssl-block-leak.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the ecb openssl block leak diagram at full size">
+    <img src="{{ '/assets/img/ecb-openssl-block-leak.svg' | relative_url }}" alt="AES-128-ECB block pattern leakage breakdown showing identical 16-byte plaintext blocks producing identical 16-byte hex ciphertext outputs.">
   </a>
   <p class="diagram-caption">AES-128-ECB block pattern leakage: four identical 16-byte plaintext blocks yield identical 16-byte hex ciphertext outputs (ecb_leak.py)</p>
 </div>
@@ -474,8 +474,8 @@ In **CBC (Cipher Block Chaining)** mode, plaintext block **P<sub>i</sub>** is XO
 Because **C<sub>i-1</sub>** is XORed directly into decrypted plaintext **P<sub>i</sub>**, altering byte **k** of **C<sub>i-1</sub>** changes byte **k** of **P<sub>i</sub>** by the exact same bitmask, while scrambling block **P<sub>i-1</sub>** into unrecoverable noise.
 
 <div class="diagram-frame diagram-frame-openable">
-  <a class="diagram-open-link" href="{{ '/assets/img/cbc-bitflip.svg' | relative_url }}?v=2" target="_blank" rel="noopener" aria-label="Open the cbc bitflip diagram at full size">
-    <img src="{{ '/assets/img/cbc-bitflip.svg' | relative_url }}?v=2" alt="CBC bit-flipping attack diagram showing how flipping byte k in ciphertext block 1 alters byte k in decrypted block 2.">
+  <a class="diagram-open-link" href="{{ '/assets/img/cbc-bitflip.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the cbc bitflip diagram at full size">
+    <img src="{{ '/assets/img/cbc-bitflip.svg' | relative_url }}" alt="CBC bit-flipping attack diagram showing how flipping byte k in ciphertext block 1 alters byte k in decrypted block 2.">
   </a>
   <p class="diagram-caption">CBC bit-flipping mechanics: altering ciphertext block 1 flips targeted bits in block 2</p>
 </div>
@@ -712,8 +712,8 @@ In **CTR (Counter)** mode, AES operates as a stream cipher, encrypting a counter
 If a nonce is reused under the same key, the exact same keystream **KS** is generated (**KS<sub>1</sub> = KS<sub>2</sub>**). XORing two ciphertexts together eliminates the keystream and secret key entirely, leaving the XOR sum of the two plaintexts (**P<sub>1</sub> &oplus; P<sub>2</sub>**).
 
 <div class="diagram-frame diagram-frame-openable">
-  <a class="diagram-open-link" href="{{ '/assets/img/ctr-two-time-pad.svg' | relative_url }}?v=2" target="_blank" rel="noopener" aria-label="Open the ctr two time pad diagram at full size">
-    <img src="{{ '/assets/img/ctr-two-time-pad.svg' | relative_url }}?v=2" alt="CTR two-time pad attack diagram showing keystream cancellation when nonces repeat under the same key.">
+  <a class="diagram-open-link" href="{{ '/assets/img/ctr-two-time-pad.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the ctr two time pad diagram at full size">
+    <img src="{{ '/assets/img/ctr-two-time-pad.svg' | relative_url }}" alt="CTR two-time pad attack diagram showing keystream cancellation when nonces repeat under the same key.">
   </a>
   <p class="diagram-caption">CTR nonce-reuse two-time pad: XORing ciphertexts C1 and C2 reveals P1 XOR P2</p>
 </div>

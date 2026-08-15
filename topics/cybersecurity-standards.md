@@ -158,10 +158,10 @@ The lede's question — which model an organization actually needs — resolves 
 | Testable requirements a developer or pentester can pass or fail | **OWASP ASVS** | Every requirement resolves to a pass/fail verdict against the application itself. |
 | A certificate a counterparty will accept internationally | **ISO/IEC 27001** | Accredited third-party certification of a management system, recognized across markets. |
 | Evidence that controls *operated* over a period, for a US enterprise buyer | **SOC 2 Type II** | A CPA attestation over an observation window, which a point-in-time certificate does not provide. |
-| A floor to hold critical-infrastructure operations to | **CISA CPGs** | A short, high-impact subset chosen for sectors that cannot absorb a long programme. |
+| A floor to hold critical-infrastructure operations to | **CISA CPGs** | A short, high-impact subset chosen for sectors that cannot absorb a long program. |
 | Exact configuration settings for a host, cluster, or cloud account | **CIS Benchmarks** or **DISA STIGs** | The frameworks above say *what* to achieve; only benchmarks say which setting to set. |
 
-Two rules follow. Pick one framework as the organizing spine and map the others into it rather than running parallel programmes; and never substitute a document at one altitude for one at another — a SOC 2 report is not a hardening baseline, and a CIS Benchmark is not a management system.
+Two rules follow. Pick one framework as the organizing spine and map the others into it rather than running parallel programs; and never substitute a document at one altitude for one at another — a SOC 2 report is not a hardening baseline, and a CIS Benchmark is not a management system.
 
 <div class="callout">
   <span class="callout-title">What I need to remember</span>

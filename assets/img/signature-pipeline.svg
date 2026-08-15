@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="sgp-title sgp-desc">
+  <title id="sgp-title">Digital signature execution pipeline</title>
+  <desc id="sgp-desc">Three conceptual stages. Payload hashing computes a fixed-size SHA-256 or SHA-512 digest of the message. Private key signing computes the signature over that digest, with an ECDSA nonce that is either freshly random or RFC 6979 deterministic. Verification recomputes the digest of the received message and validates the signature under the public key. A note records that RSA-PSS and ECDSA operate over a digest computed as part of signing, whereas EdDSA hashes internally as one integrated step over the full message, and that a valid result establishes validity under this public key only — identity and key custody require separate evidence.</desc>
   <rect width="1200" height="340" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ksc-title ksc-desc">
+  <title id="ksc-title">Asymmetric key size growth versus symmetric security strength</title>
+  <desc id="ksc-desc">Required RSA and ECC key lengths at four NIST security strength levels. At 112-bit strength, RSA needs 2,048 bits against ECC's 224 bits. At 128-bit strength, RSA needs 3,072 bits against ECC's 256 bits. At 192-bit strength, RSA needs 7,680 bits against ECC's 384 bits. At 256-bit strength, RSA needs 15,360 bits against ECC's 521 bits. RSA key size grows sub-exponentially with the target strength while ECC scales compactly.</desc>
   <rect width="1200" height="440" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Asymmetric Key Size Growth vs Symmetric Security Strength</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">NIST Security Strength levels: RSA key sizes scale sub-exponentially compared to ECC linear efficiency</text>

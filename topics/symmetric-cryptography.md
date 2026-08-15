@@ -17,9 +17,9 @@ Symmetric encryption transforms readable plaintext into unreadable ciphertext us
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the symmetric flow diagram at full size">
-    <img src="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" alt="Diagram showing symmetric encryption: sender encrypts plaintext into ciphertext using secret key K, receiver decrypts back into plaintext using secret key K.">
+    <img src="{{ '/assets/img/symmetric-flow.svg' | relative_url }}" alt="Diagram showing AES-256-GCM symmetric encryption: the sender encrypts plaintext under a pre-established shared key K with a CSPRNG-generated IV, producing ciphertext plus an authentication tag that crosses an untrusted network; the receiver decrypts under the same key K and verifies the tag before releasing the plaintext.">
   </a>
-  <p class="diagram-caption">AES-256-GCM authenticated encryption workflow: CSPRNG key generation, AEAD tag generation, and tamper rejection</p>
+  <p class="diagram-caption">AES-256-GCM authenticated encryption workflow: pre-established shared key K, CSPRNG IV generation, AEAD tag generation, and tamper rejection</p>
 </div>
 
 ### Advantages & Limitations

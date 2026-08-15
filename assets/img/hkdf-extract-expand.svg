@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="hke-title hke-desc">
+  <title id="hke-title">HKDF extract-and-expand key derivation</title>
+  <desc id="hke-desc">A four-stage pipeline defined by RFC 5869. Input key material such as an ECDH shared secret, with an optional salt and variable entropy. The extract pass computes HMAC over the salt and input key material to produce a fixed-length pseudorandom key. The expand pass iteratively computes HMAC over the pseudorandom key, the previous block, a context string info, and a counter, expanding to the required length. The output key material supplies the session traffic keys, IVs, and MAC keys.</desc>
   <rect width="1200" height="300" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

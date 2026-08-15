@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="bcl-title bcl-desc">
+  <title id="bcl-title">Cryptographic primitives layering in blockchains</title>
+  <desc id="bcl-desc">Three stacked layers, each solving a distinct problem. Layer one, tamper evidence: each block header embeds the hash of the previous header, so altering history breaks every subsequent link. Layer two, efficient inclusion: a binary Merkle tree commits many transactions to one fixed-size root with proofs of logarithmic size. Layer three, authorization: ECDSA or Ed25519 signatures authorize state transitions, verified before execution. A note states that ordering and finality are decided separately by the consensus layer, not by these primitives.</desc>
   <rect width="1200" height="580" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

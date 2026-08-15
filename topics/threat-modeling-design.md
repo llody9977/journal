@@ -22,12 +22,12 @@ last_verified: 2026-08-14
 
 Engineering teams select design-time threat modeling frameworks based on system architecture complexity, development cadence, risk governance requirements, and organizational maturity.
 
-The five entries below do not all operate at the same altitude. STRIDE, PASTA, the OWASP questions, and VAST evaluate a *system* — components, data flows, and trust boundaries on a Data Flow Diagram. OCTAVE Allegro evaluates an *organization's information assets* and the containers that hold them; it is normally paired with a system-level method rather than used instead of one. [Trust Boundaries & Threat Modeling](../trust-boundaries-threat-modeling/) covers DFD construction and boundary identification, which every method in this table assumes as an input.
+The five entries below do not all operate at the same altitude. STRIDE, PASTA, the OWASP questions, and VAST evaluate a *system* — components, data flows, and trust boundaries on a Data Flow Diagram. OCTAVE Allegro evaluates an *organization's information assets* and the containers that hold them; it is normally paired with a system-level method rather than used instead of one. [Trust Boundaries & Threat Modeling]({{ '/topics/trust-boundaries-threat-modeling/' | relative_url }}) covers DFD construction and boundary identification, which every method in this table assumes as an input.
 
 | Threat Framework | Primary Philosophy &amp; Scope | Execution Mechanism | Ideal Engineering Context |
 |---|---|---|---|
 | **STRIDE (Microsoft)** | Developer-centric threat categorization taxonomy mapping 6 threat types against Data Flow Diagrams (DFDs). | Maps Spoofing, Tampering, Repudiation, Info Disclosure, DoS, and Elevation of Privilege to DFD components. | Microservices, API endpoint design, application security reviews, and component-level code design. |
-| **PASTA (Risk-Centric)** | Process for Attack Simulation and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, attack trees, and risk scoring (`Likelihood × Impact`). | Enterprise software architectures, GRC risk alignment, financial applications, and healthcare systems. |
+| **PASTA (Risk-Centric)** | Process for Attack Simulation and Threat Analysis; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, attack trees, and a risk scoring stage (commonly a simplified `Likelihood × Impact` model, which PASTA does not itself mandate). | Enterprise software architectures, GRC risk alignment, financial applications, and healthcare systems. |
 | **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** | Universal meta-process driving continuous threat modeling iterations across any architecture. | Iterates: 1. *What are we working on?* 2. *What can go wrong?* 3. *What are we going to do about it?* 4. *Did we do a good job?* | Agile software engineering, sprint-level design reviews, and continuous DevSecOps pipelines. |
 | **VAST (vendor-originated)** | Visual, Agile, and Simple Threat modeling dividing into Application and Operational threat models. | Uses automated storyboarding and integration into DevOps and CI/CD pipelines. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
 | **[OCTAVE Allegro (CMU SEI)](https://www.sei.cmu.edu/library/introducing-octave-allegro-improving-the-information-security-risk-assessment-process/)** | Organizational asset-driven risk evaluation focusing on information assets and container boundaries. Operates above the component level. | Self-directed workshops identifying operational assets, container boundaries, threat profiles, and mitigation strategies. | Enterprise IT infrastructure, physical and digital asset governance, and organizational risk audits. |
@@ -68,7 +68,7 @@ The **Process for Attack Simulation and Threat Analysis (PASTA)** is a 7-stage r
 4. **Stage 4: Threat Analysis** — Ingest threat intelligence, identify adversary motivations, and construct threat scenarios relevant to the architecture.
 5. **Stage 5: Vulnerability & Flaw Analysis** — Review CVE/CWE databases, static code analysis (SAST) findings, and design flaws.
 6. **Stage 6: Attack Modeling** — Construct attack trees and simulate exploit paths to measure attack feasibility and probability.
-7. **Stage 7: Risk & Impact Analysis** — Score residual risk (`Likelihood × Impact`) and select countermeasures to mitigate business loss.
+7. **Stage 7: Risk & Impact Analysis** — Score residual risk — commonly using a simplified `Likelihood × Impact` model, which is a widespread practitioner convention rather than a formula PASTA mandates — and select countermeasures to mitigate business loss.
 
 ## Deep Dive: OWASP 4-Question Practical Execution
 
@@ -114,7 +114,7 @@ A threat model is a point-in-time artifact about a system that keeps changing. T
 - **Abstraction blindness**: Threats below the DFD's granularity are invisible to it. A single "Auth Service" box hides the token-signing key handling, the session cache, and the library that parses the JWT — each a real attack surface the diagram cannot express.
 - **Participant bias**: Workshop output reflects who was in the room. A model built without the team that operates the database will under-represent operational and insider paths, and a model built without a security engineer will under-represent chained exploitation.
 
-Design-time modeling also cannot establish that a selected control works. It produces a hypothesis about what should stop an attack; proving it requires the runtime evidence covered in [Adversary Emulation & Continuous Security Validation](../adversary-emulation/), and the intrusion frameworks in [Operational Intrusion Frameworks](../operational-intrusion-frameworks/) describe the attacker behavior the model is trying to anticipate.
+Design-time modeling also cannot establish that a selected control works. It produces a hypothesis about what should stop an attack; proving it requires the runtime evidence covered in [Adversary Emulation & Continuous Security Validation]({{ '/topics/adversary-emulation/' | relative_url }}), and the intrusion frameworks in [Operational Intrusion Frameworks]({{ '/topics/operational-intrusion-frameworks/' | relative_url }}) describe the attacker behavior the model is trying to anticipate.
 
 ## Essential Design-Time Threat Modeling Diagnostic Checklist
 
@@ -124,7 +124,7 @@ The checklist below is a journal working model, not a published audit standard. 
 |---|---|---|
 | **DFD Completeness** | Does every system component have an up-to-date Data Flow Diagram showing clear trust boundaries? | System architecture documentation &amp; DFD repositories. |
 | **STRIDE Category Coverage** | Is every process, data store, data flow, and external entity evaluated against its full STRIDE applicability matrix? | Documented Threat Register listing component, vector, and risk score. |
-| **Risk Scoring Calibration** | Are threats scored using an explicit risk scoring formula (e.g. PASTA `Likelihood × Impact`)? | GRC risk assessment reports &amp; prioritized mitigation backlogs. |
+| **Risk Scoring Calibration** | Are threats scored using an explicit, documented risk-scoring model (e.g. a simplified `Likelihood × Impact` rating), with the model's provenance stated rather than presented as a standard's requirement? | GRC risk assessment reports &amp; prioritized mitigation backlogs. |
 | **Backlog Control Integration** | Are threat mitigations converted into tracked backlog tickets rather than isolated report PDFs? | Jira/GitHub issue tracking linking threat IDs to code pull requests. |
 | **Continuous Re-Assessment** | Is threat modeling automatically re-triggered when major architectural or API changes occur? | CI/CD pipeline triggers &amp; quarterly threat model review sign-offs. |
 | **Empirical Verification** | Are selected mitigations verified through automated testing before closing a threat ticket? | Automated security unit tests, SAST/DAST pipeline results, and peer code reviews. |

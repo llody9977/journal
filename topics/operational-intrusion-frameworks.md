@@ -139,7 +139,7 @@ D3FEND links directly to ATT&CK techniques, allowing security engineers to selec
 - **Prompt Injection**: Overriding LLM system prompts to bypass safety guardrails or execute unauthorized function calls.
 - **Evasion Attacks**: Modifying adversarial inputs (*e.g., perturbed images or malware binaries*) to bypass ML classifiers.
 
-[AI & LLM Threat Frameworks & Risk Management](../ai-risk-management/) covers ATLAS alongside the NIST AI RMF and the OWASP Top 10 for LLM Applications, where the governance framing matters more than the intrusion-analysis framing used here.
+[AI & LLM Threat Frameworks & Risk Management]({{ '/topics/ai-risk-management/' | relative_url }}) covers ATLAS alongside the NIST AI RMF and the OWASP Top 10 for LLM Applications, where the governance framing matters more than the intrusion-analysis framing used here.
 
 ## Design-Time Threat Modeling vs. Operational Intrusion Analysis
 

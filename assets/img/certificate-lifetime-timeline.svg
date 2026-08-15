@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 275" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 275" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="clt-title clt-desc">
+  <title id="clt-title">X.509 certificate validity lifetime evolution</title>
+  <desc id="clt-desc">A five-point timeline of tightening maximum validity for publicly trusted TLS subscriber certificates under CA/Browser Forum Baseline Requirements: 825 days from March 2018 under ballot SC12, 398 days from September 2020 under browser root program policy, 200 days from March 2026 which is the current cap, 100 days from March 2027, and a 47-day maximum from March 2029. The later steps practically require full issuance automation.</desc>
   <rect width="1200" height="275" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">X.509 Certificate Validity Lifetime Evolution</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">Tightening maximum certificate validity periods under CA/Browser Forum Baseline Requirements</text>

@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 355" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 355" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="epl-title epl-desc">
+  <title id="epl-title">ECB structural pattern leakage versus randomized encryption</title>
+  <desc id="epl-desc">Three panels. An original bitmap with distinct repeated image patterns. The same bitmap encrypted in ECB mode, where identical 16-byte plaintext blocks map to identical ciphertext blocks so the structure remains visible, violating semantic security. The same bitmap under randomized encryption such as AES-GCM, where a unique IV or counter per message hides the patterns; a note records that the AEAD authentication tag is a separate property from this pattern hiding.</desc>
   <rect width="1200" height="355" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">ECB Structural Pattern Leakage vs Randomized AEAD</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">Electronic Codebook (ECB) maps identical 16-byte plaintext blocks to identical ciphertext blocks, exposing data structure</text>

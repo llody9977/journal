@@ -59,7 +59,7 @@ Two things follow that are easy to miss:
 - **SecAgg is not differential privacy.** It hides who contributed what, while the aggregate itself is still a function of everyone's data. With a small cohort, inversion against the aggregate remains feasible. The DP layer is what bounds that, and it must be chosen for the regime — local DP where the server is untrusted, central DP where it is.
 - **&epsilon; has no universal safe value.** Deployed systems span a wide range and NIST's guidance deliberately declines to set a threshold, so treat any specific figure as a local policy decision that must be recorded with its justification, not as a standard. Tightening &epsilon; increases privacy and costs accuracy; the exchange rate is model- and task-specific, not proportional.
 
-For the broader family of privacy-enhancing technologies these sit within — differential privacy, secure multi-party computation, homomorphic encryption, and zero-knowledge proofs as distinct primitives — see [Privacy by Design & Privacy-Enhancing Technologies](../privacy-by-design-pets/).
+For the broader family of privacy-enhancing technologies these sit within — differential privacy, secure multi-party computation, homomorphic encryption, and zero-knowledge proofs as distinct primitives — see [Privacy by Design & Privacy-Enhancing Technologies]({{ '/topics/privacy-by-design-pets/' | relative_url }}).
 
 ## Poisoning, and the conflict it creates
 

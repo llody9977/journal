@@ -1,0 +1,59 @@
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="pps-title pps-desc">
+  <title id="pps-title">Quantum impact by primitive class, and the selection decision each one implies</title>
+  <desc id="pps-desc">Three rows, one per primitive class, giving the applicable quantum algorithm, its ideal query bound, and the resulting algorithm-selection decision. Symmetric ciphers such as AES and ChaCha20 face Grover's algorithm with an ideal sequential query bound of about 2 to the n over 2; the decision is to retain the standardized cipher and pick the key size from the governing profile, since AES-128 remains NIST's Category 1 comparison baseline and AES-256 adds margin. Hash functions such as SHA-2 and SHA-3 face Grover for preimages at about 2 to the n over 2 and the BHT algorithm for collisions at about 2 to the n over 3 under strong quantum-memory assumptions; the decision is to select the digest size from the required property and the applicable profile. Public-key primitives — RSA, ECDSA, Ed25519 and ECDH — face Shor's algorithm in polynomial time, an asymptotic break; the decision is to migrate to FIPS 203 ML-KEM for key establishment and FIPS 204 ML-DSA for signatures. A footer records that these exponents are ideal query bounds rather than concrete attack budgets, and that no cryptographically relevant quantum computer exists today.</desc>
+  <rect width="1200" height="560" fill="#ffffff"/>
+
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Quantum impact by primitive class</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Only one of these three rows implies replacing the algorithm. The other two change the size decision, not the choice.</text>
+
+  <text x="66" y="126" font-size="11.5" font-weight="900" letter-spacing="1" fill="#475569">PRIMITIVE CLASS</text>
+  <text x="386" y="126" font-size="11.5" font-weight="900" letter-spacing="1" fill="#475569">APPLICABLE ALGORITHM</text>
+  <text x="666" y="126" font-size="11.5" font-weight="900" letter-spacing="1" fill="#475569">IDEAL QUERY BOUND</text>
+  <text x="906" y="126" font-size="11.5" font-weight="900" letter-spacing="1" fill="#475569">SELECTION DECISION</text>
+
+  <g>
+    <rect x="50" y="140" width="1128" height="112" rx="16" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+    <text x="66" y="172" font-size="17" font-weight="800" fill="#0f172a">Symmetric ciphers</text>
+    <text x="66" y="196" font-size="13" fill="#475569">AES, ChaCha20</text>
+    <text x="386" y="172" font-size="15" font-weight="700" fill="#0f172a">Grover's algorithm</text>
+    <text x="386" y="196" font-size="13" fill="#475569">unstructured key search</text>
+    <text x="666" y="172" font-size="16" font-weight="800" fill="#0f766e">about 2^(n/2)</text>
+    <text x="666" y="196" font-size="13" fill="#475569">sequential queries</text>
+    <text x="906" y="167" font-size="14" font-weight="700" fill="#0f172a">Retain the cipher.</text>
+    <text x="906" y="189" font-size="13" fill="#475569">Pick key size from the governing</text>
+    <text x="906" y="207" font-size="13" fill="#475569">profile: AES-128 is NIST's Category 1</text>
+    <text x="906" y="225" font-size="13" fill="#475569">baseline; AES-256 adds margin.</text>
+  </g>
+
+  <g>
+    <rect x="50" y="266" width="1128" height="112" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="66" y="298" font-size="17" font-weight="800" fill="#0f172a">Hash functions</text>
+    <text x="66" y="322" font-size="13" fill="#475569">SHA-2, SHA-3</text>
+    <text x="386" y="292" font-size="15" font-weight="700" fill="#0f172a">Grover (preimage)</text>
+    <text x="386" y="316" font-size="15" font-weight="700" fill="#0f172a">BHT (collision)</text>
+    <text x="386" y="338" font-size="13" fill="#475569">no key size to raise</text>
+    <text x="666" y="292" font-size="16" font-weight="800" fill="#2563eb">about 2^(n/2) preimage</text>
+    <text x="666" y="316" font-size="16" font-weight="800" fill="#2563eb">about 2^(n/3) collision</text>
+    <text x="666" y="338" font-size="13" fill="#475569">BHT assumes large quantum memory</text>
+    <text x="906" y="293" font-size="14" font-weight="700" fill="#0f172a">Retain the family.</text>
+    <text x="906" y="315" font-size="13" fill="#475569">Select digest size from the required</text>
+    <text x="906" y="333" font-size="13" fill="#475569">property and the applicable profile.</text>
+  </g>
+
+  <g>
+    <rect x="50" y="392" width="1128" height="112" rx="16" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+    <text x="66" y="424" font-size="17" font-weight="800" fill="#0f172a">Public-key primitives</text>
+    <text x="66" y="448" font-size="13" fill="#475569">RSA, ECDSA, Ed25519, ECDH</text>
+    <text x="386" y="424" font-size="15" font-weight="700" fill="#0f172a">Shor's algorithm</text>
+    <text x="386" y="448" font-size="13" fill="#475569">factoring and discrete log</text>
+    <text x="666" y="424" font-size="16" font-weight="800" fill="#b91c1c">polynomial time</text>
+    <text x="666" y="448" font-size="13" fill="#475569">an asymptotic break, not a size issue</text>
+    <text x="906" y="419" font-size="14" font-weight="700" fill="#0f172a">Migrate the algorithm.</text>
+    <text x="906" y="441" font-size="13" fill="#475569">FIPS 203 ML-KEM for key establishment;</text>
+    <text x="906" y="459" font-size="13" fill="#475569">FIPS 204 ML-DSA for signatures.</text>
+    <text x="906" y="479" font-size="13" fill="#475569">Prioritize by confidentiality lifetime.</text>
+  </g>
+
+  <text x="50" y="530" font-size="13.5" font-weight="600" fill="#0f172a">These exponents are ideal query bounds, not concrete attack budgets — circuit depth, error correction and</text>
+  <text x="50" y="549" font-size="13.5" font-weight="600" fill="#0f172a">available hardware all matter. No cryptographically relevant quantum computer exists today.</text>
+</svg>

@@ -127,6 +127,11 @@ MD_LINK = re.compile(r"(?<!!)\[[^\]\n]+\]\([^)\n]+\)")
 # can see: the caption and alt text describe content the image does not hold.
 IMAGE_SRC = re.compile(r"<img[^>]*\bsrc=\"\{\{\s*'(?P<src>[^']+)'")
 
+# A diagram opened at full size loses the page's alt text, so it needs its own
+# accessible name and description inside the file.
+TITLE_ELEMENT = re.compile(r"<title[\s>]")
+DESC_ELEMENT = re.compile(r"<desc[\s>]")
+
 
 def scan_duplicate_images(text: str) -> list[tuple[int, str, str]]:
     """Report any image used by more than one diagram frame on one page."""
@@ -260,6 +265,37 @@ def scan(text: str) -> list[tuple[int, str, str]]:
     return findings
 
 
+def scan_cross_page_reuse(files: list[Path]) -> list[tuple[str, list[str]]]:
+    """Report any image used by diagram frames on more than one page.
+
+    scan_duplicate_images only looks within one page, so the same diagram could
+    still serve two frames on two different pages under two different captions —
+    which is the case CD-0033 names in its own title. Each caption then claims
+    the image shows something specific to its page, and at most one can be right.
+    """
+    owners: dict[str, list[str]] = {}
+    for path in files:
+        text = path.read_text(encoding="utf-8")
+        for src in {m.group("src") for m in IMAGE_SRC.finditer(text)}:
+            owners.setdefault(src, []).append(f"topics/{path.name}")
+    return sorted((src, sorted(pages)) for src, pages in owners.items() if len(pages) > 1)
+
+
+def scan_svg_accessible_names(paths: list[Path]) -> list[str]:
+    """Report any diagram lacking a root <title> and <desc>.
+
+    Every diagram frame wraps its image in a link that opens the SVG standalone
+    in a new tab. There the page's alt text is gone, so a diagram without its own
+    <title> and <desc> exposes no accessible name or description at all.
+    """
+    missing: list[str] = []
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        if not TITLE_ELEMENT.search(text) or not DESC_ELEMENT.search(text):
+            missing.append(f"assets/img/{path.name}")
+    return missing
+
+
 def main() -> int:
     files = sorted(TOPICS_DIR.glob("*.md"))
     print(f"Scanning {len(files)} topic files for rendering hazards...\n")
@@ -331,6 +367,30 @@ def main() -> int:
         return 1
 
     if svg_failures:
+        return 1
+
+    reused = scan_cross_page_reuse(files)
+    if reused:
+        print(f"❌ {len(reused)} diagram(s) serve frames on more than one page:\n")
+        for src, pages in reused:
+            print(f"  {src}")
+            for page in pages:
+                print(f"    - {page}")
+        print(
+            "\nEach page's caption claims the image shows something specific to "
+            "that page. Build a purpose-built diagram for all but one of them."
+        )
+        return 1
+
+    unnamed = scan_svg_accessible_names(svgs)
+    if unnamed:
+        print(f"❌ {len(unnamed)} diagram(s) have no root <title> and <desc>:\n")
+        for name in unnamed:
+            print(f"  {name}")
+        print(
+            "\nOpened at full size, these expose no accessible name or "
+            "description — the page's alt text does not travel with the file."
+        )
         return 1
 
     print(

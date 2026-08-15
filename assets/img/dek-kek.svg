@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 325" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 325" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="dkk-title dkk-desc">
+  <title id="dkk-title">Envelope encryption architecture with data and key encryption keys</title>
+  <desc id="dkk-desc">Three zones. Inside the cloud KMS or HSM trust boundary, a customer-managed key encryption key stays within the boundary by design and serves wrap and unwrap API calls. In application memory, a plaintext 32-byte AES data encryption key encrypts and decrypts bulk data and should be zeroed after use, subject to the implementation. On persistent storage, the bulk payload ciphertext is stored alongside the wrapped data key as an encrypted-DEK header.</desc>
   <rect width="1200" height="325" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

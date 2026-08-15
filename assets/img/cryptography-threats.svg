@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 310" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 310" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="cth-title cth-desc">
+  <title id="cth-title">Threats to data crossing an untrusted network</title>
+  <desc id="cth-desc">Three network-observable attacks mapped to the cryptographic property each one violates and a primary countermeasure. Eavesdropping is a passive intercept that violates confidentiality, countered by AES-256-GCM or TLS encryption. Tampering is active alteration of bit sequences that violates integrity, countered by HMAC-SHA256 or an AEAD authentication tag. Impersonation is active spoofing of peer identity that violates authenticity, countered by X.509 certificates or Ed25519 signatures.</desc>
   <rect width="1200" height="310" fill="#ffffff"/>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

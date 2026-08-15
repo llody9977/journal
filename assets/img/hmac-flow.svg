@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 315" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="hmf-title hmf-desc">
+  <title id="hmf-title">HMAC dual-nested key hashing pipeline</title>
+  <desc id="hmf-desc">HMAC builds a message authentication code from a cryptographic hash function such as SHA-256 using two key-padding passes. The inner pass hashes the normalized key XORed with the inner pad 0x36, concatenated with the message. The outer pass hashes the normalized key XORed with the outer pad 0x5c, concatenated with the inner hash result. The final tag provides integrity and shared-key authentication: a valid tag establishes that some holder of the shared key produced it, not which holder.</desc>
   <rect width="1200" height="315" fill="#ffffff"/>
   <defs>
     <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

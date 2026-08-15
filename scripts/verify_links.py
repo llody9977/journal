@@ -41,13 +41,20 @@ TOPIC_NAV = REPO_ROOT / "_includes" / "topic-nav.html"
 INDEX_PAGE = REPO_ROOT / "index.md"
 
 # Internal cross-references are written as Liquid, so a plain URL regex cannot
-# see them. Three shapes appear in this repository:
+# see them. Four shapes appear in this repository:
 #   {{ '/topics/foo/' | relative_url }}   prose links and diagram hrefs
 #   url: /topics/foo/                     _data/nav.yml
 #   assign next_url = '/topics/foo/'      _includes/topic-nav.html
+#   ](../foo/)                            plain Markdown sibling-page links
 LIQUID_RELATIVE_URL = re.compile(r"""['"](/[^'"]*)['"]\s*\|\s*relative_url""")
 NAV_URL = re.compile(r"^\s*-?\s*url:\s*(/\S*)\s*$", re.M)
 LIQUID_ASSIGN_URL = re.compile(r"assign\s+\w*url\w*\s*=\s*'(/[^']*)'")
+# A sibling-page Markdown link resolves relative to the current page's permalink,
+# so from /topics/a/ the target ../b/ is /topics/b/. The Liquid form is preferred
+# and is what the rest of the repository uses, but this shape has appeared before
+# and is invisible to the three patterns above — which is exactly how a reference
+# to a non-existent page would reach production unchecked.
+MARKDOWN_SIBLING_LINK = re.compile(r"\]\(\.\./([A-Za-z0-9._-]+)/\)")
 
 # Paths that exist without a declaring page.
 STATIC_INTERNAL_PATHS = {"/"}
@@ -119,6 +126,12 @@ def collect_internal(paths: list[Path]) -> dict[str, set[str]]:
             LIQUID_RELATIVE_URL.findall(text)
             + NAV_URL.findall(text)
             + LIQUID_ASSIGN_URL.findall(text)
+            # A ../slug/ link inside topics/ resolves against /topics/.
+            + [
+                f"/topics/{slug}/"
+                for slug in MARKDOWN_SIBLING_LINK.findall(text)
+                if path.parent.name == "topics"
+            ]
         )
         for target in found:
             # Only page references are resolvable this way; asset paths are

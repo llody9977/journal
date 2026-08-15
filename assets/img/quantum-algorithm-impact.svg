@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="qai-title qai-desc">
+  <title id="qai-title">Quantum computing impact on modern cryptography</title>
+  <desc id="qai-desc">Two panels, both contingent on a future cryptographically relevant quantum computer, none of which exists today. Public-key primitives face Shor's algorithm, which solves discrete logarithms and prime factorization in polynomial time and would break RSA, ECDSA, Ed25519, and ECDH once run on such a machine, enabling retrospective decryption of recorded traffic; the migration action is FIPS 203 ML-KEM and FIPS 204 ML-DSA. Symmetric ciphers and hashes face Grover's algorithm, whose ideal sequential query bound is about 2 to the n over 2 — a query bound rather than a concrete wall-clock or practical strength rating. AES-128 remains NIST's Category 1 baseline and AES-256 adds margin.</desc>
   <rect width="1200" height="420" fill="#ffffff"/>
   <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">Quantum Computing Impact on Modern Cryptography</text>
   <text x="50" y="82" font-size="14.5" fill="#475569">Contingent on a future Cryptographically Relevant Quantum Computer (CRQC) — none exists today</text>

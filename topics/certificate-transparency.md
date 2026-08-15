@@ -42,8 +42,8 @@ Detecting a split-view requires an independent mechanism: **gossip protocols** a
 When a domain owner or automated ACME agent requests a certificate, the CA submits the pre-certificate to multiple independent CT log servers. Each log returns a **Signed Certificate Timestamp (SCT)** promising inclusion within a Maximum Merge Delay (MMD, typically 24 hours):
 
 <div class="diagram-frame diagram-frame-openable">
-  <a class="diagram-open-link" href="{{ '/assets/img/sct-flow.svg' | relative_url }}?v=2" target="_blank" rel="noopener" aria-label="Open the sct flow diagram at full size">
-    <img src="{{ '/assets/img/sct-flow.svg' | relative_url }}?v=2" alt="Signed Certificate Timestamp (SCT) workflow showing CA log submission, SCT generation, and TLS embedding.">
+  <a class="diagram-open-link" href="{{ '/assets/img/sct-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the sct flow diagram at full size">
+    <img src="{{ '/assets/img/sct-flow.svg' | relative_url }}" alt="Signed Certificate Timestamp (SCT) workflow showing CA log submission, SCT generation, and TLS embedding.">
   </a>
   <p class="diagram-caption">SCT Delivery Workflow (embedded-SCT path — the most common of the three delivery mechanisms below): CA submits pre-certificate to CT logs, receives SCTs, and embeds them into the TLS certificate</p>
 </div>

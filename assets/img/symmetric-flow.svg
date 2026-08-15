@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="syf-title syf-desc">
+  <title id="syf-title">Symmetric encryption and decryption pipeline</title>
+  <desc id="syf-desc">A sender encrypts cleartext with AES-256-GCM under a pre-established shared key K, using a CSPRNG-generated IV, producing ciphertext plus an authentication tag that carries confidentiality and authenticity across an untrusted network. The receiver decrypts under the same key K, verifies the tag, and only then releases the recovered plaintext. A footer notes that a single secret key gives fast performance but requires a pre-established secure key distribution channel.</desc>
   <rect width="1200" height="340" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

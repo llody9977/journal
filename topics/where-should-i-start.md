@@ -107,7 +107,7 @@ The full catalog of NIST/FIPS publication mappings, application/supply-chain sta
 
 ## Primary references
 
-- **NIST Cybersecurity Framework 2.0**: *Framework for Improving Critical Infrastructure Cybersecurity* — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
+- **NIST Cybersecurity Framework (CSF) 2.0** (NIST CSWP 29) — [NIST CSF 2.0](https://www.nist.gov/cyberframework)
 - **NIST SP 800-39**: *Managing Information Security Risk* — [NIST CSRC SP 800-39](https://csrc.nist.gov/pubs/sp/800/39/final)
 - **NIST SP 800-30 Rev. 1**: *Guide for Conducting Risk Assessments* — [NIST CSRC SP 800-30](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
 - **NIST SP 800-137**: *Information Security Continuous Monitoring (ISCM)* — [NIST CSRC SP 800-137](https://csrc.nist.gov/pubs/sp/800/137/final)

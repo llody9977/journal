@@ -14,8 +14,8 @@ last_verified: 2026-08-13
 ## AAL describes the complete authentication event
 
 <div class="diagram-frame diagram-frame-openable">
-  <a class="diagram-open-link" href="{{ '/assets/img/authentication-assurance-levels.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the authentication assurance levels diagram at full size">
-    <img src="{{ '/assets/img/authentication-assurance-levels.svg' | relative_url }}" alt="NIST AAL1, AAL2, and AAL3 compared by factor proof, phishing resistance, key exportability, verifier compromise resistance, and cryptographic requirements.">
+  <a class="diagram-open-link" href="{{ '/assets/img/aal-inputs-and-session-limits.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the AAL inputs and session limits diagram at full size">
+    <img src="{{ '/assets/img/aal-inputs-and-session-limits.svg' | relative_url }}" alt="Six inputs feed one outcome: authenticator type, verifier behavior, key non-exportability, an activation factor, approved cryptography, and a recovery path that does not downgrade assurance. Together they determine the achieved AAL, and the weakest input caps the result. Three cards below give the NIST SP 800-63B-4 session guidance per level: AAL1 inactivity no more than 30 days; AAL2 overall no more than 24 hours and inactivity no more than 1 hour; AAL3 overall no more than 12 hours and inactivity no more than 15 minutes.">
   </a>
   <p class="diagram-caption">Authenticator type is only one input; the verifier, key properties, activation, recovery, and session controls determine the achieved AAL.</p>
 </div>

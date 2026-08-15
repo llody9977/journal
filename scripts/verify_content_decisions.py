@@ -122,7 +122,16 @@ def validate(registry: dict[str, object], root: Path) -> list[str]:
                     if not isinstance(raw_path, str) or not raw_path:
                         errors.append(f"{label} contains an invalid scope file")
                     elif not (root / raw_path).is_file():
-                        errors.append(f"{label} scope file does not exist: {raw_path}")
+                        # A superseded record is preserved history. The decision
+                        # that superseded it may well have been to delete the very
+                        # file it governed, so requiring that file to still exist
+                        # would force the old record to be rewritten — which
+                        # CONTENT_DECISION_GUIDE.md explicitly forbids. Accepted
+                        # and rejected records must still name live files.
+                        if status != "superseded":
+                            errors.append(
+                                f"{label} scope file does not exist: {raw_path}"
+                            )
             if not isinstance(concepts, list) or not concepts or not all(
                 isinstance(item, str) and item.strip() for item in concepts
             ):

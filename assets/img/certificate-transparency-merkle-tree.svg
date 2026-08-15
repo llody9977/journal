@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ctm-title ctm-desc">
+  <title id="ctm-title">Certificate Transparency Merkle hash tree</title>
+  <desc id="ctm-desc">An append-only binary hash tree over four timestamped log entries. Each leaf hashes a precertificate with a 0x00 prefix. Each intermediate node hashes its two children with a 0x01 prefix, and the two intermediate nodes hash to the Merkle root. A summary states that an inclusion proof of logarithmic size recomputes this root hash and checks it against the root_hash inside the log's Signed Tree Head, which also carries the tree size and timestamp and is separately signed.</desc>
   <rect width="1200" height="620" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

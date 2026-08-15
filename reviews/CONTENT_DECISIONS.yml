@@ -702,7 +702,7 @@
     {
       "id": "CD-0015",
       "title": "Keep reviewed SVG assets canonical and retire one-time rewrite utilities",
-      "status": "accepted",
+      "status": "superseded",
       "implementation_state": "implemented",
       "scope": {
         "files": [
@@ -738,10 +738,10 @@
         "CD-0008"
       ],
       "supersedes": [],
-      "superseded_by": null,
+      "superseded_by": "CD-0086",
       "originating_review_state_id": "d8a2ec35e126c9a95cae3b6b2c558a85e13f37815e2e597e5b31b094120a9a88",
       "originated_on": "2026-08-13",
-      "last_reviewed_on": "2026-08-13"
+      "last_reviewed_on": "2026-08-15"
     },
     {
       "id": "CD-0016",
@@ -1152,7 +1152,7 @@
     {
       "id": "CD-0023",
       "title": "Keep semantic page endings canonical in topic source",
-      "status": "accepted",
+      "status": "superseded",
       "implementation_state": "implemented",
       "scope": {
         "files": [
@@ -1182,10 +1182,10 @@
       ],
       "related_decisions": [],
       "supersedes": [],
-      "superseded_by": null,
+      "superseded_by": "CD-0086",
       "originating_review_state_id": "03ce055a41cf31853ab2840e93ed93f634d33768c98b7debd19a8e7c1766be03",
       "originated_on": "2026-08-13",
-      "last_reviewed_on": "2026-08-13"
+      "last_reviewed_on": "2026-08-15"
     },
     {
       "id": "CD-0024",
@@ -4557,6 +4557,203 @@
       ],
       "supersedes": [],
       "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0083",
+      "title": "Extend the one-diagram-per-frame rule across pages, and enforce it plus SVG accessible names in the hazard check",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_rendering_hazards.py",
+          "topics/step-up-authentication.md",
+          "topics/recommended-algorithms.md",
+          "assets/img/aal-inputs-and-session-limits.svg",
+          "assets/img/pqc-primitive-selection.svg"
+        ],
+        "concepts": [
+          "diagram reuse across pages",
+          "one image per diagram frame",
+          "SVG title and desc",
+          "diagram accessible name",
+          "caption and alt cross-format consistency"
+        ]
+      },
+      "originating_feedback": "A repository-wide review found authentication-assurance-levels.svg serving frames on two pages under two different captions, and 20 of 137 in-use diagrams carrying no root <title> or <desc>. CD-0033's approved outcome was scoped to reuse within a single page and to Section 6 files, and scan_duplicate_images() is likewise per-page, so neither defect was visible to any gate.",
+      "decision": "Treat the one-diagram-per-frame rule as repository-wide and cross-page, not per-page: build a purpose-built diagram for every frame that currently shares one. Give recommended-algorithms.md pqc-primitive-selection.svg and step-up-authentication.md aal-inputs-and-session-limits.svg, each drawn for the claim its own page's caption makes. Require every diagram to carry a root <title> and <desc>. Add two blocking detectors to verify_rendering_hazards.py: cross-page image reuse, and missing SVG accessible name or description.",
+      "rationale": "A caption asserts what its image shows, so one image under two captions makes at most one of them true. Every diagram frame wraps its image in a link that opens the SVG standalone, where the page's alt text does not travel with the file — a diagram without its own title and desc exposes no accessible name at all in that view. Both defects are invisible to syntax, link, and structure checks, and the register already records this same class recurring five times (CD-0033, CD-0038, CD-0049, CD-0052, CD-0058) because each decision recorded only its own section's files. A detector ends the recurrence; another section-scoped decision would not.",
+      "authoritative_sources": [
+        {
+          "title": "WAI-ARIA Graphics / SVG accessibility: title and desc",
+          "url": "https://www.w3.org/TR/svg-aam-1.0/",
+          "supports": "A root title and desc supply an SVG's accessible name and description when the image is loaded on its own."
+        }
+      ],
+      "verification_methods": [
+        "Run verify_rendering_hazards.py with a deliberately reused image and with title/desc stripped from one diagram; confirm each is reported and blocks.",
+        "Render both new diagrams standalone in a browser and confirm no text is clipped at the canvas edge.",
+        "Confirm every in-use diagram resolves to exactly one page."
+      ],
+      "approved_outcome": "No diagram serves frames on more than one page; every in-use diagram carries a root <title> and <desc>; verify_rendering_hazards.py blocks on either defect.",
+      "invalidation_conditions": [
+        "A page is restructured so a frame is removed rather than re-illustrated.",
+        "Rendered evidence shows a replacement diagram clipping or misrepresenting its subject.",
+        "A future accessibility guideline supersedes title/desc as the mechanism for an SVG's accessible name."
+      ],
+      "related_decisions": [
+        "CD-0033",
+        "CD-0038",
+        "CD-0049",
+        "CD-0052",
+        "CD-0057",
+        "CD-0058"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d5cc41be72b86789c0af43db539189aaf1388d59726a817c722014198a21a107",
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0084",
+      "title": "Write every internal cross-reference as a Liquid relative_url link, and teach the link check to see the Markdown sibling form",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_links.py",
+          "topics/ai-risk-management.md",
+          "topics/mcp-authorization.md",
+          "topics/mcp-security-agentics.md",
+          "topics/federated-learning-privacy.md",
+          "topics/privacy-by-design-pets.md",
+          "topics/threat-modeling-design.md",
+          "topics/operational-intrusion-frameworks.md",
+          "topics/threat-hunting.md",
+          "topics/asymmetric-cryptography.md"
+        ],
+        "concepts": [
+          "internal cross-reference",
+          "relative_url",
+          "link checking coverage",
+          "dangling in-page reference"
+        ]
+      },
+      "originating_feedback": "Twelve cross-page links in eight pages were written as plain Markdown sibling links, ](../slug/). collect_internal() in verify_links.py matches only the Liquid relative_url, nav url:, and Liquid assign shapes, so those twelve were outside the CI gate the deploy workflow added specifically to stop a reference to a non-existent page reaching production. Separately, asymmetric-cryptography.md pointed the reader to a 'Hybrid Encryption' section that exists on a different page, which no link check can see because it was prose, not a link.",
+      "decision": "Convert every ](../slug/) cross-reference to the {{ '/topics/slug/' | relative_url }} form the rest of the repository uses, and add a MARKDOWN_SIBLING_LINK pattern to collect_internal() so the shape is resolved rather than ignored if it reappears. Replace the dangling prose pointer in asymmetric-cryptography.md with a real link to the Hybrid Encryption Architecture section on symmetric-vs-asymmetric.md.",
+      "rationale": "Both forms resolve correctly in a browser today, so this is not a broken-link fix — it is a gate-coverage fix. A link the checker cannot see is a link that can rot silently, and the workflow comment states that this is exactly the failure the gate exists to prevent. Converting the links makes the style uniform; extending the pattern means the gap does not reopen if someone writes the sibling form again.",
+      "authoritative_sources": [
+        {
+          "title": "Jekyll relative_url filter",
+          "url": "https://jekyllrb.com/docs/liquid/filters/",
+          "supports": "relative_url prepends the configured baseurl, producing a site-root-relative path independent of the current page's URL."
+        }
+      ],
+      "verification_methods": [
+        "Append a link to a non-existent sibling page and confirm verify_links.py --internal-only reports it and exits non-zero.",
+        "Confirm no ](../ ) form remains in topics/.",
+        "Confirm all internal page and asset references still resolve."
+      ],
+      "approved_outcome": "Every internal cross-reference uses the Liquid relative_url form, verify_links.py additionally resolves the Markdown sibling form, and no page directs the reader to a section that does not exist where it says.",
+      "invalidation_conditions": [
+        "Jekyll changes how relative_url resolves.",
+        "The site adopts a different internal-linking convention repository-wide."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d5cc41be72b86789c0af43db539189aaf1388d59726a817c722014198a21a107",
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0085",
+      "title": "Enforce US spelling automatically instead of relying on review to catch it",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_writing_style.py",
+          "topics/security-fundamentals.md",
+          "topics/cyber-threat-intelligence.md",
+          "topics/cybersecurity-standards.md"
+        ],
+        "concepts": [
+          "US spelling",
+          "WRITING_STYLE compliance",
+          "automated style enforcement"
+        ]
+      },
+      "originating_feedback": "A repository-wide review found four British spellings — 'catalogues', 'judgements', 'programme', 'programmes' — on three pages that each spell the same word the US way elsewhere in the same file. WRITING_STYLE.md mandates US spelling but nothing enforced it.",
+      "decision": "Correct the four occurrences and add a US-spelling word list to verify_writing_style.py, reporting file, line, the found spelling, and the required replacement. List only unambiguous pairs, and exempt URLs and proper nouns such as the Canadian Centre for Cyber Security.",
+      "rationale": "The four errors were each internally inconsistent with their own page, which is the signature of a rule that is understood but unenforced. Words where both spellings are valid US English depending on part of speech — 'analyses' as the plural of 'analysis', 'practice' as a noun — are deliberately excluded, because a check that produces false positives gets disabled.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Read WRITING_STYLE.md 'Voice and language': the journal requires clear, natural Singapore English with US spelling.",
+        "Reintroduce a listed British spelling into a topic file and confirm the check reports the file, line, and replacement and exits non-zero.",
+        "Confirm the check passes across all 93 topic files after the corrections."
+      ],
+      "approved_outcome": "No topic file contains a listed non-US spelling, and verify_writing_style.py blocks on one.",
+      "invalidation_conditions": [
+        "The journal adopts a different English variant.",
+        "A listed pair turns out to be ambiguous in US usage and produces a false positive."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "d5cc41be72b86789c0af43db539189aaf1388d59726a817c722014198a21a107",
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0086",
+      "title": "Remove the unreferenced video set, its generators, and the superseded diagram and demo assets",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "_config.yml",
+          "topics/hash-collisions-length-extension.md",
+          "scripts/verify_links.py"
+        ],
+        "concepts": [
+          "orphan assets",
+          "published payload size",
+          "superseded diagrams",
+          "dead tooling"
+        ]
+      },
+      "originating_feedback": "A repository-wide orphan sweep found that all 15 files in assets/video were unreferenced by any page, include, layout, or stylesheet, together with 16 superseded diagram images and three node-aes-gcm-demo download scripts. _config.yml does not exclude assets/, so all of it was copied into _site and published: 21 MB of the 22 MB asset payload was unreachable.",
+      "decision": "Delete assets/video and its five render-*-video.cjs generators, the 16 unreferenced images, the three unreferenced node-aes-gcm-demo download scripts, the five one-shot scripts under scripts/legacy, generate-journal-diagrams.mjs (reduced to copying the canonical asset set onto itself), and add_style_sections_all.py (duplicating two checks verify_writing_style.py already runs in CI). Keep the md5 and sha1 collision downloads, which are still referenced.",
+      "rationale": "None of it is reachable from the site, and every file remains recoverable from git history. The video set alone was 95% of the published asset payload, paid for on every clone, CI checkout, and Pages deploy. Several deleted images are demonstrably superseded predecessors of in-use diagrams: payroll-trust-boundaries by trust-boundaries-threat-modeling, merkle-tree by certificate-transparency-merkle-tree, defense-in-depth-layers by defense-in-depth-architecture. The node-aes-gcm-demo download scripts were masked from the sweep by the render script that referenced them, and became visible only once it was removed.",
+      "authoritative_sources": [
+        {
+          "title": "Jekyll configuration: exclude",
+          "url": "https://jekyllrb.com/docs/configuration/options/",
+          "supports": "Files under a directory that is not excluded are copied into the built site and published."
+        }
+      ],
+      "verification_methods": [
+        "Re-run an exact-filename orphan sweep across assets/ against topics, includes, layouts, styles, scripts, and index.",
+        "Confirm verify_links.py resolves every remaining asset reference.",
+        "Confirm no page promises a download or media asset that no longer exists."
+      ],
+      "approved_outcome": "Every file under assets/ is referenced by published content; the asset payload is about 1.1 MB; scripts/ contains only the review, verification, navigation, and Ruby-runtime tooling still in use.",
+      "invalidation_conditions": [
+        "A page reintroduces video or an interactive download, at which point the asset returns and is reviewed as an independent technical artifact.",
+        "A deleted diagram is wanted again, in which case it is restored from git history and re-reviewed before use."
+      ],
+      "related_decisions": [
+        "CD-0033"
+      ],
+      "supersedes": [
+        "CD-0015",
+        "CD-0023"
+      ],
+      "superseded_by": null,
+      "originating_review_state_id": "d5cc41be72b86789c0af43db539189aaf1388d59726a817c722014198a21a107",
       "originated_on": "2026-08-15",
       "last_reviewed_on": "2026-08-15"
     }

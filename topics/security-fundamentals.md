@@ -80,7 +80,7 @@ When evaluating the security posture of any new feature or system architecture, 
 
 | Diagnostic Focus Area | Key Architectural Evaluation Question | Target Verification &amp; Audit Evidence |
 |---|---|---|
-| **Asset Categorization** | What sensitive data, critical services, or business operations require protection? | Data classification inventories, CMDB registers &amp; asset catalogues. |
+| **Asset Categorization** | What sensitive data, critical services, or business operations require protection? | Data classification inventories, CMDB registers &amp; asset catalogs. |
 | **Control Verification** | Which preventive, detective, and corrective/recovery controls execute the reduction strategy; where a required or recommended control is replaced, does the approved compensating control provide equivalent or comparable protection; and where deterrence is claimed, what behavior is expected to change? | Security controls baseline mapping (**NIST SP 800-53 Rev. 5**), compensating-control assessment records &amp; continuous monitoring logs. |
 | **Domain Boundary Identification** | Which information-security, cybersecurity, physical-security, and system-engineering scopes overlap for this asset and threat scenario? | Scope boundary documents &amp; system security plan (SSP) architecture bounds. |
 | **Exposure Assessment** | What is the risk severity based on threat likelihood and consequential impact? | Risk assessment reports (**NIST SP 800-30 Rev. 1**). |

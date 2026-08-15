@@ -13,7 +13,7 @@ last_verified: 2026-08-14
 
 ## Transport determines whether the authorization profile applies
 
-- **stdio**: The client launches a local server process and communicates over its standard streams. The HTTP OAuth profile does not apply — implementations using stdio should retrieve credentials from the environment instead. Trust comes from process launch, filesystem permissions, sandboxing, and local secret handling. See [MCP & Agentic Security](../mcp-security-agentics/) for why a local server is arbitrary code running with the client's privileges.
+- **stdio**: The client launches a local server process and communicates over its standard streams. The HTTP OAuth profile does not apply — implementations using stdio should retrieve credentials from the environment instead. Trust comes from process launch, filesystem permissions, sandboxing, and local secret handling. See [MCP & Agentic Security]({{ '/topics/mcp-security-agentics/' | relative_url }}) for why a local server is arbitrary code running with the client's privileges.
 - **Streamable HTTP**: The current remote transport posts each message to a single MCP endpoint, with replies as JSON or a request-scoped SSE stream. This replaces the older standalone HTTP+SSE transport design.
 
 ## Discovery and authorization sequence
@@ -59,7 +59,7 @@ The reason to care is blast radius. A token granted every scope up front is a si
 
 ## Authorization is narrower than tool safety
 
-An access token proves that the client holds the represented authorization to call the MCP server. It does not prove that a tool is safe, that a tool description is trustworthy, or that the user approved a destructive invocation. Treat tool metadata and tool output as untrusted content, enforce server-side authorization per tool and resource, and require explicit confirmation for consequential actions — [MCP & Agentic Security](../mcp-security-agentics/) covers that layer.
+An access token proves that the client holds the represented authorization to call the MCP server. It does not prove that a tool is safe, that a tool description is trustworthy, or that the user approved a destructive invocation. Treat tool metadata and tool output as untrusted content, enforce server-side authorization per tool and resource, and require explicit confirmation for consequential actions — [MCP & Agentic Security]({{ '/topics/mcp-security-agentics/' | relative_url }}) covers that layer.
 
 Two further boundaries worth keeping straight:
 

@@ -99,7 +99,7 @@ A threat hunt is incomplete until its findings are operationalized to permanentl
 
 ### When a hunt becomes an incident
 
-The moment a hunt confirms adversary activity, it stops being a hunt. Define the handoff before it is needed: the hunter declares an incident, hands the evidence and query set to incident response, and stops touching the affected hosts. Continuing to pivot on a live compromise from a hunting console tips the adversary, contaminates volatile evidence, and leaves no chain of custody. The hunt resumes afterwards with a narrower question — how far the same technique spread — while [Monitoring, Incident Response & Operational Learning](../incident-response-operational-learning/) owns containment and recovery.
+The moment a hunt confirms adversary activity, it stops being a hunt. Define the handoff before it is needed: the hunter declares an incident, hands the evidence and query set to incident response, and stops touching the affected hosts. Continuing to pivot on a live compromise from a hunting console tips the adversary, contaminates volatile evidence, and leaves no chain of custody. The hunt resumes afterwards with a narrower question — how far the same technique spread — while [Monitoring, Incident Response & Operational Learning]({{ '/topics/incident-response-operational-learning/' | relative_url }}) owns containment and recovery.
 
 ### A hunt that finds nothing is not a failed hunt
 

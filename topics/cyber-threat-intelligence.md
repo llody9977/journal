@@ -74,7 +74,7 @@ Effective CTI programs utilize Threat Intelligence Platforms (TIPs) with automat
 
 ### Grading Confidence
 
-"High confidence" is not a measurement unless the scale is stated. The Admiralty (NATO) system remains the most widely reused grading scheme in CTI because it separates two independent judgements that analysts routinely conflate:
+"High confidence" is not a measurement unless the scale is stated. The Admiralty (NATO) system remains the most widely reused grading scheme in CTI because it separates two independent judgments that analysts routinely conflate:
 
 - **Source reliability, A–F**: A = completely reliable, through E = unreliable, F = reliability cannot be judged. This grades the *provider* — its track record, collection method, and access.
 - **Information credibility, 1–6**: 1 = confirmed by other sources, through 5 = improbable, 6 = truth cannot be judged. This grades the *claim* — corroboration and internal consistency.

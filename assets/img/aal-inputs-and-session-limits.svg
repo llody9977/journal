@@ -1,0 +1,109 @@
+<svg viewBox="0 0 1200 640" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="ais-title ais-desc">
+  <title id="ais-title">What determines an achieved AAL, and the session limits each level carries</title>
+  <desc id="ais-desc">Six inputs feed one outcome: authenticator type, verifier behavior and compromise resistance, key non-exportability, an activation factor, approved cryptography, and a recovery path that does not downgrade assurance. Together they determine the achieved Authenticator Assurance Level; the authenticator alone does not. Below, three cards give the NIST SP 800-63B-4 session guidance per level: AAL1 inactivity timeout should be no more than 30 days; AAL2 overall timeout shall be no more than 24 hours with inactivity no more than 1 hour; AAL3 overall timeout shall be no more than 12 hours with inactivity no more than 15 minutes. A footer notes that a hardware key reaches AAL3 only when the complete authenticator and verifier deployment meets every requirement.</desc>
+  <rect width="1200" height="640" fill="#ffffff"/>
+  <defs>
+    <marker id="ais-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#94a3b8"/></marker>
+  </defs>
+
+  <text x="50" y="55" font-size="30" font-weight="850" fill="#0f172a">AAL is a property of the deployment</text>
+  <text x="50" y="82" font-size="14.5" fill="#475569">Six inputs decide the achieved AAL. A product label decides none of them on its own.</text>
+
+  <text x="50" y="122" font-size="11.5" font-weight="900" letter-spacing="1" fill="#475569">INPUTS THAT DETERMINE THE ACHIEVED LEVEL</text>
+
+  <g>
+    <rect x="50" y="138" width="178" height="118" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="66" y="168" font-size="14.5" font-weight="800" fill="#0f172a">Authenticator</text>
+    <text x="66" y="188" font-size="14.5" font-weight="800" fill="#0f172a">type</text>
+    <text x="66" y="214" font-size="12.5" fill="#475569">One or more factors,</text>
+    <text x="66" y="232" font-size="12.5" fill="#475569">and whether they are</text>
+    <text x="66" y="250" font-size="12.5" fill="#475569">phishing resistant.</text>
+  </g>
+
+  <g>
+    <rect x="240" y="138" width="178" height="118" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+    <text x="256" y="168" font-size="14.5" font-weight="800" fill="#0f172a">Verifier</text>
+    <text x="256" y="188" font-size="14.5" font-weight="800" fill="#0f172a">behavior</text>
+    <text x="256" y="214" font-size="12.5" fill="#475569">Replay resistance and,</text>
+    <text x="256" y="232" font-size="12.5" fill="#475569">at AAL3, verifier-</text>
+    <text x="256" y="250" font-size="12.5" fill="#475569">compromise resistance.</text>
+  </g>
+
+  <g>
+    <rect x="430" y="138" width="178" height="118" rx="14" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>
+    <text x="446" y="168" font-size="14.5" font-weight="800" fill="#0f172a">Key</text>
+    <text x="446" y="188" font-size="14.5" font-weight="800" fill="#0f172a">properties</text>
+    <text x="446" y="214" font-size="12.5" fill="#475569">AAL3 requires a</text>
+    <text x="446" y="232" font-size="12.5" fill="#475569">non-exportable private</text>
+    <text x="446" y="250" font-size="12.5" fill="#475569">key.</text>
+  </g>
+
+  <g>
+    <rect x="620" y="138" width="178" height="118" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="2.5"/>
+    <text x="636" y="168" font-size="14.5" font-weight="800" fill="#0f172a">Activation</text>
+    <text x="636" y="188" font-size="14.5" font-weight="800" fill="#0f172a">factor</text>
+    <text x="636" y="214" font-size="12.5" fill="#475569">A PIN or biometric that</text>
+    <text x="636" y="232" font-size="12.5" fill="#475569">unlocks the</text>
+    <text x="636" y="250" font-size="12.5" fill="#475569">authenticator itself.</text>
+  </g>
+
+  <g>
+    <rect x="810" y="138" width="178" height="118" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="826" y="168" font-size="14.5" font-weight="800" fill="#0f172a">Approved</text>
+    <text x="826" y="188" font-size="14.5" font-weight="800" fill="#0f172a">cryptography</text>
+    <text x="826" y="214" font-size="12.5" fill="#475569">Required at AAL3 under</text>
+    <text x="826" y="232" font-size="12.5" fill="#475569">the applicable federal</text>
+    <text x="826" y="250" font-size="12.5" fill="#475569">profile.</text>
+  </g>
+
+  <g>
+    <rect x="1000" y="138" width="178" height="118" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.5"/>
+    <text x="1016" y="168" font-size="14.5" font-weight="800" fill="#0f172a">Recovery</text>
+    <text x="1016" y="188" font-size="14.5" font-weight="800" fill="#0f172a">path</text>
+    <text x="1016" y="214" font-size="12.5" fill="#475569">A weaker reset route</text>
+    <text x="1016" y="232" font-size="12.5" fill="#475569">silently caps the level</text>
+    <text x="1016" y="250" font-size="12.5" fill="#475569">actually achieved.</text>
+  </g>
+
+  <path d="M139 264 L139 300" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" marker-end="url(#ais-arrow)"/>
+  <path d="M329 264 L329 300" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" marker-end="url(#ais-arrow)"/>
+  <path d="M519 264 L519 300" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" marker-end="url(#ais-arrow)"/>
+  <path d="M709 264 L709 300" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" marker-end="url(#ais-arrow)"/>
+  <path d="M899 264 L899 300" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" marker-end="url(#ais-arrow)"/>
+  <path d="M1089 264 L1089 300" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" marker-end="url(#ais-arrow)"/>
+
+  <rect x="50" y="308" width="1128" height="62" rx="16" fill="#0f172a"/>
+  <text x="614" y="338" text-anchor="middle" font-size="19" font-weight="800" fill="#ffffff">ACHIEVED AUTHENTICATOR ASSURANCE LEVEL</text>
+  <text x="614" y="359" text-anchor="middle" font-size="13" fill="#cbd5e1">The weakest input caps the result — a strong authenticator does not lift a weak verifier or recovery path.</text>
+
+  <text x="50" y="410" font-size="11.5" font-weight="900" letter-spacing="1" fill="#475569">SESSION LIMITS THE LEVEL CARRIES — NIST SP 800-63B-4</text>
+
+  <g>
+    <rect x="50" y="426" width="358" height="150" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+    <text x="74" y="456" font-size="12" font-weight="900" letter-spacing="1" fill="#2563eb">AAL1</text>
+    <text x="74" y="488" font-size="14.5" fill="#475569">Overall timeout:</text>
+    <text x="74" y="510" font-size="14.5" font-weight="700" fill="#0f172a">not specified at this level</text>
+    <text x="74" y="537" font-size="14.5" fill="#475569">Inactivity timeout:</text>
+    <text x="74" y="559" font-size="14.5" font-weight="700" fill="#0f172a">should be no more than 30 days</text>
+  </g>
+
+  <g>
+    <rect x="435" y="426" width="358" height="150" rx="18" fill="#f0fdfa" stroke="#0f766e" stroke-width="3"/>
+    <text x="459" y="456" font-size="12" font-weight="900" letter-spacing="1" fill="#0f766e">AAL2</text>
+    <text x="459" y="488" font-size="14.5" fill="#475569">Overall timeout:</text>
+    <text x="459" y="510" font-size="14.5" font-weight="700" fill="#0f172a">shall be no more than 24 hours</text>
+    <text x="459" y="537" font-size="14.5" fill="#475569">Inactivity timeout:</text>
+    <text x="459" y="559" font-size="14.5" font-weight="700" fill="#0f172a">should be no more than 1 hour</text>
+  </g>
+
+  <g>
+    <rect x="820" y="426" width="358" height="150" rx="18" fill="#fffbeb" stroke="#b45309" stroke-width="3"/>
+    <text x="844" y="456" font-size="12" font-weight="900" letter-spacing="1" fill="#b45309">AAL3</text>
+    <text x="844" y="488" font-size="14.5" fill="#475569">Overall timeout:</text>
+    <text x="844" y="510" font-size="14.5" font-weight="700" fill="#0f172a">shall be no more than 12 hours</text>
+    <text x="844" y="537" font-size="14.5" fill="#475569">Inactivity timeout:</text>
+    <text x="844" y="559" font-size="14.5" font-weight="700" fill="#0f172a">should be no more than 15 minutes</text>
+  </g>
+
+  <text x="50" y="612" font-size="13.5" font-weight="600" fill="#0f172a">A hardware key reaches AAL3 only when the complete authenticator and verifier deployment meets every requirement — the device alone never does.</text>
+</svg>

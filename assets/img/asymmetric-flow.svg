@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 390" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 390" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="afl-title afl-desc">
+  <title id="afl-title">Asymmetric key pair operations</title>
+  <desc id="afl-desc">Two scenarios side by side. Scenario A, public key encryption such as RSA-OAEP or HPKE: a sender holding Bob's public key encrypts under that public key, and only the holder of Bob's private key can decrypt. Scenario B, digital signature verification: Bob signs a digest with his private key, and a verifier checks that signature under Bob's public key. The public key is distributed freely; the private key is kept secret. The two roles are complementary and not interchangeable.</desc>
   <rect width="1200" height="390" fill="#ffffff"/>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

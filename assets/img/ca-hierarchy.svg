@@ -1,4 +1,6 @@
-<svg viewBox="0 0 1200 450" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+<svg viewBox="0 0 1200 450" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="cah-title cah-desc">
+  <title id="cah-title">X.509 certificate authority trust hierarchy</title>
+  <desc id="cah-desc">A three-tier hierarchy. An offline, self-signed root CA acting as the trust anchor is pre-installed in operating system and browser trust stores, shown with an illustrative ten to twenty-five year validity on an air-gapped HSM. It signs two intermediate issuing CAs: an active online CA for web and TLS certificates, and a backup or specialized branch. An intermediate CA in turn issues the leaf end-entity certificate for example.com.</desc>
   <rect width="1200" height="450" fill="#ffffff"/>
   <defs>
     <marker id="arrow-gray" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">

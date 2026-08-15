@@ -20,7 +20,7 @@ last_verified: 2026-08-14
 
 ## Architecture and discovery flow
 
-MCP carries JSON-RPC 2.0 messages over one of two standard transports: **stdio**, where newline-delimited messages travel to a client-launched subprocess, and **Streamable HTTP**, where each message is an HTTP POST to a single endpoint and replies arrive as JSON or a request-scoped SSE stream. The older standalone HTTP+SSE transport has been superseded; [Model Context Protocol Authorization](../mcp-authorization/) covers the HTTP authorization profile in detail.
+MCP carries JSON-RPC 2.0 messages over one of two standard transports: **stdio**, where newline-delimited messages travel to a client-launched subprocess, and **Streamable HTTP**, where each message is an HTTP POST to a single endpoint and replies arrive as JSON or a request-scoped SSE stream. The older standalone HTTP+SSE transport has been superseded; [Model Context Protocol Authorization]({{ '/topics/mcp-authorization/' | relative_url }}) covers the HTTP authorization profile in detail.
 
 <div class="diagram-frame diagram-frame-openable">
   <a class="diagram-open-link" href="{{ '/assets/img/mcp-tool-discovery-flow.svg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the MCP tool discovery and invocation sequence diagram at full size">
