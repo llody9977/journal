@@ -24,6 +24,46 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TOPICS_DIR = REPO_ROOT / "topics"
+IMG_DIR = REPO_ROOT / "assets" / "img"
+
+# Characters from scripts this journal's technical content never uses. A single
+# stray CJK ideograph survived a full section review inside a table cell
+# (`krane`, `r軌`) because it is valid UTF-8, valid Markdown, and a valid link
+# target — every existing check passed while the reader saw a corrupted tool
+# name. Encoding damage and bad paste history land in these ranges, so scanning
+# for them catches the class rather than the instance.
+#
+# The deliberate seal-script phrase on the home page is genuine CJK, so
+# index.md is out of scope here; the ranges below are only meaningful for pages
+# and diagrams whose content is entirely Latin-script.
+SUSPECT_RANGES = (
+    (0x3040, 0x30FF),  # Hiragana and Katakana
+    (0x3400, 0x9FFF),  # CJK unified ideographs (incl. extension A)
+    (0xAC00, 0xD7AF),  # Hangul syllables
+    (0xE000, 0xF8FF),  # Private use area — never valid in published text
+)
+REPLACEMENT_CHAR = 0xFFFD
+
+
+def suspect_characters(text: str) -> list[tuple[int, str, str]]:
+    """Report characters that indicate encoding damage or a bad paste."""
+    findings: list[tuple[int, str, str]] = []
+    for number, raw in enumerate(text.splitlines(), start=1):
+        for char in raw:
+            code = ord(char)
+            hit = code == REPLACEMENT_CHAR or any(
+                low <= code <= high for low, high in SUSPECT_RANGES
+            )
+            if hit:
+                findings.append((
+                    number,
+                    f"stray non-Latin character U+{code:04X} ({char!r}) — "
+                    "almost always encoding damage or a truncated paste",
+                    raw.strip()[:120],
+                ))
+                break  # one report per line is enough to locate it
+    return findings
+
 
 FENCE = re.compile(r"^\s*(```|~~~)")
 SCRIPT_OPEN = re.compile(r"<(script|style)\b", re.I)
@@ -235,8 +275,29 @@ def main() -> int:
         # against the page. That rollout is complete across every section, so the
         # condition CD-0057 recorded for promoting it has been met.
         findings += scan_duplicate_images(text)
+        findings += suspect_characters(text)
         if findings:
             failures.append((path.name, sorted(findings)))
+
+    # Diagram text is published prose too: an SVG <title>, <desc>, or <text>
+    # run reaches the reader and the accessibility tree exactly as written, so
+    # the same encoding damage matters there and no other check reads them.
+    svg_failures: list[tuple[str, list[tuple[int, str, str]]]] = []
+    svgs = sorted(IMG_DIR.glob("*.svg"))
+    for path in svgs:
+        findings = suspect_characters(path.read_text(encoding="utf-8"))
+        if findings:
+            svg_failures.append((f"assets/img/{path.name}", sorted(findings)))
+
+    if svg_failures:
+        total = sum(len(f) for _, f in svg_failures)
+        print(f"❌ Found {total} stray character(s) in {len(svg_failures)} diagram(s):\n")
+        for name, findings in svg_failures:
+            print(f"  File: {name}")
+            for number, kind, excerpt in findings:
+                print(f"    - line {number}: {kind}")
+                print(f"      {excerpt}")
+        print()
 
     if failures:
         total = sum(len(f) for _, f in failures)
@@ -253,14 +314,29 @@ def main() -> int:
                 "rewrite its caption and alt text to describe only what that "
                 "image shows."
             )
-        if any("image reused" not in kind for kind in kinds):
+        if any("stray non-Latin" in kind for kind in kinds):
+            print(
+                "\nReplace the stray character with the intended text. It is "
+                "valid UTF-8, so every other check passes while the reader sees "
+                "a corrupted word."
+            )
+        if any(
+            "image reused" not in kind and "stray non-Latin" not in kind
+            for kind in kinds
+        ):
             print(
                 "\nWrite formulas as literal text instead: Unicode operators "
                 "(×, ÷, →, ≤, ε), a code span, or a <p class=\"formula\"> block."
             )
         return 1
 
-    print(f"✅ All {len(files)} topic files are free of blocking rendering hazards.")
+    if svg_failures:
+        return 1
+
+    print(
+        f"✅ All {len(files)} topic files and {len(svgs)} diagrams are free of "
+        "blocking rendering hazards."
+    )
     print(
         "ℹ️  This check does not verify factual accuracy, whether a caption "
         "matches its diagram, or that any diagram renders legibly. Inspect "

@@ -3813,6 +3813,54 @@
       "superseded_by": null,
       "originated_on": "2026-08-15",
       "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0069",
+      "title": "Make stray non-Latin characters a blocking rendering hazard in topic pages and diagrams",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "scripts/verify_rendering_hazards.py"
+        ],
+        "concepts": [
+          "mojibake",
+          "encoding damage",
+          "rendering hazard",
+          "automated check",
+          "diagram text",
+          "quality gate"
+        ]
+      },
+      "originating_feedback": "A fresh Section 11 review found a single stray CJK ideograph inside a Topic 11.2 table cell (`krane`, `r軌`) where a second RBAC tool name belonged. It is valid UTF-8 and valid Markdown, so verify_writing_style.py and verify_rendering_hazards.py both passed while the corrupted token rendered on the published page.",
+      "decision": "Scan topic pages and every SVG under assets/img for characters in the Hiragana/Katakana, CJK ideograph, Hangul, and private-use ranges plus U+FFFD, and fail the check when any is found. index.md is out of scope because its seal-script phrase is deliberate CJK.",
+      "rationale": "The defect class is invisible to every other gate: the character is well-formed, breaks no syntax, and changes no structure. Scanning the ranges catches encoding damage and truncated pastes generally rather than the one instance. SVG text is included because a <title>, <desc>, or <text> run reaches the reader and the accessibility tree as written, and no other check reads diagram text at all.",
+      "authoritative_sources": [
+        {
+          "title": "Unicode Standard: East Asian scripts and the Private Use Area",
+          "url": "https://www.unicode.org/charts/",
+          "supports": "The code point ranges used to distinguish deliberate Latin-script technical prose from stray East Asian or private-use characters."
+        }
+      ],
+      "verification_methods": [
+        "Restore the pre-fix Topic 11.2 into topics/ and confirm the check reports line 87 and exits non-zero.",
+        "Place a stray character in a scratch SVG under assets/img and confirm the check reports it and exits non-zero.",
+        "Confirm the clean repository passes and that index.md's deliberate seal-script phrase is not reported."
+      ],
+      "approved_outcome": "verify_rendering_hazards.py fails on stray non-Latin characters in any topic page or diagram, with a remediation message distinct from the math-hazard and duplicate-image messages, and the deploy quality gate inherits the check.",
+      "invalidation_conditions": [
+        "A topic page or diagram gains a legitimate need for East Asian script, which would require an explicit allowlist rather than removing the check.",
+        "The journal adopts a different home for encoding checks."
+      ],
+      "related_decisions": [
+        "CD-0057",
+        "CD-0058",
+        "CD-0065"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
     }
   ]
 }
