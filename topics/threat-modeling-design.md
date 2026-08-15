@@ -2,7 +2,7 @@
 title: Design-Time Architecture Threat Modeling
 description: Technical reference for design-time threat modeling methodologies (STRIDE, PASTA, OWASP 4-Question Framework, VAST, and OCTAVE Allegro) for evaluating system architecture, trust boundaries, and component security invariants.
 permalink: /topics/threat-modeling-design/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Threat Intelligence & Detection / Decision Guide</span>

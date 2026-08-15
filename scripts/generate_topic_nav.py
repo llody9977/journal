@@ -1,5 +1,15 @@
-import yaml
 import os
+import sys
+
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - environment guard
+    sys.exit(
+        "generate_topic_nav.py needs PyYAML, which is not in the standard library.\n"
+        "Install it with:  python3 -m pip install -r requirements.txt\n"
+        "The four CI checks under scripts/ are dependency-free and do not need it; "
+        "only this navigation generator does."
+    )
 
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nav_path = os.path.join(repo_root, "_data", "nav.yml")

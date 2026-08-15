@@ -2,7 +2,7 @@
 title: Recommended Cryptographic Algorithms & Standards
 description: A selected comparison of NIST SP 800-57, NSA CNSA 2.0, finalized NIST PQC Standards FIPS 203/204/205, FIPS 206 under development, BSI TR-02102-1, and Chinese ShangMi guidance — not a comprehensive survey of every jurisdiction's cryptographic compliance regime.
 permalink: /topics/recommended-algorithms/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Cryptography / Standards</span>

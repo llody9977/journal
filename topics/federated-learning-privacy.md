@@ -2,7 +2,7 @@
 title: Federated Learning & Privacy-Preserving Machine Learning
 description: Cross-device and cross-silo federated learning, the FedAvg loop, what secure aggregation and differential privacy each assume and guarantee, and why robust aggregation conflicts with plain SecAgg.
 permalink: /topics/federated-learning-privacy/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">AI & LLM Security / Privacy-Preserving ML</span>

@@ -2,7 +2,7 @@
 title: Threat Hunting & Behavioral Analytics
 description: Technical reference for Threat Hunting methodologies, the PEAK framework (Prepare, Execute, and Act with Knowledge), hypothesis-driven, baseline and model-assisted hunts, the Hunting Maturity Model, User and Entity Behavior Analytics (UEBA), and post-hunt rule operationalization.
 permalink: /topics/threat-hunting/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Threat Intelligence & Detection / Decision Guide</span>

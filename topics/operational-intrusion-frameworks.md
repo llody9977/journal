@@ -2,7 +2,7 @@
 title: Operational Intrusion Frameworks & Intrusion Analysis
 description: Technical reference for operational intrusion frameworks (Lockheed Martin Cyber Kill Chain, Diamond Model of Intrusion Analysis, MITRE ATT&CK, MITRE D3FEND, and MITRE ATLAS) for post-deployment intrusion tracking, adversary campaign attribution, and defensive countermeasure mapping.
 permalink: /topics/operational-intrusion-frameworks/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Threat Intelligence & Detection / Decision Guide</span>

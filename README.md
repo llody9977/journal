@@ -33,7 +33,21 @@ Deliberate technical decisions are recorded in [`reviews/CONTENT_DECISIONS.yml`]
   a `url`) when a new topic page goes live, or without a `url` to list it as
   a planned "Soon" placeholder
 - `_layouts/`, `_includes/` — shared page chrome (header, sidebar, footer)
-- `assets/` — CSS and JS
+- `assets/` — CSS, JS, diagrams, fonts and downloadable demo files. Everything
+  here is published, so nothing unreferenced should live in it
+- `scripts/` — the four checks the CI quality gate runs, plus the review-baseline
+  and navigation tooling
+
+## Python tooling
+
+The four checks CI runs — `verify_writing_style.py`, `verify_rendering_hazards.py`,
+`verify_content_decisions.py` and `verify_links.py` — are dependency-free and run on
+a bare Python 3.11+, as does `capture_review_state.py`. Only `generate_topic_nav.py`
+needs a package:
+
+```sh
+python3 -m pip install -r requirements.txt
+```
 
 ## Adding a new topic
 

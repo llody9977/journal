@@ -2,7 +2,7 @@
 title: "Symmetric Mode Attacks: ECB, CBC & CTR"
 description: Practical cryptanalysis and runnable browser-based demonstrations of ECB pattern leakage, CBC bit-flipping malleability, and CTR two-time pad nonce reuse attacks.
 permalink: /topics/symmetric-mode-attacks/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Cryptography / Failure Analysis</span>

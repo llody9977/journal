@@ -2,7 +2,7 @@
 title: Monitoring, Incident Response & Operational Learning
 description: Continuous security monitoring, the NIST SP 800-61 Rev. 3 incident lifecycle, containment and evidence trade-offs, severity, roles, recovery, and operational learning.
 permalink: /topics/incident-response-operational-learning/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -17,6 +17,8 @@ last_verified: 2026-08-13
   </a>
   <p class="diagram-caption">Incident Response &amp; Operational Learning Loop (journal working model informed by NIST SP 800-61 Rev. 3): Continuous Monitoring → Detect (analyze adverse events; declare incidents against defined criteria) → Respond (triage, validate, categorize, prioritize, contain, eradicate) → Recover → Learn &amp; Improve → Govern-level risk and control decisions.</p>
 </div>
+
+This page owns the lifecycle: what makes an event an incident, who decides, and how the outcome returns to risk and control decisions. **[Incident Response Playbooks & SOAR]({{ '/topics/incident-response-playbooks-soar/' | relative_url }})** owns the execution layer built on top of it — playbook structure, orchestration and its approval boundaries, and containment ordering for specific incident types. Both describe the same SP 800-61 Rev. 3 mapping because both depend on it; this page is where that mapping is established.
 
 ## Continuous Monitoring: Feeding the Response Pipeline
 

@@ -2,7 +2,7 @@
 title: AI & LLM Threat Frameworks & Risk Management
 description: What NIST AI RMF 1.0, the OWASP Top 10 for LLM Applications 2026, and MITRE ATLAS each cover, how the 2026 ranking was built, where its scope ends, and a model retirement working rule.
 permalink: /topics/ai-risk-management/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">AI & LLM Security / Risk & Governance</span>

@@ -2,7 +2,7 @@
 title: Security Objectives & Properties
 description: Architectural framework for security objectives, FIPS 199 impact categorization, extended properties, safeguard mechanics, and the objective-to-verified-control traceability chain.
 permalink: /topics/security-objectives-properties/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>

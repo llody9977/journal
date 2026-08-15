@@ -2,7 +2,7 @@
 title: What Is Security?
 description: Core security engineering discipline—defining security domains (Security, InfoSec, Cybersecurity), core objectives (CIA triad), and a journal working model of the risk management lifecycle.
 permalink: /topics/security-fundamentals/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security / Overview</span>

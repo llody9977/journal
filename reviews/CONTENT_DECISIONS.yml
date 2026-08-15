@@ -4756,6 +4756,131 @@
       "originating_review_state_id": "d5cc41be72b86789c0af43db539189aaf1388d59726a817c722014198a21a107",
       "originated_on": "2026-08-15",
       "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0087",
+      "title": "Name OCTAVE Allegro consistently, and state the scope boundary between paired pages instead of repeating their shared table",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/trust-boundaries-threat-modeling.md",
+          "topics/threat-modeling-design.md",
+          "topics/incident-response-operational-learning.md",
+          "topics/incident-response-playbooks-soar.md"
+        ],
+        "concepts": [
+          "OCTAVE Allegro",
+          "threat modeling methodology taxonomy",
+          "cross-page scope boundary",
+          "duplicate comparison table",
+          "page pair ownership"
+        ]
+      },
+      "originating_feedback": "Topics 1.4 and 6.1 were the journal's highest-similarity page pair and both carried a five-row comparison table over the same five methods, while disagreeing on which OCTAVE was meant: 1.4 named plain OCTAVE and linked the SEI OCTAVE Framework v1.0 page, 6.1 named OCTAVE Allegro throughout. Topics 1.8 and 12.2 likewise both establish the SP 800-61 Rev. 3 CSF mapping, and only 12.2 said why both exist.",
+      "decision": "Use OCTAVE Allegro (CMU/SEI-2007-TR-012) as the single name wherever the journal refers to the method, and describe it as SEI describes it — the next generation of the OCTAVE methodology — rather than asserting a formally named family. Keep the full selection matrix and the method deep dives in 6.1 only; reduce 1.4 to a one-line-per-method orientation. State the ownership boundary explicitly on each side of both paired topics: 1.4 owns the DFD, trust boundaries, and the scope/assumptions/residual-risk record, 6.1 owns the methods; 1.8 owns the incident lifecycle and declaration criteria, 12.2 owns playbooks, orchestration, and containment ordering.",
+      "rationale": "Two pages naming different OCTAVE variants for the same table row teach a distinction that does not exist. SEI's own abstract calls Allegro the next generation of the OCTAVE methodology and does not describe a formally named family, so 'OCTAVE family' would substitute one overclaim for another. Removing 1.4's duplicate matrix rather than merging the pages preserves WRITING_STYLE's self-contained rule — a reader still gets enough to pick a direction — while leaving one authoritative comparison. An explicit boundary sentence is what stops the next reviewer reading the remaining overlap as accidental duplication and deleting the wrong copy.",
+      "authoritative_sources": [
+        {
+          "title": "Introducing OCTAVE Allegro (CMU/SEI-2007-TR-012)",
+          "url": "https://www.sei.cmu.edu/library/introducing-octave-allegro-improving-the-information-security-risk-assessment-process/",
+          "supports": "SEI describes OCTAVE Allegro as the next generation of the OCTAVE methodology, published 2007 as CMU/SEI-2007-TR-012."
+        }
+      ],
+      "verification_methods": [
+        "Confirm no page links the superseded OCTAVE Framework v1.0 SEI page.",
+        "Confirm each of the four pages names the page that owns the adjacent scope.",
+        "Rebuild the site and confirm the reduced 1.4 section still reads as self-contained orientation."
+      ],
+      "approved_outcome": "OCTAVE Allegro is the only OCTAVE naming in the journal; the five-method selection matrix exists once, in Topic 6.1; and both page pairs state which page owns what.",
+      "invalidation_conditions": [
+        "SEI publishes a successor to OCTAVE Allegro that the journal adopts.",
+        "Topic 1.4 or 6.1 is restructured so the orientation is no longer needed."
+      ],
+      "related_decisions": [
+        "CD-0026"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "ca769b8498445369b759c95ef398a5821a61b1cd5185fa866e3c2d7cfe95de94",
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0088",
+      "title": "Declare the one Python dependency the repository has, and keep every CI check dependency-free",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "requirements.txt",
+          "scripts/generate_topic_nav.py",
+          "README.md"
+        ],
+        "concepts": [
+          "Python dependency",
+          "PyYAML",
+          "reproducible checkout",
+          "tooling documentation"
+        ]
+      },
+      "originating_feedback": "generate_topic_nav.py imports PyYAML, which was declared in no Gemfile, workflow, or requirements file, so the script fails with a bare ModuleNotFoundError on a clean checkout.",
+      "decision": "Add requirements.txt declaring PyYAML and stating that it is needed only by generate_topic_nav.py. Make the script exit with an actionable message naming the install command when the module is absent. Document the split in README: the four CI checks and capture_review_state.py run on a bare Python.",
+      "rationale": "The repository deliberately keeps its gates dependency-free — CONTENT_DECISION_GUIDE.md records that the register uses JSON-compatible YAML so the validator can parse it with the standard library. _data/nav.yml is real YAML, so the navigation generator genuinely needs a parser. Declaring the one dependency and saying which tool needs it preserves the property that matters (CI needs nothing) without pretending the dependency is absent.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Run generate_topic_nav.py with the yaml import blocked and confirm it exits non-zero with the install command.",
+        "Run it with PyYAML present and confirm it reproduces the committed _includes/topic-nav.html byte for byte.",
+        "Confirm the four CI checks still run with no third-party package installed."
+      ],
+      "approved_outcome": "requirements.txt declares PyYAML, generate_topic_nav.py fails with an actionable message without it, README states which tooling needs it, and no CI check depends on it.",
+      "invalidation_conditions": [
+        "A CI check acquires a third-party dependency, at which point the dependency-free claim must be revised.",
+        "nav.yml is converted to a JSON-compatible subset, removing the need for a YAML parser."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "ca769b8498445369b759c95ef398a5821a61b1cd5185fa866e3c2d7cfe95de94",
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
+    },
+    {
+      "id": "CD-0089",
+      "title": "Bump last_verified whenever a correction changes a page's content",
+      "status": "accepted",
+      "implementation_state": "implemented",
+      "scope": {
+        "files": [
+          "topics/where-should-i-start.md",
+          "topics/security-objectives-properties.md",
+          "topics/identity-access-fundamentals.md",
+          "topics/trust-boundaries-threat-modeling.md"
+        ],
+        "concepts": [
+          "last_verified",
+          "evidence freshness",
+          "review metadata"
+        ]
+      },
+      "originating_feedback": "The preceding remediation commit corrected 21 topic pages without touching their last_verified dates, leaving each page advertising a verification date older than its most recent correction. The repository's own prior section-remediation commits did bump the date.",
+      "decision": "Treat last_verified as the date the page's claims were last checked or corrected, and bump it on every commit that changes a page's content. Bump the 21 pages the previous commit missed plus the pages changed here.",
+      "rationale": "The footer renders last_verified as 'Last updated' to the reader, and REVIEW_STANDARD treats evidence freshness as a first-class property: a stale date understates when the page was last examined and quietly weakens the signal the field exists to carry. This was a real miss in the previous commit, not a new rule — the convention was already visible in the repository's history.",
+      "authoritative_sources": [],
+      "verification_methods": [
+        "Compare the set of topic files changed by each remediation commit against the set whose last_verified changed.",
+        "Confirm every page corrected across both commits now reads 2026-08-15."
+      ],
+      "approved_outcome": "Every page corrected during this review carries last_verified: 2026-08-15, and the convention is recorded so later commits follow it.",
+      "invalidation_conditions": [
+        "A page is changed only by a formatting or link-form edit that touches no claim, where the date may stay."
+      ],
+      "related_decisions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "originating_review_state_id": "ca769b8498445369b759c95ef398a5821a61b1cd5185fa866e3c2d7cfe95de94",
+      "originated_on": "2026-08-15",
+      "last_reviewed_on": "2026-08-15"
     }
   ]
 }

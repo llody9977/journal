@@ -2,7 +2,7 @@
 title: Symmetric Cryptography
 description: Comprehensive guide to AES block ciphers, stream ciphers (ChaCha20), modes of operation (ECB, CBC, CTR, GCM, AES-GCM-SIV), and Grover's quantum search.
 permalink: /topics/symmetric-cryptography/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Cryptography / Concepts</span>

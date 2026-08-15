@@ -2,7 +2,7 @@
 title: Model Context Protocol Authorization
 description: MCP 2026-07-28 authorization for HTTP transports, protected-resource and authorization-server discovery, client registration priority, resource indicators, issuer validation, scope step-up, and lifecycle risks.
 permalink: /topics/mcp-authorization/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Authentication & Authorization / Protocol</span>

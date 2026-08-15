@@ -2,7 +2,7 @@
 title: Public Key Infrastructure (PKI) & X.509 Certificates
 description: X.509 v3 certificate structure, Certificate Authority (CA) hierarchies, automated ACME issuance (RFC 8555 / ARI), CRL/OCSP revocation, and PQC hybrid certificates.
 permalink: /topics/certificates/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>

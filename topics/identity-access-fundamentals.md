@@ -2,7 +2,7 @@
 title: Identity & Access Fundamentals
 description: Fundamentals of identity assurance, identity types, access control models, authentication and authorization failure modes, emergency access, and the complete identity and access lifecycle.
 permalink: /topics/identity-access-fundamentals/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>

@@ -1,0 +1,13 @@
+# Python dependencies for the optional local tooling under scripts/.
+#
+# The four checks the CI quality gate runs — verify_writing_style.py,
+# verify_rendering_hazards.py, verify_content_decisions.py and verify_links.py —
+# are deliberately dependency-free and need nothing from this file. So is
+# capture_review_state.py, which freezes a review baseline.
+#
+# Only generate_topic_nav.py needs a package: it reads _data/nav.yml, which is
+# real YAML rather than the JSON-compatible subset the decision register uses.
+#
+#   python3 -m pip install -r requirements.txt
+
+PyYAML>=6.0

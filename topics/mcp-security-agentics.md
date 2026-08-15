@@ -2,7 +2,7 @@
 title: Model Context Protocol (MCP) & Agentic Security
 description: MCP tool discovery as an injection surface, tool description poisoning, RFC 8707 resource indicators and token audience confusion, local server compromise, and approval gates for high-privilege tool calls.
 permalink: /topics/mcp-security-agentics/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">AI & LLM Security / Agentic Security</span>

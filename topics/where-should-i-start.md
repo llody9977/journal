@@ -2,7 +2,7 @@
 title: Where Should I Start?
 description: Practical architectural roadmap for security engineering—choosing implementation pathways, establishing mission context and standards, and connecting governance and technical controls to ongoing detection, response, recovery, and learning.
 permalink: /topics/where-should-i-start/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security / Starting Map</span>

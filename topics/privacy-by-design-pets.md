@@ -2,7 +2,7 @@
 title: Privacy by Design (PbD) & Privacy-Enhancing Technologies
 description: "Technical reference for Privacy by Design and how it differs from GDPR Article 25 and ISO/IEC 27701, what each privacy-enhancing technology bounds (differential privacy, ZKP, FHE, SMPC), and pseudonymization versus anonymization under the reasonable-means test."
 permalink: /topics/privacy-by-design-pets/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security Architecture & Design Principles / Privacy Engineering</span>

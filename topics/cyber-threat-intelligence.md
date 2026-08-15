@@ -2,7 +2,7 @@
 title: Cyber Threat Intelligence & Threat Actor Profiling
 description: Technical reference for Cyber Threat Intelligence (CTI) operations, the 6-stage intelligence lifecycle, David Bianco's Pyramid of Pain, STIX 2.1 / TAXII 2.1 data standards, TLP handling markings, Threat Intelligence Platforms (OpenCTI / MISP), and threat actor campaign profiling.
 permalink: /topics/cyber-threat-intelligence/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Threat Intelligence & Detection / Decision Guide</span>

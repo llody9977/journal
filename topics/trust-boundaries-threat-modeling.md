@@ -1,8 +1,8 @@
 ---
 title: Trust Boundaries & Threat Modeling
-description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE, OWASP 4-Question), and a practical 4-stage execution workflow.
+description: Technical framework for Data Flow Diagrams (DFDs), trust boundary identification, attack surface mapping, a brief orientation to threat modeling methodologies (STRIDE, PASTA, VAST, OCTAVE Allegro, OWASP 4-Question), and a practical 4-stage execution workflow.
 permalink: /topics/trust-boundaries-threat-modeling/
-last_verified: 2026-08-14
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Security Foundations / Concepts</span>
@@ -43,17 +43,15 @@ To avoid architectural flaws, security engineering distinguishes between three d
 | **Trust Boundary** | An explicit architectural line where data or execution control transitions between different privilege levels or administrative perimeters. | Enforcing non-implicit verification on incoming payloads. | API Gateway input validation, mTLS certificate verification &amp; OAuth token inspection (per current finalized OAuth 2.0 RFCs; **OAuth 2.1** remains an active IETF Internet-Draft, not yet a finalized RFC, as of this writing). |
 | **Trust Domain** | A logical or physical security zone within which all components share uniform administrative trust and policy governance. | Constraining blast radius and lateral movement when enforcement is correctly designed—segmentation reduces, not eliminates, cross-zone movement. | Subnet VPC microsegmentation, Zero Trust network policies &amp; IAM boundary policies. |
 
-## Threat Modeling Methodologies Comparison Matrix
+## Threat Modeling Methodologies in Brief
 
-Engineering teams select threat modeling frameworks based on system complexity, development cadence, and risk governance requirements:
+This page owns the input every method below assumes: the DFD, the trust boundaries drawn on it, and the scope, assumptions, and residual-risk record that accompany it. **[Design-Time Architecture Threat Modeling]({{ '/topics/threat-modeling-design/' | relative_url }})** owns the methods themselves — the full selection matrix, the STRIDE-per-element applicability table, PASTA's seven stages, and OCTAVE Allegro's phases. The one-line orientation below is enough to pick a direction; go there to choose properly.
 
-| Threat Modeling Framework | Focus Area &amp; Philosophy | Core Execution Mechanism | Primary Engineering Applicability |
-|---|---|---|---|
-| **[OCTAVE (Carnegie Mellon SEI)](https://www.sei.cmu.edu/library/operationally-critical-threat-asset-and-vulnerability-evaluation-octave-framework-version-10/)** | Primarily an organizational risk-assessment approach—evaluating operational risk across assets, people, and processes—rather than a system-level threat-modeling method like STRIDE; it operates at a different altitude than the DFD/component-level methods in this table. | Self-directed workshops identifying operational assets, organizational threats, and defense posture. | Enterprise-wide risk audits and organizational asset governance, typically paired with a system-level method (e.g., STRIDE) for individual architectures. |
-| **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** | Broadly applicable meta-process for driving continuous threat modeling iterations across any architecture. | Iterates: 1. *What are we working on?* 2. *What can go wrong?* 3. *What are we doing about it?* 4. *Did we do a good job?* | Agile software engineering, sprint-level threat modeling, and team design reviews. |
-| **[PASTA (Risk-Centric)](https://versprite.com/cybersecurity-listings/devsecops/pasta-threat-modeling/)** | **Process for Attack Simulation and Threat Analysis**; 7-stage risk-centric framework aligning security with business impact. | Integrates business objectives, asset impact, threat intel, vulnerability analysis, and a risk scoring stage (commonly a simplified `Likelihood × Impact` model). | Enterprise threat modeling, GRC risk alignment, and high-value financial/healthcare architectures. |
-| **STRIDE (Microsoft)** | Developer-centric threat taxonomy categorizing 6 threat types (*Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation*). | Maps specific STRIDE categories to each component in a Data Flow Diagram (DFD). | Application security, microservices, API route design, and code-level threat modeling. |
-| **[VAST (Agile / Scalable)](https://www.threatmodeler.ai/innovation-lab/vast)** | **Visual, Agile, and Simple Threat modeling**; a vendor-originated methodology (ThreatModeler) with no open published specification, so its scope is defined by vendor documentation rather than a standard. | Automates repetitive evaluation steps and integrates with Agile DevOps tooling in the development pipeline. | Fast-paced Agile development teams, automated CI/CD security pipelines, enterprise DevSecOps. |
+- **STRIDE (Microsoft)** — a threat *taxonomy* of six categories (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) applied per DFD element. Best fit for application, microservice, and API-route design.
+- **[PASTA](https://versprite.com/cybersecurity-listings/devsecops/pasta-threat-modeling/)** — Process for Attack Simulation and Threat Analysis, a seven-stage risk-centric framework that ties technical threats to business impact. Best fit for enterprise, financial, and healthcare architectures with GRC alignment.
+- **[OWASP 4-Question Framework](https://owasp.org/www-project-threat-modeling/)** — a meta-process, not a taxonomy: *What are we working on? What can go wrong? What are we going to do about it? Did we do a good job?* Best fit for sprint-level and continuous iteration.
+- **[VAST](https://www.threatmodeler.ai/innovation-lab/vast)** — Visual, Agile, and Simple Threat modeling; vendor-originated (ThreatModeler) with no open published specification, so its scope is defined by vendor documentation rather than a standard.
+- **[OCTAVE Allegro (CMU/SEI-2007-TR-012)](https://www.sei.cmu.edu/library/introducing-octave-allegro-improving-the-information-security-risk-assessment-process/)** — described by SEI as the next generation of the OCTAVE methodology. It evaluates an *organization's information assets* and the containers holding them, so it sits at a different altitude from the DFD/component-level methods above and is normally paired with one of them rather than used instead.
 
 ## A Practical 4-Stage Threat Modeling Workflow
 

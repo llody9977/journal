@@ -2,7 +2,7 @@
 title: Certificate Transparency (CT) & Merkle Audit Proofs
 description: Cryptographic principles of Certificate Transparency (RFC 6962 / RFC 9162), Signed Certificate Timestamps (SCT), Merkle tree audit proofs, and browser CT policies.
 permalink: /topics/certificate-transparency/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Cryptography / Infrastructure</span>

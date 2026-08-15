@@ -2,7 +2,7 @@
 title: Step-Up Authentication & MFA
 description: NIST SP 800-63B-4 authenticator assurance, RFC 9470 step-up challenges, transaction binding, token validation, and elevated-session lifecycle.
 permalink: /topics/step-up-authentication/
-last_verified: 2026-08-13
+last_verified: 2026-08-15
 ---
 
 <span class="eyebrow">Authentication & Authorization / Decision Guide</span>
